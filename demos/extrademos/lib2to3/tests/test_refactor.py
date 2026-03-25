@@ -7,17 +7,13 @@ from __future__ import with_statement
 import sys
 import os
 import codecs
-import operator
 import io
 import tempfile
 import shutil
 import unittest
-import warnings
 
 from lib2to3 import refactor, pygram, fixer_base
 from lib2to3.pgen2 import token
-
-from . import support
 
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
@@ -31,8 +27,8 @@ finally:
 
 _2TO3_FIXERS = refactor.get_fixers_from_package("lib2to3.fixes")
 
-class TestRefactoringTool(unittest.TestCase):
 
+class TestRefactoringTool(unittest.TestCase):
     def setUp(self):
         sys.path.append(FIXER_DIR)
 
@@ -48,10 +44,9 @@ class TestRefactoringTool(unittest.TestCase):
         return refactor.RefactoringTool(fixers, options, explicit)
 
     def test_print_function_option(self):
-        rt = self.rt({"print_function" : True})
+        rt = self.rt({"print_function": True})
         self.assertTrue(rt.grammar is pygram.python_grammar_no_print_statement)
-        self.assertTrue(rt.driver.grammar is
-                        pygram.python_grammar_no_print_statement)
+        self.assertTrue(rt.driver.grammar is pygram.python_grammar_no_print_statement)
 
     def test_fixer_loading_helpers(self):
         contents = ["explicit", "first", "last", "parrot", "preorder"]
@@ -60,23 +55,24 @@ class TestRefactoringTool(unittest.TestCase):
         full_names = refactor.get_fixers_from_package("myfixes")
         self.assertEqual(prefixed, ["fix_" + name for name in contents])
         self.assertEqual(non_prefixed, contents)
-        self.assertEqual(full_names,
-                         ["myfixes.fix_" + name for name in contents])
+        self.assertEqual(full_names, ["myfixes.fix_" + name for name in contents])
 
     def test_detect_future_features(self):
         run = refactor._detect_future_features
         fs = frozenset
         empty = fs()
         self.assertEqual(run(""), empty)
-        self.assertEqual(run("from __future__ import print_function"),
-                         fs(("print_function",)))
-        self.assertEqual(run("from __future__ import generators"),
-                         fs(("generators",)))
-        self.assertEqual(run("from __future__ import generators, feature"),
-                         fs(("generators", "feature")))
+        self.assertEqual(
+            run("from __future__ import print_function"), fs(("print_function",))
+        )
+        self.assertEqual(run("from __future__ import generators"), fs(("generators",)))
+        self.assertEqual(
+            run("from __future__ import generators, feature"),
+            fs(("generators", "feature")),
+        )
         inp = "from __future__ import generators, print_function"
         self.assertEqual(run(inp), fs(("generators", "print_function")))
-        inp ="from __future__ import print_function, generators"
+        inp = "from __future__ import print_function, generators"
         self.assertEqual(run(inp), fs(("print_function", "generators")))
         inp = "from __future__ import (print_function,)"
         self.assertEqual(run(inp), fs(("print_function",)))
@@ -87,14 +83,15 @@ class TestRefactoringTool(unittest.TestCase):
         inp = """from __future__ import generators
 from __future__ import print_function"""
         self.assertEqual(run(inp), fs(("generators", "print_function")))
-        invalid = ("from",
-                   "from 4",
-                   "from x",
-                   "from x 5",
-                   "from x im",
-                   "from x import",
-                   "from x import 4",
-                   )
+        invalid = (
+            "from",
+            "from 4",
+            "from x",
+            "from x 5",
+            "from x im",
+            "from x import",
+            "from x import 4",
+        )
         for inp in invalid:
             self.assertEqual(run(inp), empty)
         inp = "'docstring'\nfrom __future__ import print_function"
@@ -157,9 +154,7 @@ from __future__ import print_function"""
         self.assertEqual(str(tree), input)
 
     def test_refactor_stdin(self):
-
         class MyRT(refactor.RefactoringTool):
-
             def print_output(self, old_text, new_text, filename, equal):
                 results.extend([old_text, new_text, filename, equal])
 
@@ -171,15 +166,19 @@ from __future__ import print_function"""
             rt.refactor_stdin()
         finally:
             sys.stdin = save
-        expected = ["def parrot(): pass\n\n",
-                    "def cheese(): pass\n\n",
-                    "<stdin>", False]
+        expected = [
+            "def parrot(): pass\n\n",
+            "def cheese(): pass\n\n",
+            "<stdin>",
+            False,
+        ]
         self.assertEqual(results, expected)
 
     def check_file_refactoring(self, test_file, fixers=_2TO3_FIXERS):
         def read_file():
             with open(test_file, "rb") as fp:
                 return fp.read()
+
         old_contents = read_file()
         rt = self.rt(fixers=fixers)
 
@@ -203,6 +202,7 @@ from __future__ import print_function"""
         def check(structure, expected):
             def mock_refactor_file(self, f, *args):
                 got.append(f)
+
             save_func = refactor.RefactoringTool.refactor_file
             refactor.RefactoringTool.refactor_file = mock_refactor_file
             rt = self.rt()
@@ -216,19 +216,13 @@ from __future__ import print_function"""
             finally:
                 refactor.RefactoringTool.refactor_file = save_func
                 shutil.rmtree(dir)
-            self.assertEqual(got,
-                             [os.path.join(dir, path) for path in expected])
+            self.assertEqual(got, [os.path.join(dir, path) for path in expected])
+
         check([], [])
-        tree = ["nothing",
-                "hi.py",
-                ".dumb",
-                ".after.py",
-                "notpy.npy",
-                "sappy"]
+        tree = ["nothing", "hi.py", ".dumb", ".after.py", "notpy.npy", "sappy"]
         expected = ["hi.py"]
         check(tree, expected)
-        tree = ["hi.py",
-                os.path.join("a_dir", "stuff.py")]
+        tree = ["hi.py", os.path.join("a_dir", "stuff.py")]
         check(tree, tree)
 
     def test_file_encoding(self):

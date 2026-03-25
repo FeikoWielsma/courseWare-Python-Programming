@@ -30,40 +30,40 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
 
         self.get_font_btn = QtGui.QPushButton('Specifying colors', self)
         x, y = 10, 10
         self.get_font_btn.move(x, y)
-        self.get_font_btn.adjustSize()
+        self.get_font_btn.adjust_size()
         self.get_font_btn.clicked.connect(self._get_font_btn_cb)
-        qsize = self.get_font_btn.frameSize()
+        qsize = self.get_font_btn.frame_size()
 
         self.preview_text = QtGui.QLabel(text, self)
         x, y, w, h = 10, 10 + qsize.height() + 10, 280, 200
-        self.preview_text.setGeometry(x, y, w, h)
-        self.preview_text.setAlignment(QtCore.Qt.AlignHCenter)
+        self.preview_text.set_geometry(x, y, w, h)
+        self.preview_text.set_alignment(QtCore.Qt.AlignHCenter)
 
 
         style = "QLabel { font-size: 28px }"
-        self.preview_text.setStyleSheet(style)
+        self.preview_text.set_style_sheet(style)
 
 
         self.font_info_label = QtGui.QLabel(self)
-        self.font_info_label.setGeometry(10, 350, 200, 20)
+        self.font_info_label.set_geometry(10, 350, 200, 20)
 
     def _get_font_btn_cb(self):
-        qfont, ok = QtGui.QFontDialog.getFont()
+        qfont, ok = QtGui.QFontDialog.get_font()
 
         print qfont
         print qfont.family()
         print qfont.style()
 
         if ok:
-            self.preview_text.setFont(qfont)
+            self.preview_text.set_font(qfont)
             
-            self.font_info_label.setText(qfont.family())
+            self.font_info_label.set_text(qfont.family())
 
     def show_and_raise(self):
         self.show()

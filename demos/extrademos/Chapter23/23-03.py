@@ -1,11 +1,12 @@
 # objects.py
-import pygame, config, os
+import pygame
+import config
 from random import randrange
 
 "This module contains the game objects of the Squish game."
 
-class SquishSprite(pygame.sprite.Sprite):
 
+class SquishSprite(pygame.sprite.Sprite):
     """
     Generic superclass for all sprites in Squish.  The constructor
     takes care of loading an image, setting up the sprite rect, and
@@ -23,7 +24,6 @@ class SquishSprite(pygame.sprite.Sprite):
 
 
 class Weight(SquishSprite):
-
     """
     A falling weight. It uses the SquishSprite constructor to set up
     its weight image, and will fall with a speed given as a parameter
@@ -54,7 +54,6 @@ class Weight(SquishSprite):
 
 
 class Banana(SquishSprite):
-
     """
     A desperate banana. It uses the SquishSprite constructor to set up
     its banana image, and will stay near the bottom of the screen,

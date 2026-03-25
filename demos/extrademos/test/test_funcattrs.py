@@ -2,13 +2,16 @@ from test import support
 import types
 import unittest
 
+
 class FuncAttrsTest(unittest.TestCase):
     def setUp(self):
         class F:
             def a(self):
                 pass
+
         def b():
             return 3
+
         self.fi = F()
         self.F = F
         self.b = b
@@ -35,34 +38,43 @@ class FunctionPropertiesTest(FuncAttrsTest):
 
     def test_dir_includes_correct_attrs(self):
         self.b.known_attr = 7
-        self.assertIn('known_attr', dir(self.b),
-            "set attributes not in dir listing of method")
+        self.assertIn(
+            "known_attr", dir(self.b), "set attributes not in dir listing of method"
+        )
         # Test on underlying function object of method
         self.F.a.known_attr = 7
-        self.assertIn('known_attr', dir(self.fi.a), "set attribute on function "
-                     "implementations, should show up in next dir")
+        self.assertIn(
+            "known_attr",
+            dir(self.fi.a),
+            "set attribute on function implementations, should show up in next dir",
+        )
 
     def test_duplicate_function_equality(self):
         # Body of `duplicate' is the exact same as self.b
         def duplicate():
-            'my docstring'
+            "my docstring"
             return 3
+
         self.assertNotEqual(self.b, duplicate)
 
     def test_copying___code__(self):
-        def test(): pass
+        def test():
+            pass
+
         self.assertEqual(test(), None)
         test.__code__ = self.b.__code__
-        self.assertEqual(test(), 3) # self.b always returns 3, arbitrarily
+        self.assertEqual(test(), 3)  # self.b always returns 3, arbitrarily
 
     def test___globals__(self):
         self.assertIs(self.b.__globals__, globals())
-        self.cannot_set_attr(self.b, '__globals__', 2,
-                             (AttributeError, TypeError))
+        self.cannot_set_attr(self.b, "__globals__", 2, (AttributeError, TypeError))
 
     def test___closure__(self):
         a = 12
-        def f(): print(a)
+
+        def f():
+            print(a)
+
         c = f.__closure__
         self.assertIsInstance(c, tuple)
         self.assertEqual(len(c), 1)
@@ -71,7 +83,9 @@ class FunctionPropertiesTest(FuncAttrsTest):
         self.cannot_set_attr(f, "__closure__", c, AttributeError)
 
     def test_empty_cell(self):
-        def f(): print(a)
+        def f():
+            print(a)
+
         try:
             f.__closure__[0].cell_contents
         except ValueError:
@@ -81,28 +95,39 @@ class FunctionPropertiesTest(FuncAttrsTest):
         a = 12
 
     def test___name__(self):
-        self.assertEqual(self.b.__name__, 'b')
-        self.b.__name__ = 'c'
-        self.assertEqual(self.b.__name__, 'c')
-        self.b.__name__ = 'd'
-        self.assertEqual(self.b.__name__, 'd')
+        self.assertEqual(self.b.__name__, "b")
+        self.b.__name__ = "c"
+        self.assertEqual(self.b.__name__, "c")
+        self.b.__name__ = "d"
+        self.assertEqual(self.b.__name__, "d")
         # __name__ and __name__ must be a string
-        self.cannot_set_attr(self.b, '__name__', 7, TypeError)
+        self.cannot_set_attr(self.b, "__name__", 7, TypeError)
         # __name__ must be available when in restricted mode. Exec will raise
         # AttributeError if __name__ is not available on f.
         s = """def f(): pass\nf.__name__"""
-        exec(s, {'__builtins__': {}})
+        exec(s, {"__builtins__": {}})
         # Test on methods, too
-        self.assertEqual(self.fi.a.__name__, 'a')
-        self.cannot_set_attr(self.fi.a, "__name__", 'a', AttributeError)
+        self.assertEqual(self.fi.a.__name__, "a")
+        self.cannot_set_attr(self.fi.a, "__name__", "a", AttributeError)
 
     def test___code__(self):
         num_one, num_two = 7, 8
-        def a(): pass
-        def b(): return 12
-        def c(): return num_one
-        def d(): return num_two
-        def e(): return num_one, num_two
+
+        def a():
+            pass
+
+        def b():
+            return 12
+
+        def c():
+            return num_one
+
+        def d():
+            return num_two
+
+        def e():
+            return num_one, num_two
+
         for func in [a, b, c, d, e]:
             self.assertEqual(type(func.__code__), types.CodeType)
         self.assertEqual(c(), 7)
@@ -116,15 +141,17 @@ class FunctionPropertiesTest(FuncAttrsTest):
         except ValueError:
             pass
         else:
-            self.fail("__code__ with different numbers of free vars should "
-                      "not be possible")
+            self.fail(
+                "__code__ with different numbers of free vars should not be possible"
+            )
         try:
             e.__code__ = d.__code__
         except ValueError:
             pass
         else:
-            self.fail("__code__ with different numbers of free vars should "
-                      "not be possible")
+            self.fail(
+                "__code__ with different numbers of free vars should not be possible"
+            )
 
     def test_blank_func_defaults(self):
         self.assertEqual(self.b.__defaults__, None)
@@ -133,9 +160,11 @@ class FunctionPropertiesTest(FuncAttrsTest):
 
     def test_func_default_args(self):
         def first_func(a, b):
-            return a+b
+            return a + b
+
         def second_func(a=1, b=2):
-            return a+b
+            return a + b
+
         self.assertEqual(first_func.__defaults__, None)
         self.assertEqual(second_func.__defaults__, (1, 2))
         first_func.__defaults__ = (1, 2)
@@ -150,12 +179,12 @@ class FunctionPropertiesTest(FuncAttrsTest):
         except TypeError:
             pass
         else:
-            self.fail("__defaults__ does not update; deleting it does not "
-                      "remove requirement")
+            self.fail(
+                "__defaults__ does not update; deleting it does not remove requirement"
+            )
 
 
 class InstancemethodAttrTest(FuncAttrsTest):
-
     def test___class__(self):
         self.assertEqual(self.fi.a.__self__.__class__, self.F)
         self.cannot_set_attr(self.fi.a, "__class__", self.F, TypeError)
@@ -181,7 +210,7 @@ class InstancemethodAttrTest(FuncAttrsTest):
         else:
             self.fail("using unknown attributes should raise AttributeError")
         # Test assignment and deletion
-        self.cannot_set_attr(self.fi.id, 'unknown_attr', 2, AttributeError)
+        self.cannot_set_attr(self.fi.id, "unknown_attr", 2, AttributeError)
 
 
 class ArbitraryFunctionAttrTest(FuncAttrsTest):
@@ -210,19 +239,19 @@ class ArbitraryFunctionAttrTest(FuncAttrsTest):
             except AttributeError:
                 pass
             else:
-                self.fail("using unknown attributes should raise "
-                          "AttributeError")
+                self.fail("using unknown attributes should raise AttributeError")
 
 
 class FunctionDictsTest(FuncAttrsTest):
     def test_setting_dict_to_invalid(self):
-        self.cannot_set_attr(self.b, '__dict__', None, TypeError)
+        self.cannot_set_attr(self.b, "__dict__", None, TypeError)
         from collections import UserDict
-        d = UserDict({'known_attr': 7})
-        self.cannot_set_attr(self.fi.a.__func__, '__dict__', d, TypeError)
+
+        d = UserDict({"known_attr": 7})
+        self.cannot_set_attr(self.fi.a.__func__, "__dict__", d, TypeError)
 
     def test_setting_dict_to_valid(self):
-        d = {'known_attr': 7}
+        d = {"known_attr": 7}
         self.b.__dict__ = d
         # Test assignment
         self.assertIs(d, self.b.__dict__)
@@ -232,7 +261,7 @@ class FunctionDictsTest(FuncAttrsTest):
         self.assertIs(d, self.fi.a.__dict__)
         # Test value
         self.assertEqual(self.b.known_attr, 7)
-        self.assertEqual(self.b.__dict__['known_attr'], 7)
+        self.assertEqual(self.b.__dict__["known_attr"], 7)
         # ... and again, on all the different method's names
         self.assertEqual(self.fi.a.__func__.known_attr, 7)
         self.assertEqual(self.fi.a.known_attr, 7)
@@ -273,15 +302,20 @@ class FunctionDocstringTest(FuncAttrsTest):
 
 def cell(value):
     """Create a cell containing the given value."""
+
     def f():
         print(a)
+
     a = value
     return f.__closure__[0]
 
+
 def empty_cell(empty=True):
     """Create an empty cell."""
+
     def f():
         print(a)
+
     # the intent of the following line is simply "if False:";  it's
     # spelt this way to avoid the danger that a future optimization
     # might simply remove an "if False:" code block.
@@ -297,7 +331,7 @@ class CellTest(unittest.TestCase):
         # guarantees about the semantics (or even existence) of cell
         # comparisons in future versions of CPython.
         self.assertTrue(cell(2) < cell(3))
-        self.assertTrue(empty_cell() < cell('saturday'))
+        self.assertTrue(empty_cell() < cell("saturday"))
         self.assertTrue(empty_cell() == empty_cell())
         self.assertTrue(cell(-36) == cell(-36.0))
         self.assertTrue(cell(True) > empty_cell())
@@ -316,10 +350,16 @@ class StaticMethodAttrsTest(unittest.TestCase):
 
 
 def test_main():
-    support.run_unittest(FunctionPropertiesTest, InstancemethodAttrTest,
-                              ArbitraryFunctionAttrTest, FunctionDictsTest,
-                              FunctionDocstringTest, CellTest,
-                              StaticMethodAttrsTest)
+    support.run_unittest(
+        FunctionPropertiesTest,
+        InstancemethodAttrTest,
+        ArbitraryFunctionAttrTest,
+        FunctionDictsTest,
+        FunctionDocstringTest,
+        CellTest,
+        StaticMethodAttrsTest,
+    )
+
 
 if __name__ == "__main__":
     test_main()

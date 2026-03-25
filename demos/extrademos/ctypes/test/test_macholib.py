@@ -35,8 +35,9 @@ It'll have output like this:
 
 from ctypes.macholib.dyld import dyld_find
 
+
 def find_lib(name):
-    possible = ['lib'+name+'.dylib', name+'.dylib', name+'.framework/'+name]
+    possible = ["lib" + name + ".dylib", name + ".dylib", name + ".framework/" + name]
     for dylib in possible:
         try:
             return os.path.realpath(dyld_find(dylib))
@@ -44,19 +45,22 @@ def find_lib(name):
             pass
     raise ValueError("%s not found" % (name,))
 
+
 class MachOTest(unittest.TestCase):
     if sys.platform == "darwin":
+
         def test_find(self):
+            self.assertEqual(find_lib("pthread"), "/usr/lib/libSystem.B.dylib")
 
-            self.assertEqual(find_lib('pthread'),
-                                 '/usr/lib/libSystem.B.dylib')
+            result = find_lib("z")
+            self.assertTrue(result.startswith("/usr/lib/libz.1"))
+            self.assertTrue(result.endswith(".dylib"))
 
-            result = find_lib('z')
-            self.assertTrue(result.startswith('/usr/lib/libz.1'))
-            self.assertTrue(result.endswith('.dylib'))
+            self.assertEqual(
+                find_lib("IOKit"),
+                "/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit",
+            )
 
-            self.assertEqual(find_lib('IOKit'),
-                                 '/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit')
 
 if __name__ == "__main__":
     unittest.main()

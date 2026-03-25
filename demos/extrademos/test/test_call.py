@@ -6,8 +6,8 @@ from test import support
 # function, which can't be verified from Python.  If the METH_XXX decl
 # for a C function changes, these tests may not cover the right paths.
 
-class CFunctionCalls(unittest.TestCase):
 
+class CFunctionCalls(unittest.TestCase):
     def test_varargs0(self):
         self.assertRaises(TypeError, {}.__contains__)
 

@@ -1,6 +1,6 @@
 # textop.py
 #
-# A program that reads a large collection of text into memory 
+# A program that reads a large collection of text into memory
 # and performs various operations on it.   This should work in both
 # Python 2 and Python 3.  Use it for a performance comparison.
 
@@ -16,7 +16,7 @@ except NameError:
 
 # Read an Apache log file into memory and replicate it to make a large sample.
 # The result should be a string with about 6 million characters in it
-logdata = open("access-log","rt").read()*10
+logdata = open("access-log", "rt").read() * 10
 
 # Test 1: Memory use
 print("Size %d bytes" % sys.getsizeof(logdata))
@@ -25,9 +25,9 @@ print("Size %d bytes" % sys.getsizeof(logdata))
 with timethis("find lines"):
     index = 0
     while index < len(logdata):
-        nextindex = logdata.find("\n",index)
+        nextindex = logdata.find("\n", index)
         line = logdata[index:nextindex]
-        index = nextindex+1
+        index = nextindex + 1
 
 # Test 3 : Split into lines
 with timethis("line splitting"):
@@ -37,8 +37,9 @@ with timethis("line splitting"):
 with timethis("whitespace splitting"):
     fields = logdata.split()
 
-# Test 5 : Regex pattern matching.  
+# Test 5 : Regex pattern matching.
 import re
+
 ip_pattern = re.compile(r"\d+\.\d+\.\d+\.\d+")
 with timethis("regex pattern matching"):
     unique_ips = set()
@@ -52,7 +53,4 @@ with timethis("iterate by character"):
 
 # Test 7 : Replace text
 with timethis("Replace characters"):
-    s = logdata.replace(" ",":")
-
-
-
+    s = logdata.replace(" ", ":")

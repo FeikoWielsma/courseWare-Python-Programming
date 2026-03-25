@@ -35,7 +35,7 @@ Note: 'r' and 'w' fail if the database doesn't exist; 'c' creates it
 only if it doesn't exist; and 'n' always creates a new database.
 """
 
-__all__ = ['open', 'whichdb', 'error']
+__all__ = ["open", "whichdb", "error"]
 
 import io
 import os
@@ -46,19 +46,20 @@ import sys
 class error(Exception):
     pass
 
-_names = ['dbm.gnu', 'dbm.ndbm', 'dbm.dumb']
+
+_names = ["dbm.gnu", "dbm.ndbm", "dbm.dumb"]
 _defaultmod = None
 _modules = {}
 
 error = (error, IOError)
 
 
-def open(file, flag = 'r', mode = 0o666):
+def open(file, flag="r", mode=0o666):
     global _defaultmod
     if _defaultmod is None:
         for name in _names:
             try:
-                mod = __import__(name, fromlist=['open'])
+                mod = __import__(name, fromlist=["open"])
             except ImportError:
                 continue
             if not _defaultmod:
@@ -71,7 +72,7 @@ def open(file, flag = 'r', mode = 0o666):
     result = whichdb(file)
     if result is None:
         # db doesn't exist
-        if 'c' in flag or 'n' in flag:
+        if "c" in flag or "n" in flag:
             # file doesn't exist and the new flag was used so use default type
             mod = _defaultmod
         else:
@@ -80,8 +81,7 @@ def open(file, flag = 'r', mode = 0o666):
         # db type cannot be determined
         raise error[0]("db type could not be determined")
     elif result not in _modules:
-        raise error[0]("db type is {0}, but the module is not "
-                       "available".format(result))
+        raise error[0]("db type is {0}, but the module is not available".format(result))
     else:
         mod = _modules[result]
     return mod.open(file, flag, mode)
@@ -164,7 +164,7 @@ def whichdb(filename):
         return ""
 
     # Check for GNU dbm
-    if magic == 0x13579ace:
+    if magic == 0x13579ACE:
         return "dbm.gnu"
 
     # Later versions of Berkeley db hash file have a 12-byte pad in

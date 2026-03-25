@@ -1,7 +1,7 @@
 """
 System tray icon and Prompt on PyQt/PySide application exit
 
-NOTE: We don't catch closeEvent cause by command-q on Mac.
+NOTE: We don't catch close_event cause by command-q on Mac.
 
 Tested environment:
     Mac OS X 10.6.8
@@ -59,11 +59,11 @@ class CustomDlg(QtGui.QDialog):
         self.resize(400, 250)
 
         self._settings = settings
-        self.setModal(True)
+        self.set_modal(True)
 
         # add custom sub-widgets here ...
 
-    def keyPressEvent(self, evt):
+    def key_press_event(self, evt):
         close_win_cmd_w = (evt.key() == QtCore.Qt.Key_W and evt.modifiers() == QtCore.Qt.ControlModifier)
         close_win_esc = (evt.key() == QtCore.Qt.Key_Escape)
 
@@ -89,24 +89,24 @@ class QuitConfirmDlg(CustomDlg):
         self.resize(400, 250)
 
         self.tips_label = QtGui.QLabel("When you click the close button should me:", self)
-        self.tips_label.setGeometry(40, 40, 280, 15)
+        self.tips_label.set_geometry(40, 40, 280, 15)
 
         self.minimize_rbtn = QtGui.QRadioButton("&Minimize to system tray", self)
-        self.minimize_rbtn.setGeometry(70, 90, 180, 20)
+        self.minimize_rbtn.set_geometry(70, 90, 180, 20)
 
         self.exit_rbtn = QtGui.QRadioButton("&Exit program", self)
-        self.exit_rbtn.setGeometry(70, 120, 110, 20)
+        self.exit_rbtn.set_geometry(70, 120, 110, 20)
 
         self.no_confirm_cbox = QtGui.QCheckBox("&Don't ask me again", self)
-        self.no_confirm_cbox.setGeometry(40, 180, 150, 20)
+        self.no_confirm_cbox.set_geometry(40, 180, 150, 20)
 
-        self.minimize_rbtn.setChecked(not self._settings['x_action_is_quit'])
-        self.exit_rbtn.setChecked(self._settings['x_action_is_quit'])
-        self.no_confirm_cbox.setChecked(not self._settings['confirm'])
+        self.minimize_rbtn.set_checked(not self._settings['x_action_is_quit'])
+        self.exit_rbtn.set_checked(self._settings['x_action_is_quit'])
+        self.no_confirm_cbox.set_checked(not self._settings['confirm'])
 
     def get_inputs(self):
-        self._settings["x_action_is_quit"] = self.exit_rbtn.isChecked()
-        self._settings["confirm"] = not self.no_confirm_cbox.isChecked()
+        self._settings["x_action_is_quit"] = self.exit_rbtn.is_checked()
+        self._settings["confirm"] = not self.no_confirm_cbox.is_checked()
 
         return self._settings
 
@@ -124,14 +124,14 @@ class Demo(QtGui.QMainWindow):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
         self.settings = load_settings(default_settings_path)
 
         self.sys_tray_icon = QtGui.QSystemTrayIcon(parent=self)
-        self.sys_tray_icon.setIcon(logo_icon)
+        self.sys_tray_icon.set_icon(logo_icon)
         self.sys_tray_icon.activated.connect(self.on_sys_tray_icon_clicked)
-        self.sys_tray_icon.messageClicked.connect(self.on_sys_tray_icon_msg_clicked)
+        self.sys_tray_icon.message_clicked.connect(self.on_sys_tray_icon_msg_clicked)
         self.sys_tray_icon.show()
         
 #        self.sys_tray_icon_show_msg('title', 'msg')
@@ -159,10 +159,10 @@ class Demo(QtGui.QMainWindow):
 
             return False
 
-    def closeEvent(self, evt):
+    def close_event(self, evt):
         self.confirm_quit(self, evt)
 
-    def keyPressEvent(self, evt):
+    def key_press_event(self, evt):
         close_win_cmd_w = (evt.key() == QtCore.Qt.Key_W and evt.modifiers() == QtCore.Qt.ControlModifier)
         close_win_esc = (evt.key() == QtCore.Qt.Key_Escape)
  
@@ -183,14 +183,14 @@ class Demo(QtGui.QMainWindow):
     def sys_tray_icon_show_msg(self, title, msg,
                                icon = QtGui.QSystemTrayIcon.MessageIcon(),
                                msecs = 10000):
-        if self.sys_tray_icon.supportsMessages():
-            self.sys_tray_icon.showMessage(title, msg, icon, msecs)
+        if self.sys_tray_icon.supports_messages():
+            self.sys_tray_icon.show_message(title, msg, icon, msecs)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
 
     logo_icon = QtGui.QIcon(logo_path)
-    app.setWindowIcon(logo_icon)
+    app.set_window_icon(logo_icon)
 
     main = Demo(logo_icon=logo_icon)
     main.show_and_raise()

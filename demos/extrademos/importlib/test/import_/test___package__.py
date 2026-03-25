@@ -4,13 +4,13 @@ used, when available, to detect which package a module belongs to (instead
 of using the typical __path__/__name__ test).
 
 """
+
 import unittest
 from .. import util
 from . import util as import_util
 
 
 class Using__package__(unittest.TestCase):
-
     """Use of __package__ supercedes the use of __name__/__path__ to calculate
     what package a module belongs to. The basic algorithm is [__package__]::
 
@@ -36,44 +36,44 @@ class Using__package__(unittest.TestCase):
 
     def test_using___package__(self):
         # [__package__]
-        with util.mock_modules('pkg.__init__', 'pkg.fake') as importer:
+        with util.mock_modules("pkg.__init__", "pkg.fake") as importer:
             with util.import_state(meta_path=[importer]):
-                import_util.import_('pkg.fake')
-                module = import_util.import_('',
-                                            globals={'__package__': 'pkg.fake'},
-                                            fromlist=['attr'], level=2)
-        self.assertEqual(module.__name__, 'pkg')
+                import_util.import_("pkg.fake")
+                module = import_util.import_(
+                    "", globals={"__package__": "pkg.fake"}, fromlist=["attr"], level=2
+                )
+        self.assertEqual(module.__name__, "pkg")
 
     def test_using___name__(self, package_as_None=False):
         # [__name__]
-        globals_ = {'__name__': 'pkg.fake', '__path__': []}
+        globals_ = {"__name__": "pkg.fake", "__path__": []}
         if package_as_None:
-            globals_['__package__'] = None
-        with util.mock_modules('pkg.__init__', 'pkg.fake') as importer:
+            globals_["__package__"] = None
+        with util.mock_modules("pkg.__init__", "pkg.fake") as importer:
             with util.import_state(meta_path=[importer]):
-                import_util.import_('pkg.fake')
-                module = import_util.import_('', globals= globals_,
-                                                fromlist=['attr'], level=2)
-            self.assertEqual(module.__name__, 'pkg')
+                import_util.import_("pkg.fake")
+                module = import_util.import_(
+                    "", globals=globals_, fromlist=["attr"], level=2
+                )
+            self.assertEqual(module.__name__, "pkg")
 
     def test_None_as___package__(self):
         # [None]
         self.test_using___name__(package_as_None=True)
 
     def test_bad__package__(self):
-        globals = {'__package__': '<not real>'}
+        globals = {"__package__": "<not real>"}
         with self.assertRaises(SystemError):
-            import_util.import_('', globals, {}, ['relimport'], 1)
+            import_util.import_("", globals, {}, ["relimport"], 1)
 
     def test_bunk__package__(self):
-        globals = {'__package__': 42}
+        globals = {"__package__": 42}
         with self.assertRaises(ValueError):
-            import_util.import_('', globals, {}, ['relimport'], 1)
+            import_util.import_("", globals, {}, ["relimport"], 1)
 
 
 @import_util.importlib_only
 class Setting__package__(unittest.TestCase):
-
     """Because __package__ is a new feature, it is not always set by a loader.
     Import will set it as needed to help with the transition to relying on
     __package__.
@@ -86,34 +86,35 @@ class Setting__package__(unittest.TestCase):
 
     # [top-level]
     def test_top_level(self):
-        with util.mock_modules('top_level') as mock:
+        with util.mock_modules("top_level") as mock:
             with util.import_state(meta_path=[mock]):
-                del mock['top_level'].__package__
-                module = import_util.import_('top_level')
-                self.assertEqual(module.__package__, '')
+                del mock["top_level"].__package__
+                module = import_util.import_("top_level")
+                self.assertEqual(module.__package__, "")
 
     # [package]
     def test_package(self):
-        with util.mock_modules('pkg.__init__') as mock:
+        with util.mock_modules("pkg.__init__") as mock:
             with util.import_state(meta_path=[mock]):
-                del mock['pkg'].__package__
-                module = import_util.import_('pkg')
-                self.assertEqual(module.__package__, 'pkg')
+                del mock["pkg"].__package__
+                module = import_util.import_("pkg")
+                self.assertEqual(module.__package__, "pkg")
 
     # [submodule]
     def test_submodule(self):
-        with util.mock_modules('pkg.__init__', 'pkg.mod') as mock:
+        with util.mock_modules("pkg.__init__", "pkg.mod") as mock:
             with util.import_state(meta_path=[mock]):
-                del mock['pkg.mod'].__package__
-                pkg = import_util.import_('pkg.mod')
-                module = getattr(pkg, 'mod')
-                self.assertEqual(module.__package__, 'pkg')
+                del mock["pkg.mod"].__package__
+                pkg = import_util.import_("pkg.mod")
+                module = getattr(pkg, "mod")
+                self.assertEqual(module.__package__, "pkg")
 
 
 def test_main():
     from test.support import run_unittest
+
     run_unittest(Using__package__, Setting__package__)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_main()

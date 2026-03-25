@@ -10,7 +10,7 @@ from __future__ import with_statement
 
 # Testing imports
 from . import support
-from .support import driver, test_dir
+from .support import driver
 
 # Python imports
 import os
@@ -144,15 +144,15 @@ class TestClassDef(GrammarTest):
 
 
 class TestParserIdempotency(support.TestCase):
-
     """A cut-down version of pytree_idempotency.py."""
 
     def test_all_project_files(self):
         for filepath in support.all_project_files():
             with open(filepath, "rb") as fp:
                 encoding = tokenize.detect_encoding(fp.readline)[0]
-            self.assertTrue(encoding is not None,
-                            "can't detect encoding for %s" % filepath)
+            self.assertTrue(
+                encoding is not None, "can't detect encoding for %s" % filepath
+            )
             with open(filepath, "r") as fp:
                 source = fp.read()
                 source = source.decode(encoding)
@@ -169,8 +169,8 @@ class TestParserIdempotency(support.TestCase):
         driver.parse_string("(z, *y, w) = m\n")
         driver.parse_string("for *z, m in d: pass\n")
 
-class TestLiterals(GrammarTest):
 
+class TestLiterals(GrammarTest):
     def validate(self, s):
         driver.parse_string(support.dedent(s) + "\n\n")
 

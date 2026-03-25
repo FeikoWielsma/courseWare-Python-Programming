@@ -1,5 +1,6 @@
 from ctypes import *
-import sys, unittest
+import sys
+import unittest
 import os
 from ctypes.util import find_library
 from ctypes.test import is_resource_enabled
@@ -17,17 +18,19 @@ else:
 if is_resource_enabled("printing"):
     print("libc_name is", libc_name)
 
-class LoaderTest(unittest.TestCase):
 
+class LoaderTest(unittest.TestCase):
     unknowndll = "xxrandomnamexx"
 
     if libc_name is not None:
+
         def test_load(self):
             CDLL(libc_name)
             CDLL(os.path.basename(libc_name))
             self.assertRaises(OSError, CDLL, self.unknowndll)
 
     if libc_name is not None and os.path.basename(libc_name) == "libc.so.6":
+
         def test_load_version(self):
             cdll.LoadLibrary("libc.so.6")
             # linux uses version, libc 9 should not exist
@@ -42,6 +45,7 @@ class LoaderTest(unittest.TestCase):
                 CDLL(lib)
 
     if os.name in ("nt", "ce"):
+
         def test_load_library(self):
             self.assertFalse(libc_name is None)
             if is_resource_enabled("printing"):
@@ -61,6 +65,7 @@ class LoaderTest(unittest.TestCase):
 
         def test_load_ordinal_functions(self):
             import _ctypes_test
+
             dll = WinDLL(_ctypes_test.__file__)
             # We load the same function both via ordinal and name
             func_ord = dll[2]
@@ -75,6 +80,7 @@ class LoaderTest(unittest.TestCase):
             self.assertRaises(AttributeError, dll.__getitem__, 1234)
 
     if os.name == "nt":
+
         def test_1703286_A(self):
             from _ctypes import LoadLibrary, FreeLibrary
             # On winXP 64-bit, advapi32 loads at an address that does
@@ -91,6 +97,7 @@ class LoaderTest(unittest.TestCase):
             # also has a high address.  'call_function' should accept
             # addresses so large.
             from _ctypes import call_function
+
             advapi32 = windll.advapi32
             # Calling CloseEventLog with a NULL argument should fail,
             # but the call should not segfault or so.
@@ -101,6 +108,7 @@ class LoaderTest(unittest.TestCase):
             self.assertTrue(proc)
             # This is the real test: call the function via 'call_function'
             self.assertEqual(0, call_function(proc, (None,)))
+
 
 if __name__ == "__main__":
     unittest.main()

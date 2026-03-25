@@ -2,11 +2,12 @@
 
 import os
 import gadfly
+
 connection = gadfly.gadfly()
 
-os.mkdir('db')
+os.mkdir("db")
 
-connection.startup('pydb', 'db')
+connection.startup("pydb", "db")
 
 cursor = connection.cursor()
 

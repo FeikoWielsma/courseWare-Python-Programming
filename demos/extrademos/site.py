@@ -82,8 +82,8 @@ def makepath(*paths):
 def abs_paths():
     """Set all module __file__ and __cached__ attributes to an absolute path"""
     for m in set(sys.modules.values()):
-        if hasattr(m, '__loader__'):
-            continue   # don't mess with a PEP 302-supplied __file__
+        if hasattr(m, "__loader__"):
+            continue  # don't mess with a PEP 302-supplied __file__
         try:
             m.__file__ = os.path.abspath(m.__file__)
         except (AttributeError, OSError):
@@ -95,7 +95,7 @@ def abs_paths():
 
 
 def removeduppaths():
-    """ Remove duplicate entries from sys.path along with making them
+    """Remove duplicate entries from sys.path along with making them
     absolute"""
     # This ensures that the initial path provided by the interpreter contains
     # only absolute pathnames, even if we're running from the build directory.
@@ -106,7 +106,7 @@ def removeduppaths():
         # if they only differ in case); turn relative paths into absolute
         # paths.
         dir, dircase = makepath(dir)
-        if not dircase in known_paths:
+        if dircase not in known_paths:
             L.append(dir)
             known_paths.add(dircase)
     sys.path[:] = L
@@ -128,8 +128,8 @@ def _init_pathinfo():
 
 def addpackage(sitedir, name, known_paths):
     """Process a .pth file within the site-packages directory:
-       For each line in the file, either combine it with sitedir to a path
-       and add that to known_paths, or execute it if it starts with 'import '.
+    For each line in the file, either combine it with sitedir to a path
+    and add that to known_paths, or execute it if it starts with 'import '.
     """
     if known_paths is None:
         _init_pathinfo()
@@ -151,15 +151,17 @@ def addpackage(sitedir, name, known_paths):
                     continue
                 line = line.rstrip()
                 dir, dircase = makepath(sitedir, line)
-                if not dircase in known_paths and os.path.exists(dir):
+                if dircase not in known_paths and os.path.exists(dir):
                     sys.path.append(dir)
                     known_paths.add(dircase)
-            except Exception as err:
-                print("Error processing line {:d} of {}:\n".format(n+1, fullname),
-                      file=sys.stderr)
+            except Exception:
+                print(
+                    "Error processing line {:d} of {}:\n".format(n + 1, fullname),
+                    file=sys.stderr,
+                )
                 for record in traceback.format_exception(*sys.exc_info()):
                     for line in record.splitlines():
-                        print('  '+line, file=sys.stderr)
+                        print("  " + line, file=sys.stderr)
                 print("\nRemainder of file ignored", file=sys.stderr)
                 break
     if reset:
@@ -176,8 +178,8 @@ def addsitedir(sitedir, known_paths=None):
     else:
         reset = 0
     sitedir, sitedircase = makepath(sitedir)
-    if not sitedircase in known_paths:
-        sys.path.append(sitedir)        # Add path component
+    if sitedircase not in known_paths:
+        sys.path.append(sitedir)  # Add path component
     try:
         names = os.listdir(sitedir)
     except os.error:
@@ -214,6 +216,7 @@ def check_enableusersite():
 
     return True
 
+
 def getuserbase():
     """Returns the `user base` directory path.
 
@@ -225,8 +228,10 @@ def getuserbase():
     if USER_BASE is not None:
         return USER_BASE
     from sysconfig import get_config_var
-    USER_BASE = get_config_var('userbase')
+
+    USER_BASE = get_config_var("userbase")
     return USER_BASE
+
 
 def getusersitepackages():
     """Returns the user-specific site-packages directory path.
@@ -235,7 +240,7 @@ def getusersitepackages():
     function will also set it.
     """
     global USER_SITE
-    user_base = getuserbase() # this will also set USER_BASE
+    user_base = getuserbase()  # this will also set USER_BASE
 
     if USER_SITE is not None:
         return USER_SITE
@@ -243,14 +248,16 @@ def getusersitepackages():
     from sysconfig import get_path
     import os
 
-    if sys.platform == 'darwin':
+    if sys.platform == "darwin":
         from sysconfig import get_config_var
-        if get_config_var('PYTHONFRAMEWORK'):
-            USER_SITE = get_path('purelib', 'osx_framework_user')
+
+        if get_config_var("PYTHONFRAMEWORK"):
+            USER_SITE = get_path("purelib", "osx_framework_user")
             return USER_SITE
 
-    USER_SITE = get_path('purelib', '%s_user' % os.name)
+    USER_SITE = get_path("purelib", "%s_user" % os.name)
     return USER_SITE
+
 
 def addusersitepackages(known_paths):
     """Add a per user site-package to sys.path
@@ -265,6 +272,7 @@ def addusersitepackages(known_paths):
     if ENABLE_USER_SITE and os.path.isdir(user_site):
         addsitedir(user_site, known_paths)
     return known_paths
+
 
 def getsitepackages():
     """Returns a list containing all global site-packages directories
@@ -282,12 +290,12 @@ def getsitepackages():
             continue
         seen.add(prefix)
 
-        if sys.platform in ('os2emx', 'riscos'):
+        if sys.platform in ("os2emx", "riscos"):
             sitepackages.append(os.path.join(prefix, "Lib", "site-packages"))
-        elif os.sep == '/':
-            sitepackages.append(os.path.join(prefix, "lib",
-                                        "python" + sys.version[:3],
-                                        "site-packages"))
+        elif os.sep == "/":
+            sitepackages.append(
+                os.path.join(prefix, "lib", "python" + sys.version[:3], "site-packages")
+            )
             sitepackages.append(os.path.join(prefix, "lib", "site-python"))
         else:
             sitepackages.append(prefix)
@@ -296,12 +304,16 @@ def getsitepackages():
             # for framework builds *only* we add the standard Apple
             # locations.
             from sysconfig import get_config_var
+
             framework = get_config_var("PYTHONFRAMEWORK")
             if framework:
                 sitepackages.append(
-                        os.path.join("/Library", framework,
-                            sys.version[:3], "site-packages"))
+                    os.path.join(
+                        "/Library", framework, sys.version[:3], "site-packages"
+                    )
+                )
     return sitepackages
+
 
 def addsitepackages(known_paths):
     """Add site-packages (and possibly site-python) to sys.path"""
@@ -310,6 +322,7 @@ def addsitepackages(known_paths):
             addsitedir(sitedir, known_paths)
 
     return known_paths
+
 
 def setBEGINLIBPATH():
     """The OS/2 EMX port has optional extension modules that do double duty
@@ -320,12 +333,12 @@ def setBEGINLIBPATH():
 
     """
     dllpath = os.path.join(sys.prefix, "Lib", "lib-dynload")
-    libpath = os.environ['BEGINLIBPATH'].split(';')
+    libpath = os.environ["BEGINLIBPATH"].split(";")
     if libpath[-1]:
         libpath.append(dllpath)
     else:
         libpath[-1] = dllpath
-    os.environ['BEGINLIBPATH'] = ';'.join(libpath)
+    os.environ["BEGINLIBPATH"] = ";".join(libpath)
 
 
 def setquit():
@@ -335,18 +348,20 @@ def setquit():
     The repr of each object contains a hint at how it works.
 
     """
-    if os.sep == ':':
-        eof = 'Cmd-Q'
-    elif os.sep == '\\':
-        eof = 'Ctrl-Z plus Return'
+    if os.sep == ":":
+        eof = "Cmd-Q"
+    elif os.sep == "\\":
+        eof = "Ctrl-Z plus Return"
     else:
-        eof = 'Ctrl-D (i.e. EOF)'
+        eof = "Ctrl-D (i.e. EOF)"
 
     class Quitter(object):
         def __init__(self, name):
             self.name = name
+
         def __repr__(self):
-            return 'Use %s() or %s to exit' % (self.name, eof)
+            return "Use %s() or %s to exit" % (self.name, eof)
+
         def __call__(self, code=None):
             # Shells like IDLE catch the SystemExit, but listen when their
             # stdin wrapper is closed.
@@ -360,8 +375,9 @@ def setquit():
             except:
                 pass
             raise SystemExit(code)
-    builtins.quit = Quitter('quit')
-    builtins.exit = Quitter('exit')
+
+    builtins.quit = Quitter("quit")
+    builtins.exit = Quitter("exit")
 
 
 class _Printer(object):
@@ -395,7 +411,7 @@ class _Printer(object):
                 break
         if not data:
             data = self.__data
-        self.__lines = data.split('\n')
+        self.__lines = data.split("\n")
         self.__linecnt = len(self.__lines)
 
     def __repr__(self):
@@ -403,11 +419,11 @@ class _Printer(object):
         if len(self.__lines) <= self.MAXLINES:
             return "\n".join(self.__lines)
         else:
-            return "Type %s() to see the full %s text" % ((self.__name,)*2)
+            return "Type %s() to see the full %s text" % ((self.__name,) * 2)
 
     def __call__(self):
         self.__setup()
-        prompt = 'Hit Return for more, or q (and Return) to quit: '
+        prompt = "Hit Return for more, or q (and Return) to quit: "
         lineno = 0
         while 1:
             try:
@@ -420,27 +436,33 @@ class _Printer(object):
                 key = None
                 while key is None:
                     key = input(prompt)
-                    if key not in ('', 'q'):
+                    if key not in ("", "q"):
                         key = None
-                if key == 'q':
+                if key == "q":
                     break
+
 
 def setcopyright():
     """Set 'copyright' and 'credits' in builtins"""
     builtins.copyright = _Printer("copyright", sys.copyright)
-    if sys.platform[:4] == 'java':
+    if sys.platform[:4] == "java":
+        builtins.credits = _Printer(
+            "credits", "Jython is maintained by the Jython developers (www.jython.org)."
+        )
+    else:
         builtins.credits = _Printer(
             "credits",
-            "Jython is maintained by the Jython developers (www.jython.org).")
-    else:
-        builtins.credits = _Printer("credits", """\
+            """\
     Thanks to CWI, CNRI, BeOpen.com, Zope Corporation and a cast of thousands
-    for supporting Python development.  See www.python.org for more information.""")
+    for supporting Python development.  See www.python.org for more information.""",
+        )
     here = os.path.dirname(os.__file__)
     builtins.license = _Printer(
-        "license", "See http://www.python.org/%.3s/license.html" % sys.version,
+        "license",
+        "See http://www.python.org/%.3s/license.html" % sys.version,
         ["LICENSE.txt", "LICENSE"],
-        [os.path.join(here, os.pardir), here, os.curdir])
+        [os.path.join(here, os.pardir), here, os.curdir],
+    )
 
 
 class _Helper(object):
@@ -450,29 +472,37 @@ class _Helper(object):
     """
 
     def __repr__(self):
-        return "Type help() for interactive help, " \
-               "or help(object) for help about object."
+        return (
+            "Type help() for interactive help, or help(object) for help about object."
+        )
+
     def __call__(self, *args, **kwds):
         import pydoc
+
         return pydoc.help(*args, **kwds)
+
 
 def sethelper():
     builtins.help = _Helper()
+
 
 def aliasmbcs():
     """On Windows, some default encodings are not provided by Python,
     while they are always available as "mbcs" in each locale. Make
     them usable by aliasing to "mbcs" in such a case."""
-    if sys.platform == 'win32':
-        import locale, codecs
+    if sys.platform == "win32":
+        import locale
+        import codecs
+
         enc = locale.getdefaultlocale()[1]
-        if enc.startswith('cp'):            # "cp***" ?
+        if enc.startswith("cp"):  # "cp***" ?
             try:
                 codecs.lookup(enc)
             except LookupError:
                 import encodings
+
                 encodings._cache[enc] = encodings._unknown
-                encodings.aliases.aliases[enc] = 'mbcs'
+                encodings.aliases.aliases[enc] = "mbcs"
 
 
 def execsitecustomize():
@@ -487,8 +517,8 @@ def execsitecustomize():
         else:
             sys.stderr.write(
                 "Error in sitecustomize; set PYTHONVERBOSE for traceback:\n"
-                "%s: %s\n" %
-                (err.__class__.__name__, err))
+                "%s: %s\n" % (err.__class__.__name__, err)
+            )
 
 
 def execusercustomize():
@@ -503,8 +533,8 @@ def execusercustomize():
         else:
             sys.stderr.write(
                 "Error in usercustomize; set PYTHONVERBOSE for traceback:\n"
-                "%s: %s\n" %
-                (err.__class__.__name__, err))
+                "%s: %s\n" % (err.__class__.__name__, err)
+            )
 
 
 def main():
@@ -516,7 +546,7 @@ def main():
         ENABLE_USER_SITE = check_enableusersite()
     known_paths = addusersitepackages(known_paths)
     known_paths = addsitepackages(known_paths)
-    if sys.platform == 'os2emx':
+    if sys.platform == "os2emx":
         setBEGINLIBPATH()
     setquit()
     setcopyright()
@@ -526,7 +556,9 @@ def main():
     if ENABLE_USER_SITE:
         execusercustomize()
 
+
 main()
+
 
 def _script():
     help = """\
@@ -549,17 +581,21 @@ def _script():
         for dir in sys.path:
             print("    %r," % (dir,))
         print("]")
-        print("USER_BASE: %r (%s)" % (USER_BASE,
-            "exists" if os.path.isdir(USER_BASE) else "doesn't exist"))
-        print("USER_SITE: %r (%s)" % (USER_SITE,
-            "exists" if os.path.isdir(USER_SITE) else "doesn't exist"))
-        print("ENABLE_USER_SITE: %r" %  ENABLE_USER_SITE)
+        print(
+            "USER_BASE: %r (%s)"
+            % (USER_BASE, "exists" if os.path.isdir(USER_BASE) else "doesn't exist")
+        )
+        print(
+            "USER_SITE: %r (%s)"
+            % (USER_SITE, "exists" if os.path.isdir(USER_SITE) else "doesn't exist")
+        )
+        print("ENABLE_USER_SITE: %r" % ENABLE_USER_SITE)
         sys.exit(0)
 
     buffer = []
-    if '--user-base' in args:
+    if "--user-base" in args:
         buffer.append(USER_BASE)
-    if '--user-site' in args:
+    if "--user-site" in args:
         buffer.append(USER_SITE)
 
     if buffer:
@@ -574,8 +610,10 @@ def _script():
             sys.exit(3)
     else:
         import textwrap
+
         print(textwrap.dedent(help % (sys.argv[0], os.pathsep)))
         sys.exit(10)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     _script()

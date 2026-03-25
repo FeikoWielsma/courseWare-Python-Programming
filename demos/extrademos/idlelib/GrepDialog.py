@@ -5,6 +5,7 @@ from tkinter import *
 from idlelib import SearchEngine
 from idlelib.SearchDialogBase import SearchDialogBase
 
+
 def grep(text, io=None, flist=None):
     root = text._root()
     engine = SearchEngine.get(root)
@@ -14,8 +15,8 @@ def grep(text, io=None, flist=None):
     searchphrase = text.get("sel.first", "sel.last")
     dialog.open(text, searchphrase, io)
 
-class GrepDialog(SearchDialogBase):
 
+class GrepDialog(SearchDialogBase):
     title = "Find in Files Dialog"
     icon = "Grep"
     needwrapbutton = 0
@@ -45,9 +46,9 @@ class GrepDialog(SearchDialogBase):
     def create_other_buttons(self):
         f = self.make_frame()
 
-        btn = Checkbutton(f, anchor="w",
-                variable=self.recvar,
-                text="Recurse down subdirectories")
+        btn = Checkbutton(
+            f, anchor="w", variable=self.recvar, text="Recurse down subdirectories"
+        )
         btn.pack(side="top", fill="both")
         btn.select()
 
@@ -64,6 +65,7 @@ class GrepDialog(SearchDialogBase):
             self.top.bell()
             return
         from idlelib.OutputWindow import OutputWindow
+
         save = sys.stdout
         try:
             sys.stdout = OutputWindow(self.flist)
@@ -92,7 +94,7 @@ class GrepDialog(SearchDialogBase):
                     break
                 for line in block:
                     lineno = lineno + 1
-                    if line[-1:] == '\n':
+                    if line[-1:] == "\n":
                         line = line[:-1]
                     if prog.search(line):
                         sys.stdout.write("%s: %s: %s\n" % (fn, lineno, line))

@@ -5,11 +5,9 @@ from test import support
 
 
 class ABC(type):
-
     def __instancecheck__(cls, inst):
         """Implement isinstance(inst, cls)."""
-        return any(cls.__subclasscheck__(c)
-                   for c in {type(inst), inst.__class__})
+        return any(cls.__subclasscheck__(c) for c in {type(inst), inst.__class__})
 
     def __subclasscheck__(cls, sub):
         """Implement issubclass(sub, cls)."""
@@ -26,7 +24,6 @@ class SubInt(Integer):
 
 
 class TypeChecksTest(unittest.TestCase):
-
     def testIsSubclassInternal(self):
         self.assertEqual(Integer.__subclasscheck__(int), True)
         self.assertEqual(Integer.__subclasscheck__(float), False)

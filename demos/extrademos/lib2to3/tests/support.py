@@ -3,10 +3,8 @@
 
 # Python imports
 import unittest
-import sys
 import os
 import os.path
-import re
 from textwrap import dedent
 
 # Local imports
@@ -19,16 +17,20 @@ grammar_path = os.path.join(test_dir, "..", "Grammar.txt")
 grammar = driver.load_grammar(grammar_path)
 driver = driver.Driver(grammar, convert=pytree.convert)
 
+
 def parse_string(string):
     return driver.parse_string(reformat(string), debug=True)
+
 
 def run_all_tests(test_mod=None, tests=None):
     if tests is None:
         tests = unittest.TestLoader().loadTestsFromModule(test_mod)
     unittest.TextTestRunner(verbosity=2).run(tests)
 
+
 def reformat(string):
     return dedent(string) + "\n\n"
+
 
 def get_refactorer(fixer_pkg="lib2to3", fixers=None, options=None):
     """
@@ -45,10 +47,12 @@ def get_refactorer(fixer_pkg="lib2to3", fixers=None, options=None):
     options = options or {}
     return refactor.RefactoringTool(fixers, options, explicit=True)
 
+
 def all_project_files():
     for dirpath, dirnames, filenames in os.walk(proj_dir):
         for filename in filenames:
             if filename.endswith(".py"):
                 yield os.path.join(dirpath, filename)
+
 
 TestCase = unittest.TestCase

@@ -1,7 +1,7 @@
 from tkinter import *
 
-class WidgetRedirector:
 
+class WidgetRedirector:
     """Support for redirecting arbitrary widget subcommands.
 
     Some Tk operations don't normally pass through Tkinter.  For example, if a
@@ -23,11 +23,12 @@ class WidgetRedirector:
     Tk widget operation.
 
     """
+
     def __init__(self, widget):
         self._operations = {}
-        self.widget = widget            # widget instance
-        self.tk = tk = widget.tk        # widget's root
-        w = widget._w                   # widget's (full) Tk pathname
+        self.widget = widget  # widget instance
+        self.tk = tk = widget.tk  # widget's root
+        w = widget._w  # widget's (full) Tk pathname
         self.orig = w + "_orig"
         # Rename the Tcl command within Tcl:
         tk.call("rename", w, self.orig)
@@ -36,14 +37,18 @@ class WidgetRedirector:
         tk.createcommand(w, self.dispatch)
 
     def __repr__(self):
-        return "WidgetRedirector(%s<%s>)" % (self.widget.__class__.__name__,
-                                             self.widget._w)
+        return "WidgetRedirector(%s<%s>)" % (
+            self.widget.__class__.__name__,
+            self.widget._w,
+        )
 
     def close(self):
         for operation in list(self._operations):
             self.unregister(operation)
-        widget = self.widget; del self.widget
-        orig = self.orig; del self.orig
+        widget = self.widget
+        del self.widget
+        orig = self.orig
+        del self.orig
         tk = widget.tk
         w = widget._w
         tk.deletecommand(w)
@@ -66,7 +71,7 @@ class WidgetRedirector:
             return None
 
     def dispatch(self, operation, *args):
-        '''Callback from Tcl which runs when the widget is referenced.
+        """Callback from Tcl which runs when the widget is referenced.
 
         If an operation has been registered in self._operations, apply the
         associated function to the args passed into Tcl. Otherwise, pass the
@@ -76,7 +81,7 @@ class WidgetRedirector:
         passed through to Tk.  Apply the function returned by self.register()
         to *args to accomplish that.  For an example, see ColorDelegator.py.
 
-        '''
+        """
         m = self._operations.get(operation)
         try:
             if m:
@@ -88,7 +93,6 @@ class WidgetRedirector:
 
 
 class OriginalCommand:
-
     def __init__(self, redir, operation):
         self.redir = redir
         self.operation = operation
@@ -112,15 +116,18 @@ def main():
     text.focus_set()
     redir = WidgetRedirector(text)
     global previous_tcl_fcn
+
     def my_insert(*args):
         print("insert", args)
         previous_tcl_fcn(*args)
+
     previous_tcl_fcn = redir.register("insert", my_insert)
     root.mainloop()
     redir.unregister("insert")  # runs after first 'close window'
     redir.close()
     root.mainloop()
     root.destroy()
+
 
 if __name__ == "__main__":
     main()

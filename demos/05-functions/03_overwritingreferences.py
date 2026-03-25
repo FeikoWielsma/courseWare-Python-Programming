@@ -1,17 +1,20 @@
 def changeme2(mylist):
     """This changes a passed list into this function"""
-    mylist = [1,2,3,4]; # This would assign new reference
+    mylist = [1, 2, 3, 4]  # This would assign new reference
     print("Values inside the function changeme2: ", mylist)
     return
 
-mylistouter = [10,20,30]
+
+mylistouter = [10, 20, 30]
 changeme2(mylistouter)
 print("Values outside the function: ", mylistouter)
+
 
 def changeme3(mystr):
     mystr = mystr + " data inside"
     print("Values inside the function changeme3: ", mystr)
     return
+
 
 mystrouter = "data outside"
 changeme3(mystrouter)

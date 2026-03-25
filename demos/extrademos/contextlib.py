@@ -2,18 +2,19 @@
 
 import sys
 from functools import wraps
-from warnings import warn
 
 __all__ = ["contextmanager", "closing", "ContextDecorator"]
 
 
 class ContextDecorator(object):
     "A base class or mixin that enables context managers to work as decorators."
+
     def __call__(self, func):
         @wraps(func)
         def inner(*args, **kwds):
             with self:
                 return func(*args, **kwds)
+
         return inner
 
 
@@ -90,9 +91,11 @@ def contextmanager(func):
             <cleanup>
 
     """
+
     @wraps(func)
     def helper(*args, **kwds):
         return _GeneratorContextManager(func(*args, **kwds))
+
     return helper
 
 
@@ -113,9 +116,12 @@ class closing(object):
             f.close()
 
     """
+
     def __init__(self, thing):
         self.thing = thing
+
     def __enter__(self):
         return self.thing
+
     def __exit__(self, *exc_info):
         self.thing.close()

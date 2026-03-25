@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
 Qt resource system usage
 
@@ -9,17 +9,14 @@ Tested environment:
 http://doc.qt.nokia.com/latest/resources.html
 http://doc.qt.nokia.com/latest/rcc.html
 """
+
 import sys
 
 try:
     from PySide import QtCore
     from PySide import QtGui
 except ImportError:
-    from PyQt4 import QtCore
     from PyQt4 import QtGui
-
-
-import bar
 
 
 class Demo(QtGui.QWidget):
@@ -27,13 +24,12 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
         pix = QtGui.QPixmap(":/resources/icons/camera.png")
         label = QtGui.QLabel(self)
-        label.setPixmap(pix)
+        label.set_pixmap(pix)
         label.move(10, 10)
-
 
     def show_and_raise(self):
         self.show()

@@ -5,12 +5,15 @@ import re
 ###$ win <Alt-slash>
 ###$ unix <Alt-slash>
 
-class AutoExpand:
 
+class AutoExpand:
     menudefs = [
-        ('edit', [
-            ('E_xpand Word', '<<expand-word>>'),
-         ]),
+        (
+            "edit",
+            [
+                ("E_xpand Word", "<<expand-word>>"),
+            ],
+        ),
     ]
 
     wordchars = string.ascii_letters + string.digits + "_"
@@ -38,7 +41,7 @@ class AutoExpand:
         newword = words[index]
         index = (index + 1) % len(words)
         if index == 0:
-            self.text.bell()            # Warn we cycled around
+            self.text.bell()  # Warn we cycled around
         self.text.insert("insert", newword)
         curinsert = self.text.index("insert")
         curline = self.text.get("insert linestart", "insert lineend")
@@ -78,6 +81,6 @@ class AutoExpand:
     def getprevword(self):
         line = self.text.get("insert linestart", "insert")
         i = len(line)
-        while i > 0 and line[i-1] in self.wordchars:
-            i = i-1
+        while i > 0 and line[i - 1] in self.wordchars:
+            i = i - 1
         return line[i:]

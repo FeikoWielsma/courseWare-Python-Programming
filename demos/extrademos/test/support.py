@@ -1,7 +1,7 @@
 """Supporting definitions for the Python regression tests."""
 
-if __name__ != 'test.support':
-    raise ImportError('support must be imported from the test package')
+if __name__ != "test.support":
+    raise ImportError("support must be imported from the test package")
 
 import contextlib
 import errno
@@ -17,7 +17,6 @@ import unittest
 import importlib
 import collections
 import re
-import subprocess
 import imp
 import time
 import sysconfig
@@ -29,28 +28,75 @@ except ImportError:
     _thread = None
 
 __all__ = [
-    "Error", "TestFailed", "ResourceDenied", "import_module",
-    "verbose", "use_resources", "max_memuse", "record_original_stdout",
-    "get_original_stdout", "unload", "unlink", "rmtree", "forget",
-    "is_resource_enabled", "requires", "find_unused_port", "bind_port",
-    "fcmp", "is_jython", "TESTFN", "HOST", "FUZZ", "SAVEDCWD", "temp_cwd",
-    "findfile", "sortdict", "check_syntax_error", "open_urlresource",
-    "check_warnings", "CleanImport", "EnvironmentVarGuard",
-    "TransientResource", "captured_output", "captured_stdout",
-    "time_out", "socket_peer_reset", "ioerror_peer_reset",
-    "run_with_locale", 'temp_umask', "transient_internet",
-    "set_memlimit", "bigmemtest", "bigaddrspacetest", "BasicTestRunner",
-    "run_unittest", "run_doctest", "threading_setup", "threading_cleanup",
-    "reap_children", "cpython_only", "check_impl_detail", "get_attribute",
-    "swap_item", "swap_attr", "requires_IEEE_754",
-    "TestHandler", "Matcher", "can_symlink", "skip_unless_symlink"]
+    "Error",
+    "TestFailed",
+    "ResourceDenied",
+    "import_module",
+    "verbose",
+    "use_resources",
+    "max_memuse",
+    "record_original_stdout",
+    "get_original_stdout",
+    "unload",
+    "unlink",
+    "rmtree",
+    "forget",
+    "is_resource_enabled",
+    "requires",
+    "find_unused_port",
+    "bind_port",
+    "fcmp",
+    "is_jython",
+    "TESTFN",
+    "HOST",
+    "FUZZ",
+    "SAVEDCWD",
+    "temp_cwd",
+    "findfile",
+    "sortdict",
+    "check_syntax_error",
+    "open_urlresource",
+    "check_warnings",
+    "CleanImport",
+    "EnvironmentVarGuard",
+    "TransientResource",
+    "captured_output",
+    "captured_stdout",
+    "time_out",
+    "socket_peer_reset",
+    "ioerror_peer_reset",
+    "run_with_locale",
+    "temp_umask",
+    "transient_internet",
+    "set_memlimit",
+    "bigmemtest",
+    "bigaddrspacetest",
+    "BasicTestRunner",
+    "run_unittest",
+    "run_doctest",
+    "threading_setup",
+    "threading_cleanup",
+    "reap_children",
+    "cpython_only",
+    "check_impl_detail",
+    "get_attribute",
+    "swap_item",
+    "swap_attr",
+    "requires_IEEE_754",
+    "TestHandler",
+    "Matcher",
+    "can_symlink",
+    "skip_unless_symlink",
+]
 
 
 class Error(Exception):
     """Base class for regression test exceptions."""
 
+
 class TestFailed(Error):
     """Test failed."""
+
 
 class ResourceDenied(unittest.SkipTest):
     """Test skipped because it requested a disallowed resource.
@@ -60,6 +106,7 @@ class ResourceDenied(unittest.SkipTest):
     and unexpected skips.
     """
 
+
 @contextlib.contextmanager
 def _ignore_deprecated_imports(ignore=True):
     """Context manager to suppress package and module deprecation
@@ -68,8 +115,7 @@ def _ignore_deprecated_imports(ignore=True):
     If ignore is False, this context manager has no effect."""
     if ignore:
         with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", ".+ (module|package)",
-                                    DeprecationWarning)
+            warnings.filterwarnings("ignore", ".+ (module|package)", DeprecationWarning)
             yield
     else:
         yield
@@ -91,8 +137,8 @@ def import_module(name, deprecated=False):
 def _save_and_remove_module(name, orig_modules):
     """Helper function to save and remove a module from sys.modules
 
-       Return value is True if the module was in sys.modules and
-       False otherwise."""
+    Return value is True if the module was in sys.modules and
+    False otherwise."""
     saved = True
     try:
         orig_modules[name] = sys.modules[name]
@@ -106,8 +152,8 @@ def _save_and_remove_module(name, orig_modules):
 def _save_and_block_module(name, orig_modules):
     """Helper function to save and block a module in sys.modules
 
-       Return value is True if the module was in sys.modules and
-       False otherwise."""
+    Return value is True if the module was in sys.modules and
+    False otherwise."""
     saved = True
     try:
         orig_modules[name] = sys.modules[name]
@@ -157,33 +203,38 @@ def get_attribute(obj, name):
     try:
         attribute = getattr(obj, name)
     except AttributeError:
-        raise unittest.SkipTest("module %s has no attribute %s" % (
-            obj.__name__, name))
+        raise unittest.SkipTest("module %s has no attribute %s" % (obj.__name__, name))
     else:
         return attribute
 
-verbose = 1              # Flag set to 0 by regrtest.py
-use_resources = None     # Flag set to [] by regrtest.py
-max_memuse = 0           # Disable bigmem tests (they will still be run with
-                         # small sizes, to make sure they work.)
+
+verbose = 1  # Flag set to 0 by regrtest.py
+use_resources = None  # Flag set to [] by regrtest.py
+max_memuse = 0  # Disable bigmem tests (they will still be run with
+# small sizes, to make sure they work.)
 real_max_memuse = 0
 
 # _original_stdout is meant to hold stdout at the time regrtest began.
 # This may be "the real" stdout, or IDLE's emulation of stdout, or whatever.
 # The point is to have some flavor of stdout the user can actually see.
 _original_stdout = None
+
+
 def record_original_stdout(stdout):
     global _original_stdout
     _original_stdout = stdout
 
+
 def get_original_stdout():
     return _original_stdout or sys.stdout
+
 
 def unload(name):
     try:
         del sys.modules[name]
     except KeyError:
         pass
+
 
 def unlink(filename):
     try:
@@ -193,6 +244,7 @@ def unlink(filename):
         if error.errno not in (errno.ENOENT, errno.ENOTDIR):
             raise
 
+
 def rmtree(path):
     try:
         shutil.rmtree(path)
@@ -200,6 +252,7 @@ def rmtree(path):
         # Unix returns ENOENT, Windows returns ESRCH.
         if error.errno not in (errno.ENOENT, errno.ESRCH):
             raise
+
 
 def make_legacy_pyc(source):
     """Move a PEP 3147 pyc/pyo file to its legacy pyc/pyo location.
@@ -213,9 +266,10 @@ def make_legacy_pyc(source):
     """
     pyc_file = imp.cache_from_source(source)
     up_one = os.path.dirname(os.path.abspath(source))
-    legacy_pyc = os.path.join(up_one, source + ('c' if __debug__ else 'o'))
+    legacy_pyc = os.path.join(up_one, source + ("c" if __debug__ else "o"))
     os.rename(pyc_file, legacy_pyc)
     return legacy_pyc
+
 
 def forget(modname):
     """'Forget' a module was ever imported.
@@ -225,18 +279,20 @@ def forget(modname):
     """
     unload(modname)
     for dirname in sys.path:
-        source = os.path.join(dirname, modname + '.py')
+        source = os.path.join(dirname, modname + ".py")
         # It doesn't matter if they exist or not, unlink all possible
         # combinations of PEP 3147 and legacy pyc and pyo files.
-        unlink(source + 'c')
-        unlink(source + 'o')
+        unlink(source + "c")
+        unlink(source + "o")
         unlink(imp.cache_from_source(source, debug_override=True))
         unlink(imp.cache_from_source(source, debug_override=False))
+
 
 def is_resource_enabled(resource):
     """Test whether a resource is enabled.  Known resources are set by
     regrtest.py."""
     return use_resources is not None and resource in use_resources
+
 
 def requires(resource, msg=None):
     """Raise ResourceDenied if the specified resource is not available.
@@ -254,7 +310,9 @@ def requires(resource, msg=None):
             msg = "Use of the `%s' resource not enabled" % resource
         raise ResourceDenied(msg)
 
-HOST = 'localhost'
+
+HOST = "localhost"
+
 
 def find_unused_port(family=socket.AF_INET, socktype=socket.SOCK_STREAM):
     """Returns an unused port that should be suitable for binding.  This is
@@ -318,6 +376,7 @@ def find_unused_port(family=socket.AF_INET, socktype=socket.SOCK_STREAM):
     del tempsock
     return port
 
+
 def bind_port(sock, host=HOST):
     """Bind the socket to a free port and return the port number.  Relies on
     ephemeral ports in order to ensure we are using an unbound port.  This is
@@ -334,28 +393,34 @@ def bind_port(sock, host=HOST):
     """
 
     if sock.family == socket.AF_INET and sock.type == socket.SOCK_STREAM:
-        if hasattr(socket, 'SO_REUSEADDR'):
+        if hasattr(socket, "SO_REUSEADDR"):
             if sock.getsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR) == 1:
-                raise TestFailed("tests should never set the SO_REUSEADDR "   \
-                                 "socket option on TCP/IP sockets!")
-        if hasattr(socket, 'SO_REUSEPORT'):
+                raise TestFailed(
+                    "tests should never set the SO_REUSEADDR "
+                    "socket option on TCP/IP sockets!"
+                )
+        if hasattr(socket, "SO_REUSEPORT"):
             if sock.getsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT) == 1:
-                raise TestFailed("tests should never set the SO_REUSEPORT "   \
-                                 "socket option on TCP/IP sockets!")
-        if hasattr(socket, 'SO_EXCLUSIVEADDRUSE'):
+                raise TestFailed(
+                    "tests should never set the SO_REUSEPORT "
+                    "socket option on TCP/IP sockets!"
+                )
+        if hasattr(socket, "SO_EXCLUSIVEADDRUSE"):
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
 
     sock.bind((host, 0))
     port = sock.getsockname()[1]
     return port
 
+
 FUZZ = 1e-6
 
-def fcmp(x, y): # fuzzy comparison function
+
+def fcmp(x, y):  # fuzzy comparison function
     if isinstance(x, float) or isinstance(y, float):
         try:
             fuzz = (abs(x) + abs(y)) * FUZZ
-            if abs(x-y) <= fuzz:
+            if abs(x - y) <= fuzz:
                 return 0
         except:
             pass
@@ -367,19 +432,20 @@ def fcmp(x, y): # fuzzy comparison function
         return (len(x) > len(y)) - (len(x) < len(y))
     return (x > y) - (x < y)
 
+
 # decorator for skipping tests on non-IEEE 754 platforms
 requires_IEEE_754 = unittest.skipUnless(
-    float.__getformat__("double").startswith("IEEE"),
-    "test requires IEEE 754 doubles")
+    float.__getformat__("double").startswith("IEEE"), "test requires IEEE 754 doubles"
+)
 
-is_jython = sys.platform.startswith('java')
+is_jython = sys.platform.startswith("java")
 
 # Filename used for testing
-if os.name == 'java':
+if os.name == "java":
     # Jython disallows @ in module names
-    TESTFN = '$test'
+    TESTFN = "$test"
 else:
-    TESTFN = '@test'
+    TESTFN = "@test"
 
 # Disambiguate TESTFN for parallel testing, while letting it remain a valid
 # module name.
@@ -388,42 +454,46 @@ TESTFN = "{}_{}_tmp".format(TESTFN, os.getpid())
 
 # TESTFN_UNICODE is a non-ascii filename
 TESTFN_UNICODE = TESTFN + "-\xe0\xf2\u0258\u0141\u011f"
-if sys.platform == 'darwin':
+if sys.platform == "darwin":
     # In Mac OS X's VFS API file names are, by definition, canonically
     # decomposed Unicode, encoded using UTF-8. See QA1173:
     # http://developer.apple.com/mac/library/qa/qa2001/qa1173.html
     import unicodedata
-    TESTFN_UNICODE = unicodedata.normalize('NFD', TESTFN_UNICODE)
+
+    TESTFN_UNICODE = unicodedata.normalize("NFD", TESTFN_UNICODE)
 TESTFN_ENCODING = sys.getfilesystemencoding()
 
 # TESTFN_UNENCODABLE is a filename (str type) that should *not* be able to be
 # encoded by the filesystem encoding (in strict mode). It can be None if we
 # cannot generate such filename.
 TESTFN_UNENCODABLE = None
-if os.name in ('nt', 'ce'):
+if os.name in ("nt", "ce"):
     # skip win32s (0) or Windows 9x/ME (1)
     if sys.getwindowsversion().platform >= 2:
         # Different kinds of characters from various languages to minimize the
         # probability that the whole name is encodable to MBCS (issue #9819)
-        TESTFN_UNENCODABLE = TESTFN + "-\u5171\u0141\u2661\u0363\uDC80"
+        TESTFN_UNENCODABLE = TESTFN + "-\u5171\u0141\u2661\u0363\udc80"
         try:
             TESTFN_UNENCODABLE.encode(TESTFN_ENCODING)
         except UnicodeEncodeError:
             pass
         else:
-            print('WARNING: The filename %r CAN be encoded by the filesystem encoding (%s). '
-                  'Unicode filename tests may not be effective'
-                  % (TESTFN_UNENCODABLE, TESTFN_ENCODING))
+            print(
+                "WARNING: The filename %r CAN be encoded by the filesystem encoding (%s). "
+                "Unicode filename tests may not be effective"
+                % (TESTFN_UNENCODABLE, TESTFN_ENCODING)
+            )
             TESTFN_UNENCODABLE = None
 # Mac OS X denies unencodable filenames (invalid utf-8)
-elif sys.platform != 'darwin':
+elif sys.platform != "darwin":
     try:
         # ascii and utf-8 cannot encode the byte 0xff
-        b'\xff'.decode(TESTFN_ENCODING)
+        b"\xff".decode(TESTFN_ENCODING)
     except UnicodeDecodeError:
         # 0xff will be encoded using the surrogate character u+DCFF
-        TESTFN_UNENCODABLE = TESTFN \
-            + b'-\xff'.decode(TESTFN_ENCODING, 'surrogateescape')
+        TESTFN_UNENCODABLE = TESTFN + b"-\xff".decode(
+            TESTFN_ENCODING, "surrogateescape"
+        )
     else:
         # File system encoding (eg. ISO-8859-* encodings) can encode
         # the byte 0xff. Skip some unicode filename tests.
@@ -432,8 +502,9 @@ elif sys.platform != 'darwin':
 # Save the initial cwd
 SAVEDCWD = os.getcwd()
 
+
 @contextlib.contextmanager
-def temp_cwd(name='tempcwd', quiet=False, path=None):
+def temp_cwd(name="tempcwd", quiet=False, path=None):
     """
     Context manager that temporarily changes the CWD.
 
@@ -455,15 +526,21 @@ def temp_cwd(name='tempcwd', quiet=False, path=None):
         except OSError:
             if not quiet:
                 raise
-            warnings.warn('tests may fail, unable to create temp CWD ' + name,
-                          RuntimeWarning, stacklevel=3)
+            warnings.warn(
+                "tests may fail, unable to create temp CWD " + name,
+                RuntimeWarning,
+                stacklevel=3,
+            )
     try:
         os.chdir(path)
     except OSError:
         if not quiet:
             raise
-        warnings.warn('tests may fail, unable to change the CWD to ' + name,
-                      RuntimeWarning, stacklevel=3)
+        warnings.warn(
+            "tests may fail, unable to change the CWD to " + name,
+            RuntimeWarning,
+            stacklevel=3,
+        )
     try:
         yield os.getcwd()
     finally:
@@ -494,8 +571,10 @@ def findfile(file, here=__file__, subdir=None):
     path = [os.path.dirname(here)] + path
     for dn in path:
         fn = os.path.join(dn, file)
-        if os.path.exists(fn): return fn
+        if os.path.exists(fn):
+            return fn
     return file
+
 
 def sortdict(dict):
     "Like repr(dict), but in sorted order."
@@ -503,6 +582,7 @@ def sortdict(dict):
     reprpairs = ["%r: %r" % pair for pair in items]
     withcommas = ", ".join(reprpairs)
     return "{%s}" % withcommas
+
 
 def make_bad_fd():
     """
@@ -516,16 +596,18 @@ def make_bad_fd():
         file.close()
         unlink(TESTFN)
 
+
 def check_syntax_error(testcase, statement):
-    testcase.assertRaises(SyntaxError, compile, statement,
-                          '<test string>', 'exec')
+    testcase.assertRaises(SyntaxError, compile, statement, "<test string>", "exec")
+
 
 def open_urlresource(url, *args, **kw):
-    import urllib.request, urllib.parse
+    import urllib.request
+    import urllib.parse
 
-    check = kw.pop('check', None)
+    check = kw.pop("check", None)
 
-    filename = urllib.parse.urlparse(url)[2].split('/')[-1] # '/': it's URL!
+    filename = urllib.parse.urlparse(url)[2].split("/")[-1]  # '/': it's URL!
 
     fn = os.path.join(os.path.dirname(__file__), "data", filename)
 
@@ -545,9 +627,9 @@ def open_urlresource(url, *args, **kw):
         unlink(fn)
 
     # Verify the requirement before downloading the file
-    requires('urlfetch')
+    requires("urlfetch")
 
-    print('\tfetching %s ...' % url, file=get_original_stdout())
+    print("\tfetching %s ..." % url, file=get_original_stdout())
     f = urllib.request.urlopen(url, timeout=15)
     try:
         with open(fn, "wb") as out:
@@ -566,8 +648,9 @@ def open_urlresource(url, *args, **kw):
 
 class WarningsRecorder(object):
     """Convenience wrapper for the warnings list returned on
-       entry to the warnings.catch_warnings() context manager.
+    entry to the warnings.catch_warnings() context manager.
     """
+
     def __init__(self, warnings_list):
         self._warnings = warnings_list
         self._last = 0
@@ -581,7 +664,7 @@ class WarningsRecorder(object):
 
     @property
     def warnings(self):
-        return self._warnings[self._last:]
+        return self._warnings[self._last :]
 
     def reset(self):
         self._last = len(self._warnings)
@@ -595,14 +678,14 @@ def _filterwarnings(filters, quiet=False):
     # Clear the warning registry of the calling module
     # in order to re-raise the warnings.
     frame = sys._getframe(2)
-    registry = frame.f_globals.get('__warningregistry__')
+    registry = frame.f_globals.get("__warningregistry__")
     if registry:
         registry.clear()
     with warnings.catch_warnings(record=True) as w:
         # Set filter "always" to record all warnings.  Because
         # test_warnings swap the module, we need to look up in
         # the sys.modules dictionary.
-        sys.modules['warnings'].simplefilter("always")
+        sys.modules["warnings"].simplefilter("always")
         yield WarningsRecorder(w)
     # Filter the recorded warnings
     reraise = list(w)
@@ -612,8 +695,7 @@ def _filterwarnings(filters, quiet=False):
         for w in reraise[:]:
             warning = w.message
             # Filter out the matching messages
-            if (re.match(msg, str(warning), re.I) and
-                issubclass(warning.__class__, cat)):
+            if re.match(msg, str(warning), re.I) and issubclass(warning.__class__, cat):
                 seen = True
                 reraise.remove(w)
         if not seen and not quiet:
@@ -622,8 +704,7 @@ def _filterwarnings(filters, quiet=False):
     if reraise:
         raise AssertionError("unhandled warning %s" % reraise[0])
     if missing:
-        raise AssertionError("filter (%r, %s) did not catch any warning" %
-                             missing[0])
+        raise AssertionError("filter (%r, %s) did not catch any warning" % missing[0])
 
 
 @contextlib.contextmanager
@@ -641,7 +722,7 @@ def check_warnings(*filters, **kwargs):
     Without argument, it defaults to:
         check_warnings(("", Warning), quiet=True)
     """
-    quiet = kwargs.get('quiet')
+    quiet = kwargs.get("quiet")
     if not filters:
         filters = (("", Warning),)
         # Preserve backward compatibility
@@ -683,7 +764,6 @@ class CleanImport(object):
 
 
 class EnvironmentVarGuard(collections.MutableMapping):
-
     """Class to help protect the environment variable properly.  Can be used as
     a context manager."""
 
@@ -726,7 +806,7 @@ class EnvironmentVarGuard(collections.MutableMapping):
         return self
 
     def __exit__(self, *ignore_exc):
-        for (k, v) in self._changed.items():
+        for k, v in self._changed.items():
             if v is None:
                 if k in self._environ:
                     del self._environ[k]
@@ -761,7 +841,6 @@ class DirsOnSysPath(object):
 
 
 class TransientResource(object):
-
     """Raise ResourceDenied if an exception is raised while the context manager
     is in effect that matches the specified exception and attributes."""
 
@@ -785,6 +864,7 @@ class TransientResource(object):
             else:
                 raise ResourceDenied("an optional resource is not available")
 
+
 # Context managers that raise ResourceDenied when various issues
 # with the Internet connection manifest themselves as exceptions.
 # XXX deprecate these and use transient_internet() instead
@@ -798,31 +878,31 @@ def transient_internet(resource_name, *, timeout=30.0, errnos=()):
     """Return a context manager that raises ResourceDenied when various issues
     with the Internet connection manifest themselves as exceptions."""
     default_errnos = [
-        ('ECONNREFUSED', 111),
-        ('ECONNRESET', 104),
-        ('EHOSTUNREACH', 113),
-        ('ENETUNREACH', 101),
-        ('ETIMEDOUT', 110),
+        ("ECONNREFUSED", 111),
+        ("ECONNRESET", 104),
+        ("EHOSTUNREACH", 113),
+        ("ENETUNREACH", 101),
+        ("ETIMEDOUT", 110),
     ]
     default_gai_errnos = [
-        ('EAI_NONAME', -2),
-        ('EAI_NODATA', -5),
+        ("EAI_NONAME", -2),
+        ("EAI_NODATA", -5),
     ]
 
     denied = ResourceDenied("Resource '%s' is not available" % resource_name)
     captured_errnos = errnos
     gai_errnos = []
     if not captured_errnos:
-        captured_errnos = [getattr(errno, name, num)
-                           for (name, num) in default_errnos]
-        gai_errnos = [getattr(socket, name, num)
-                      for (name, num) in default_gai_errnos]
+        captured_errnos = [getattr(errno, name, num) for (name, num) in default_errnos]
+        gai_errnos = [getattr(socket, name, num) for (name, num) in default_gai_errnos]
 
     def filter_error(err):
-        n = getattr(err, 'errno', None)
-        if (isinstance(err, socket.timeout) or
-            (isinstance(err, socket.gaierror) and n in gai_errnos) or
-            n in captured_errnos):
+        n = getattr(err, "errno", None)
+        if (
+            isinstance(err, socket.timeout)
+            or (isinstance(err, socket.gaierror) and n in gai_errnos)
+            or n in captured_errnos
+        ):
             if not verbose:
                 sys.stderr.write(denied.args[0] + "\n")
             raise denied from err
@@ -865,6 +945,7 @@ def captured_output(stream_name):
        assert s.getvalue() == "hello"
     """
     import io
+
     orig_stdout = getattr(sys, stream_name)
     setattr(sys, stream_name, io.StringIO())
     try:
@@ -872,14 +953,18 @@ def captured_output(stream_name):
     finally:
         setattr(sys, stream_name, orig_stdout)
 
+
 def captured_stdout():
     return captured_output("stdout")
+
 
 def captured_stderr():
     return captured_output("stderr")
 
+
 def captured_stdin():
     return captured_output("stdin")
+
 
 def gc_collect():
     """Force as many objects as possible to be collected.
@@ -900,23 +985,25 @@ def gc_collect():
 
 def python_is_optimized():
     """Find if Python was built with optimizations."""
-    cflags = sysconfig.get_config_var('PY_CFLAGS') or ''
+    cflags = sysconfig.get_config_var("PY_CFLAGS") or ""
     final_opt = ""
     for opt in cflags.split():
-        if opt.startswith('-O'):
+        if opt.startswith("-O"):
             final_opt = opt
-    return final_opt and final_opt != '-O0'
+    return final_opt and final_opt != "-O0"
 
 
-#=======================================================================
+# =======================================================================
 # Decorator for running a function in a different locale, correctly resetting
 # it afterwards.
+
 
 def run_with_locale(catstr, *locales):
     def decorator(func):
         def inner(*args, **kwds):
             try:
                 import locale
+
                 category = getattr(locale, catstr)
                 orig_locale = locale.setlocale(category)
             except AttributeError:
@@ -939,44 +1026,48 @@ def run_with_locale(catstr, *locales):
             finally:
                 if locale and orig_locale:
                     locale.setlocale(category, orig_locale)
+
         inner.__name__ = func.__name__
         inner.__doc__ = func.__doc__
         return inner
+
     return decorator
 
-#=======================================================================
+
+# =======================================================================
 # Big-memory-test support. Separate from 'resources' because memory use
 # should be configurable.
 
 # Some handy shorthands. Note that these are used for byte-limits as well
 # as size-limits, in the various bigmem tests
-_1M = 1024*1024
+_1M = 1024 * 1024
 _1G = 1024 * _1M
 _2G = 2 * _1G
 _4G = 4 * _1G
 
 MAX_Py_ssize_t = sys.maxsize
 
+
 def set_memlimit(limit):
     global max_memuse
     global real_max_memuse
     sizes = {
-        'k': 1024,
-        'm': _1M,
-        'g': _1G,
-        't': 1024*_1G,
+        "k": 1024,
+        "m": _1M,
+        "g": _1G,
+        "t": 1024 * _1G,
     }
-    m = re.match(r'(\d+(\.\d+)?) (K|M|G|T)b?$', limit,
-                 re.IGNORECASE | re.VERBOSE)
+    m = re.match(r"(\d+(\.\d+)?) (K|M|G|T)b?$", limit, re.IGNORECASE | re.VERBOSE)
     if m is None:
-        raise ValueError('Invalid memory limit %r' % (limit,))
+        raise ValueError("Invalid memory limit %r" % (limit,))
     memlimit = int(float(m.group(1)) * sizes[m.group(3).lower()])
     real_max_memuse = memlimit
     if memlimit > MAX_Py_ssize_t:
         memlimit = MAX_Py_ssize_t
     if memlimit < _2G - 1:
-        raise ValueError('Memory limit %r too low to be useful' % (limit,))
+        raise ValueError("Memory limit %r too low to be useful" % (limit,))
     max_memuse = memlimit
+
 
 def bigmemtest(minsize, memuse):
     """Decorator for bigmem tests.
@@ -990,6 +1081,7 @@ def bigmemtest(minsize, memuse):
     allowed memory use (as defined by max_memuse), the test is skipped.
     Otherwise, minsize is adjusted upward to use up to max_memuse.
     """
+
     def decorator(f):
         def wrapper(self):
             # Retrieve values in case someone decided to adjust them
@@ -1007,12 +1099,16 @@ def bigmemtest(minsize, memuse):
                 if maxsize < minsize:
                     raise unittest.SkipTest(
                         "not enough memory: %.1fG minimum needed"
-                        % (minsize * memuse / (1024 ** 3)))
+                        % (minsize * memuse / (1024**3))
+                    )
             return f(self, maxsize)
+
         wrapper.minsize = minsize
         wrapper.memuse = memuse
         return wrapper
+
     return decorator
+
 
 def precisionbigmemtest(size, memuse):
     def decorator(f):
@@ -1027,31 +1123,39 @@ def precisionbigmemtest(size, memuse):
                 if real_max_memuse and real_max_memuse < maxsize * memuse:
                     raise unittest.SkipTest(
                         "not enough memory: %.1fG minimum needed"
-                        % (size * memuse / (1024 ** 3)))
+                        % (size * memuse / (1024**3))
+                    )
 
             return f(self, maxsize)
+
         wrapper.size = size
         wrapper.memuse = memuse
         return wrapper
+
     return decorator
+
 
 def bigaddrspacetest(f):
     """Decorator for tests that fill the address space."""
+
     def wrapper(self):
         if max_memuse < MAX_Py_ssize_t:
             if MAX_Py_ssize_t >= 2**63 - 1 and max_memuse >= 2**31:
-                raise unittest.SkipTest(
-                    "not enough memory: try a 32-bit build instead")
+                raise unittest.SkipTest("not enough memory: try a 32-bit build instead")
             else:
                 raise unittest.SkipTest(
                     "not enough memory: %.1fG minimum needed"
-                    % (MAX_Py_ssize_t / (1024 ** 3)))
+                    % (MAX_Py_ssize_t / (1024**3))
+                )
         else:
             return f(self)
+
     return wrapper
 
-#=======================================================================
+
+# =======================================================================
 # unittest integration.
+
 
 class BasicTestRunner:
     def run(self, test):
@@ -1059,8 +1163,10 @@ class BasicTestRunner:
         test(result)
         return result
 
+
 def _id(obj):
     return obj
+
 
 def requires_resource(resource):
     if is_resource_enabled(resource):
@@ -1068,11 +1174,13 @@ def requires_resource(resource):
     else:
         return unittest.skip("resource {0!r} is not enabled".format(resource))
 
+
 def cpython_only(test):
     """
     Decorator for tests only applicable on CPython.
     """
     return impl_detail(cpython=True)(test)
+
 
 def impl_detail(msg=None, **guards):
     if check_impl_detail(**guards):
@@ -1084,29 +1192,30 @@ def impl_detail(msg=None, **guards):
         else:
             msg = "implementation detail specific to {0}"
         guardnames = sorted(guardnames.keys())
-        msg = msg.format(' or '.join(guardnames))
+        msg = msg.format(" or ".join(guardnames))
     return unittest.skip(msg)
+
 
 def _parse_guards(guards):
     # Returns a tuple ({platform_name: run_me}, default_value)
     if not guards:
-        return ({'cpython': True}, False)
+        return ({"cpython": True}, False)
     is_true = list(guards.values())[0]
-    assert list(guards.values()) == [is_true] * len(guards)   # all True or all False
+    assert list(guards.values()) == [is_true] * len(guards)  # all True or all False
     return (guards, not is_true)
+
 
 # Use the following check to guard CPython's implementation-specific tests --
 # or to run them only on the implementation(s) guarded by the arguments.
 def check_impl_detail(**guards):
     """This function returns True or False depending on the host platform.
-       Examples:
-          if check_impl_detail():               # only on CPython (default)
-          if check_impl_detail(jython=True):    # only on Jython
-          if check_impl_detail(cpython=False):  # everywhere except on CPython
+    Examples:
+       if check_impl_detail():               # only on CPython (default)
+       if check_impl_detail(jython=True):    # only on Jython
+       if check_impl_detail(cpython=False):  # everywhere except on CPython
     """
     guards, default = _parse_guards(guards)
     return guards.get(platform.python_implementation().lower(), default)
-
 
 
 def _run_suite(suite):
@@ -1124,7 +1233,8 @@ def _run_suite(suite):
             err = result.failures[0][1]
         else:
             err = "multiple errors occurred"
-            if not verbose: err += "; run in verbose mode for details"
+            if not verbose:
+                err += "; run in verbose mode for details"
         raise TestFailed(err)
 
 
@@ -1145,8 +1255,9 @@ def run_unittest(*classes):
     _run_suite(suite)
 
 
-#=======================================================================
+# =======================================================================
 # doctest driver.
+
 
 def run_doctest(module, verbosity=None):
     """Run doctest on the given module.  Return (#failures, #tests).
@@ -1174,23 +1285,23 @@ def run_doctest(module, verbosity=None):
     finally:
         sys.stdout = save_stdout
     if verbose:
-        print('doctest (%s) ... %d tests with zero failures' %
-              (module.__name__, t))
+        print("doctest (%s) ... %d tests with zero failures" % (module.__name__, t))
     return f, t
 
 
-#=======================================================================
+# =======================================================================
 # Support for saving and restoring the imported modules.
 
+
 def modules_setup():
-    return sys.modules.copy(),
+    return (sys.modules.copy(),)
+
 
 def modules_cleanup(oldmodules):
     # Encoders/decoders are registered permanently within the internal
     # codec cache. If we destroy the corresponding modules their
     # globals will be set to None which will trip up the cached functions.
-    encodings = [(k, v) for k, v in sys.modules.items()
-                 if k.startswith('encodings.')]
+    encodings = [(k, v) for k, v in sys.modules.items() if k.startswith("encodings.")]
     sys.modules.clear()
     sys.modules.update(encodings)
     # XXX: This kind of problem can affect more than just encodings. In particular
@@ -1201,7 +1312,8 @@ def modules_cleanup(oldmodules):
     # Implicitly imported *real* modules should be left alone (see issue 10556).
     sys.modules.update(oldmodules)
 
-#=======================================================================
+
+# =======================================================================
 # Threading support to prevent reporting refleaks when running regrtest.py -R
 
 # NOTE: we use thread._count() rather than threading.enumerate() (or the
@@ -1212,11 +1324,13 @@ def modules_cleanup(oldmodules):
 # __bootstrap() method has returned, which gives us reliable reference counts
 # at the end of a test run.
 
+
 def threading_setup():
     if _thread:
-        return _thread._count(),
+        return (_thread._count(),)
     else:
-        return 1,
+        return (1,)
+
 
 def threading_cleanup(nb_threads):
     if not _thread:
@@ -1228,6 +1342,7 @@ def threading_cleanup(nb_threads):
             break
         time.sleep(0.1)
     # XXX print a warning in case of failure?
+
 
 def reap_threads(func):
     """Use this function when threads are being used.  This will
@@ -1244,7 +1359,9 @@ def reap_threads(func):
             return func(*args)
         finally:
             threading_cleanup(*key)
+
     return decorator
+
 
 def reap_children():
     """Use this function at the end of test_main() whenever sub-processes
@@ -1255,7 +1372,7 @@ def reap_children():
 
     # Reap all our dead child processes so we don't leave zombies around.
     # These hog resources and might be causing some of the buildbots to die.
-    if hasattr(os, 'waitpid'):
+    if hasattr(os, "waitpid"):
         any_process = -1
         while True:
             try:
@@ -1265,6 +1382,7 @@ def reap_children():
                     break
             except:
                 break
+
 
 @contextlib.contextmanager
 def swap_attr(obj, attr, new_val):
@@ -1293,6 +1411,7 @@ def swap_attr(obj, attr, new_val):
         finally:
             delattr(obj, attr)
 
+
 @contextlib.contextmanager
 def swap_item(obj, item, new_val):
     """Temporary swap out an item with a new object.
@@ -1320,6 +1439,7 @@ def swap_item(obj, item, new_val):
         finally:
             del obj[item]
 
+
 def strip_python_stderr(stderr):
     """Strip the stderr of a Python process from potential debug output
     emitted by the interpreter.
@@ -1327,31 +1447,34 @@ def strip_python_stderr(stderr):
     This will typically be run on the result of the communicate() method
     of a subprocess.Popen object.
     """
-    stderr = re.sub(br"\[\d+ refs\]\r?\n?$", b"", stderr).strip()
+    stderr = re.sub(rb"\[\d+ refs\]\r?\n?$", b"", stderr).strip()
     return stderr
+
 
 def args_from_interpreter_flags():
     """Return a list of command-line arguments reproducing the current
     settings in sys.flags."""
     flag_opt_map = {
-        'bytes_warning': 'b',
-        'dont_write_bytecode': 'B',
-        'ignore_environment': 'E',
-        'no_user_site': 's',
-        'no_site': 'S',
-        'optimize': 'O',
-        'verbose': 'v',
+        "bytes_warning": "b",
+        "dont_write_bytecode": "B",
+        "ignore_environment": "E",
+        "no_user_site": "s",
+        "no_site": "S",
+        "optimize": "O",
+        "verbose": "v",
     }
     args = []
     for flag, opt in flag_opt_map.items():
         v = getattr(sys.flags, flag)
         if v > 0:
-            args.append('-' + opt * v)
+            args.append("-" + opt * v)
     return args
 
-#============================================================
+
+# ============================================================
 # Support for assertions about logging.
-#============================================================
+# ============================================================
+
 
 class TestHandler(logging.handlers.BufferingHandler):
     def __init__(self, matcher):
@@ -1381,9 +1504,9 @@ class TestHandler(logging.handlers.BufferingHandler):
                 break
         return result
 
-class Matcher(object):
 
-    _partial_matches = ('msg', 'message')
+class Matcher(object):
+    _partial_matches = ("msg", "message")
 
     def matches(self, d, **kwargs):
         """
@@ -1409,13 +1532,15 @@ class Matcher(object):
         if type(v) != type(dv):
             result = False
         elif type(dv) is not str or k not in self._partial_matches:
-            result = (v == dv)
+            result = v == dv
         else:
             result = dv.find(v) >= 0
         return result
 
 
 _can_symlink = None
+
+
 def can_symlink():
     global _can_symlink
     if _can_symlink is not None:
@@ -1427,6 +1552,7 @@ def can_symlink():
         can = False
     _can_symlink = can
     return can
+
 
 def skip_unless_symlink(test):
     """Skip decorator for tests that require functional symlink"""

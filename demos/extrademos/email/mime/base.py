@@ -4,12 +4,11 @@
 
 """Base class for MIME specializations."""
 
-__all__ = ['MIMEBase']
+__all__ = ["MIMEBase"]
 
 from email import message
 
 
-
 class MIMEBase(message.Message):
     """Base class for MIME specializations."""
 
@@ -21,6 +20,6 @@ class MIMEBase(message.Message):
         keyword arguments.
         """
         message.Message.__init__(self)
-        ctype = '%s/%s' % (_maintype, _subtype)
-        self.add_header('Content-Type', ctype, **_params)
-        self['MIME-Version'] = '1.0'
+        ctype = "%s/%s" % (_maintype, _subtype)
+        self.add_header("Content-Type", ctype, **_params)
+        self["MIME-Version"] = "1.0"

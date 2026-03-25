@@ -38,8 +38,14 @@ import sys as _sys
 from collections import OrderedDict as _OrderedDict
 from io import StringIO as _StringIO
 
-__all__ = ["pprint","pformat","isreadable","isrecursive","saferepr",
-           "PrettyPrinter"]
+__all__ = [
+    "pprint",
+    "pformat",
+    "isreadable",
+    "isrecursive",
+    "saferepr",
+    "PrettyPrinter",
+]
 
 # cache these for faster access:
 _commajoin = ", ".join
@@ -50,25 +56,29 @@ _type = type
 
 def pprint(object, stream=None, indent=1, width=80, depth=None):
     """Pretty-print a Python object to a stream [default is sys.stdout]."""
-    printer = PrettyPrinter(
-        stream=stream, indent=indent, width=width, depth=depth)
+    printer = PrettyPrinter(stream=stream, indent=indent, width=width, depth=depth)
     printer.pprint(object)
+
 
 def pformat(object, indent=1, width=80, depth=None):
     """Format a Python object into a pretty-printed representation."""
     return PrettyPrinter(indent=indent, width=width, depth=depth).pformat(object)
 
+
 def saferepr(object):
     """Version of repr() which can handle recursive data structures."""
     return _safe_repr(object, {}, None, 0)[0]
+
 
 def isreadable(object):
     """Determine if saferepr(object) is readable by eval()."""
     return _safe_repr(object, {}, None, 0)[1]
 
+
 def isrecursive(object):
     """Determine if object requires a recursive representation."""
     return _safe_repr(object, {}, None, 0)[2]
+
 
 class _safe_key:
     """Helper function for key functions when sorting unorderable objects.
@@ -80,7 +90,7 @@ class _safe_key:
 
     """
 
-    __slots__ = ['obj']
+    __slots__ = ["obj"]
 
     def __init__(self, obj):
         self.obj = obj
@@ -88,13 +98,17 @@ class _safe_key:
     def __lt__(self, other):
         rv = self.obj.__lt__(other.obj)
         if rv is NotImplemented:
-            rv = (str(type(self.obj)), id(self.obj)) < \
-                 (str(type(other.obj)), id(other.obj))
+            rv = (str(type(self.obj)), id(self.obj)) < (
+                str(type(other.obj)),
+                id(other.obj),
+            )
         return rv
+
 
 def _safe_tuple(t):
     "Helper function for comparing 2-tuples"
     return _safe_key(t[0]), _safe_key(t[1])
+
 
 class PrettyPrinter:
     def __init__(self, indent=1, width=80, depth=None, stream=None):
@@ -164,9 +178,9 @@ class PrettyPrinter:
         if sepLines:
             r = getattr(typ, "__repr__", None)
             if issubclass(typ, dict):
-                write('{')
+                write("{")
                 if self._indent_per_level > 1:
-                    write((self._indent_per_level - 1) * ' ')
+                    write((self._indent_per_level - 1) * " ")
                 length = _len(object)
                 if length:
                     context[objid] = 1
@@ -178,71 +192,87 @@ class PrettyPrinter:
                     key, ent = items[0]
                     rep = self._repr(key, context, level)
                     write(rep)
-                    write(': ')
-                    self._format(ent, stream, indent + _len(rep) + 2,
-                                  allowance + 1, context, level)
+                    write(": ")
+                    self._format(
+                        ent,
+                        stream,
+                        indent + _len(rep) + 2,
+                        allowance + 1,
+                        context,
+                        level,
+                    )
                     if length > 1:
                         for key, ent in items[1:]:
                             rep = self._repr(key, context, level)
-                            write(',\n%s%s: ' % (' '*indent, rep))
-                            self._format(ent, stream, indent + _len(rep) + 2,
-                                          allowance + 1, context, level)
+                            write(",\n%s%s: " % (" " * indent, rep))
+                            self._format(
+                                ent,
+                                stream,
+                                indent + _len(rep) + 2,
+                                allowance + 1,
+                                context,
+                                level,
+                            )
                     indent = indent - self._indent_per_level
                     del context[objid]
-                write('}')
+                write("}")
                 return
 
-            if ((issubclass(typ, list) and r is list.__repr__) or
-                (issubclass(typ, tuple) and r is tuple.__repr__) or
-                (issubclass(typ, set) and r is set.__repr__) or
-                (issubclass(typ, frozenset) and r is frozenset.__repr__)
-               ):
+            if (
+                (issubclass(typ, list) and r is list.__repr__)
+                or (issubclass(typ, tuple) and r is tuple.__repr__)
+                or (issubclass(typ, set) and r is set.__repr__)
+                or (issubclass(typ, frozenset) and r is frozenset.__repr__)
+            ):
                 length = _len(object)
                 if issubclass(typ, list):
-                    write('[')
-                    endchar = ']'
+                    write("[")
+                    endchar = "]"
                 elif issubclass(typ, set):
                     if not length:
-                        write('set()')
+                        write("set()")
                         return
-                    write('{')
-                    endchar = '}'
+                    write("{")
+                    endchar = "}"
                     object = sorted(object, key=_safe_key)
                 elif issubclass(typ, frozenset):
                     if not length:
-                        write('frozenset()')
+                        write("frozenset()")
                         return
-                    write('frozenset({')
-                    endchar = '})'
+                    write("frozenset({")
+                    endchar = "})"
                     object = sorted(object, key=_safe_key)
                     indent += 10
                 else:
-                    write('(')
-                    endchar = ')'
+                    write("(")
+                    endchar = ")"
                 if self._indent_per_level > 1:
-                    write((self._indent_per_level - 1) * ' ')
+                    write((self._indent_per_level - 1) * " ")
                 if length:
                     context[objid] = 1
                     indent = indent + self._indent_per_level
-                    self._format(object[0], stream, indent, allowance + 1,
-                                 context, level)
+                    self._format(
+                        object[0], stream, indent, allowance + 1, context, level
+                    )
                     if length > 1:
                         for ent in object[1:]:
-                            write(',\n' + ' '*indent)
-                            self._format(ent, stream, indent,
-                                          allowance + 1, context, level)
+                            write(",\n" + " " * indent)
+                            self._format(
+                                ent, stream, indent, allowance + 1, context, level
+                            )
                     indent = indent - self._indent_per_level
                     del context[objid]
                 if issubclass(typ, tuple) and length == 1:
-                    write(',')
+                    write(",")
                 write(endchar)
                 return
 
         write(rep)
 
     def _repr(self, object, context, level):
-        repr, readable, recursive = self.format(object, context.copy(),
-                                                self._depth, level)
+        repr, readable, recursive = self.format(
+            object, context.copy(), self._depth, level
+        )
         if not readable:
             self._readable = False
         if recursive:
@@ -259,10 +289,11 @@ class PrettyPrinter:
 
 # Return triple (repr_string, isreadable, isrecursive).
 
+
 def _safe_repr(object, context, maxlevels, level):
     typ = _type(object)
     if typ is str:
-        if 'locale' not in _sys.modules:
+        if "locale" not in _sys.modules:
             return repr(object), True, False
         if "'" in object and '"' not in object:
             closure = '"'
@@ -307,8 +338,9 @@ def _safe_repr(object, context, maxlevels, level):
         del context[objid]
         return "{%s}" % _commajoin(components), readable, recursive
 
-    if (issubclass(typ, list) and r is list.__repr__) or \
-       (issubclass(typ, tuple) and r is tuple.__repr__):
+    if (issubclass(typ, list) and r is list.__repr__) or (
+        issubclass(typ, tuple) and r is tuple.__repr__
+    ):
         if issubclass(typ, list):
             if not object:
                 return "[]", True, False
@@ -341,16 +373,16 @@ def _safe_repr(object, context, maxlevels, level):
         return format % _commajoin(components), readable, recursive
 
     rep = repr(object)
-    return rep, (rep and not rep.startswith('<')), False
+    return rep, (rep and not rep.startswith("<")), False
 
 
 def _recursion(object):
-    return ("<Recursion on %s with id=%s>"
-            % (_type(object).__name__, _id(object)))
+    return "<Recursion on %s with id=%s>" % (_type(object).__name__, _id(object))
 
 
 def _perfcheck(object=None):
     import time
+
     if object is None:
         object = [("string", (1, 2), [3, 4], {5: 6, 7: 8})] * 100000
     p = PrettyPrinter()
@@ -361,6 +393,7 @@ def _perfcheck(object=None):
     t3 = time.time()
     print("_safe_repr:", t2 - t1)
     print("pformat:", t3 - t2)
+
 
 if __name__ == "__main__":
     _perfcheck()

@@ -18,11 +18,13 @@ work. One should use importlib as the public-facing version of this module.
 
 # Bootstrap-related code ######################################################
 
+
 # XXX Could also expose Modules/getpath.c:joinpath()
 def _path_join(*args):
     """Replacement for os.path.join."""
-    return path_sep.join(x[:-len(path_sep)] if x.endswith(path_sep) else x
-                            for x in args if x)
+    return path_sep.join(
+        x[: -len(path_sep)] if x.endswith(path_sep) else x for x in args if x
+    )
 
 
 def _path_exists(path):
@@ -62,7 +64,7 @@ def _path_without_ext(path, ext_type):
     """Replacement for os.path.splitext()[0]."""
     for suffix in _suffix_list(ext_type):
         if path.endswith(suffix):
-            return path[:-len(suffix)]
+            return path[: -len(suffix)]
     else:
         raise ValueError("path is not of the specified type")
 
@@ -74,7 +76,7 @@ def _path_absolute(path):
     try:
         return _os._getfullpathname(path)
     except AttributeError:
-        if path.startswith('/'):
+        if path.startswith("/"):
             return path
         else:
             return _path_join(_os.getcwd(), path)
@@ -82,7 +84,7 @@ def _path_absolute(path):
 
 def _wrap(new, old):
     """Simple substitute for functools.wraps."""
-    for replace in ['__module__', '__name__', '__doc__']:
+    for replace in ["__module__", "__name__", "__doc__"]:
         setattr(new, replace, getattr(old, replace))
     new.__dict__.update(old.__dict__)
 
@@ -91,26 +93,31 @@ code_type = type(_wrap.__code__)
 
 # Finder/loader utility code ##################################################
 
+
 def set_package(fxn):
     """Set __package__ on the returned module."""
+
     def wrapper(*args, **kwargs):
         module = fxn(*args, **kwargs)
-        if not hasattr(module, '__package__') or module.__package__ is None:
+        if not hasattr(module, "__package__") or module.__package__ is None:
             module.__package__ = module.__name__
-            if not hasattr(module, '__path__'):
-                module.__package__ = module.__package__.rpartition('.')[0]
+            if not hasattr(module, "__path__"):
+                module.__package__ = module.__package__.rpartition(".")[0]
         return module
+
     _wrap(wrapper, fxn)
     return wrapper
 
 
 def set_loader(fxn):
     """Set __loader__ on the returned module."""
+
     def wrapper(self, *args, **kwargs):
         module = fxn(self, *args, **kwargs)
-        if not hasattr(module, '__loader__'):
+        if not hasattr(module, "__loader__"):
             module.__loader__ = self
         return module
+
     _wrap(wrapper, fxn)
     return wrapper
 
@@ -128,6 +135,7 @@ def module_for_loader(fxn):
     the second argument.
 
     """
+
     def decorated(self, fullname, *args, **kwargs):
         module = sys.modules.get(fullname)
         is_reload = bool(module)
@@ -143,6 +151,7 @@ def module_for_loader(fxn):
             if not is_reload:
                 del sys.modules[fullname]
             raise
+
     _wrap(decorated, fxn)
     return decorated
 
@@ -155,44 +164,49 @@ def _check_name(method):
     comapred against. If the comparison fails then ImportError is raised.
 
     """
+
     def inner(self, name, *args, **kwargs):
         if self._name != name:
             raise ImportError("loader cannot handle %s" % name)
         return method(self, name, *args, **kwargs)
+
     _wrap(inner, method)
     return inner
 
 
 def _requires_builtin(fxn):
     """Decorator to verify the named module is built-in."""
+
     def wrapper(self, fullname):
         if fullname not in sys.builtin_module_names:
             raise ImportError("{0} is not a built-in module".format(fullname))
         return fxn(self, fullname)
+
     _wrap(wrapper, fxn)
     return wrapper
 
 
 def _requires_frozen(fxn):
     """Decorator to verify the named module is frozen."""
+
     def wrapper(self, fullname):
         if not imp.is_frozen(fullname):
             raise ImportError("{0} is not a frozen module".format(fullname))
         return fxn(self, fullname)
+
     _wrap(wrapper, fxn)
     return wrapper
 
 
 def _suffix_list(suffix_type):
     """Return a list of file suffixes based on the imp file type."""
-    return [suffix[0] for suffix in imp.get_suffixes()
-            if suffix[2] == suffix_type]
+    return [suffix[0] for suffix in imp.get_suffixes() if suffix[2] == suffix_type]
 
 
 # Loaders #####################################################################
 
-class BuiltinImporter:
 
+class BuiltinImporter:
     """Meta path import for built-in modules.
 
     All methods are either class or static methods to avoid the need to
@@ -245,7 +259,6 @@ class BuiltinImporter:
 
 
 class FrozenImporter:
-
     """Meta path import for frozen modules.
 
     All methods are either class or static methods to avoid the need to
@@ -292,7 +305,6 @@ class FrozenImporter:
 
 
 class _LoaderBasics:
-
     """Base class of common code needed by both SourceLoader and
     _SourcelessFileLoader."""
 
@@ -300,7 +312,7 @@ class _LoaderBasics:
         """Concrete implementation of InspectLoader.is_package by checking if
         the path returned by get_filename has a filename of '__init__.py'."""
         filename = self.get_filename(fullname).rpartition(path_sep)[2]
-        return filename.rsplit('.', 1)[0] == '__init__'
+        return filename.rsplit(".", 1)[0] == "__init__"
 
     def _bytes_from_bytecode(self, fullname, data, source_mtime):
         """Return the marshalled bytes from bytecode, verifying the magic
@@ -337,14 +349,13 @@ class _LoaderBasics:
         if self.is_package(name):
             module.__path__ = [module.__file__.rsplit(path_sep, 1)[0]]
         else:
-            module.__package__ = module.__package__.rpartition('.')[0]
+            module.__package__ = module.__package__.rpartition(".")[0]
         module.__loader__ = self
         exec(code_object, module.__dict__)
         return module
 
 
 class SourceLoader(_LoaderBasics):
-
     def path_mtime(self, path):
         """Optional method that returns the modification time (an int) for the
         specified path, where path is a str.
@@ -362,10 +373,10 @@ class SourceLoader(_LoaderBasics):
         """
         raise NotImplementedError
 
-
     def get_source(self, fullname):
         """Concrete implementation of InspectLoader.get_source."""
         import tokenize
+
         path = self.get_filename(fullname)
         try:
             source_bytes = self.get_data(path)
@@ -397,8 +408,9 @@ class SourceLoader(_LoaderBasics):
                     pass
                 else:
                     try:
-                        bytes_data = self._bytes_from_bytecode(fullname, data,
-                                                               source_mtime)
+                        bytes_data = self._bytes_from_bytecode(
+                            fullname, data, source_mtime
+                        )
                     except (ImportError, EOFError):
                         pass
                     else:
@@ -409,10 +421,12 @@ class SourceLoader(_LoaderBasics):
                             msg = "Non-code object in {}"
                             raise ImportError(msg.format(bytecode_path))
         source_bytes = self.get_data(source_path)
-        code_object = compile(source_bytes, source_path, 'exec',
-                                dont_inherit=True)
-        if (not sys.dont_write_bytecode and bytecode_path is not None and
-                source_mtime is not None):
+        code_object = compile(source_bytes, source_path, "exec", dont_inherit=True)
+        if (
+            not sys.dont_write_bytecode
+            and bytecode_path is not None
+            and source_mtime is not None
+        ):
             # If e.g. Jython ever implements imp.cache_from_source to have
             # their own cached file format, this block of code will most likely
             # throw an exception.
@@ -437,7 +451,6 @@ class SourceLoader(_LoaderBasics):
 
 
 class _FileLoader:
-
     """Base file loader class which implements the loader protocol methods that
     require file system usage."""
 
@@ -454,12 +467,11 @@ class _FileLoader:
 
     def get_data(self, path):
         """Return the data from path as raw bytes."""
-        with _io.FileIO(path, 'r') as file:
+        with _io.FileIO(path, "r") as file:
             return file.read()
 
 
 class _SourceFileLoader(_FileLoader, SourceLoader):
-
     """Concrete implementation of SourceLoader using the file system."""
 
     def path_mtime(self, path):
@@ -493,7 +505,7 @@ class _SourceFileLoader(_FileLoader, SourceLoader):
                 else:
                     raise
         try:
-            with _io.FileIO(path, 'wb') as file:
+            with _io.FileIO(path, "wb") as file:
                 file.write(data)
         except IOError as exc:
             # Don't worry if you can't write bytecode.
@@ -504,7 +516,6 @@ class _SourceFileLoader(_FileLoader, SourceLoader):
 
 
 class _SourcelessFileLoader(_FileLoader, _LoaderBasics):
-
     """Loader which handles sourceless file imports."""
 
     def load_module(self, fullname):
@@ -526,7 +537,6 @@ class _SourcelessFileLoader(_FileLoader, _LoaderBasics):
 
 
 class _ExtensionFileLoader:
-
     """Loader for extension modules.
 
     The constructor is designed to work with FileFinder.
@@ -574,8 +584,8 @@ class _ExtensionFileLoader:
 
 # Finders #####################################################################
 
-class PathFinder:
 
+class PathFinder:
     """Meta path finder for sys.(path|path_hooks|path_importer_cache)."""
 
     @classmethod
@@ -640,7 +650,6 @@ class PathFinder:
 
 
 class _FileFinder:
-
     """File-based finder.
 
     Constructor takes a list of objects detailing what file extensions their
@@ -655,22 +664,20 @@ class _FileFinder:
         for detail in details:
             modules.extend((suffix, detail.loader) for suffix in detail.suffixes)
             if detail.supports_packages:
-                packages.extend((suffix, detail.loader)
-                                for suffix in detail.suffixes)
+                packages.extend((suffix, detail.loader) for suffix in detail.suffixes)
         self.packages = packages
         self.modules = modules
         self.path = path
 
     def find_module(self, fullname):
         """Try to find a loader for the specified module."""
-        tail_module = fullname.rpartition('.')[2]
+        tail_module = fullname.rpartition(".")[2]
         base_path = _path_join(self.path, tail_module)
         if _path_isdir(base_path) and _case_ok(self.path, tail_module):
             for suffix, loader in self.packages:
-                init_filename = '__init__' + suffix
+                init_filename = "__init__" + suffix
                 full_path = _path_join(base_path, init_filename)
-                if (_path_isfile(full_path) and
-                        _case_ok(base_path, init_filename)):
+                if _path_isfile(full_path) and _case_ok(base_path, init_filename):
                     return loader(fullname, full_path)
             else:
                 msg = "Not importing directory {}: missing __init__"
@@ -682,16 +689,16 @@ class _FileFinder:
                 return loader(fullname, full_path)
         return None
 
-class _SourceFinderDetails:
 
+class _SourceFinderDetails:
     loader = _SourceFileLoader
     supports_packages = True
 
     def __init__(self):
         self.suffixes = _suffix_list(imp.PY_SOURCE)
 
-class _SourcelessFinderDetails:
 
+class _SourcelessFinderDetails:
     loader = _SourcelessFileLoader
     supports_packages = True
 
@@ -700,7 +707,6 @@ class _SourcelessFinderDetails:
 
 
 class _ExtensionFinderDetails:
-
     loader = _ExtensionFileLoader
     supports_packages = False
 
@@ -710,20 +716,24 @@ class _ExtensionFinderDetails:
 
 # Import itself ###############################################################
 
+
 def _file_path_hook(path):
     """If the path is a directory, return a file-based finder."""
     if _path_isdir(path):
-        return _FileFinder(path, _ExtensionFinderDetails(),
-                           _SourceFinderDetails(),
-                           _SourcelessFinderDetails())
+        return _FileFinder(
+            path,
+            _ExtensionFinderDetails(),
+            _SourceFinderDetails(),
+            _SourcelessFinderDetails(),
+        )
     else:
         raise ImportError("only directories are supported")
 
 
 _DEFAULT_PATH_HOOK = _file_path_hook
 
-class _DefaultPathFinder(PathFinder):
 
+class _DefaultPathFinder(PathFinder):
     """Subclass of PathFinder that implements implicit semantics for
     __import__."""
 
@@ -744,7 +754,6 @@ class _DefaultPathFinder(PathFinder):
 
 
 class _ImportLockContext:
-
     """Context manager for the import lock."""
 
     def __enter__(self):
@@ -758,7 +767,8 @@ class _ImportLockContext:
 
 _IMPLICIT_META_PATH = [BuiltinImporter, FrozenImporter, _DefaultPathFinder]
 
-_ERR_MSG = 'No module named {}'
+_ERR_MSG = "No module named {}"
+
 
 def _gcd_import(name, package=None, level=0):
     """Import and return the module based on its name, the package the call is
@@ -770,11 +780,10 @@ def _gcd_import(name, package=None, level=0):
 
     """
     if package:
-        if not hasattr(package, 'rindex'):
+        if not hasattr(package, "rindex"):
             raise ValueError("__package__ not set to a string")
         elif package not in sys.modules:
-            msg = ("Parent module {0!r} not loaded, cannot perform relative "
-                   "import")
+            msg = "Parent module {0!r} not loaded, cannot perform relative import"
             raise SystemError(msg.format(package))
     if not name and level == 0:
         raise ValueError("Empty module name")
@@ -782,10 +791,9 @@ def _gcd_import(name, package=None, level=0):
         dot = len(package)
         for x in range(level, 1, -1):
             try:
-                dot = package.rindex('.', 0, dot)
+                dot = package.rindex(".", 0, dot)
             except ValueError:
-                raise ValueError("attempted relative import beyond "
-                                 "top-level package")
+                raise ValueError("attempted relative import beyond top-level package")
         if name:
             name = "{0}.{1}".format(package[:dot], name)
         else:
@@ -794,13 +802,12 @@ def _gcd_import(name, package=None, level=0):
         try:
             module = sys.modules[name]
             if module is None:
-                message = ("import of {} halted; "
-                            "None in sys.modules".format(name))
+                message = "import of {} halted; None in sys.modules".format(name)
                 raise ImportError(message)
             return module
         except KeyError:
             pass
-        parent = name.rpartition('.')[0]
+        parent = name.rpartition(".")[0]
         path = None
         if parent:
             if parent not in sys.modules:
@@ -810,7 +817,7 @@ def _gcd_import(name, package=None, level=0):
             try:
                 path = parent_module.__path__
             except AttributeError:
-                msg = (_ERR_MSG + '; {} is not a package').format(name, parent)
+                msg = (_ERR_MSG + "; {} is not a package").format(name, parent)
                 raise ImportError(msg)
         meta_path = sys.meta_path + _IMPLICIT_META_PATH
         for finder in meta_path:
@@ -824,15 +831,15 @@ def _gcd_import(name, package=None, level=0):
         module = sys.modules[name]
         if parent:
             # Set the module as an attribute on its parent.
-            setattr(parent_module, name.rpartition('.')[2], module)
+            setattr(parent_module, name.rpartition(".")[2], module)
         # Set __package__ if the loader did not.
-        if not hasattr(module, '__package__') or module.__package__ is None:
+        if not hasattr(module, "__package__") or module.__package__ is None:
             # Watch out for what comes out of sys.modules to not be a module,
             # e.g. an int.
             try:
                 module.__package__ = module.__name__
-                if not hasattr(module, '__path__'):
-                    module.__package__ = module.__package__.rpartition('.')[0]
+                if not hasattr(module, "__path__"):
+                    module.__package__ = module.__package__.rpartition(".")[0]
             except AttributeError:
                 pass
         return module
@@ -849,40 +856,40 @@ def __import__(name, globals={}, locals={}, fromlist=[], level=0):
     import (e.g. ``from ..pkg import mod`` would have a 'level' of 2).
 
     """
-    if not hasattr(name, 'rpartition'):
+    if not hasattr(name, "rpartition"):
         raise TypeError("module name must be str, not {}".format(type(name)))
     if level == 0:
         module = _gcd_import(name)
     else:
         # __package__ is not guaranteed to be defined or could be set to None
         # to represent that it's proper value is unknown
-        package = globals.get('__package__')
+        package = globals.get("__package__")
         if package is None:
-            package = globals['__name__']
-            if '__path__' not in globals:
-                package = package.rpartition('.')[0]
+            package = globals["__name__"]
+            if "__path__" not in globals:
+                package = package.rpartition(".")[0]
         module = _gcd_import(name, package, level)
     # The hell that is fromlist ...
     if not fromlist:
         # Return up to the first dot in 'name'. This is complicated by the fact
         # that 'name' may be relative.
         if level == 0:
-            return sys.modules[name.partition('.')[0]]
+            return sys.modules[name.partition(".")[0]]
         elif not name:
             return module
         else:
-            cut_off = len(name) - len(name.partition('.')[0])
+            cut_off = len(name) - len(name.partition(".")[0])
             return sys.modules[module.__name__[:-cut_off]]
     else:
         # If a package was imported, try to import stuff from fromlist.
-        if hasattr(module, '__path__'):
-            if '*' in fromlist and hasattr(module, '__all__'):
+        if hasattr(module, "__path__"):
+            if "*" in fromlist and hasattr(module, "__all__"):
                 fromlist = list(fromlist)
-                fromlist.remove('*')
+                fromlist.remove("*")
                 fromlist.extend(module.__all__)
-            for x in (y for y in fromlist if not hasattr(module,y)):
+            for x in (y for y in fromlist if not hasattr(module, y)):
                 try:
-                    _gcd_import('{0}.{1}'.format(module.__name__, x))
+                    _gcd_import("{0}.{1}".format(module.__name__, x))
                 except ImportError:
                     pass
         return module

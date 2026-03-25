@@ -6,8 +6,11 @@ def checkIndex(key):
     is not an integer, a TypeError is raised; if it is negative, an
     IndexError is raised (since the sequence is of infinite length).
     """
-    if not isinstance(key, (int, long)): raise TypeError
-    if key<0: raise IndexError
+    if not isinstance(key, (int, long)):
+        raise TypeError
+    if key < 0:
+        raise IndexError
+
 
 class ArithmeticSequence:
     def __init__(self, start=0, step=1):
@@ -19,9 +22,9 @@ class ArithmeticSequence:
         changed - a dictionary of values that have been modified by
                   the user
         """
-        self.start = start                         # Store the start value
-        self.step = step                           # Store the step value
-        self.changed = {}                          # No items have been modified
+        self.start = start  # Store the start value
+        self.step = step  # Store the step value
+        self.changed = {}  # No items have been modified
 
     def __getitem__(self, key):
         """
@@ -29,9 +32,10 @@ class ArithmeticSequence:
         """
         checkIndex(key)
 
-        try: return self.changed[key]              # Modified?
-        except KeyError:                           # otherwise...
-            return self.start + key*self.step      # ... calculate the value
+        try:
+            return self.changed[key]  # Modified?
+        except KeyError:  # otherwise...
+            return self.start + key * self.step  # ... calculate the value
 
     def __setitem__(self, key, value):
         """
@@ -39,4 +43,4 @@ class ArithmeticSequence:
         """
         checkIndex(key)
 
-        self.changed[key] = value                  # Store the changed value
+        self.changed[key] = value  # Store the changed value

@@ -34,7 +34,6 @@
 
 import bisect
 import mmap
-import tempfile
 import os
 import sys
 import threading
@@ -44,25 +43,23 @@ import _multiprocessing
 from multiprocessing.util import Finalize, info
 from multiprocessing.forking import assert_spawning
 
-__all__ = ['BufferWrapper']
+__all__ = ["BufferWrapper"]
 
 #
 # Inheirtable class which wraps an mmap, and from which blocks can be allocated
 #
 
-if sys.platform == 'win32':
-
+if sys.platform == "win32":
     from _multiprocessing import win32
 
     class Arena(object):
-
         _counter = itertools.count()
 
         def __init__(self, size):
             self.size = size
-            self.name = 'pym-%d-%d' % (os.getpid(), next(Arena._counter))
+            self.name = "pym-%d-%d" % (os.getpid(), next(Arena._counter))
             self.buffer = mmap.mmap(-1, self.size, tagname=self.name)
-            assert win32.GetLastError() == 0, 'tagname already in use'
+            assert win32.GetLastError() == 0, "tagname already in use"
             self._state = (self.size, self.name)
 
         def __getstate__(self):
@@ -77,7 +74,6 @@ if sys.platform == 'win32':
 else:
 
     class Arena(object):
-
         def __init__(self, size):
             self.buffer = mmap.mmap(-1, size)
             self.size = size
@@ -87,8 +83,8 @@ else:
 # Class allowing allocation of chunks of memory from arenas
 #
 
-class Heap(object):
 
+class Heap(object):
     _alignment = 8
 
     def __init__(self, size=mmap.PAGESIZE):
@@ -114,7 +110,7 @@ class Heap(object):
         if i == len(self._lengths):
             length = self._roundup(max(self._size, size), mmap.PAGESIZE)
             self._size *= 2
-            info('allocating a new mmap of length %d', length)
+            info("allocating a new mmap of length %d", length)
             arena = Arena(length)
             self._arenas.append(arena)
             return (arena, 0, length)
@@ -189,10 +185,10 @@ class Heap(object):
         # return a block of right size (possibly rounded up)
         assert 0 <= size < sys.maxsize
         if os.getpid() != self._lastpid:
-            self.__init__()                     # reinitialize after fork
+            self.__init__()  # reinitialize after fork
         self._lock.acquire()
         try:
-            size = self._roundup(max(size,1), self._alignment)
+            size = self._roundup(max(size, 1), self._alignment)
             (arena, start, stop) = self._malloc(size)
             new_stop = start + size
             if new_stop < stop:
@@ -203,12 +199,13 @@ class Heap(object):
         finally:
             self._lock.release()
 
+
 #
 # Class representing a chunk of an mmap -- can be inherited
 #
 
-class BufferWrapper(object):
 
+class BufferWrapper(object):
     _heap = Heap()
 
     def __init__(self, size):

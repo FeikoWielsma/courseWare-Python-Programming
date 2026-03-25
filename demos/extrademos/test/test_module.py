@@ -3,7 +3,9 @@ import unittest
 from test.support import run_unittest, gc_collect
 
 import sys
+
 ModuleType = type(sys)
+
 
 class ModuleTests(unittest.TestCase):
     def test_uninitialized(self):
@@ -31,16 +33,14 @@ class ModuleTests(unittest.TestCase):
         foo = ModuleType("foo", "foodoc")
         self.assertEqual(foo.__name__, "foo")
         self.assertEqual(foo.__doc__, "foodoc")
-        self.assertEqual(foo.__dict__,
-                         {"__name__": "foo", "__doc__": "foodoc"})
+        self.assertEqual(foo.__dict__, {"__name__": "foo", "__doc__": "foodoc"})
 
     def test_unicode_docstring(self):
         # Unicode docstring
         foo = ModuleType("foo", "foodoc\u1234")
         self.assertEqual(foo.__name__, "foo")
         self.assertEqual(foo.__doc__, "foodoc\u1234")
-        self.assertEqual(foo.__dict__,
-                         {"__name__": "foo", "__doc__": "foodoc\u1234"})
+        self.assertEqual(foo.__dict__, {"__name__": "foo", "__doc__": "foodoc\u1234"})
 
     def test_reinit(self):
         # Reinitialization should not replace the __dict__
@@ -51,8 +51,9 @@ class ModuleTests(unittest.TestCase):
         self.assertEqual(foo.__name__, "foo")
         self.assertEqual(foo.__doc__, "foodoc")
         self.assertEqual(foo.bar, 42)
-        self.assertEqual(foo.__dict__,
-              {"__name__": "foo", "__doc__": "foodoc", "bar": 42})
+        self.assertEqual(
+            foo.__dict__, {"__name__": "foo", "__doc__": "foodoc", "bar": 42}
+        )
         self.assertTrue(foo.__dict__ is d)
 
     @unittest.expectedFailure
@@ -62,6 +63,7 @@ class ModuleTests(unittest.TestCase):
             foo = ModuleType("foo")
             foo.bar = 4
             return foo
+
         gc_collect()
         self.assertEqual(f().__dict__["bar"], 4)
 
@@ -78,8 +80,10 @@ a = A()"""
         gc_collect()
         self.assertEqual(destroyed, [1])
 
+
 def test_main():
     run_unittest(ModuleTests)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test_main()

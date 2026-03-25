@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
 display jpeg image
 
@@ -24,9 +24,9 @@ app = QtGui.QApplication(sys.argv)
 
 x, y, w, h = 100, 100, 200, 200
 label = QtGui.QLabel()
-label.setGeometry(x, y, w, h)
+label.set_geometry(x, y, w, h)
 pixmap = QtGui.QPixmap(file_path)
-label.setPixmap(pixmap)
+label.set_pixmap(pixmap)
 label.move(10, 10)
 label.show()
 

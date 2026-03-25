@@ -28,18 +28,18 @@ class Demo(QtGui.QWidget):
 
         QtGui.QWidget.__init__(self)
 
-        self.treeView = QtGui.QTreeView()
+        self.tree_view = QtGui.QTreeView()
         self.model = QtGui.QStandardItemModel()
         for name in datas:
             item = QtGui.QStandardItem(name)
-            self.model.appendRow(item)
-        self.treeView.setModel(self.model)
+            self.model.append_row(item)
+        self.tree_view.set_model(self.model)
 
-        self.model.setHorizontalHeaderLabels([self.tr("Object")])
+        self.model.set_horizontal_header_labels([self.tr("Object")])
 
         layout = QtGui.QVBoxLayout()
-        layout.addWidget(self.treeView)
-        self.setLayout(layout)
+        layout.add_widget(self.tree_view)
+        self.set_layout(layout)
 
 
         self.popup_menu = QtGui.QMenu(self)
@@ -47,14 +47,14 @@ class Demo(QtGui.QWidget):
         # menu item
         self.item_add_act = QtGui.QAction("Add", self)
         self.item_add_act.triggered.connect(self.add_cb)
-        self.popup_menu.addAction(self.item_add_act)
+        self.popup_menu.add_action(self.item_add_act)
 
     def add_cb(self):
         print "add callback"
 
-    def contextMenuEvent(self, event):
-        point = self.mapToGlobal(event.pos())
-        widget = QtGui.QApplication.widgetAt(point)
+    def context_menu_event(self, event):
+        point = self.map_to_global(event.pos())
+        widget = QtGui.QApplication.widget_at(point)
         print "widget:", widget
 
         act = self.popup_menu.exec_(point)
@@ -62,7 +62,7 @@ class Demo(QtGui.QWidget):
         if act == self.item_add_act:
             print "item add clicked"
 
-        return super(Demo, self).contextMenuEvent(event)
+        return super(Demo, self).context_menu_event(event)
 
     def show_and_raise(self):
         self.show()

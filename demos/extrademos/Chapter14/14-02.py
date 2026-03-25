@@ -1,8 +1,11 @@
 from __future__ import generators
 
+
 def lines(file):
-    for line in file: yield line
-    yield '\n'
+    for line in file:
+        yield line
+    yield "\n"
+
 
 def blocks(file):
     block = []
@@ -10,5 +13,5 @@ def blocks(file):
         if not line.isspace():
             block.append(line)
         elif block:
-            yield ''.join(block).strip()
+            yield "".join(block).strip()
             block = []

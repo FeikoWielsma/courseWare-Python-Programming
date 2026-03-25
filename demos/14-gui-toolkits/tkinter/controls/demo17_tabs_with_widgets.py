@@ -1,23 +1,23 @@
 from tkinter import *
 from tkinter import ttk
 
-mainWindow = Tk()
-mainWindow.title("Tabs with Controls Demo")
-mainWindow.geometry('500x200')
+main_window = Tk()
+main_window.title("Tabs with Controls Demo")
+main_window.geometry("500x200")
 
-tab_control = ttk.Notebook(mainWindow)
+tab_control = ttk.Notebook(main_window)
 tab1 = ttk.Frame(tab_control)
 tab2 = ttk.Frame(tab_control)
 
-tab_control.add(tab1, text='First')
-tab_control.add(tab2, text='Second')
+tab_control.add(tab1, text="First")
+tab_control.add(tab2, text="Second")
 
-lbl1 = Label(tab1, text='label1')
+lbl1 = Label(tab1, text="label1")
 lbl1.grid(column=0, row=0)
 
-lbl2 = Label(tab2, text='label2')
+lbl2 = Label(tab2, text="label2")
 lbl2.grid(column=0, row=0)
 
-tab_control.pack(expand=1, fill='both')
+tab_control.pack(expand=1, fill="both")
 
-mainWindow.mainloop()
+main_window.mainloop()

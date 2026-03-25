@@ -18,7 +18,8 @@ References on import:
           http://www.python.org/dev/peps/pep-0328
 
 """
-__all__ = ['__import__', 'import_module']
+
+__all__ = ["__import__", "import_module"]
 
 from . import _bootstrap
 
@@ -28,13 +29,14 @@ import tokenize
 
 # Bootstrap help #####################################################
 
+
 def _case_ok(directory, check):
     """Check if the directory contains something matching 'check'.
 
     No check is done if the file/directory exists or not.
 
     """
-    if 'PYTHONCASEOK' in os.environ:
+    if "PYTHONCASEOK" in os.environ:
         return True
     elif check in os.listdir(directory if directory else os.getcwd()):
         return True
@@ -79,19 +81,26 @@ except ImportError:
         try:
             import os2 as _os
         except ImportError:
-            raise ImportError('posix, nt, or os2 module required for importlib')
+            raise ImportError("posix, nt, or os2 module required for importlib")
 _bootstrap._os = _os
-import imp, sys, marshal, errno, _io
+import imp
+import sys
+import marshal
+import errno
+import _io
+
 _bootstrap.imp = imp
 _bootstrap.sys = sys
 _bootstrap.marshal = marshal
 _bootstrap.errno = errno
 _bootstrap._io = _io
 import _warnings
+
 _bootstrap._warnings = _warnings
 
 
 from os import sep
+
 # For os.path.join replacement; pull from Include/osdefs.h:SEP .
 _bootstrap.path_sep = sep
 
@@ -114,11 +123,11 @@ def import_module(name, package=None):
 
     """
     level = 0
-    if name.startswith('.'):
+    if name.startswith("."):
         if not package:
             raise TypeError("relative imports require the 'package' argument")
         for character in name:
-            if character != '.':
+            if character != ".":
                 break
             level += 1
     return _bootstrap._gcd_import(name[level:], package, level)

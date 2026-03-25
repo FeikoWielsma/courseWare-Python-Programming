@@ -23,17 +23,17 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
 
         combo = QtGui.QComboBox(self)
         combo.move(20, 20)
 
-        combo.currentIndexChanged.connect(self._cb_currentIndexChanged)
+        combo.current_index_changed.connect(self._cb_currentIndexChanged)
         combo.highlighted.connect(self._cb_highlighted)
 
         items = ('', 'Lisp', 'C', 'Objective-C', 'Python', 'Java')
-        combo.addItems(items)
+        combo.add_items(items)
 
     def _cb_currentIndexChanged(self, idx):
         print 'current selected index:', idx

@@ -10,29 +10,27 @@
 
 from tkinter import *
 
-class Dialog:
 
-    command  = None
+class Dialog:
+    command = None
 
     def __init__(self, master=None, **options):
-
         # FIXME: should this be placed on the module level instead?
         if TkVersion < 4.2:
             raise TclError("this module requires Tk 4.2 or newer")
 
-        self.master  = master
+        self.master = master
         self.options = options
-        if not master and options.get('parent'):
-            self.master = options['parent']
+        if not master and options.get("parent"):
+            self.master = options["parent"]
 
     def _fixoptions(self):
-        pass # hook
+        pass  # hook
 
     def _fixresult(self, widget, result):
-        return result # hook
+        return result  # hook
 
     def show(self, **options):
-
         # update instance options
         for k, v in options.items():
             self.options[k] = v
@@ -44,13 +42,11 @@ class Dialog:
         w = Frame(self.master)
 
         try:
-
             s = w.tk.call(self.command, *w._options(self.options))
 
             s = self._fixresult(w, s)
 
         finally:
-
             try:
                 # get rid of the widget
                 w.destroy()

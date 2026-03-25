@@ -9,6 +9,7 @@ http://www.pyside.org/docs/pyside/PySide/QtGui/QWidget.html
 http://www.pyside.org/docs/pyside/PySide/QtCore/QRect.html
 http://doc.qt.nokia.com/latest/qdesktopwidget.html
 """
+
 import sys
 
 
@@ -23,7 +24,7 @@ except ImportError:
 class AnotherWindow(QtGui.QWidget):
     def __init__(self, primary_win):
         super(AnotherWindow, self).__init__()
-        self.setWindowTitle('Another Window')
+        self.set_window_title("Another Window")
 
         w, h = 300, 400
         self.resize(w, h)
@@ -33,14 +34,16 @@ class AnotherWindow(QtGui.QWidget):
     def smart_place(self):
         screen = QtGui.QApplication.desktop()
 
-        primary_win_pos = 'right'
+        primary_win_pos = "right"
         if self.primary_win.x() < screen.width():
             left_screen = QtCore.QRect(0, 0, screen.width() / 2, screen.height())
-            if left_screen.contains(self.primary_win.pos()) or left_screen.contains(self.primary_win.geometry().topRight()):
-                primary_win_pos = 'left'
+            if left_screen.contains(self.primary_win.pos()) or left_screen.contains(
+                self.primary_win.geometry().top_right()
+            ):
+                primary_win_pos = "left"
 
         y = (screen.height() - self.height() - 100) / 2
-        if primary_win_pos == 'left':
+        if primary_win_pos == "left":
             x = self.primary_win.x() + self.primary_win.width()
         else:
             x = self.primary_win.x() - self.width()
@@ -49,7 +52,7 @@ class AnotherWindow(QtGui.QWidget):
 
     def show(self):
         self.smart_place()
-            
+
         super(AnotherWindow, self).show()
 
 
@@ -66,14 +69,13 @@ class Demo(QtGui.QMainWindow):
 
     def _show_another_win_btn_cb(self):
         if not self.another_win:
-            self.another_win = AnotherWindow(primary_win = self)
+            self.another_win = AnotherWindow(primary_win=self)
 
         self.another_win.show()
 
     def show_and_raise(self):
         self.show()
         self.raise_()
-
 
 
 if __name__ == "__main__":
@@ -83,4 +85,3 @@ if __name__ == "__main__":
     demo.show_and_raise()
 
     sys.exit(app.exec_())
-

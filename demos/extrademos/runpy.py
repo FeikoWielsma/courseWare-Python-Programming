@@ -12,17 +12,21 @@ importers when locating support scripts as well as when importing modules.
 import sys
 import imp
 from pkgutil import read_code
+
 try:
     from imp import get_loader
 except ImportError:
     from pkgutil import get_loader
 
 __all__ = [
-    "run_module", "run_path",
+    "run_module",
+    "run_path",
 ]
+
 
 class _TempModule(object):
     """Temporarily replace a module in sys.modules with an empty namespace"""
+
     def __init__(self, mod_name):
         self.mod_name = mod_name
         self.module = imp.new_module(mod_name)
@@ -44,6 +48,7 @@ class _TempModule(object):
             del sys.modules[self.mod_name]
         self._saved_module = []
 
+
 class _ModifiedArgv0(object):
     def __init__(self, value):
         self.value = value
@@ -59,28 +64,44 @@ class _ModifiedArgv0(object):
         self.value = self._sentinel
         sys.argv[0] = self._saved_value
 
-def _run_code(code, run_globals, init_globals=None,
-              mod_name=None, mod_fname=None,
-              mod_loader=None, pkg_name=None):
+
+def _run_code(
+    code,
+    run_globals,
+    init_globals=None,
+    mod_name=None,
+    mod_fname=None,
+    mod_loader=None,
+    pkg_name=None,
+):
     """Helper to run code in nominated namespace"""
     if init_globals is not None:
         run_globals.update(init_globals)
-    run_globals.update(__name__ = mod_name,
-                       __file__ = mod_fname,
-                       __cached__ = None,
-                       __loader__ = mod_loader,
-                       __package__ = pkg_name)
+    run_globals.update(
+        __name__=mod_name,
+        __file__=mod_fname,
+        __cached__=None,
+        __loader__=mod_loader,
+        __package__=pkg_name,
+    )
     exec(code, run_globals)
     return run_globals
 
-def _run_module_code(code, init_globals=None,
-                    mod_name=None, mod_fname=None,
-                    mod_loader=None, pkg_name=None):
+
+def _run_module_code(
+    code,
+    init_globals=None,
+    mod_name=None,
+    mod_fname=None,
+    mod_loader=None,
+    pkg_name=None,
+):
     """Helper to run code in new namespace with sys modified"""
     with _TempModule(mod_name) as temp_module, _ModifiedArgv0(mod_fname):
         mod_globals = temp_module.module.__dict__
-        _run_code(code, mod_globals, init_globals,
-                  mod_name, mod_fname, mod_loader, pkg_name)
+        _run_code(
+            code, mod_globals, init_globals, mod_name, mod_fname, mod_loader, pkg_name
+        )
     # Copy the globals of the temporary module, as they
     # may be cleared when the temporary module goes away
     return mod_globals.copy()
@@ -97,6 +118,7 @@ def _get_filename(loader, mod_name):
             return meth(mod_name)
     return None
 
+
 # Helper to get the loader, code and filename for a module
 def _get_module_details(mod_name):
     loader = get_loader(mod_name)
@@ -109,13 +131,16 @@ def _get_module_details(mod_name):
             pkg_main_name = mod_name + ".__main__"
             return _get_module_details(pkg_main_name)
         except ImportError as e:
-            raise ImportError(("%s; %r is a package and cannot " +
-                               "be directly executed") %(e, mod_name))
+            raise ImportError(
+                ("%s; %r is a package and cannot " + "be directly executed")
+                % (e, mod_name)
+            )
     code = loader.get_code(mod_name)
     if code is None:
         raise ImportError("No code object available for %s" % mod_name)
     filename = _get_filename(loader, mod_name)
     return mod_name, loader, code, filename
+
 
 # XXX ncoghlan: Should this be documented and made public?
 # (Current thoughts: don't repeat the mistake that lead to its
@@ -124,21 +149,21 @@ def _get_module_details(mod_name):
 def _run_module_as_main(mod_name, alter_argv=True):
     """Runs the designated module in the __main__ namespace
 
-       Note that the executed module will have full access to the
-       __main__ namespace. If this is not desirable, the run_module()
-       function should be used to run the module code in a fresh namespace.
+    Note that the executed module will have full access to the
+    __main__ namespace. If this is not desirable, the run_module()
+    function should be used to run the module code in a fresh namespace.
 
-       At the very least, these variables in __main__ will be overwritten:
-           __name__
-           __file__
-           __cached__
-           __loader__
-           __package__
+    At the very least, these variables in __main__ will be overwritten:
+        __name__
+        __file__
+        __cached__
+        __loader__
+        __package__
     """
     try:
-        if alter_argv or mod_name != "__main__": # i.e. -m switch
+        if alter_argv or mod_name != "__main__":  # i.e. -m switch
             mod_name, loader, code, fname = _get_module_details(mod_name)
-        else:          # i.e. directory or zipfile execution
+        else:  # i.e. directory or zipfile execution
             mod_name, loader, code, fname = _get_main_module_details()
     except ImportError as exc:
         # Try to provide a good error message
@@ -152,30 +177,28 @@ def _run_module_as_main(mod_name, alter_argv=True):
             info = "can't find '__main__' module in %r" % sys.argv[0]
         msg = "%s: %s" % (sys.executable, info)
         sys.exit(msg)
-    pkg_name = mod_name.rpartition('.')[0]
+    pkg_name = mod_name.rpartition(".")[0]
     main_globals = sys.modules["__main__"].__dict__
     if alter_argv:
         sys.argv[0] = fname
-    return _run_code(code, main_globals, None,
-                     "__main__", fname, loader, pkg_name)
+    return _run_code(code, main_globals, None, "__main__", fname, loader, pkg_name)
 
-def run_module(mod_name, init_globals=None,
-               run_name=None, alter_sys=False):
+
+def run_module(mod_name, init_globals=None, run_name=None, alter_sys=False):
     """Execute a module's code without importing it
 
-       Returns the resulting top level namespace dictionary
+    Returns the resulting top level namespace dictionary
     """
     mod_name, loader, code, fname = _get_module_details(mod_name)
     if run_name is None:
         run_name = mod_name
-    pkg_name = mod_name.rpartition('.')[0]
+    pkg_name = mod_name.rpartition(".")[0]
     if alter_sys:
-        return _run_module_code(code, init_globals, run_name,
-                                fname, loader, pkg_name)
+        return _run_module_code(code, init_globals, run_name, fname, loader, pkg_name)
     else:
         # Leave the sys module alone
-        return _run_code(code, {}, init_globals, run_name,
-                         fname, loader, pkg_name)
+        return _run_code(code, {}, init_globals, run_name, fname, loader, pkg_name)
+
 
 def _get_main_module_details():
     # Helper that gives a nicer error message when attempting to
@@ -185,8 +208,7 @@ def _get_main_module_details():
         return _get_module_details(main_name)
     except ImportError as exc:
         if main_name in str(exc):
-            raise ImportError("can't find %r module in %r" %
-                              (main_name, sys.path[0]))
+            raise ImportError("can't find %r module in %r" % (main_name, sys.path[0]))
         raise
 
 
@@ -220,6 +242,7 @@ def _get_importer(path_name):
         cache[path_name] = importer
     return importer
 
+
 def _get_code_from_file(fname):
     # Check for a compiled file first
     with open(fname, "rb") as f:
@@ -227,18 +250,19 @@ def _get_code_from_file(fname):
     if code is None:
         # That didn't work, so try it as normal source code
         with open(fname, "rU") as f:
-            code = compile(f.read(), fname, 'exec')
+            code = compile(f.read(), fname, "exec")
     return code
+
 
 def run_path(path_name, init_globals=None, run_name=None):
     """Execute code located at the specified filesystem location
 
-       Returns the resulting top level namespace dictionary
+    Returns the resulting top level namespace dictionary
 
-       The file path may refer directly to a Python script (i.e.
-       one that could be directly executed with execfile) or else
-       it may refer to a zipfile or directory containing a top
-       level __main__.py script.
+    The file path may refer directly to a Python script (i.e.
+    one that could be directly executed with execfile) or else
+    it may refer to a zipfile or directory containing a top
+    level __main__.py script.
     """
     if run_name is None:
         run_name = "<run_path>"
@@ -267,11 +291,11 @@ def run_path(path_name, init_globals=None, run_name=None):
             finally:
                 sys.modules[main_name] = saved_main
             pkg_name = ""
-            with _TempModule(run_name) as temp_module, \
-                 _ModifiedArgv0(path_name):
+            with _TempModule(run_name) as temp_module, _ModifiedArgv0(path_name):
                 mod_globals = temp_module.module.__dict__
-                return _run_code(code, mod_globals, init_globals,
-                                    run_name, fname, loader, pkg_name).copy()
+                return _run_code(
+                    code, mod_globals, init_globals, run_name, fname, loader, pkg_name
+                ).copy()
         finally:
             try:
                 sys.path.remove(path_name)
@@ -284,5 +308,5 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("No module specified for execution", file=sys.stderr)
     else:
-        del sys.argv[0] # Make the requested module sys.argv[0]
+        del sys.argv[0]  # Make the requested module sys.argv[0]
         _run_module_as_main(sys.argv[0])

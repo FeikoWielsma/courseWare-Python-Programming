@@ -7,7 +7,6 @@ from test import support
 
 
 class TestCase(unittest.TestCase):
-
     def test_enter(self):
         l = []
         fun = lambda x: l.append(x)
@@ -75,6 +74,7 @@ class TestCase(unittest.TestCase):
 
 def test_main():
     support.run_unittest(TestCase)
+
 
 if __name__ == "__main__":
     test_main()

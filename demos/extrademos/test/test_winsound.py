@@ -2,32 +2,37 @@
 
 import unittest
 from test import support
-support.requires('audio')
+
+support.requires("audio")
 import time
 import os
 import subprocess
 
-winsound = support.import_module('winsound')
-ctypes = support.import_module('ctypes')
+winsound = support.import_module("winsound")
+ctypes = support.import_module("ctypes")
 import winreg
+
 
 def has_sound(sound):
     """Find out if a particular event is configured with a default sound"""
     try:
         # Ask the mixer API for the number of devices it knows about.
         # When there are no devices, PlaySound will fail.
-        if ctypes.windll.winmm.mixerGetNumDevs() is 0:
+        if ctypes.windll.winmm.mixerGetNumDevs() == 0:
             return False
 
-        key = winreg.OpenKeyEx(winreg.HKEY_CURRENT_USER,
-                "AppEvents\Schemes\Apps\.Default\{0}\.Default".format(sound))
+        key = winreg.OpenKeyEx(
+            winreg.HKEY_CURRENT_USER,
+            "AppEvents\Schemes\Apps\.Default\{0}\.Default".format(sound),
+        )
         value = winreg.EnumValue(key, 0)[1]
-        if value is not "":
+        if value != "":
             return True
         else:
             return False
     except WindowsError:
         return False
+
 
 class BeepTest(unittest.TestCase):
     # As with PlaySoundTest, incorporate the _have_soundcard() check
@@ -66,8 +71,8 @@ class BeepTest(unittest.TestCase):
         except RuntimeError:
             pass
 
-class MessageBeepTest(unittest.TestCase):
 
+class MessageBeepTest(unittest.TestCase):
     def tearDown(self):
         time.sleep(0.5)
 
@@ -93,72 +98,62 @@ class MessageBeepTest(unittest.TestCase):
 
 
 class PlaySoundTest(unittest.TestCase):
-
     def test_errors(self):
         self.assertRaises(TypeError, winsound.PlaySound)
         self.assertRaises(TypeError, winsound.PlaySound, "bad", "bad")
         self.assertRaises(
             RuntimeError,
             winsound.PlaySound,
-            "none", winsound.SND_ASYNC | winsound.SND_MEMORY
+            "none",
+            winsound.SND_ASYNC | winsound.SND_MEMORY,
         )
 
-    @unittest.skipUnless(has_sound("SystemAsterisk"),
-                         "No default SystemAsterisk")
+    @unittest.skipUnless(has_sound("SystemAsterisk"), "No default SystemAsterisk")
     def test_alias_asterisk(self):
         if _have_soundcard():
-            winsound.PlaySound('SystemAsterisk', winsound.SND_ALIAS)
+            winsound.PlaySound("SystemAsterisk", winsound.SND_ALIAS)
         else:
             self.assertRaises(
-                RuntimeError,
-                winsound.PlaySound,
-                'SystemAsterisk', winsound.SND_ALIAS
+                RuntimeError, winsound.PlaySound, "SystemAsterisk", winsound.SND_ALIAS
             )
 
-    @unittest.skipUnless(has_sound("SystemExclamation"),
-                         "No default SystemExclamation")
+    @unittest.skipUnless(has_sound("SystemExclamation"), "No default SystemExclamation")
     def test_alias_exclamation(self):
         if _have_soundcard():
-            winsound.PlaySound('SystemExclamation', winsound.SND_ALIAS)
+            winsound.PlaySound("SystemExclamation", winsound.SND_ALIAS)
         else:
             self.assertRaises(
                 RuntimeError,
                 winsound.PlaySound,
-                'SystemExclamation', winsound.SND_ALIAS
+                "SystemExclamation",
+                winsound.SND_ALIAS,
             )
 
     @unittest.skipUnless(has_sound("SystemExit"), "No default SystemExit")
     def test_alias_exit(self):
         if _have_soundcard():
-            winsound.PlaySound('SystemExit', winsound.SND_ALIAS)
+            winsound.PlaySound("SystemExit", winsound.SND_ALIAS)
         else:
             self.assertRaises(
-                RuntimeError,
-                winsound.PlaySound,
-                'SystemExit', winsound.SND_ALIAS
+                RuntimeError, winsound.PlaySound, "SystemExit", winsound.SND_ALIAS
             )
 
     @unittest.skipUnless(has_sound("SystemHand"), "No default SystemHand")
     def test_alias_hand(self):
         if _have_soundcard():
-            winsound.PlaySound('SystemHand', winsound.SND_ALIAS)
+            winsound.PlaySound("SystemHand", winsound.SND_ALIAS)
         else:
             self.assertRaises(
-                RuntimeError,
-                winsound.PlaySound,
-                'SystemHand', winsound.SND_ALIAS
+                RuntimeError, winsound.PlaySound, "SystemHand", winsound.SND_ALIAS
             )
 
-    @unittest.skipUnless(has_sound("SystemQuestion"),
-                         "No default SystemQuestion")
+    @unittest.skipUnless(has_sound("SystemQuestion"), "No default SystemQuestion")
     def test_alias_question(self):
         if _have_soundcard():
-            winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)
+            winsound.PlaySound("SystemQuestion", winsound.SND_ALIAS)
         else:
             self.assertRaises(
-                RuntimeError,
-                winsound.PlaySound,
-                'SystemQuestion', winsound.SND_ALIAS
+                RuntimeError, winsound.PlaySound, "SystemQuestion", winsound.SND_ALIAS
             )
 
     def test_alias_fallback(self):
@@ -191,8 +186,7 @@ class PlaySoundTest(unittest.TestCase):
             # <wink>.
             try:
                 winsound.PlaySound(
-                    '!"$%&/(#+*',
-                    winsound.SND_ALIAS | winsound.SND_NODEFAULT
+                    '!"$%&/(#+*', winsound.SND_ALIAS | winsound.SND_NODEFAULT
                 )
             except RuntimeError:
                 pass
@@ -200,24 +194,24 @@ class PlaySoundTest(unittest.TestCase):
             self.assertRaises(
                 RuntimeError,
                 winsound.PlaySound,
-                '!"$%&/(#+*', winsound.SND_ALIAS | winsound.SND_NODEFAULT
+                '!"$%&/(#+*',
+                winsound.SND_ALIAS | winsound.SND_NODEFAULT,
             )
 
     def test_stopasync(self):
         if _have_soundcard():
             winsound.PlaySound(
-                'SystemQuestion',
-                winsound.SND_ALIAS | winsound.SND_ASYNC | winsound.SND_LOOP
+                "SystemQuestion",
+                winsound.SND_ALIAS | winsound.SND_ASYNC | winsound.SND_LOOP,
             )
             time.sleep(0.5)
             try:
                 winsound.PlaySound(
-                    'SystemQuestion',
-                    winsound.SND_ALIAS | winsound.SND_NOSTOP
+                    "SystemQuestion", winsound.SND_ALIAS | winsound.SND_NOSTOP
                 )
             except RuntimeError:
                 pass
-            else: # the first sound might already be finished
+            else:  # the first sound might already be finished
                 pass
             winsound.PlaySound(None, winsound.SND_PURGE)
         else:
@@ -233,7 +227,10 @@ def _get_cscript_path():
         if os.path.exists(cscript_path):
             return cscript_path
 
+
 __have_soundcard_cache = None
+
+
 def _have_soundcard():
     """Return True iff this computer has a soundcard."""
     global __have_soundcard_cache
@@ -244,10 +241,8 @@ def _have_soundcard():
             # to True: most computers these days *do* have a soundcard.
             return True
 
-        check_script = os.path.join(os.path.dirname(__file__),
-                                    "check_soundcard.vbs")
-        p = subprocess.Popen([cscript_path, check_script],
-                             stdout=subprocess.PIPE)
+        check_script = os.path.join(os.path.dirname(__file__), "check_soundcard.vbs")
+        p = subprocess.Popen([cscript_path, check_script], stdout=subprocess.PIPE)
         __have_soundcard_cache = not p.wait()
         p.stdout.close()
     return __have_soundcard_cache
@@ -256,5 +251,6 @@ def _have_soundcard():
 def test_main():
     support.run_unittest(BeepTest, MessageBeepTest, PlaySoundTest)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     test_main()

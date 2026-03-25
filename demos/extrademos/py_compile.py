@@ -45,16 +45,15 @@ class PyCompileError(Exception):
 
     """
 
-    def __init__(self, exc_type, exc_value, file, msg=''):
+    def __init__(self, exc_type, exc_value, file, msg=""):
         exc_type_name = exc_type.__name__
         if exc_type is SyntaxError:
-            tbtext = ''.join(traceback.format_exception_only(
-                exc_type, exc_value))
+            tbtext = "".join(traceback.format_exception_only(exc_type, exc_value))
             errmsg = tbtext.replace('File "<string>"', 'File "%s"' % file)
         else:
-            errmsg = "Sorry: %s: %s" % (exc_type_name,exc_value)
+            errmsg = "Sorry: %s: %s" % (exc_type_name, exc_value)
 
-        Exception.__init__(self,msg or errmsg,exc_type_name,exc_value,file)
+        Exception.__init__(self, msg or errmsg, exc_type_name, exc_value, file)
 
         self.exc_type_name = exc_type_name
         self.exc_value = exc_value
@@ -67,10 +66,8 @@ class PyCompileError(Exception):
 
 def wr_long(f, x):
     """Internal; write a 32-bit int to a file in little-endian order."""
-    f.write(bytes([x         & 0xff,
-                   (x >> 8)  & 0xff,
-                   (x >> 16) & 0xff,
-                   (x >> 24) & 0xff]))
+    f.write(bytes([x & 0xFF, (x >> 8) & 0xFF, (x >> 16) & 0xFF, (x >> 24) & 0xFF]))
+
 
 def compile(file, cfile=None, dfile=None, doraise=False, optimize=-1):
     """Byte-compile one Python source file to Python bytecode.
@@ -115,14 +112,15 @@ def compile(file, cfile=None, dfile=None, doraise=False, optimize=-1):
             timestamp = int(os.stat(file).st_mtime)
         codestring = f.read()
     try:
-        codeobject = builtins.compile(codestring, dfile or file, 'exec',
-                                      optimize=optimize)
+        codeobject = builtins.compile(
+            codestring, dfile or file, "exec", optimize=optimize
+        )
     except Exception as err:
         py_exc = PyCompileError(err.__class__, err, dfile or file)
         if doraise:
             raise py_exc
         else:
-            sys.stderr.write(py_exc.msg + '\n')
+            sys.stderr.write(py_exc.msg + "\n")
             return
     if cfile is None:
         if optimize >= 0:
@@ -134,14 +132,15 @@ def compile(file, cfile=None, dfile=None, doraise=False, optimize=-1):
     except OSError as error:
         if error.errno != errno.EEXIST:
             raise
-    with open(cfile, 'wb') as fc:
-        fc.write(b'\0\0\0\0')
+    with open(cfile, "wb") as fc:
+        fc.write(b"\0\0\0\0")
         wr_long(fc, timestamp)
         marshal.dump(codeobject, fc)
         fc.flush()
         fc.seek(0, 0)
         fc.write(MAGIC)
     return cfile
+
 
 def main(args=None):
     """Compile several source files.
@@ -157,12 +156,12 @@ def main(args=None):
     if args is None:
         args = sys.argv[1:]
     rv = 0
-    if args == ['-']:
+    if args == ["-"]:
         while True:
             filename = sys.stdin.readline()
             if not filename:
                 break
-            filename = filename.rstrip('\n')
+            filename = filename.rstrip("\n")
             try:
                 compile(filename, doraise=True)
             except PyCompileError as error:
@@ -180,6 +179,7 @@ def main(args=None):
                 rv = 1
                 sys.stderr.write(error.msg)
     return rv
+
 
 if __name__ == "__main__":
     sys.exit(main())

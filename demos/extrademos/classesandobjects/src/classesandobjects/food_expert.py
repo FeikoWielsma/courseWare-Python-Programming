@@ -17,7 +17,8 @@ class FoodExpert:
         else:
             return x
 
+
 f = FoodExpert()
-f.addGoodFood('Pizza')
-f.likes('Pizza')
-f.likes('Pasta')
+f.addGoodFood("Pizza")
+f.likes("Pizza")
+f.likes("Pasta")

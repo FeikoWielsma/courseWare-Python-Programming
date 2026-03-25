@@ -21,21 +21,21 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
     def show_and_raise(self):
         self.show()
         self.raise_()
 
         
-def lastWindowClosed():
-    print "lastWindowClosed"
+def last_window_closed():
+    print "last_window_closed"
 
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
 
-    QtGui.QWidget.connect(app, QtCore.SIGNAL("lastWindowClosed()"), lastWindowClosed)
+    QtGui.QWidget.connect(app, QtCore.SIGNAL("last_window_closed()"), last_window_closed)
 
     demo = Demo()
     demo.show_and_raise()

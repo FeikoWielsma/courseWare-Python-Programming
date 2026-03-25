@@ -1,10 +1,9 @@
 import sqlite3
 
-con = sqlite3.connect('cars.db')
+con = sqlite3.connect("cars.db")
 
 with con:
-    
-    cur = con.cursor()    
+    cur = con.cursor()
     cur.execute("CREATE TABLE Cars(Id INT, Name TEXT, Price INT)")
     cur.execute("INSERT INTO Cars VALUES(1,'Audi',52642)")
     cur.execute("INSERT INTO Cars VALUES(2,'Mercedes',57127)")

@@ -1,14 +1,16 @@
 from tkinter import *
 from tkinter import messagebox
 
+
 def clicked():
-    messagebox.showinfo('Message title', 'Message content')
+    messagebox.showinfo("Message title", "Message content")
 
-mainWindow = Tk()
-mainWindow.title("MessageBox Demo")
-mainWindow.geometry('500x200')
 
-btn = Button(mainWindow, text='Click here', command=clicked)
+main_window = Tk()
+main_window.title("MessageBox Demo")
+main_window.geometry("500x200")
+
+btn = Button(main_window, text="Click here", command=clicked)
 btn.grid(column=0, row=0)
 
-mainWindow.mainloop()
+main_window.mainloop()

@@ -27,46 +27,47 @@ wrapping issues, use the email.header module.
 """
 
 __all__ = [
-    'body_decode',
-    'body_encode',
-    'body_length',
-    'decode',
-    'decodestring',
-    'header_decode',
-    'header_encode',
-    'header_length',
-    'quote',
-    'unquote',
-    ]
+    "body_decode",
+    "body_encode",
+    "body_length",
+    "decode",
+    "decodestring",
+    "header_decode",
+    "header_encode",
+    "header_length",
+    "quote",
+    "unquote",
+]
 
 import re
 
 from string import ascii_letters, digits, hexdigits
 
-CRLF = '\r\n'
-NL = '\n'
-EMPTYSTRING = ''
+CRLF = "\r\n"
+NL = "\n"
+EMPTYSTRING = ""
 
 # Build a mapping of octets to the expansion of that octet.  Since we're only
 # going to have 256 of these things, this isn't terribly inefficient
 # space-wise.  Remember that headers and bodies have different sets of safe
 # characters.  Initialize both maps with the full expansion, and then override
 # the safe bytes with the more compact form.
-_QUOPRI_HEADER_MAP = dict((c, '=%02X' % c) for c in range(256))
+_QUOPRI_HEADER_MAP = dict((c, "=%02X" % c) for c in range(256))
 _QUOPRI_BODY_MAP = _QUOPRI_HEADER_MAP.copy()
 
 # Safe header bytes which need no encoding.
-for c in b'-!*+/' + ascii_letters.encode('ascii') + digits.encode('ascii'):
+for c in b"-!*+/" + ascii_letters.encode("ascii") + digits.encode("ascii"):
     _QUOPRI_HEADER_MAP[c] = chr(c)
 # Headers have one other special encoding; spaces become underscores.
-_QUOPRI_HEADER_MAP[ord(' ')] = '_'
+_QUOPRI_HEADER_MAP[ord(" ")] = "_"
 
 # Safe body bytes which need no encoding.
-for c in (b' !"#$%&\'()*+,-./0123456789:;<>'
-          b'?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`'
-          b'abcdefghijklmnopqrstuvwxyz{|}~\t'):
+for c in (
+    b" !\"#$%&'()*+,-./0123456789:;<>"
+    b"?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`"
+    b"abcdefghijklmnopqrstuvwxyz{|}~\t"
+):
     _QUOPRI_BODY_MAP[c] = chr(c)
-
 
 
 # Helpers
@@ -103,7 +104,7 @@ def body_length(bytearray):
     return sum(len(_QUOPRI_BODY_MAP[octet]) for octet in bytearray)
 
 
-def _max_append(L, s, maxlen, extra=''):
+def _max_append(L, s, maxlen, extra=""):
     if not isinstance(s, str):
         s = chr(s)
     if not L:
@@ -120,11 +121,10 @@ def unquote(s):
 
 
 def quote(c):
-    return '=%02X' % ord(c)
+    return "=%02X" % ord(c)
 
 
-
-def header_encode(header_bytes, charset='iso-8859-1'):
+def header_encode(header_bytes, charset="iso-8859-1"):
     """Encode a single header line with quoted-printable (like) encoding.
 
     Defined in RFC 2045, this `Q' encoding is similar to quoted-printable, but
@@ -144,8 +144,7 @@ def header_encode(header_bytes, charset='iso-8859-1'):
         encoded.append(_QUOPRI_HEADER_MAP[octet])
     # Now add the RFC chrome to each encoded chunk and glue the chunks
     # together.
-    return '=?%s?q?%s?=' % (charset, EMPTYSTRING.join(encoded))
-
+    return "=?%s?q?%s?=" % (charset, EMPTYSTRING.join(encoded))
 
 
 def body_encode(body, maxlinelen=76, eol=NL):
@@ -166,7 +165,7 @@ def body_encode(body, maxlinelen=76, eol=NL):
     # BAW: We're accumulating the body text by string concatenation.  That
     # can't be very efficient, but I don't have time now to rewrite it.  It
     # just feels like this algorithm could be more efficient.
-    encoded_body = ''
+    encoded_body = ""
     lineno = -1
     # Preserve line endings here so we can check later to see an eol needs to
     # be added to the output later.
@@ -179,7 +178,7 @@ def body_encode(body, maxlinelen=76, eol=NL):
             line = line[:-1]
 
         lineno += 1
-        encoded_line = ''
+        encoded_line = ""
         prev = None
         linelen = len(line)
         # Now we need to examine every character to see if it needs to be
@@ -189,39 +188,38 @@ def body_encode(body, maxlinelen=76, eol=NL):
             prev = c
             if body_check(ord(c)):
                 c = quote(c)
-            elif j+1 == linelen:
+            elif j + 1 == linelen:
                 # Check for whitespace at end of line; special case
-                if c not in ' \t':
+                if c not in " \t":
                     encoded_line += c
                 prev = c
                 continue
             # Check to see to see if the line has reached its maximum length
             if len(encoded_line) + len(c) >= maxlinelen:
-                encoded_body += encoded_line + '=' + eol
-                encoded_line = ''
+                encoded_body += encoded_line + "=" + eol
+                encoded_line = ""
             encoded_line += c
         # Now at end of line..
-        if prev and prev in ' \t':
+        if prev and prev in " \t":
             # Special case for whitespace at end of file
             if lineno + 1 == len(lines):
                 prev = quote(prev)
                 if len(encoded_line) + len(prev) > maxlinelen:
-                    encoded_body += encoded_line + '=' + eol + prev
+                    encoded_body += encoded_line + "=" + eol + prev
                 else:
                     encoded_body += encoded_line + prev
             # Just normal whitespace at end of line
             else:
-                encoded_body += encoded_line + prev + '=' + eol
-            encoded_line = ''
+                encoded_body += encoded_line + prev + "=" + eol
+            encoded_line = ""
         # Now look at the line we just finished and it has a line ending, we
         # need to add eol to the end of the line.
         if lines[lineno].endswith(CRLF) or lines[lineno][-1] in CRLF:
             encoded_body += encoded_line + eol
         else:
             encoded_body += encoded_line
-        encoded_line = ''
+        encoded_line = ""
     return encoded_body
-
 
 
 # BAW: I'm not sure if the intent was for the signature of this function to be
@@ -236,7 +234,7 @@ def decode(encoded, eol=NL):
     # BAW: see comment in encode() above.  Again, we're building up the
     # decoded string with string concatenation, which could be done much more
     # efficiently.
-    decoded = ''
+    decoded = ""
 
     for line in encoded.splitlines():
         line = line.rstrip()
@@ -248,17 +246,17 @@ def decode(encoded, eol=NL):
         n = len(line)
         while i < n:
             c = line[i]
-            if c != '=':
+            if c != "=":
                 decoded += c
                 i += 1
             # Otherwise, c == "=".  Are we at the end of the line?  If so, add
             # a soft line break.
-            elif i+1 == n:
+            elif i + 1 == n:
                 i += 1
                 continue
             # Decode if in form =AB
-            elif i+2 < n and line[i+1] in hexdigits and line[i+2] in hexdigits:
-                decoded += unquote(line[i:i+3])
+            elif i + 2 < n and line[i + 1] in hexdigits and line[i + 2] in hexdigits:
+                decoded += unquote(line[i : i + 3])
                 i += 3
             # Otherwise, not in form =AB, pass literally
             else:
@@ -278,7 +276,6 @@ body_decode = decode
 decodestring = decode
 
 
-
 def _unquote_match(match):
     """Turn a match in the form =AB to the ASCII character with value 0xab"""
     s = match.group(0)
@@ -293,5 +290,5 @@ def header_decode(s):
     quoted-printable (like =?iso-8895-1?q?Hello_World?=) -- please use
     the high level email.header class for that functionality.
     """
-    s = s.replace('_', ' ')
-    return re.sub(r'=[a-fA-F0-9]{2}', _unquote_match, s, re.ASCII)
+    s = s.replace("_", " ")
+    return re.sub(r"=[a-fA-F0-9]{2}", _unquote_match, s, re.ASCII)

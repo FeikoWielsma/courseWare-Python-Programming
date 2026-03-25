@@ -14,11 +14,11 @@ class DemoBtn(QtGui.QWidget):
         super(DemoBtn, self).__init__()
         
         x, y, w, h = 500, 200, 120, 50
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
         
         x, y, w, h = 10, 10, 96, 32
         btn = QtGui.QPushButton("Push button", self)
-        btn.setGeometry(x, y, w, h)
+        btn.set_geometry(x, y, w, h)
         btn.clicked.connect(self._btn_cb)
 
     def _btn_cb(self):

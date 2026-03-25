@@ -13,8 +13,14 @@ import xml.etree
 import textwrap
 from io import StringIO
 from contextlib import contextmanager
-from test.support import TESTFN, forget, rmtree, EnvironmentVarGuard, \
-     reap_children, captured_output
+from test.support import (
+    TESTFN,
+    forget,
+    rmtree,
+    EnvironmentVarGuard,
+    reap_children,
+    captured_output,
+)
 
 from test import pydoc_mod
 
@@ -183,7 +189,7 @@ war</tt></dd></dl>
 \x20\x20\x20\x20
 <tr><td bgcolor="#7799ee"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%%">Nobody</td></tr></table>
-""".strip() # ' <- emacs turd
+""".strip()  # ' <- emacs turd
 
 
 # output pattern for missing module
@@ -191,6 +197,7 @@ missing_pattern = "no Python documentation found for '%s'"
 
 # output pattern for module with bad imports
 badimport_pattern = "problem in %s - ImportError: No module named %s"
+
 
 def run_pydoc(module_name, *args):
     """
@@ -204,14 +211,16 @@ def run_pydoc(module_name, *args):
     finally:
         reap_children()
 
+
 def get_pydoc_html(module):
     "Returns pydoc generated output as html"
     doc = pydoc.HTMLDoc()
     output = doc.docmodule(module)
     loc = doc.getdocloc(pydoc_mod) or ""
     if loc:
-        loc = "<br><a href=\"" + loc + "\">Module Docs</a>"
+        loc = '<br><a href="' + loc + '">Module Docs</a>'
     return output.strip(), loc
+
 
 def get_pydoc_text(module):
     "Returns pydoc generated output as text"
@@ -223,18 +232,19 @@ def get_pydoc_text(module):
     output = doc.docmodule(module)
 
     # clean up the extra text formatting that pydoc performs
-    patt = re.compile('\b.')
-    output = patt.sub('', output)
+    patt = re.compile("\b.")
+    output = patt.sub("", output)
     return output.strip(), loc
+
 
 def print_diffs(text1, text2):
     "Prints unified diffs for two texts"
     # XXX now obsolete, use unittest built-in support
     lines1 = text1.splitlines(True)
     lines2 = text2.splitlines(True)
-    diffs = difflib.unified_diff(lines1, lines2, n=0, fromfile='expected',
-                                 tofile='got')
-    print('\n' + ''.join(diffs))
+    diffs = difflib.unified_diff(lines1, lines2, n=0, fromfile="expected", tofile="got")
+    print("\n" + "".join(diffs))
+
 
 def get_html_title(text):
     # Bit of hack, but good enough for test purposes
@@ -245,14 +255,15 @@ def get_html_title(text):
 
 
 class PydocDocTest(unittest.TestCase):
-
-    @unittest.skipIf(sys.flags.optimize >= 2,
-                     "Docstrings are omitted with -O2 and above")
+    @unittest.skipIf(
+        sys.flags.optimize >= 2, "Docstrings are omitted with -O2 and above"
+    )
     def test_html_doc(self):
         result, doc_loc = get_pydoc_html(pydoc_mod)
         mod_file = inspect.getabsfile(pydoc_mod)
-        if sys.platform == 'win32':
+        if sys.platform == "win32":
             import nturl2path
+
             mod_url = nturl2path.pathname2url(mod_file)
         else:
             mod_url = mod_file
@@ -261,12 +272,12 @@ class PydocDocTest(unittest.TestCase):
             print_diffs(expected_html, result)
             self.fail("outputs are not equal, see diff above")
 
-    @unittest.skipIf(sys.flags.optimize >= 2,
-                     "Docstrings are omitted with -O2 and above")
+    @unittest.skipIf(
+        sys.flags.optimize >= 2, "Docstrings are omitted with -O2 and above"
+    )
     def test_text_doc(self):
         result, doc_loc = get_pydoc_text(pydoc_mod)
-        expected_text = expected_text_pattern % \
-                        (doc_loc, inspect.getabsfile(pydoc_mod))
+        expected_text = expected_text_pattern % (doc_loc, inspect.getabsfile(pydoc_mod))
         if result != expected_text:
             print_diffs(expected_text, result)
             self.fail("outputs are not equal, see diff above")
@@ -278,24 +289,22 @@ class PydocDocTest(unittest.TestCase):
 
     def test_not_here(self):
         missing_module = "test.i_am_not_here"
-        result = str(run_pydoc(missing_module), 'ascii')
+        result = str(run_pydoc(missing_module), "ascii")
         expected = missing_pattern % missing_module
-        self.assertEqual(expected, result,
-            "documentation for missing module found")
+        self.assertEqual(expected, result, "documentation for missing module found")
 
     def test_badimport(self):
         # This tests the fix for issue 5230, where if pydoc found the module
         # but the module had an internal import error pydoc would report no doc
         # found.
-        modname = 'testmod_xyzzy'
+        modname = "testmod_xyzzy"
         testpairs = (
-            ('i_am_not_here', 'i_am_not_here'),
-            ('test.i_am_not_here_either', 'i_am_not_here_either'),
-            ('test.i_am_not_here.neither_am_i', 'i_am_not_here.neither_am_i'),
-            ('i_am_not_here.{}'.format(modname),
-             'i_am_not_here.{}'.format(modname)),
-            ('test.{}'.format(modname), modname),
-            )
+            ("i_am_not_here", "i_am_not_here"),
+            ("test.i_am_not_here_either", "i_am_not_here_either"),
+            ("test.i_am_not_here.neither_am_i", "i_am_not_here.neither_am_i"),
+            ("i_am_not_here.{}".format(modname), "i_am_not_here.{}".format(modname)),
+            ("test.{}".format(modname), modname),
+        )
 
         @contextmanager
         def newdirinpath(dir):
@@ -306,11 +315,11 @@ class PydocDocTest(unittest.TestCase):
             rmtree(dir)
 
         with newdirinpath(TESTFN), EnvironmentVarGuard() as env:
-            env['PYTHONPATH'] = TESTFN
+            env["PYTHONPATH"] = TESTFN
             fullmodname = os.path.join(TESTFN, modname)
             sourcefn = fullmodname + os.extsep + "py"
             for importstring, expectedinmsg in testpairs:
-                with open(sourcefn, 'w') as f:
+                with open(sourcefn, "w") as f:
                     f.write("import {}\n".format(importstring))
                 try:
                     result = run_pydoc(modname).decode("ascii")
@@ -321,7 +330,7 @@ class PydocDocTest(unittest.TestCase):
 
     def test_input_strip(self):
         missing_module = " test.i_am_not_here "
-        result = str(run_pydoc(missing_module), 'ascii')
+        result = str(run_pydoc(missing_module), "ascii")
         expected = missing_pattern % missing_module.strip()
         self.assertEqual(expected, result)
 
@@ -329,17 +338,21 @@ class PydocDocTest(unittest.TestCase):
         # test with strings, other implementations might have different repr()
         stripid = pydoc.stripid
         # strip the id
-        self.assertEqual(stripid('<function stripid at 0x88dcee4>'),
-                         '<function stripid>')
-        self.assertEqual(stripid('<function stripid at 0x01F65390>'),
-                         '<function stripid>')
+        self.assertEqual(
+            stripid("<function stripid at 0x88dcee4>"), "<function stripid>"
+        )
+        self.assertEqual(
+            stripid("<function stripid at 0x01F65390>"), "<function stripid>"
+        )
         # nothing to strip, return the same text
-        self.assertEqual(stripid('42'), '42')
-        self.assertEqual(stripid("<type 'exceptions.Exception'>"),
-                         "<type 'exceptions.Exception'>")
+        self.assertEqual(stripid("42"), "42")
+        self.assertEqual(
+            stripid("<type 'exceptions.Exception'>"), "<type 'exceptions.Exception'>"
+        )
 
-    @unittest.skipIf(sys.flags.optimize >= 2,
-                     'Docstrings are omitted with -O2 and above')
+    @unittest.skipIf(
+        sys.flags.optimize >= 2, "Docstrings are omitted with -O2 and above"
+    )
     def test_help_output_redirect(self):
         # issue 940286, if output is set in Helper, then all output from
         # Helper.help should be redirected
@@ -361,34 +374,37 @@ class PydocDocTest(unittest.TestCase):
 
         pydoc.getpager = getpager_new
         try:
-            with captured_output('stdout') as output, \
-                 captured_output('stderr') as err:
+            with captured_output("stdout") as output, captured_output("stderr") as err:
                 helper.help(module)
                 result = buf.getvalue().strip()
-                expected_text = expected_help_pattern % \
-                                (doc_loc, inspect.getabsfile(pydoc_mod))
-                self.assertEqual('', output.getvalue())
-                self.assertEqual('', err.getvalue())
+                expected_text = expected_help_pattern % (
+                    doc_loc,
+                    inspect.getabsfile(pydoc_mod),
+                )
+                self.assertEqual("", output.getvalue())
+                self.assertEqual("", err.getvalue())
                 self.assertEqual(expected_text, result)
         finally:
             pydoc.getpager = getpager_old
 
 
 class TestDescriptions(unittest.TestCase):
-
     def test_module(self):
         # Check that pydocfodder module can be described
         from test import pydocfodder
+
         doc = pydoc.render_doc(pydocfodder)
         self.assertIn("pydocfodder", doc)
 
     def test_class(self):
-        class C: "New-style class"
+        class C:
+            "New-style class"
+
         c = C()
 
-        self.assertEqual(pydoc.describe(C), 'class C')
-        self.assertEqual(pydoc.describe(c), 'C')
-        expected = 'C in module %s object' % __name__
+        self.assertEqual(pydoc.describe(C), "class C")
+        self.assertEqual(pydoc.describe(c), "C")
+        expected = "C in module %s object" % __name__
         self.assertIn(expected, pydoc.render_doc(c))
 
 
@@ -396,18 +412,17 @@ class PydocServerTest(unittest.TestCase):
     """Tests for pydoc._start_server"""
 
     def test_server(self):
-
         # Minimal test that starts the server, then stops it.
         def my_url_handler(url, content_type):
-            text = 'the URL sent was: (%s, %s)' % (url, content_type)
+            text = "the URL sent was: (%s, %s)" % (url, content_type)
             return text
 
         serverthread = pydoc._start_server(my_url_handler, port=0)
         starttime = time.time()
-        timeout = 1  #seconds
+        timeout = 1  # seconds
 
         while serverthread.serving:
-            time.sleep(.01)
+            time.sleep(0.01)
             if serverthread.serving and time.time() - starttime > timeout:
                 serverthread.stop()
                 break
@@ -420,8 +435,8 @@ class PydocUrlHandlerTest(unittest.TestCase):
 
     def test_content_type_err(self):
         f = pydoc._url_handler
-        self.assertRaises(TypeError, f, 'A', '')
-        self.assertRaises(TypeError, f, 'B', 'foobar')
+        self.assertRaises(TypeError, f, "A", "")
+        self.assertRaises(TypeError, f, "B", "foobar")
 
     def test_url_requests(self):
         # Test for the correct title in the html pages returned.
@@ -440,7 +455,7 @@ class PydocUrlHandlerTest(unittest.TestCase):
             ("topic?key=STRINGS", "Pydoc: TOPIC STRINGS"),
             ("foobar", "Pydoc: Error - foobar"),
             ("getfile?key=foobar", "Pydoc: Error - getfile?key=foobar"),
-            ]
+        ]
 
         for url, title in requests:
             text = pydoc._url_handler(url, "text/html")
@@ -456,11 +471,13 @@ class PydocUrlHandlerTest(unittest.TestCase):
 
 
 def test_main():
-    test.support.run_unittest(PydocDocTest,
-                              TestDescriptions,
-                              PydocServerTest,
-                              PydocUrlHandlerTest,
-                              )
+    test.support.run_unittest(
+        PydocDocTest,
+        TestDescriptions,
+        PydocServerTest,
+        PydocUrlHandlerTest,
+    )
+
 
 if __name__ == "__main__":
     test_main()

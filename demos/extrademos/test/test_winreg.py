@@ -1,19 +1,21 @@
 # Test the windows specific win32reg module.
 # Only win32reg functions not hit here: FlushKey, LoadKey and SaveKey
 
-import os, sys
+import os
+import sys
 import unittest
 from test import support
+
 threading = support.import_module("threading")
 from platform import machine
 
 # Do this first so test will be skipped if module doesn't exist
-support.import_module('winreg')
+support.import_module("winreg")
 # Now import everything
 from winreg import *
 
 try:
-    REMOTE_NAME = sys.argv[sys.argv.index("--remote")+1]
+    REMOTE_NAME = sys.argv[sys.argv.index("--remote") + 1]
 except (IndexError, ValueError):
     REMOTE_NAME = None
 
@@ -33,19 +35,19 @@ test_key_name = "SOFTWARE\\Python Registry Test Key - Delete Me"
 test_reflect_key_name = "SOFTWARE\\Classes\\Python Test Key - Delete Me"
 
 test_data = [
-    ("Int Value",     45,                                      REG_DWORD),
-    ("String Val",    "A string value",                        REG_SZ),
-    ("StringExpand",  "The path is %path%",                    REG_EXPAND_SZ),
-    ("Multi-string",  ["Lots", "of", "string", "values"],      REG_MULTI_SZ),
-    ("Raw Data",      b"binary\x00data",                       REG_BINARY),
-    ("Big String",    "x"*(2**14-1),                           REG_SZ),
-    ("Big Binary",    b"x"*(2**14),                            REG_BINARY),
+    ("Int Value", 45, REG_DWORD),
+    ("String Val", "A string value", REG_SZ),
+    ("StringExpand", "The path is %path%", REG_EXPAND_SZ),
+    ("Multi-string", ["Lots", "of", "string", "values"], REG_MULTI_SZ),
+    ("Raw Data", b"binary\x00data", REG_BINARY),
+    ("Big String", "x" * (2**14 - 1), REG_SZ),
+    ("Big Binary", b"x" * (2**14), REG_BINARY),
     # Two and three kanjis, meaning: "Japan" and "Japanese")
     ("Japanese 日本", "日本語", REG_SZ),
 ]
 
-class BaseWinregTests(unittest.TestCase):
 
+class BaseWinregTests(unittest.TestCase):
     def setUp(self):
         # Make sure that the test key is absent when the test
         # starts.
@@ -67,8 +69,7 @@ class BaseWinregTests(unittest.TestCase):
         CloseKey(hkey)
         DeleteKey(root, subkey)
 
-    def _write_test_data(self, root_key, subkeystr="sub_key",
-                         CreateKey=CreateKey):
+    def _write_test_data(self, root_key, subkeystr="sub_key", CreateKey=CreateKey):
         # Set the default value for this key.
         SetValue(root_key, test_key_name, REG_SZ, "Default value")
         key = CreateKey(root_key, test_key_name)
@@ -86,8 +87,7 @@ class BaseWinregTests(unittest.TestCase):
         self.assertEqual(nvalues, 1, "Not the correct number of values")
         nkeys, nvalues, since_mod = QueryInfoKey(sub_key)
         self.assertEqual(nkeys, 0, "Not the correct number of sub keys")
-        self.assertEqual(nvalues, len(test_data),
-                         "Not the correct number of values")
+        self.assertEqual(nvalues, len(test_data), "Not the correct number of values")
         # Close this key this way...
         # (but before we do, copy the key as an integer - this allows
         # us to test that the key really gets closed).
@@ -95,8 +95,9 @@ class BaseWinregTests(unittest.TestCase):
         CloseKey(sub_key)
         try:
             QueryInfoKey(int_sub_key)
-            self.fail("It appears the CloseKey() function does "
-                      "not close the actual key!")
+            self.fail(
+                "It appears the CloseKey() function does not close the actual key!"
+            )
         except EnvironmentError:
             pass
         # ... and close that key that way :-)
@@ -104,16 +105,18 @@ class BaseWinregTests(unittest.TestCase):
         key.Close()
         try:
             QueryInfoKey(int_key)
-            self.fail("It appears the key.Close() function "
-                      "does not close the actual key!")
+            self.fail(
+                "It appears the key.Close() function does not close the actual key!"
+            )
         except EnvironmentError:
             pass
 
     def _read_test_data(self, root_key, subkeystr="sub_key", OpenKey=OpenKey):
         # Check we can get default value for this key.
         val = QueryValue(root_key, test_key_name)
-        self.assertEqual(val, "Default value",
-                         "Registry didn't give back the correct value")
+        self.assertEqual(
+            val, "Default value", "Registry didn't give back the correct value"
+        )
 
         key = OpenKey(root_key, test_key_name)
         # Read the sub-keys
@@ -125,18 +128,22 @@ class BaseWinregTests(unittest.TestCase):
                     data = EnumValue(sub_key, index)
                 except EnvironmentError:
                     break
-                self.assertEqual(data in test_data, True,
-                                 "Didn't read back the correct test data")
+                self.assertEqual(
+                    data in test_data, True, "Didn't read back the correct test data"
+                )
                 index = index + 1
-            self.assertEqual(index, len(test_data),
-                             "Didn't read the correct number of items")
+            self.assertEqual(
+                index, len(test_data), "Didn't read the correct number of items"
+            )
             # Check I can directly access each item
             for value_name, value_data, value_type in test_data:
                 read_val, read_typ = QueryValueEx(sub_key, value_name)
-                self.assertEqual(read_val, value_data,
-                                 "Could not directly read the value")
-                self.assertEqual(read_typ, value_type,
-                                 "Could not directly read the value")
+                self.assertEqual(
+                    read_val, value_data, "Could not directly read the value"
+                )
+                self.assertEqual(
+                    read_typ, value_type, "Could not directly read the value"
+                )
         sub_key.Close()
         # Enumerate our main key.
         read_val = EnumKey(key, 0)
@@ -176,7 +183,7 @@ class BaseWinregTests(unittest.TestCase):
         try:
             key = OpenKey(root_key, test_key_name)
             self.fail("Could open the non-existent key")
-        except WindowsError: # Use this error name this time
+        except WindowsError:  # Use this error name this time
             pass
 
     def _test_all(self, root_key, subkeystr="sub_key"):
@@ -185,17 +192,18 @@ class BaseWinregTests(unittest.TestCase):
         self._delete_test_data(root_key, subkeystr)
 
     def _test_named_args(self, key, sub_key):
-        with CreateKeyEx(key=key, sub_key=sub_key, reserved=0,
-                         access=KEY_ALL_ACCESS) as ckey:
+        with CreateKeyEx(
+            key=key, sub_key=sub_key, reserved=0, access=KEY_ALL_ACCESS
+        ) as ckey:
             self.assertTrue(ckey.handle != 0)
 
-        with OpenKeyEx(key=key, sub_key=sub_key, reserved=0,
-                       access=KEY_ALL_ACCESS) as okey:
+        with OpenKeyEx(
+            key=key, sub_key=sub_key, reserved=0, access=KEY_ALL_ACCESS
+        ) as okey:
             self.assertTrue(okey.handle != 0)
 
 
 class LocalWinregTests(BaseWinregTests):
-
     def test_registry_works(self):
         self._test_all(HKEY_CURRENT_USER)
         self._test_all(HKEY_CURRENT_USER, "日本-subkey")
@@ -253,17 +261,18 @@ class LocalWinregTests(BaseWinregTests):
             def run(self):
                 with CreateKey(HKEY_CURRENT_USER, test_key_name) as key:
                     use_short = True
-                    long_string = 'x'*2000
+                    long_string = "x" * 2000
                     while not done:
-                        s = 'x' if use_short else long_string
+                        s = "x" if use_short else long_string
                         use_short = not use_short
-                        SetValue(key, 'changing_value', REG_SZ, s)
+                        SetValue(key, "changing_value", REG_SZ, s)
 
         thread = VeryActiveThread()
         thread.start()
         try:
-            with CreateKey(HKEY_CURRENT_USER,
-                           test_key_name+'\\changing_value') as key:
+            with CreateKey(
+                HKEY_CURRENT_USER, test_key_name + "\\changing_value"
+            ) as key:
                 for _ in range(1000):
                     num_subkeys, num_values, t = QueryInfoKey(key)
                     for i in range(num_values):
@@ -272,21 +281,21 @@ class LocalWinregTests(BaseWinregTests):
         finally:
             done = True
             thread.join()
-            DeleteKey(HKEY_CURRENT_USER, test_key_name+'\\changing_value')
+            DeleteKey(HKEY_CURRENT_USER, test_key_name + "\\changing_value")
             DeleteKey(HKEY_CURRENT_USER, test_key_name)
 
     def test_long_key(self):
         # Issue2810, in 2.6 and 3.1 when the key name was exactly 256
         # characters, EnumKey threw "WindowsError: More data is
         # available"
-        name = 'x'*256
+        name = "x" * 256
         try:
             with CreateKey(HKEY_CURRENT_USER, test_key_name) as key:
-                SetValue(key, name, REG_SZ, 'x')
+                SetValue(key, name, REG_SZ, "x")
                 num_subkeys, num_values, t = QueryInfoKey(key)
                 EnumKey(key, 0)
         finally:
-            DeleteKey(HKEY_CURRENT_USER, '\\'.join((test_key_name, name)))
+            DeleteKey(HKEY_CURRENT_USER, "\\".join((test_key_name, name)))
             DeleteKey(HKEY_CURRENT_USER, test_key_name)
 
     def test_dynamic_key(self):
@@ -320,7 +329,6 @@ class LocalWinregTests(BaseWinregTests):
 
 @unittest.skipUnless(REMOTE_NAME, "Skipping remote registry tests")
 class RemoteWinregTests(BaseWinregTests):
-
     def test_remote_registry_works(self):
         remote_key = ConnectRegistry(REMOTE_NAME, HKEY_CURRENT_USER)
         self._test_all(remote_key)
@@ -328,12 +336,15 @@ class RemoteWinregTests(BaseWinregTests):
 
 @unittest.skipUnless(WIN64_MACHINE, "x64 specific registry tests")
 class Win64WinregTests(BaseWinregTests):
-
     def test_named_arguments(self):
         self._test_named_args(HKEY_CURRENT_USER, test_key_name)
         # Clean up and also exercise the named arguments
-        DeleteKeyEx(key=HKEY_CURRENT_USER, sub_key=test_key_name,
-                    access=KEY_ALL_ACCESS, reserved=0)
+        DeleteKeyEx(
+            key=HKEY_CURRENT_USER,
+            sub_key=test_key_name,
+            access=KEY_ALL_ACCESS,
+            reserved=0,
+        )
 
     def test_reflection_functions(self):
         # Test that we can call the query, enable, and disable functions
@@ -352,13 +363,21 @@ class Win64WinregTests(BaseWinregTests):
         # test the differences of 32 and 64-bit keys before and after the
         # reflection occurs (ie. when the created key is closed).
         try:
-            with CreateKeyEx(HKEY_CURRENT_USER, test_reflect_key_name, 0,
-                             KEY_ALL_ACCESS | KEY_WOW64_32KEY) as created_key:
+            with CreateKeyEx(
+                HKEY_CURRENT_USER,
+                test_reflect_key_name,
+                0,
+                KEY_ALL_ACCESS | KEY_WOW64_32KEY,
+            ) as created_key:
                 self.assertNotEqual(created_key.handle, 0)
 
                 # The key should now be available in the 32-bit area
-                with OpenKey(HKEY_CURRENT_USER, test_reflect_key_name, 0,
-                             KEY_ALL_ACCESS | KEY_WOW64_32KEY) as key:
+                with OpenKey(
+                    HKEY_CURRENT_USER,
+                    test_reflect_key_name,
+                    0,
+                    KEY_ALL_ACCESS | KEY_WOW64_32KEY,
+                ) as key:
                     self.assertNotEqual(key.handle, 0)
 
                 # Write a value to what currently is only in the 32-bit area
@@ -366,14 +385,21 @@ class Win64WinregTests(BaseWinregTests):
 
                 # The key is not reflected until created_key is closed.
                 # The 64-bit version of the key should not be available yet.
-                open_fail = lambda: OpenKey(HKEY_CURRENT_USER,
-                                            test_reflect_key_name, 0,
-                                            KEY_READ | KEY_WOW64_64KEY)
+                open_fail = lambda: OpenKey(
+                    HKEY_CURRENT_USER,
+                    test_reflect_key_name,
+                    0,
+                    KEY_READ | KEY_WOW64_64KEY,
+                )
                 self.assertRaises(WindowsError, open_fail)
 
             # Now explicitly open the 64-bit version of the key
-            with OpenKey(HKEY_CURRENT_USER, test_reflect_key_name, 0,
-                         KEY_ALL_ACCESS | KEY_WOW64_64KEY) as key:
+            with OpenKey(
+                HKEY_CURRENT_USER,
+                test_reflect_key_name,
+                0,
+                KEY_ALL_ACCESS | KEY_WOW64_64KEY,
+            ) as key:
                 self.assertNotEqual(key.handle, 0)
                 # Make sure the original value we set is there
                 self.assertEqual("32KEY", QueryValue(key, ""))
@@ -382,19 +408,23 @@ class Win64WinregTests(BaseWinregTests):
 
             # Reflection uses a "last-writer wins policy, so the value we set
             # on the 64-bit key should be the same on 32-bit
-            with OpenKey(HKEY_CURRENT_USER, test_reflect_key_name, 0,
-                         KEY_READ | KEY_WOW64_32KEY) as key:
+            with OpenKey(
+                HKEY_CURRENT_USER, test_reflect_key_name, 0, KEY_READ | KEY_WOW64_32KEY
+            ) as key:
                 self.assertEqual("64KEY", QueryValue(key, ""))
         finally:
-            DeleteKeyEx(HKEY_CURRENT_USER, test_reflect_key_name,
-                        KEY_WOW64_32KEY, 0)
+            DeleteKeyEx(HKEY_CURRENT_USER, test_reflect_key_name, KEY_WOW64_32KEY, 0)
 
     @unittest.skipUnless(HAS_REFLECTION, "OS doesn't support reflection")
     def test_disable_reflection(self):
         # Make use of a key which gets redirected and reflected
         try:
-            with CreateKeyEx(HKEY_CURRENT_USER, test_reflect_key_name, 0,
-                             KEY_ALL_ACCESS | KEY_WOW64_32KEY) as created_key:
+            with CreateKeyEx(
+                HKEY_CURRENT_USER,
+                test_reflect_key_name,
+                0,
+                KEY_ALL_ACCESS | KEY_WOW64_32KEY,
+            ) as created_key:
                 # QueryReflectionKey returns whether or not the key is disabled
                 disabled = QueryReflectionKey(created_key)
                 self.assertEqual(type(disabled), bool)
@@ -406,26 +436,28 @@ class Win64WinregTests(BaseWinregTests):
 
             # The key is now closed and would normally be reflected to the
             # 64-bit area, but let's make sure that didn't happen.
-            open_fail = lambda: OpenKeyEx(HKEY_CURRENT_USER,
-                                          test_reflect_key_name, 0,
-                                          KEY_READ | KEY_WOW64_64KEY)
+            open_fail = lambda: OpenKeyEx(
+                HKEY_CURRENT_USER, test_reflect_key_name, 0, KEY_READ | KEY_WOW64_64KEY
+            )
             self.assertRaises(WindowsError, open_fail)
 
             # Make sure the 32-bit key is actually there
-            with OpenKeyEx(HKEY_CURRENT_USER, test_reflect_key_name, 0,
-                           KEY_READ | KEY_WOW64_32KEY) as key:
+            with OpenKeyEx(
+                HKEY_CURRENT_USER, test_reflect_key_name, 0, KEY_READ | KEY_WOW64_32KEY
+            ) as key:
                 self.assertNotEqual(key.handle, 0)
         finally:
-            DeleteKeyEx(HKEY_CURRENT_USER, test_reflect_key_name,
-                        KEY_WOW64_32KEY, 0)
+            DeleteKeyEx(HKEY_CURRENT_USER, test_reflect_key_name, KEY_WOW64_32KEY, 0)
 
 
 def test_main():
-    support.run_unittest(LocalWinregTests, RemoteWinregTests,
-                         Win64WinregTests)
+    support.run_unittest(LocalWinregTests, RemoteWinregTests, Win64WinregTests)
+
 
 if __name__ == "__main__":
     if not REMOTE_NAME:
-        print("Remote registry calls can be tested using",
-              "'test_winreg.py --remote \\\\machine_name'")
+        print(
+            "Remote registry calls can be tested using",
+            "'test_winreg.py --remote \\\\machine_name'",
+        )
     test_main()

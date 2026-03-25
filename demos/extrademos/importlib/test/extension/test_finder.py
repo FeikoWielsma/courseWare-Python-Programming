@@ -2,15 +2,14 @@ from importlib import _bootstrap
 from .. import abc
 from . import util
 
-import unittest
 
 class FinderTests(abc.FinderTests):
-
     """Test the finder for extension modules."""
 
     def find_module(self, fullname):
-        importer = _bootstrap._FileFinder(util.PATH,
-                                          _bootstrap._ExtensionFinderDetails())
+        importer = _bootstrap._FileFinder(
+            util.PATH, _bootstrap._ExtensionFinderDetails()
+        )
         return importer.find_module(fullname)
 
     def test_module(self):
@@ -33,15 +32,16 @@ class FinderTests(abc.FinderTests):
         pass
 
     def test_failure(self):
-        self.assertTrue(self.find_module('asdfjkl;') is None)
+        self.assertTrue(self.find_module("asdfjkl;") is None)
 
     # XXX Raise an exception if someone tries to use the 'path' argument?
 
 
 def test_main():
     from test.support import run_unittest
+
     run_unittest(FinderTests)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_main()

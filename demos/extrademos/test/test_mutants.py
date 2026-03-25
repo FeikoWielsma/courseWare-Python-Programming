@@ -44,6 +44,7 @@ mutate = 0
 # dict, it picks one of {dict1, dict2} at random, and deletes a random
 # entry from it; or, more rarely, adds a random element.
 
+
 def maybe_mutate():
     global mutate
     if not mutate:
@@ -58,7 +59,7 @@ def maybe_mutate():
 
     if random.random() < 0.2:
         # Insert a new key.
-        mutate = 0   # disable mutation until key inserted
+        mutate = 0  # disable mutation until key inserted
         while 1:
             newkey = Horrid(random.randrange(100))
             if newkey not in target:
@@ -69,15 +70,17 @@ def maybe_mutate():
 
     elif keys:
         # Delete a key at random.
-        mutate = 0   # disable mutation until key deleted
+        mutate = 0  # disable mutation until key deleted
         i = random.randrange(len(keys))
         key = keys[i]
         del target[key]
         del keys[i]
         mutate = 1
 
+
 # A horrid class that triggers random mutations of dict1 and dict2 when
 # instances are compared.
+
 
 class Horrid:
     def __init__(self, i):
@@ -96,7 +99,7 @@ class Horrid:
         return self.hashcode
 
     def __eq__(self, other):
-        maybe_mutate()   # The point of the test.
+        maybe_mutate()  # The point of the test.
         return self.i == other.i
 
     def __ne__(self, other):
@@ -107,21 +110,24 @@ class Horrid:
     def __repr__(self):
         return "Horrid(%d)" % self.i
 
+
 # Fill dict d with numentries (Horrid(i), Horrid(j)) key-value pairs,
 # where i and j are selected at random from the candidates list.
 # Return d.keys() after filling.
 
+
 def fill_dict(d, candidates, numentries):
     d.clear()
     for i in range(numentries):
-        d[Horrid(random.choice(candidates))] = \
-            Horrid(random.choice(candidates))
+        d[Horrid(random.choice(candidates))] = Horrid(random.choice(candidates))
     return list(d.keys())
+
 
 # Test one pair of randomly generated dicts, each with n entries.
 # Note that dict comparison is trivial if they don't have the same number
 # of entires (then the "shorter" dict is instantly considered to be the
 # smaller one, without even looking at the entries).
+
 
 def test_one(n):
     global mutate, dict1, dict2, dict1keys, dict2keys
@@ -135,13 +141,14 @@ def test_one(n):
     # same size.
     mutate = 1
     if verbose:
-        print("trying w/ lengths", len(dict1), len(dict2), end=' ')
+        print("trying w/ lengths", len(dict1), len(dict2), end=" ")
     while dict1 and len(dict1) == len(dict2):
         if verbose:
-            print(".", end=' ')
+            print(".", end=" ")
         c = dict1 == dict2
     if verbose:
         print()
+
 
 # Run test_one n times.  At the start (before the bugs were fixed), 20
 # consecutive runs of this test each blew up on or before the sixth time
@@ -151,9 +158,11 @@ def test_one(n):
 # code doesn't hold on to refcounts *too* long (in which case memory would
 # leak).
 
+
 def test(n):
     for i in range(n):
         test_one(random.randrange(1, 100))
+
 
 # See last comment block for clues about good values for n.
 test(100)
@@ -161,9 +170,11 @@ test(100)
 ##########################################################################
 # Another segfault bug, distilled by Michael Hudson from a c.l.py post.
 
+
 class Child:
     def __init__(self, parent):
-        self.__dict__['parent'] = parent
+        self.__dict__["parent"] = parent
+
     def __getattr__(self, attr):
         self.parent.a = 1
         self.parent.b = 1
@@ -176,9 +187,11 @@ class Child:
         self.parent.i = 1
         return getattr(self.parent, attr)
 
+
 class Parent:
     def __init__(self):
         self.a = Child(self)
+
 
 # Hard to say what this will print!  May vary from time to time.  But
 # we're specifically trying to test the tp_print slot here, and this is
@@ -201,6 +214,7 @@ for i in range(1, 10):
 
 f = open(TESTFN, "w")
 
+
 class Machiavelli:
     def __repr__(self):
         dict.clear()
@@ -213,6 +227,7 @@ class Machiavelli:
 
     def __hash__(self):
         return 0
+
 
 dict[Machiavelli()] = Machiavelli()
 
@@ -231,6 +246,7 @@ dict = {}
 for i in range(1, 10):
     dict[i] = i
 
+
 class Machiavelli2:
     def __eq__(self, other):
         dict.clear()
@@ -238,6 +254,7 @@ class Machiavelli2:
 
     def __hash__(self):
         return 0
+
 
 dict[Machiavelli2()] = Machiavelli2()
 
@@ -257,6 +274,7 @@ dict = {}
 for i in range(1, 10):
     dict[i] = i
 
+
 class Machiavelli3:
     def __init__(self, id):
         self.id = id
@@ -269,10 +287,11 @@ class Machiavelli3:
             return 0
 
     def __repr__(self):
-        return "%s(%s)"%(self.__class__.__name__, self.id)
+        return "%s(%s)" % (self.__class__.__name__, self.id)
 
     def __hash__(self):
         return 0
+
 
 dict[Machiavelli3(1)] = Machiavelli3(0)
 dict[Machiavelli3(2)] = Machiavelli3(0)

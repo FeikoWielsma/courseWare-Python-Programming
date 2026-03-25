@@ -33,18 +33,17 @@ class MimeTypesTestCase(unittest.TestCase):
         eq = self.assertEqual
         sio = io.StringIO("x-application/x-unittest pyunit\n")
         self.db.readfp(sio)
-        eq(self.db.guess_type("foo.pyunit"),
-           ("x-application/x-unittest", None))
+        eq(self.db.guess_type("foo.pyunit"), ("x-application/x-unittest", None))
         eq(self.db.guess_extension("x-application/x-unittest"), ".pyunit")
 
     def test_non_standard_types(self):
         eq = self.assertEqual
         # First try strict
-        eq(self.db.guess_type('foo.xul', strict=True), (None, None))
-        eq(self.db.guess_extension('image/jpg', strict=True), None)
+        eq(self.db.guess_type("foo.xul", strict=True), (None, None))
+        eq(self.db.guess_extension("image/jpg", strict=True), None)
         # And then non-strict
-        eq(self.db.guess_type('foo.xul', strict=False), ('text/xul', None))
-        eq(self.db.guess_extension('image/jpg', strict=False), '.jpg')
+        eq(self.db.guess_type("foo.xul", strict=False), ("text/xul", None))
+        eq(self.db.guess_extension("image/jpg", strict=False), ".jpg")
 
     def test_guess_all_types(self):
         eq = self.assertEqual
@@ -52,14 +51,14 @@ class MimeTypesTestCase(unittest.TestCase):
         # First try strict.  Use a set here for testing the results because if
         # test_urllib2 is run before test_mimetypes, global state is modified
         # such that the 'all' set will have more items in it.
-        all = set(self.db.guess_all_extensions('text/plain', strict=True))
-        unless(all >= set(['.bat', '.c', '.h', '.ksh', '.pl', '.txt']))
+        all = set(self.db.guess_all_extensions("text/plain", strict=True))
+        unless(all >= set([".bat", ".c", ".h", ".ksh", ".pl", ".txt"]))
         # And now non-strict
-        all = self.db.guess_all_extensions('image/jpg', strict=False)
+        all = self.db.guess_all_extensions("image/jpg", strict=False)
         all.sort()
-        eq(all, ['.jpg'])
+        eq(all, [".jpg"])
         # And now for no hits
-        all = self.db.guess_all_extensions('image/jpg', strict=True)
+        all = self.db.guess_all_extensions("image/jpg", strict=True)
         eq(all, [])
 
 
@@ -86,9 +85,7 @@ class Win32MimeTypesTestCase(unittest.TestCase):
 
 
 def test_main():
-    support.run_unittest(MimeTypesTestCase,
-        Win32MimeTypesTestCase
-        )
+    support.run_unittest(MimeTypesTestCase, Win32MimeTypesTestCase)
 
 
 if __name__ == "__main__":

@@ -7,10 +7,16 @@ TabbedPageSet -- A Tkinter implementation of a tabbed-page widget.
 TabSet -- A widget containing tabs (buttons) in one or more rows.
 
 """
+
 from tkinter import *
 
-class InvalidNameError(Exception): pass
-class AlreadyExistsError(Exception): pass
+
+class InvalidNameError(Exception):
+    pass
+
+
+class AlreadyExistsError(Exception):
+    pass
 
 
 class TabSet(Frame):
@@ -19,9 +25,17 @@ class TabSet(Frame):
     Only one tab may be selected at a time.
 
     """
-    def __init__(self, page_set, select_command,
-                 tabs=None, n_rows=1, max_tabs_per_row=5,
-                 expand_tabs=False, **kw):
+
+    def __init__(
+        self,
+        page_set,
+        select_command,
+        tabs=None,
+        n_rows=1,
+        max_tabs_per_row=5,
+        expand_tabs=False,
+        **kw,
+    ):
         """Constructor arguments:
 
         select_command -- A callable which will be called when a tab is
@@ -58,9 +72,13 @@ class TabSet(Frame):
         self._selected_tab = None
         self._tab_rows = []
 
-        self.padding_frame = Frame(self, height=2,
-                                   borderwidth=0, relief=FLAT,
-                                   background=self.cget('background'))
+        self.padding_frame = Frame(
+            self,
+            height=2,
+            borderwidth=0,
+            relief=FLAT,
+            background=self.cget("background"),
+        )
         self.padding_frame.pack(side=TOP, fill=X, expand=False)
 
         self._arrange_tabs()
@@ -70,14 +88,14 @@ class TabSet(Frame):
         if not tab_name:
             raise InvalidNameError("Invalid Tab name: '%s'" % tab_name)
         if tab_name in self._tab_names:
-            raise AlreadyExistsError("Tab named '%s' already exists" %tab_name)
+            raise AlreadyExistsError("Tab named '%s' already exists" % tab_name)
 
         self._tab_names.append(tab_name)
         self._arrange_tabs()
 
     def remove_tab(self, tab_name):
         """Remove the tab named <tab_name>"""
-        if not tab_name in self._tab_names:
+        if tab_name not in self._tab_names:
             raise KeyError("No such Tab: '%s" % page_name)
 
         self._tab_names.remove(tab_name)
@@ -114,8 +132,7 @@ class TabSet(Frame):
         self._tab_rows.append(tab_row)
 
         for tab_name in tab_names:
-            tab = TabSet.TabButton(tab_name, self.select_command,
-                                   tab_row, self)
+            tab = TabSet.TabButton(tab_name, self.select_command, tab_row, self)
             if expand_tabs:
                 tab.pack(side=LEFT, fill=X, expand=True)
             else:
@@ -158,11 +175,11 @@ class TabSet(Frame):
 
         # not expanding the tabs with more than one row is very ugly
         expand_tabs = self.expand_tabs or n_rows > 1
-        i = 0 # index in self._tab_names
+        i = 0  # index in self._tab_names
         for row_index in range(n_rows):
             # calculate required number of tabs in this row
             n_tabs = (len(self._tab_names) - i - 1) // (n_rows - row_index) + 1
-            tab_names = self._tab_names[i:i + n_tabs]
+            tab_names = self._tab_names[i : i + n_tabs]
             i += n_tabs
             self._add_tab_row(tab_names, expand_tabs)
 
@@ -175,7 +192,7 @@ class TabSet(Frame):
     class TabButton(Frame):
         """A simple tab-like widget."""
 
-        bw = 2 # borderwidth
+        bw = 2  # borderwidth
 
         def __init__(self, name, select_command, tab_row, tab_set):
             """Constructor arguments:
@@ -194,9 +211,17 @@ class TabSet(Frame):
             self.is_last_in_row = False
 
             self.button = Radiobutton(
-                self, text=name, command=self._select_event,
-                padx=5, pady=1, takefocus=FALSE, indicatoron=FALSE,
-                highlightthickness=0, selectcolor='', borderwidth=0)
+                self,
+                text=name,
+                command=self._select_event,
+                padx=5,
+                pady=1,
+                takefocus=FALSE,
+                indicatoron=FALSE,
+                highlightthickness=0,
+                selectcolor="",
+                borderwidth=0,
+            )
             self.button.pack(side=LEFT, fill=X, expand=True)
 
             self._init_masks()
@@ -226,64 +251,87 @@ class TabSet(Frame):
 
         def _init_masks(self):
             page_set = self.tab_set.page_set
-            background = page_set.pages_frame.cget('background')
+            background = page_set.pages_frame.cget("background")
             # mask replaces the middle of the border with the background color
-            self.mask = Frame(page_set, borderwidth=0, relief=FLAT,
-                              background=background)
+            self.mask = Frame(
+                page_set, borderwidth=0, relief=FLAT, background=background
+            )
             # mskl replaces the bottom-left corner of the border with a normal
             # left border
-            self.mskl = Frame(page_set, borderwidth=0, relief=FLAT,
-                              background=background)
-            self.mskl.ml = Frame(self.mskl, borderwidth=self.bw,
-                                 relief=RAISED)
-            self.mskl.ml.place(x=0, y=-self.bw,
-                               width=2*self.bw, height=self.bw*4)
+            self.mskl = Frame(
+                page_set, borderwidth=0, relief=FLAT, background=background
+            )
+            self.mskl.ml = Frame(self.mskl, borderwidth=self.bw, relief=RAISED)
+            self.mskl.ml.place(x=0, y=-self.bw, width=2 * self.bw, height=self.bw * 4)
             # mskr replaces the bottom-right corner of the border with a normal
             # right border
-            self.mskr = Frame(page_set, borderwidth=0, relief=FLAT,
-                              background=background)
-            self.mskr.mr = Frame(self.mskr, borderwidth=self.bw,
-                                 relief=RAISED)
+            self.mskr = Frame(
+                page_set, borderwidth=0, relief=FLAT, background=background
+            )
+            self.mskr.mr = Frame(self.mskr, borderwidth=self.bw, relief=RAISED)
 
         def _place_masks(self, selected=False):
             height = self.bw
             if selected:
                 height += self.bw
 
-            self.mask.place(in_=self,
-                            relx=0.0, x=0,
-                            rely=1.0, y=0,
-                            relwidth=1.0, width=0,
-                            relheight=0.0, height=height)
+            self.mask.place(
+                in_=self,
+                relx=0.0,
+                x=0,
+                rely=1.0,
+                y=0,
+                relwidth=1.0,
+                width=0,
+                relheight=0.0,
+                height=height,
+            )
 
-            self.mskl.place(in_=self,
-                            relx=0.0, x=-self.bw,
-                            rely=1.0, y=0,
-                            relwidth=0.0, width=self.bw,
-                            relheight=0.0, height=height)
+            self.mskl.place(
+                in_=self,
+                relx=0.0,
+                x=-self.bw,
+                rely=1.0,
+                y=0,
+                relwidth=0.0,
+                width=self.bw,
+                relheight=0.0,
+                height=height,
+            )
 
             page_set = self.tab_set.page_set
-            if selected and ((not self.is_last_in_row) or
-                             (self.winfo_rootx() + self.winfo_width() <
-                              page_set.winfo_rootx() + page_set.winfo_width())
-                             ):
+            if selected and (
+                (not self.is_last_in_row)
+                or (
+                    self.winfo_rootx() + self.winfo_width()
+                    < page_set.winfo_rootx() + page_set.winfo_width()
+                )
+            ):
                 # for a selected tab, if its rightmost edge isn't on the
                 # rightmost edge of the page set, the right mask should be one
                 # borderwidth shorter (vertically)
                 height -= self.bw
 
-            self.mskr.place(in_=self,
-                            relx=1.0, x=0,
-                            rely=1.0, y=0,
-                            relwidth=0.0, width=self.bw,
-                            relheight=0.0, height=height)
+            self.mskr.place(
+                in_=self,
+                relx=1.0,
+                x=0,
+                rely=1.0,
+                y=0,
+                relwidth=0.0,
+                width=self.bw,
+                relheight=0.0,
+                height=height,
+            )
 
-            self.mskr.mr.place(x=-self.bw, y=-self.bw,
-                               width=2*self.bw, height=height + self.bw*2)
+            self.mskr.mr.place(
+                x=-self.bw, y=-self.bw, width=2 * self.bw, height=height + self.bw * 2
+            )
 
             # finally, lower the tab set so that all of the frames we just
             # placed hide it
             self.tab_set.lower()
+
 
 class TabbedPageSet(Frame):
     """A Tkinter tabbed-pane widget.
@@ -302,12 +350,14 @@ class TabbedPageSet(Frame):
     remove_page() methods.
 
     """
+
     class Page(object):
         """Abstract base class for TabbedPageSet's pages.
 
         Subclasses must override the _show() and _hide() methods.
 
         """
+
         uses_grid = False
 
         def __init__(self, page_set):
@@ -321,6 +371,7 @@ class TabbedPageSet(Frame):
 
     class PageRemove(Page):
         """Page class using the grid placement manager's "remove" mechanism."""
+
         uses_grid = True
 
         def _show(self):
@@ -331,6 +382,7 @@ class TabbedPageSet(Frame):
 
     class PageLift(Page):
         """Page class using the grid placement manager's "lift" mechanism."""
+
         uses_grid = True
 
         def __init__(self, page_set):
@@ -346,15 +398,23 @@ class TabbedPageSet(Frame):
 
     class PagePackForget(Page):
         """Page class using the pack placement manager's "forget" mechanism."""
+
         def _show(self):
             self.frame.pack(fill=BOTH, expand=True)
 
         def _hide(self):
             self.frame.pack_forget()
 
-    def __init__(self, parent, page_names=None, page_class=PageLift,
-                 n_rows=1, max_tabs_per_row=5, expand_tabs=False,
-                 **kw):
+    def __init__(
+        self,
+        parent,
+        page_names=None,
+        page_class=PageLift,
+        n_rows=1,
+        max_tabs_per_row=5,
+        expand_tabs=False,
+        **kw,
+    ):
         """Constructor arguments:
 
         page_names -- A list of strings, each will be the dictionary key to a
@@ -402,9 +462,13 @@ class TabbedPageSet(Frame):
             self.pages_frame.rowconfigure(0, weight=1)
 
         # the order of the following commands is important
-        self._tab_set = TabSet(self, self.change_page, n_rows=n_rows,
-                               max_tabs_per_row=max_tabs_per_row,
-                               expand_tabs=expand_tabs)
+        self._tab_set = TabSet(
+            self,
+            self.change_page,
+            n_rows=n_rows,
+            max_tabs_per_row=max_tabs_per_row,
+            expand_tabs=expand_tabs,
+        )
         if page_names:
             for name in page_names:
                 self.add_page(name)
@@ -417,20 +481,19 @@ class TabbedPageSet(Frame):
         if not page_name:
             raise InvalidNameError("Invalid TabPage name: '%s'" % page_name)
         if page_name in self.pages:
-            raise AlreadyExistsError(
-                "TabPage named '%s' already exists" % page_name)
+            raise AlreadyExistsError("TabPage named '%s' already exists" % page_name)
 
         self.pages[page_name] = self.page_class(self.pages_frame)
         self._pages_order.append(page_name)
         self._tab_set.add_tab(page_name)
 
-        if len(self.pages) == 1: # adding first page
+        if len(self.pages) == 1:  # adding first page
             self._default_page = page_name
             self.change_page(page_name)
 
     def remove_page(self, page_name):
         """Destroy the page whose name is given in page_name."""
-        if not page_name in self.pages:
+        if page_name not in self.pages:
             raise KeyError("No such TabPage: '%s" % page_name)
 
         self._pages_order.remove(page_name)
@@ -467,22 +530,28 @@ class TabbedPageSet(Frame):
 
         self._tab_set.set_selected_tab(page_name)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     # test dialog
-    root=Tk()
-    tabPage=TabbedPageSet(root, page_names=['Foobar','Baz'], n_rows=0,
-                          expand_tabs=False,
-                          )
+    root = Tk()
+    tabPage = TabbedPageSet(
+        root,
+        page_names=["Foobar", "Baz"],
+        n_rows=0,
+        expand_tabs=False,
+    )
     tabPage.pack(side=TOP, expand=TRUE, fill=BOTH)
-    Label(tabPage.pages['Foobar'].frame, text='Foo', pady=20).pack()
-    Label(tabPage.pages['Foobar'].frame, text='Bar', pady=20).pack()
-    Label(tabPage.pages['Baz'].frame, text='Baz').pack()
-    entryPgName=Entry(root)
-    buttonAdd=Button(root, text='Add Page',
-            command=lambda:tabPage.add_page(entryPgName.get()))
-    buttonRemove=Button(root, text='Remove Page',
-            command=lambda:tabPage.remove_page(entryPgName.get()))
-    labelPgName=Label(root, text='name of page to add/remove:')
+    Label(tabPage.pages["Foobar"].frame, text="Foo", pady=20).pack()
+    Label(tabPage.pages["Foobar"].frame, text="Bar", pady=20).pack()
+    Label(tabPage.pages["Baz"].frame, text="Baz").pack()
+    entryPgName = Entry(root)
+    buttonAdd = Button(
+        root, text="Add Page", command=lambda: tabPage.add_page(entryPgName.get())
+    )
+    buttonRemove = Button(
+        root, text="Remove Page", command=lambda: tabPage.remove_page(entryPgName.get())
+    )
+    labelPgName = Label(root, text="name of page to add/remove:")
     buttonAdd.pack(padx=5, pady=5)
     buttonRemove.pack(padx=5, pady=5)
     labelPgName.pack(padx=5)

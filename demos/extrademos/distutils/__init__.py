@@ -14,6 +14,6 @@ __revision__ = "$Id: __init__.py 88445 2011-02-20 10:29:04Z georg.brandl $"
 #
 # Updated automatically by the Python release process.
 #
-#--start constants--
+# --start constants--
 __version__ = "3.2"
-#--end constants--
+# --end constants--

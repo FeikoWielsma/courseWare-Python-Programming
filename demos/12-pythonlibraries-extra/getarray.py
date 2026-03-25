@@ -6,7 +6,7 @@ import sys
 import array
 
 # Preallocate the array
-a = array.array("I",[0])*10000000
+a = array.array("I", [0]) * 10000000
 
 # Read it.  Note: buffer is the binary mode file underlying the text stream
 sys.stdin.buffer.readinto(a)

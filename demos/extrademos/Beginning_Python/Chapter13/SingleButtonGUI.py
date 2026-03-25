@@ -1,18 +1,19 @@
 #!/usr/bin/env python
-import findgtk
 import gtk
+
 
 class SingleButtonGUI:
     def __init__(self, msg="Hello World"):
-        #Set up the window and the button within.
-        self.window=gtk.Window()
-        self.button=gtk.Button(msg)
+        # Set up the window and the button within.
+        self.window = gtk.Window()
+        self.button = gtk.Button(msg)
         self.window.add(self.button)
 
-        #Show the GUI
+        # Show the GUI
         self.button.show()
         self.window.show()
 
-if __name__ == '__main__':    
+
+if __name__ == "__main__":
     SingleButtonGUI()
     gtk.main()

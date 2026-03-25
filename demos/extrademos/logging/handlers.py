@@ -24,7 +24,13 @@ Copyright (C) 2001-2010 Vinay Sajip. All Rights Reserved.
 To use, simply 'import logging.handlers' and log away!
 """
 
-import logging, socket, os, pickle, struct, time, re
+import logging
+import socket
+import os
+import pickle
+import struct
+import time
+import re
 from stat import ST_DEV, ST_INO, ST_MTIME
 
 try:
@@ -36,14 +42,15 @@ except ImportError:
 # Some constants...
 #
 
-DEFAULT_TCP_LOGGING_PORT    = 9020
-DEFAULT_UDP_LOGGING_PORT    = 9021
-DEFAULT_HTTP_LOGGING_PORT   = 9022
-DEFAULT_SOAP_LOGGING_PORT   = 9023
-SYSLOG_UDP_PORT             = 514
-SYSLOG_TCP_PORT             = 514
+DEFAULT_TCP_LOGGING_PORT = 9020
+DEFAULT_UDP_LOGGING_PORT = 9021
+DEFAULT_HTTP_LOGGING_PORT = 9022
+DEFAULT_SOAP_LOGGING_PORT = 9023
+SYSLOG_UDP_PORT = 514
+SYSLOG_TCP_PORT = 514
 
 _MIDNIGHT = 24 * 60 * 60  # number of seconds in a day
+
 
 class BaseRotatingHandler(logging.FileHandler):
     """
@@ -51,6 +58,7 @@ class BaseRotatingHandler(logging.FileHandler):
     Not meant to be instantiated directly.  Instead, use RotatingFileHandler
     or TimedRotatingFileHandler.
     """
+
     def __init__(self, filename, mode, encoding=None, delay=0):
         """
         Use the specified filename for streamed logging
@@ -77,12 +85,16 @@ class BaseRotatingHandler(logging.FileHandler):
         except:
             self.handleError(record)
 
+
 class RotatingFileHandler(BaseRotatingHandler):
     """
     Handler for logging to a set of files, which switches from one file
     to the next when the current file reaches a certain size.
     """
-    def __init__(self, filename, mode='a', maxBytes=0, backupCount=0, encoding=None, delay=0):
+
+    def __init__(
+        self, filename, mode="a", maxBytes=0, backupCount=0, encoding=None, delay=0
+    ):
         """
         Open the specified file and use it as the stream for logging.
 
@@ -109,7 +121,7 @@ class RotatingFileHandler(BaseRotatingHandler):
         # lost if the 'w' is respected, because the log file would be truncated
         # on each run.
         if maxBytes > 0:
-            mode = 'a'
+            mode = "a"
         BaseRotatingHandler.__init__(self, filename, mode, encoding, delay)
         self.maxBytes = maxBytes
         self.backupCount = backupCount
@@ -133,7 +145,7 @@ class RotatingFileHandler(BaseRotatingHandler):
             if os.path.exists(dfn):
                 os.remove(dfn)
             os.rename(self.baseFilename, dfn)
-        self.mode = 'w'
+        self.mode = "w"
         self.stream = self._open()
 
     def shouldRollover(self, record):
@@ -143,14 +155,15 @@ class RotatingFileHandler(BaseRotatingHandler):
         Basically, see if the supplied record would cause the file to exceed
         the size limit we have.
         """
-        if self.stream is None:                 # delay was set...
+        if self.stream is None:  # delay was set...
             self.stream = self._open()
-        if self.maxBytes > 0:                   # are we rolling over?
+        if self.maxBytes > 0:  # are we rolling over?
             msg = "%s\n" % self.format(record)
-            self.stream.seek(0, 2)  #due to non-posix-compliant Windows feature
+            self.stream.seek(0, 2)  # due to non-posix-compliant Windows feature
             if self.stream.tell() + len(msg) >= self.maxBytes:
                 return 1
         return 0
+
 
 class TimedRotatingFileHandler(BaseRotatingHandler):
     """
@@ -160,8 +173,18 @@ class TimedRotatingFileHandler(BaseRotatingHandler):
     If backupCount is > 0, when rollover is done, no more than backupCount
     files are kept - the oldest ones are deleted.
     """
-    def __init__(self, filename, when='h', interval=1, backupCount=0, encoding=None, delay=False, utc=False):
-        BaseRotatingHandler.__init__(self, filename, 'a', encoding, delay)
+
+    def __init__(
+        self,
+        filename,
+        when="h",
+        interval=1,
+        backupCount=0,
+        encoding=None,
+        delay=False,
+        utc=False,
+    ):
+        BaseRotatingHandler.__init__(self, filename, "a", encoding, delay)
         self.when = when.upper()
         self.backupCount = backupCount
         self.utc = utc
@@ -177,28 +200,33 @@ class TimedRotatingFileHandler(BaseRotatingHandler):
         #
         # Case of the 'when' specifier is not important; lower or upper case
         # will work.
-        if self.when == 'S':
-            self.interval = 1 # one second
+        if self.when == "S":
+            self.interval = 1  # one second
             self.suffix = "%Y-%m-%d_%H-%M-%S"
             self.extMatch = r"^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}$"
-        elif self.when == 'M':
-            self.interval = 60 # one minute
+        elif self.when == "M":
+            self.interval = 60  # one minute
             self.suffix = "%Y-%m-%d_%H-%M"
             self.extMatch = r"^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}$"
-        elif self.when == 'H':
-            self.interval = 60 * 60 # one hour
+        elif self.when == "H":
+            self.interval = 60 * 60  # one hour
             self.suffix = "%Y-%m-%d_%H"
             self.extMatch = r"^\d{4}-\d{2}-\d{2}_\d{2}$"
-        elif self.when == 'D' or self.when == 'MIDNIGHT':
-            self.interval = 60 * 60 * 24 # one day
+        elif self.when == "D" or self.when == "MIDNIGHT":
+            self.interval = 60 * 60 * 24  # one day
             self.suffix = "%Y-%m-%d"
             self.extMatch = r"^\d{4}-\d{2}-\d{2}$"
-        elif self.when.startswith('W'):
-            self.interval = 60 * 60 * 24 * 7 # one week
+        elif self.when.startswith("W"):
+            self.interval = 60 * 60 * 24 * 7  # one week
             if len(self.when) != 2:
-                raise ValueError("You must specify a day for weekly rollover from 0 to 6 (0 is Monday): %s" % self.when)
-            if self.when[1] < '0' or self.when[1] > '6':
-                raise ValueError("Invalid day specified for weekly rollover: %s" % self.when)
+                raise ValueError(
+                    "You must specify a day for weekly rollover from 0 to 6 (0 is Monday): %s"
+                    % self.when
+                )
+            if self.when[1] < "0" or self.when[1] > "6":
+                raise ValueError(
+                    "Invalid day specified for weekly rollover: %s" % self.when
+                )
             self.dayOfWeek = int(self.when[1])
             self.suffix = "%Y-%m-%d"
             self.extMatch = r"^\d{4}-\d{2}-\d{2}$"
@@ -206,7 +234,7 @@ class TimedRotatingFileHandler(BaseRotatingHandler):
             raise ValueError("Invalid rollover interval specified: %s" % self.when)
 
         self.extMatch = re.compile(self.extMatch, re.ASCII)
-        self.interval = self.interval * interval # multiply by units requested
+        self.interval = self.interval * interval  # multiply by units requested
         if os.path.exists(filename):
             t = os.stat(filename)[ST_MTIME]
         else:
@@ -225,7 +253,7 @@ class TimedRotatingFileHandler(BaseRotatingHandler):
         # have to fudge the rolloverAt value in order to trigger the first rollover
         # at the right time.  After that, the regular interval will take care of
         # the rest.  Note that this code doesn't care about leap seconds. :)
-        if self.when == 'MIDNIGHT' or self.when.startswith('W'):
+        if self.when == "MIDNIGHT" or self.when.startswith("W"):
             # This could be done with less code, but I wanted it to be clear
             if self.utc:
                 t = time.gmtime(currentTime)
@@ -235,8 +263,7 @@ class TimedRotatingFileHandler(BaseRotatingHandler):
             currentMinute = t[4]
             currentSecond = t[5]
             # r is the number of seconds left between now and midnight
-            r = _MIDNIGHT - ((currentHour * 60 + currentMinute) * 60 +
-                    currentSecond)
+            r = _MIDNIGHT - ((currentHour * 60 + currentMinute) * 60 + currentSecond)
             result = currentTime + r
             # If we are rolling over on a certain day, add in the number of days until
             # the next rollover, but offset by 1 since we just calculated the time
@@ -253,8 +280,8 @@ class TimedRotatingFileHandler(BaseRotatingHandler):
             # The calculations described in 2) and 3) above need to have a day added.
             # This is because the above time calculation takes us to midnight on this
             # day, i.e. the start of the next day.
-            if self.when.startswith('W'):
-                day = t[6] # 0 is Monday
+            if self.when.startswith("W"):
+                day = t[6]  # 0 is Monday
                 if day != self.dayOfWeek:
                     if day < self.dayOfWeek:
                         daysToWait = self.dayOfWeek - day
@@ -267,7 +294,7 @@ class TimedRotatingFileHandler(BaseRotatingHandler):
                         if dstNow != dstAtRollover:
                             if not dstNow:  # DST kicks in before next rollover, so we need to deduct an hour
                                 newRolloverAt = newRolloverAt - 3600
-                            else:           # DST bows out before next rollover, so we need to add an hour
+                            else:  # DST bows out before next rollover, so we need to add an hour
                                 newRolloverAt = newRolloverAt + 3600
                     result = newRolloverAt
         return result
@@ -304,7 +331,7 @@ class TimedRotatingFileHandler(BaseRotatingHandler):
         if len(result) < self.backupCount:
             result = []
         else:
-            result = result[:len(result) - self.backupCount]
+            result = result[: len(result) - self.backupCount]
         return result
 
     def doRollover(self):
@@ -331,22 +358,25 @@ class TimedRotatingFileHandler(BaseRotatingHandler):
         if self.backupCount > 0:
             for s in self.getFilesToDelete():
                 os.remove(s)
-        self.mode = 'w'
+        self.mode = "w"
         self.stream = self._open()
         currentTime = int(time.time())
         newRolloverAt = self.computeRollover(currentTime)
         while newRolloverAt <= currentTime:
             newRolloverAt = newRolloverAt + self.interval
-        #If DST changes and midnight or weekly rollover, adjust for this.
-        if (self.when == 'MIDNIGHT' or self.when.startswith('W')) and not self.utc:
+        # If DST changes and midnight or weekly rollover, adjust for this.
+        if (self.when == "MIDNIGHT" or self.when.startswith("W")) and not self.utc:
             dstNow = time.localtime(currentTime)[-1]
             dstAtRollover = time.localtime(newRolloverAt)[-1]
             if dstNow != dstAtRollover:
-                if not dstNow:  # DST kicks in before next rollover, so we need to deduct an hour
+                if (
+                    not dstNow
+                ):  # DST kicks in before next rollover, so we need to deduct an hour
                     newRolloverAt = newRolloverAt - 3600
-                else:           # DST bows out before next rollover, so we need to add an hour
+                else:  # DST bows out before next rollover, so we need to add an hour
                     newRolloverAt = newRolloverAt + 3600
         self.rolloverAt = newRolloverAt
+
 
 class WatchedFileHandler(logging.FileHandler):
     """
@@ -368,7 +398,8 @@ class WatchedFileHandler(logging.FileHandler):
     This handler is based on a suggestion and patch by Chad J.
     Schroeder.
     """
-    def __init__(self, filename, mode='a', encoding=None, delay=0):
+
+    def __init__(self, filename, mode="a", encoding=None, delay=0):
         logging.FileHandler.__init__(self, filename, mode, encoding, delay)
         if not os.path.exists(self.baseFilename):
             self.dev, self.ino = -1, -1
@@ -398,6 +429,7 @@ class WatchedFileHandler(logging.FileHandler):
                 stat = os.stat(self.baseFilename)
             self.dev, self.ino = stat[ST_DEV], stat[ST_INO]
         logging.FileHandler.emit(self, record)
+
 
 class SocketHandler(logging.Handler):
     """
@@ -439,7 +471,7 @@ class SocketHandler(logging.Handler):
         type of socket they want.
         """
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        if hasattr(s, 'settimeout'):
+        if hasattr(s, "settimeout"):
             s.settimeout(timeout)
         s.connect((self.host, self.port))
         return s
@@ -457,13 +489,13 @@ class SocketHandler(logging.Handler):
         if self.retryTime is None:
             attempt = 1
         else:
-            attempt = (now >= self.retryTime)
+            attempt = now >= self.retryTime
         if attempt:
             try:
                 self.sock = self.makeSocket()
-                self.retryTime = None # next time, no delay before trying
+                self.retryTime = None  # next time, no delay before trying
             except socket.error:
-                #Creation failed, so set the retry time and return.
+                # Creation failed, so set the retry time and return.
                 if self.retryTime is None:
                     self.retryPeriod = self.retryStart
                 else:
@@ -481,9 +513,9 @@ class SocketHandler(logging.Handler):
         """
         if self.sock is None:
             self.createSocket()
-        #self.sock can be None either because we haven't reached the retry
-        #time yet, or because we have reached the retry time and retried,
-        #but are still unable to connect.
+        # self.sock can be None either because we haven't reached the retry
+        # time yet, or because we have reached the retry time and retried,
+        # but are still unable to connect.
         if self.sock:
             try:
                 if hasattr(self.sock, "sendall"):
@@ -506,7 +538,9 @@ class SocketHandler(logging.Handler):
         """
         ei = record.exc_info
         if ei:
-            dummy = self.format(record) # just to get traceback text into record.exc_text
+            dummy = self.format(
+                record
+            )  # just to get traceback text into record.exc_text
             record.exc_info = None  # to avoid Unpickleable error
         s = pickle.dumps(record.__dict__, 1)
         if ei:
@@ -524,7 +558,7 @@ class SocketHandler(logging.Handler):
         """
         if self.closeOnError and self.sock:
             self.sock.close()
-            self.sock = None        #try to reconnect next time
+            self.sock = None  # try to reconnect next time
         else:
             logging.Handler.handleError(self, record)
 
@@ -554,6 +588,7 @@ class SocketHandler(logging.Handler):
             self.sock = None
         logging.Handler.close(self)
 
+
 class DatagramHandler(SocketHandler):
     """
     A handler class which writes logging records, in pickle format, to
@@ -565,6 +600,7 @@ class DatagramHandler(SocketHandler):
     makeLogRecord function.
 
     """
+
     def __init__(self, host, port):
         """
         Initializes the handler with a specific host address and port.
@@ -592,6 +628,7 @@ class DatagramHandler(SocketHandler):
             self.createSocket()
         self.sock.sendto(s, (self.host, self.port))
 
+
 class SysLogHandler(logging.Handler):
     """
     A handler class which sends formatted logging records to a syslog
@@ -611,92 +648,96 @@ class SysLogHandler(logging.Handler):
     #
     # priorities (these are ordered)
 
-    LOG_EMERG     = 0       #  system is unusable
-    LOG_ALERT     = 1       #  action must be taken immediately
-    LOG_CRIT      = 2       #  critical conditions
-    LOG_ERR       = 3       #  error conditions
-    LOG_WARNING   = 4       #  warning conditions
-    LOG_NOTICE    = 5       #  normal but significant condition
-    LOG_INFO      = 6       #  informational
-    LOG_DEBUG     = 7       #  debug-level messages
+    LOG_EMERG = 0  #  system is unusable
+    LOG_ALERT = 1  #  action must be taken immediately
+    LOG_CRIT = 2  #  critical conditions
+    LOG_ERR = 3  #  error conditions
+    LOG_WARNING = 4  #  warning conditions
+    LOG_NOTICE = 5  #  normal but significant condition
+    LOG_INFO = 6  #  informational
+    LOG_DEBUG = 7  #  debug-level messages
 
     #  facility codes
-    LOG_KERN      = 0       #  kernel messages
-    LOG_USER      = 1       #  random user-level messages
-    LOG_MAIL      = 2       #  mail system
-    LOG_DAEMON    = 3       #  system daemons
-    LOG_AUTH      = 4       #  security/authorization messages
-    LOG_SYSLOG    = 5       #  messages generated internally by syslogd
-    LOG_LPR       = 6       #  line printer subsystem
-    LOG_NEWS      = 7       #  network news subsystem
-    LOG_UUCP      = 8       #  UUCP subsystem
-    LOG_CRON      = 9       #  clock daemon
-    LOG_AUTHPRIV  = 10      #  security/authorization messages (private)
-    LOG_FTP       = 11      #  FTP daemon
+    LOG_KERN = 0  #  kernel messages
+    LOG_USER = 1  #  random user-level messages
+    LOG_MAIL = 2  #  mail system
+    LOG_DAEMON = 3  #  system daemons
+    LOG_AUTH = 4  #  security/authorization messages
+    LOG_SYSLOG = 5  #  messages generated internally by syslogd
+    LOG_LPR = 6  #  line printer subsystem
+    LOG_NEWS = 7  #  network news subsystem
+    LOG_UUCP = 8  #  UUCP subsystem
+    LOG_CRON = 9  #  clock daemon
+    LOG_AUTHPRIV = 10  #  security/authorization messages (private)
+    LOG_FTP = 11  #  FTP daemon
 
     #  other codes through 15 reserved for system use
-    LOG_LOCAL0    = 16      #  reserved for local use
-    LOG_LOCAL1    = 17      #  reserved for local use
-    LOG_LOCAL2    = 18      #  reserved for local use
-    LOG_LOCAL3    = 19      #  reserved for local use
-    LOG_LOCAL4    = 20      #  reserved for local use
-    LOG_LOCAL5    = 21      #  reserved for local use
-    LOG_LOCAL6    = 22      #  reserved for local use
-    LOG_LOCAL7    = 23      #  reserved for local use
+    LOG_LOCAL0 = 16  #  reserved for local use
+    LOG_LOCAL1 = 17  #  reserved for local use
+    LOG_LOCAL2 = 18  #  reserved for local use
+    LOG_LOCAL3 = 19  #  reserved for local use
+    LOG_LOCAL4 = 20  #  reserved for local use
+    LOG_LOCAL5 = 21  #  reserved for local use
+    LOG_LOCAL6 = 22  #  reserved for local use
+    LOG_LOCAL7 = 23  #  reserved for local use
 
     priority_names = {
-        "alert":    LOG_ALERT,
-        "crit":     LOG_CRIT,
+        "alert": LOG_ALERT,
+        "crit": LOG_CRIT,
         "critical": LOG_CRIT,
-        "debug":    LOG_DEBUG,
-        "emerg":    LOG_EMERG,
-        "err":      LOG_ERR,
-        "error":    LOG_ERR,        #  DEPRECATED
-        "info":     LOG_INFO,
-        "notice":   LOG_NOTICE,
-        "panic":    LOG_EMERG,      #  DEPRECATED
-        "warn":     LOG_WARNING,    #  DEPRECATED
-        "warning":  LOG_WARNING,
-        }
-
-    facility_names = {
-        "auth":     LOG_AUTH,
-        "authpriv": LOG_AUTHPRIV,
-        "cron":     LOG_CRON,
-        "daemon":   LOG_DAEMON,
-        "ftp":      LOG_FTP,
-        "kern":     LOG_KERN,
-        "lpr":      LOG_LPR,
-        "mail":     LOG_MAIL,
-        "news":     LOG_NEWS,
-        "security": LOG_AUTH,       #  DEPRECATED
-        "syslog":   LOG_SYSLOG,
-        "user":     LOG_USER,
-        "uucp":     LOG_UUCP,
-        "local0":   LOG_LOCAL0,
-        "local1":   LOG_LOCAL1,
-        "local2":   LOG_LOCAL2,
-        "local3":   LOG_LOCAL3,
-        "local4":   LOG_LOCAL4,
-        "local5":   LOG_LOCAL5,
-        "local6":   LOG_LOCAL6,
-        "local7":   LOG_LOCAL7,
-        }
-
-    #The map below appears to be trivially lowercasing the key. However,
-    #there's more to it than meets the eye - in some locales, lowercasing
-    #gives unexpected results. See SF #1524081: in the Turkish locale,
-    #"INFO".lower() != "info"
-    priority_map = {
-        "DEBUG" : "debug",
-        "INFO" : "info",
-        "WARNING" : "warning",
-        "ERROR" : "error",
-        "CRITICAL" : "critical"
+        "debug": LOG_DEBUG,
+        "emerg": LOG_EMERG,
+        "err": LOG_ERR,
+        "error": LOG_ERR,  #  DEPRECATED
+        "info": LOG_INFO,
+        "notice": LOG_NOTICE,
+        "panic": LOG_EMERG,  #  DEPRECATED
+        "warn": LOG_WARNING,  #  DEPRECATED
+        "warning": LOG_WARNING,
     }
 
-    def __init__(self, address=('localhost', SYSLOG_UDP_PORT),
-                 facility=LOG_USER, socktype=socket.SOCK_DGRAM):
+    facility_names = {
+        "auth": LOG_AUTH,
+        "authpriv": LOG_AUTHPRIV,
+        "cron": LOG_CRON,
+        "daemon": LOG_DAEMON,
+        "ftp": LOG_FTP,
+        "kern": LOG_KERN,
+        "lpr": LOG_LPR,
+        "mail": LOG_MAIL,
+        "news": LOG_NEWS,
+        "security": LOG_AUTH,  #  DEPRECATED
+        "syslog": LOG_SYSLOG,
+        "user": LOG_USER,
+        "uucp": LOG_UUCP,
+        "local0": LOG_LOCAL0,
+        "local1": LOG_LOCAL1,
+        "local2": LOG_LOCAL2,
+        "local3": LOG_LOCAL3,
+        "local4": LOG_LOCAL4,
+        "local5": LOG_LOCAL5,
+        "local6": LOG_LOCAL6,
+        "local7": LOG_LOCAL7,
+    }
+
+    # The map below appears to be trivially lowercasing the key. However,
+    # there's more to it than meets the eye - in some locales, lowercasing
+    # gives unexpected results. See SF #1524081: in the Turkish locale,
+    # "INFO".lower() != "info"
+    priority_map = {
+        "DEBUG": "debug",
+        "INFO": "info",
+        "WARNING": "warning",
+        "ERROR": "error",
+        "CRITICAL": "critical",
+    }
+
+    def __init__(
+        self,
+        address=("localhost", SYSLOG_UDP_PORT),
+        facility=LOG_USER,
+        socktype=socket.SOCK_DGRAM,
+    ):
         """
         Initialize a handler.
 
@@ -743,7 +784,7 @@ class SysLogHandler(logging.Handler):
             priority = self.priority_names[priority]
         return (facility << 3) | priority
 
-    def close (self):
+    def close(self):
         """
         Closes the socket.
         """
@@ -768,16 +809,17 @@ class SysLogHandler(logging.Handler):
         The record is formatted, and then sent to the syslog server. If
         exception information is present, it is NOT sent to the server.
         """
-        msg = self.format(record) + '\000'
+        msg = self.format(record) + "\000"
         """
         We need to convert record level to lowercase, maybe this will
         change in the future.
         """
-        prio = '<%d>' % self.encodePriority(self.facility,
-                                            self.mapPriority(record.levelname))
-        prio = prio.encode('utf-8')
+        prio = "<%d>" % self.encodePriority(
+            self.facility, self.mapPriority(record.levelname)
+        )
+        prio = prio.encode("utf-8")
         # Message is a string. Convert to bytes as required by RFC 5424
-        msg = msg.encode('utf-8')
+        msg = msg.encode("utf-8")
         if codecs:
             msg = codecs.BOM_UTF8 + msg
         msg = prio + msg
@@ -797,12 +839,15 @@ class SysLogHandler(logging.Handler):
         except:
             self.handleError(record)
 
+
 class SMTPHandler(logging.Handler):
     """
     A handler class which sends an SMTP email for each logging event.
     """
-    def __init__(self, mailhost, fromaddr, toaddrs, subject,
-                 credentials=None, secure=None):
+
+    def __init__(
+        self, mailhost, fromaddr, toaddrs, subject, credentials=None, secure=None
+    ):
         """
         Initialize the handler.
 
@@ -851,16 +896,19 @@ class SMTPHandler(logging.Handler):
         try:
             import smtplib
             from email.utils import formatdate
+
             port = self.mailport
             if not port:
                 port = smtplib.SMTP_PORT
             smtp = smtplib.SMTP(self.mailhost, port)
             msg = self.format(record)
             msg = "From: %s\r\nTo: %s\r\nSubject: %s\r\nDate: %s\r\n\r\n%s" % (
-                            self.fromaddr,
-                            ",".join(self.toaddrs),
-                            self.getSubject(record),
-                            formatdate(), msg)
+                self.fromaddr,
+                ",".join(self.toaddrs),
+                self.getSubject(record),
+                formatdate(),
+                msg,
+            )
             if self.username:
                 if self.secure is not None:
                     smtp.ehlo()
@@ -874,6 +922,7 @@ class SMTPHandler(logging.Handler):
         except:
             self.handleError(record)
 
+
 class NTEventLogHandler(logging.Handler):
     """
     A handler class which sends events to the NT Event Log. Adds a
@@ -884,30 +933,35 @@ class NTEventLogHandler(logging.Handler):
     If you want slimmer logs, you have to pass in the name of your own DLL
     which contains the message definitions you want to use in the event log.
     """
+
     def __init__(self, appname, dllname=None, logtype="Application"):
         logging.Handler.__init__(self)
         try:
-            import win32evtlogutil, win32evtlog
+            import win32evtlogutil
+            import win32evtlog
+
             self.appname = appname
             self._welu = win32evtlogutil
             if not dllname:
                 dllname = os.path.split(self._welu.__file__)
                 dllname = os.path.split(dllname[0])
-                dllname = os.path.join(dllname[0], r'win32service.pyd')
+                dllname = os.path.join(dllname[0], r"win32service.pyd")
             self.dllname = dllname
             self.logtype = logtype
             self._welu.AddSourceToRegistry(appname, dllname, logtype)
             self.deftype = win32evtlog.EVENTLOG_ERROR_TYPE
             self.typemap = {
-                logging.DEBUG   : win32evtlog.EVENTLOG_INFORMATION_TYPE,
-                logging.INFO    : win32evtlog.EVENTLOG_INFORMATION_TYPE,
-                logging.WARNING : win32evtlog.EVENTLOG_WARNING_TYPE,
-                logging.ERROR   : win32evtlog.EVENTLOG_ERROR_TYPE,
+                logging.DEBUG: win32evtlog.EVENTLOG_INFORMATION_TYPE,
+                logging.INFO: win32evtlog.EVENTLOG_INFORMATION_TYPE,
+                logging.WARNING: win32evtlog.EVENTLOG_WARNING_TYPE,
+                logging.ERROR: win32evtlog.EVENTLOG_ERROR_TYPE,
                 logging.CRITICAL: win32evtlog.EVENTLOG_ERROR_TYPE,
-         }
+            }
         except ImportError:
-            print("The Python Win32 extensions for NT (service, event "\
-                        "logging) appear not to be available.")
+            print(
+                "The Python Win32 extensions for NT (service, event "
+                "logging) appear not to be available."
+            )
             self._welu = None
 
     def getMessageID(self, record):
@@ -971,14 +1025,16 @@ class NTEventLogHandler(logging.Handler):
         Viewer - it needs to be able to access the registry to get the
         DLL name.
         """
-        #self._welu.RemoveSourceFromRegistry(self.appname, self.logtype)
+        # self._welu.RemoveSourceFromRegistry(self.appname, self.logtype)
         logging.Handler.close(self)
+
 
 class HTTPHandler(logging.Handler):
     """
     A class which sends records to a Web server, using either GET or
     POST semantics.
     """
+
     def __init__(self, host, url, method="GET", secure=False, credentials=None):
         """
         Initialize the instance with the host, the request URL, and the method
@@ -1009,7 +1065,9 @@ class HTTPHandler(logging.Handler):
         Send the record to the Web server as a percent-encoded dictionary
         """
         try:
-            import http.client, urllib.parse
+            import http.client
+            import urllib.parse
+
             host = self.host
             if self.secure:
                 h = http.client.HTTPSConnection(host)
@@ -1018,10 +1076,10 @@ class HTTPHandler(logging.Handler):
             url = self.url
             data = urllib.parse.urlencode(self.mapLogRecord(record))
             if self.method == "GET":
-                if (url.find('?') >= 0):
-                    sep = '&'
+                if url.find("?") >= 0:
+                    sep = "&"
                 else:
-                    sep = '?'
+                    sep = "?"
                 url = url + "%c%s" % (sep, data)
             h.putrequest(self.method, url)
             # support multiple hosts on one IP address...
@@ -1031,27 +1089,29 @@ class HTTPHandler(logging.Handler):
                 host = host[:i]
             h.putheader("Host", host)
             if self.method == "POST":
-                h.putheader("Content-type",
-                            "application/x-www-form-urlencoded")
+                h.putheader("Content-type", "application/x-www-form-urlencoded")
                 h.putheader("Content-length", str(len(data)))
             if self.credentials:
                 import base64
-                s = ('u%s:%s' % self.credentials).encode('utf-8')
-                s = 'Basic ' + base64.b64encode(s).strip()
-                h.putheader('Authorization', s)
+
+                s = ("u%s:%s" % self.credentials).encode("utf-8")
+                s = "Basic " + base64.b64encode(s).strip()
+                h.putheader("Authorization", s)
             h.endheaders(data if self.method == "POST" else None)
-            h.getresponse()    #can't do anything with the result
+            h.getresponse()  # can't do anything with the result
         except (KeyboardInterrupt, SystemExit):
             raise
         except:
             self.handleError(record)
 
+
 class BufferingHandler(logging.Handler):
     """
-  A handler class which buffers logging records in memory. Whenever each
-  record is added to the buffer, a check is made to see if the buffer should
-  be flushed. If it should, then flush() is expected to do what's needed.
+    A handler class which buffers logging records in memory. Whenever each
+    record is added to the buffer, a check is made to see if the buffer should
+    be flushed. If it should, then flush() is expected to do what's needed.
     """
+
     def __init__(self, capacity):
         """
         Initialize the handler with the buffer size.
@@ -1067,7 +1127,7 @@ class BufferingHandler(logging.Handler):
         Returns true if the buffer is up to capacity. This method can be
         overridden to implement custom flushing strategies.
         """
-        return (len(self.buffer) >= self.capacity)
+        return len(self.buffer) >= self.capacity
 
     def emit(self, record):
         """
@@ -1097,12 +1157,14 @@ class BufferingHandler(logging.Handler):
         self.flush()
         logging.Handler.close(self)
 
+
 class MemoryHandler(BufferingHandler):
     """
     A handler class which buffers logging records in memory, periodically
     flushing them to a target handler. Flushing occurs whenever the buffer
     is full, or when an event of a certain severity or greater is seen.
     """
+
     def __init__(self, capacity, flushLevel=logging.ERROR, target=None):
         """
         Initialize the handler with the buffer size, the level at which
@@ -1119,8 +1181,9 @@ class MemoryHandler(BufferingHandler):
         """
         Check for buffer full or a record at the flushLevel or higher.
         """
-        return (len(self.buffer) >= self.capacity) or \
-                (record.levelno >= self.flushLevel)
+        return (len(self.buffer) >= self.capacity) or (
+            record.levelno >= self.flushLevel
+        )
 
     def setTarget(self, target):
         """
@@ -1216,12 +1279,14 @@ class QueueHandler(logging.Handler):
         except:
             self.handleError(record)
 
+
 class QueueListener(object):
     """
     This class implements an internal threaded listener which watches for
     LogRecords being added to a queue, removes them and passes them to a
     list of handlers for processing.
     """
+
     _sentinel = None
 
     def __init__(self, queue, *handlers):
@@ -1254,7 +1319,7 @@ class QueueListener(object):
         t.setDaemon(True)
         t.start()
 
-    def prepare(self , record):
+    def prepare(self, record):
         """
         Prepare a record for handling.
 
@@ -1284,7 +1349,7 @@ class QueueListener(object):
         The thread will terminate if it sees a sentinel object in the queue.
         """
         q = self.queue
-        has_task_done = hasattr(q, 'task_done')
+        has_task_done = hasattr(q, "task_done")
         while not self._stop.isSet():
             try:
                 record = self.dequeue(True)

@@ -5,10 +5,10 @@
 """Header encoding and decoding functionality."""
 
 __all__ = [
-    'Header',
-    'decode_header',
-    'make_header',
-    ]
+    "Header",
+    "decode_header",
+    "make_header",
+]
 
 import re
 import binascii
@@ -18,20 +18,22 @@ import email.base64mime
 
 from email.errors import HeaderParseError
 from email import charset as _charset
+
 Charset = _charset.Charset
 
-NL = '\n'
-SPACE = ' '
-BSPACE = b' '
-SPACE8 = ' ' * 8
-EMPTYSTRING = ''
+NL = "\n"
+SPACE = " "
+BSPACE = b" "
+SPACE8 = " " * 8
+EMPTYSTRING = ""
 MAXLINELEN = 78
 
-USASCII = Charset('us-ascii')
-UTF8 = Charset('utf-8')
+USASCII = Charset("us-ascii")
+UTF8 = Charset("utf-8")
 
 # Match encoded-word strings in the form =?charset?q?Hello_World?=
-ecre = re.compile(r'''
+ecre = re.compile(
+    r"""
   =\?                   # literal =?
   (?P<charset>[^?]*?)   # non-greedy up to the next ? is the charset
   \?                    # literal ?
@@ -40,24 +42,24 @@ ecre = re.compile(r'''
   (?P<encoded>.*?)      # non-greedy up to the next ?= is the encoded string
   \?=                   # literal ?=
   (?=[ \t]|$)           # whitespace or the end of the string
-  ''', re.VERBOSE | re.IGNORECASE | re.MULTILINE)
+  """,
+    re.VERBOSE | re.IGNORECASE | re.MULTILINE,
+)
 
 # Field name regexp, including trailing colon, but not separating whitespace,
 # according to RFC 2822.  Character range is from tilde to exclamation mark.
 # For use with .match()
-fcre = re.compile(r'[\041-\176]+:$')
+fcre = re.compile(r"[\041-\176]+:$")
 
 # Find a header embeded in a putative header value.  Used to check for
 # header injection attack.
-_embeded_header = re.compile(r'\n[^ \t]+:')
+_embeded_header = re.compile(r"\n[^ \t]+:")
 
 
-
 # Helpers
 _max_append = email.quoprimime._max_append
 
 
-
 def decode_header(header):
     """Decode a message header value without converting charset.
 
@@ -95,28 +97,28 @@ def decode_header(header):
         if encoding is None:
             # This is an unencoded word.
             decoded_words.append((encoded_string, charset))
-        elif encoding == 'q':
+        elif encoding == "q":
             word = email.quoprimime.header_decode(encoded_string)
             decoded_words.append((word, charset))
-        elif encoding == 'b':
-            paderr = len(encoded_string) % 4   # Postel's law: add missing padding
+        elif encoding == "b":
+            paderr = len(encoded_string) % 4  # Postel's law: add missing padding
             if paderr:
-                encoded_string += '==='[:4 - paderr]
+                encoded_string += "==="[: 4 - paderr]
             try:
                 word = email.base64mime.decode(encoded_string)
             except binascii.Error:
-                raise HeaderParseError('Base64 decoding error')
+                raise HeaderParseError("Base64 decoding error")
             else:
                 decoded_words.append((word, charset))
         else:
-            raise AssertionError('Unexpected encoding: ' + encoding)
+            raise AssertionError("Unexpected encoding: " + encoding)
     # Now convert all words to bytes and collapse consecutive runs of
     # similarly encoded words.
     collapsed = []
     last_word = last_charset = None
     for word, charset in decoded_words:
         if isinstance(word, str):
-            word = bytes(word, 'raw-unicode-escape')
+            word = bytes(word, "raw-unicode-escape")
         if last_word is None:
             last_word = word
             last_charset = charset
@@ -132,9 +134,7 @@ def decode_header(header):
     return collapsed
 
 
-
-def make_header(decoded_seq, maxlinelen=None, header_name=None,
-                continuation_ws=' '):
+def make_header(decoded_seq, maxlinelen=None, header_name=None, continuation_ws=" "):
     """Create a Header from a sequence of pairs as returned by decode_header()
 
     decode_header() takes a header value string and returns a sequence of
@@ -145,8 +145,9 @@ def make_header(decoded_seq, maxlinelen=None, header_name=None,
     instance.  Optional maxlinelen, header_name, and continuation_ws are as in
     the Header constructor.
     """
-    h = Header(maxlinelen=maxlinelen, header_name=header_name,
-               continuation_ws=continuation_ws)
+    h = Header(
+        maxlinelen=maxlinelen, header_name=header_name, continuation_ws=continuation_ws
+    )
     for s, charset in decoded_seq:
         # None means us-ascii but we can simply pass it on to h.append()
         if charset is not None and not isinstance(charset, Charset):
@@ -155,11 +156,16 @@ def make_header(decoded_seq, maxlinelen=None, header_name=None,
     return h
 
 
-
 class Header:
-    def __init__(self, s=None, charset=None,
-                 maxlinelen=None, header_name=None,
-                 continuation_ws=' ', errors='strict'):
+    def __init__(
+        self,
+        s=None,
+        charset=None,
+        maxlinelen=None,
+        header_name=None,
+        continuation_ws=" ",
+        errors="strict",
+    ):
         """Create a MIME-compliant header that can contain many character sets.
 
         Optional s is the initial header value.  If None, the initial header
@@ -216,14 +222,14 @@ class Header:
             # charset.  Only do this for the second and subsequent chunks.
             nextcs = charset
             if nextcs == _charset.UNKNOWN8BIT:
-                original_bytes = string.encode('ascii', 'surrogateescape')
-                string = original_bytes.decode('ascii', 'replace')
+                original_bytes = string.encode("ascii", "surrogateescape")
+                string = original_bytes.decode("ascii", "replace")
             if uchunks:
-                if lastcs not in (None, 'us-ascii'):
-                    if nextcs in (None, 'us-ascii'):
+                if lastcs not in (None, "us-ascii"):
+                    if nextcs in (None, "us-ascii"):
                         uchunks.append(SPACE)
                         nextcs = None
-                elif nextcs not in (None, 'us-ascii'):
+                elif nextcs not in (None, "us-ascii"):
                     uchunks.append(SPACE)
             lastcs = nextcs
             uchunks.append(string)
@@ -240,7 +246,7 @@ class Header:
     def __ne__(self, other):
         return not self == other
 
-    def append(self, s, charset=None, errors='strict'):
+    def append(self, s, charset=None, errors="strict"):
         """Append a string to the MIME header.
 
         Optional charset, if given, should be a Charset instance or the name
@@ -266,16 +272,16 @@ class Header:
         elif not isinstance(charset, Charset):
             charset = Charset(charset)
         if not isinstance(s, str):
-            input_charset = charset.input_codec or 'us-ascii'
+            input_charset = charset.input_codec or "us-ascii"
             s = s.decode(input_charset, errors)
         # Ensure that the bytes we're storing can be decoded to the output
         # character set, otherwise an early error is thrown.
-        output_charset = charset.output_codec or 'us-ascii'
+        output_charset = charset.output_codec or "us-ascii"
         if output_charset != _charset.UNKNOWN8BIT:
             s.encode(output_charset, errors)
         self._chunks.append((s, charset))
 
-    def encode(self, splitchars=';, \t', maxlinelen=None, linesep='\n'):
+    def encode(self, splitchars=";, \t", maxlinelen=None, linesep="\n"):
         """Encode a message header into an RFC-compliant format.
 
         There are many issues involved in converting a given string for use in
@@ -310,8 +316,9 @@ class Header:
         # _ValueFormatter algorithm much simpler.
         if maxlinelen == 0:
             maxlinelen = 1000000
-        formatter = _ValueFormatter(self._headerlen, maxlinelen,
-                                    self._continuation_ws, splitchars)
+        formatter = _ValueFormatter(
+            self._headerlen, maxlinelen, self._continuation_ws, splitchars
+        )
         for string, charset in self._chunks:
             lines = string.splitlines()
             formatter.feed(lines[0], charset)
@@ -319,15 +326,16 @@ class Header:
                 formatter.newline()
                 if charset.header_encoding is not None:
                     formatter.feed(self._continuation_ws, USASCII)
-                    line = ' ' + line.lstrip()
+                    line = " " + line.lstrip()
                 formatter.feed(line, charset)
             if len(lines) > 1:
                 formatter.newline()
             formatter.add_transition()
         value = formatter._str(linesep)
         if _embeded_header.search(value):
-            raise HeaderParseError("header value appears to contain "
-                "an embedded header: {!r}".format(value))
+            raise HeaderParseError(
+                "header value appears to contain an embedded header: {!r}".format(value)
+            )
         return value
 
     def _normalize(self):
@@ -349,12 +357,11 @@ class Header:
         self._chunks = chunks
 
 
-
 class _ValueFormatter:
     def __init__(self, headerlen, maxlen, continuation_ws, splitchars):
         self._maxlen = maxlen
         self._continuation_ws = continuation_ws
-        self._continuation_ws_len = len(continuation_ws.replace('\t', SPACE8))
+        self._continuation_ws_len = len(continuation_ws.replace("\t", SPACE8))
         self._splitchars = splitchars
         self._lines = []
         self._current_line = _Accumulator(headerlen)
@@ -555,13 +562,12 @@ class _ValueFormatter:
         self._current_line.push(str(holding))
 
 
-
 def _spliterator(character, string):
-    parts = list(reversed(re.split('(%s)' % character, string)))
+    parts = list(reversed(re.split("(%s)" % character, string)))
     while parts:
         part = parts.pop()
-        splitparts = (parts.pop() if parts else None)
-        nextpart = (parts.pop() if parts else None)
+        splitparts = parts.pop() if parts else None
+        nextpart = parts.pop() if parts else None
         yield (part, splitparts, nextpart)
         if nextpart is not None:
             parts.append(nextpart)
@@ -581,15 +587,17 @@ class _Accumulator:
         return self._current.pop()
 
     def __len__(self):
-        return sum(((1 if string is None else len(string))
-                    for string in self._current),
-                   self._initial_size)
+        return sum(
+            ((1 if string is None else len(string)) for string in self._current),
+            self._initial_size,
+        )
 
     def __str__(self):
         if self._current and self._current[-1] is None:
             self._current.pop()
-        return EMPTYSTRING.join((' ' if string is None else string)
-                                for string in self._current)
+        return EMPTYSTRING.join(
+            (" " if string is None else string) for string in self._current
+        )
 
     def reset(self, string=None):
         self._current = []

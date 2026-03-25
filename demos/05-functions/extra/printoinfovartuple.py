@@ -1,12 +1,12 @@
-def printinfo( arg1, *vartuple ):
+def printinfo(arg1, *vartuple):
     "This prints a variable passed arguments"
-    print ("Output is: ")
-    print (arg1)
-    print (vartuple)
+    print("Output is: ")
+    print(arg1)
+    print(vartuple)
     for var in vartuple:
-        print (var)
-    return;
+        print(var)
+    return
 
-#printinfo( 10 );
-printinfo( 70, 60 , "a", 'b', "d");
 
+# printinfo( 10 );
+printinfo(70, 60, "a", "b", "d")

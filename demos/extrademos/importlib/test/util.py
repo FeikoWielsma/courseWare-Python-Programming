@@ -1,7 +1,6 @@
 from contextlib import contextmanager
 import imp
 import os.path
-from test import support
 import unittest
 import sys
 
@@ -9,7 +8,7 @@ import sys
 CASE_INSENSITIVE_FS = True
 # Windows is the only OS that is *always* case-insensitive
 # (OS X *can* be case-sensitive).
-if sys.platform not in ('win32', 'cygwin'):
+if sys.platform not in ("win32", "cygwin"):
     changed_name = __file__.upper()
     if changed_name == __file__:
         changed_name = __file__.lower()
@@ -20,8 +19,9 @@ if sys.platform not in ('win32', 'cygwin'):
 def case_insensitive_tests(test):
     """Class decorator that nullifies tests requiring a case-insensitive
     file system."""
-    return unittest.skipIf(not CASE_INSENSITIVE_FS,
-                            "requires a case-insensitive filesystem")(test)
+    return unittest.skipIf(
+        not CASE_INSENSITIVE_FS, "requires a case-insensitive filesystem"
+    )(test)
 
 
 @contextmanager
@@ -33,9 +33,10 @@ def uncache(*names):
 
     """
     for name in names:
-        if name in ('sys', 'marshal', 'imp'):
+        if name in ("sys", "marshal", "imp"):
             raise ValueError(
-                "cannot uncache {0} as it will break _importlib".format(name))
+                "cannot uncache {0} as it will break _importlib".format(name)
+            )
         try:
             del sys.modules[name]
         except KeyError:
@@ -49,6 +50,7 @@ def uncache(*names):
             except KeyError:
                 pass
 
+
 @contextmanager
 def import_state(**kwargs):
     """Context manager to manage the various importers and stored state in the
@@ -61,9 +63,12 @@ def import_state(**kwargs):
     """
     originals = {}
     try:
-        for attr, default in (('meta_path', []), ('path', []),
-                              ('path_hooks', []),
-                              ('path_importer_cache', {})):
+        for attr, default in (
+            ("meta_path", []),
+            ("path", []),
+            ("path_hooks", []),
+            ("path_importer_cache", {}),
+        ):
             originals[attr] = getattr(sys, attr)
             if attr in kwargs:
                 new_value = kwargs[attr]
@@ -72,8 +77,7 @@ def import_state(**kwargs):
                 new_value = default
             setattr(sys, attr, new_value)
         if len(kwargs):
-            raise ValueError(
-                    'unrecognized arguments: {0}'.format(kwargs.keys()))
+            raise ValueError("unrecognized arguments: {0}".format(kwargs.keys()))
         yield
     finally:
         for attr, value in originals.items():
@@ -81,29 +85,28 @@ def import_state(**kwargs):
 
 
 class mock_modules:
-
     """A mock importer/loader."""
 
     def __init__(self, *names):
         self.modules = {}
         for name in names:
-            if not name.endswith('.__init__'):
+            if not name.endswith(".__init__"):
                 import_name = name
             else:
-                import_name = name[:-len('.__init__')]
-            if '.' not in name:
+                import_name = name[: -len(".__init__")]
+            if "." not in name:
                 package = None
             elif import_name == name:
-                package = name.rsplit('.', 1)[0]
+                package = name.rsplit(".", 1)[0]
             else:
                 package = import_name
             module = imp.new_module(import_name)
             module.__loader__ = self
-            module.__file__ = '<mock __file__>'
+            module.__file__ = "<mock __file__>"
             module.__package__ = package
             module.attr = name
             if import_name != name:
-                module.__path__ = ['<mock __path__>']
+                module.__path__ = ["<mock __path__>"]
             self.modules[import_name] = module
 
     def __getitem__(self, name):

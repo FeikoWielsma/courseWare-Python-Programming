@@ -25,6 +25,7 @@ from .. import fixer_base
 from ..fixer_util import Name, Call, ListComp, in_special_context
 from ..pygram import python_symbols as syms
 
+
 class FixMap(fixer_base.ConditionalFix):
     BM_compatible = True
 
@@ -54,7 +55,7 @@ class FixMap(fixer_base.ConditionalFix):
     >
     """
 
-    skip_on = 'future_builtins.map'
+    skip_on = "future_builtins.map"
 
     def transform(self, node, results):
         if self.should_skip(node):
@@ -66,21 +67,26 @@ class FixMap(fixer_base.ConditionalFix):
             new.prefix = ""
             new = Call(Name("list"), [new])
         elif "map_lambda" in results:
-            new = ListComp(results["xp"].clone(),
-                           results["fp"].clone(),
-                           results["it"].clone())
+            new = ListComp(
+                results["xp"].clone(), results["fp"].clone(), results["it"].clone()
+            )
         else:
             if "map_none" in results:
                 new = results["arg"].clone()
             else:
                 if "arglist" in results:
                     args = results["arglist"]
-                    if args.type == syms.arglist and \
-                       args.children[0].type == token.NAME and \
-                       args.children[0].value == "None":
-                        self.warning(node, "cannot convert map(None, ...) "
-                                     "with multiple arguments because map() "
-                                     "now truncates to the shortest sequence")
+                    if (
+                        args.type == syms.arglist
+                        and args.children[0].type == token.NAME
+                        and args.children[0].value == "None"
+                    ):
+                        self.warning(
+                            node,
+                            "cannot convert map(None, ...) "
+                            "with multiple arguments because map() "
+                            "now truncates to the shortest sequence",
+                        )
                         return
                 if in_special_context(node):
                     return None

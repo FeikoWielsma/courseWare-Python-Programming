@@ -1,6 +1,7 @@
 import unittest
 from ctypes import *
 
+
 class StringArrayTestCase(unittest.TestCase):
     def test(self):
         BUF = c_char * 4
@@ -45,11 +46,14 @@ class StringArrayTestCase(unittest.TestCase):
     def test_param_1(self):
         BUF = c_char * 4
         buf = BUF()
-##        print c_char_p.from_param(buf)
+
+    ##        print c_char_p.from_param(buf)
 
     def test_param_2(self):
         BUF = c_char * 4
         buf = BUF()
+
+
 ##        print BUF.from_param(c_char_p("python"))
 ##        print BUF.from_param(BUF(*"pyth"))
 
@@ -58,6 +62,7 @@ try:
 except NameError:
     pass
 else:
+
     class WStringArrayTestCase(unittest.TestCase):
         def test(self):
             BUF = c_wchar * 4
@@ -74,12 +79,12 @@ else:
             buf[1] = "Z"
             self.assertEqual(buf.value, "xZCD")
 
-        @unittest.skipIf(sizeof(c_wchar) < 4,
-                         "sizeof(wchar_t) is smaller than 4 bytes")
+        @unittest.skipIf(sizeof(c_wchar) < 4, "sizeof(wchar_t) is smaller than 4 bytes")
         def test_nonbmp(self):
-            u = chr(0x10ffff)
+            u = chr(0x10FFFF)
             w = c_wchar(u)
             self.assertEqual(w.value, u)
+
 
 class StringTestCase(unittest.TestCase):
     def XX_test_basic_strings(self):
@@ -109,7 +114,6 @@ class StringTestCase(unittest.TestCase):
         self.assertRaises(TypeError, c_string, "123")
 
     def XX_test_sized_strings(self):
-
         # New in releases later than 0.4.0:
         self.assertRaises(TypeError, c_string, None)
 
@@ -120,13 +124,12 @@ class StringTestCase(unittest.TestCase):
         self.assertRaises(ValueError, c_string, 0)
 
         # These tests fail, because it is no longer initialized
-##        self.assertTrue(c_string(2).value == "")
-##        self.assertTrue(c_string(2).raw == "\000\000")
+        ##        self.assertTrue(c_string(2).value == "")
+        ##        self.assertTrue(c_string(2).raw == "\000\000")
         self.assertTrue(c_string(2).raw[-1] == "\000")
         self.assertTrue(len(c_string(2).raw) == 2)
 
     def XX_test_initialized_strings(self):
-
         self.assertTrue(c_string("ab", 4).raw[:2] == "ab")
         self.assertTrue(c_string("ab", 4).raw[:2:] == "ab")
         self.assertTrue(c_string("ab", 4).raw[:2:-1] == "ba")
@@ -142,6 +145,7 @@ class StringTestCase(unittest.TestCase):
         # One char too long values:
         self.assertRaises(ValueError, setattr, cs, "value", "1234567")
 
+
 ##    def test_perf(self):
 ##        check_perf()
 
@@ -150,12 +154,12 @@ try:
 except NameError:
     pass
 else:
+
     class WStringTestCase(unittest.TestCase):
         def test_wchar(self):
             c_wchar("x")
             repr(byref(c_wchar("x")))
             c_wchar("x")
-
 
         def X_test_basic_wstrings(self):
             cs = c_wstring("abcdef")
@@ -195,11 +199,17 @@ else:
 def run_test(rep, msg, func, arg):
     items = range(rep)
     from time import clock
+
     start = clock()
     for i in items:
-        func(arg); func(arg); func(arg); func(arg); func(arg)
+        func(arg)
+        func(arg)
+        func(arg)
+        func(arg)
+        func(arg)
     stop = clock()
-    print("%20s: %.2f us" % (msg, ((stop-start)*1e6/5/rep)))
+    print("%20s: %.2f us" % (msg, ((stop - start) * 1e6 / 5 / rep)))
+
 
 def check_perf():
     # Construct 5 objects
@@ -207,7 +217,8 @@ def check_perf():
     REP = 200000
 
     run_test(REP, "c_string(None)", c_string, None)
-    run_test(REP, "c_string('abc')", c_string, 'abc')
+    run_test(REP, "c_string('abc')", c_string, "abc")
+
 
 # Python 2.3 -OO, win2k, P4 700 MHz:
 #
@@ -220,6 +231,6 @@ def check_perf():
 #     c_string('abc'): 3.67 us
 
 
-if __name__ == '__main__':
-##    check_perf()
+if __name__ == "__main__":
+    ##    check_perf()
     unittest.main()

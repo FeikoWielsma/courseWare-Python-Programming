@@ -4,10 +4,10 @@ from tkinter import font
 from test.support import requires, run_unittest
 import tkinter.test.support as support
 
-requires('gui')
+requires("gui")
+
 
 class FontTest(unittest.TestCase):
-
     def setUp(self):
         support.root_deiconify()
 
@@ -27,7 +27,8 @@ class FontTest(unittest.TestCase):
         self.assertNotEqual(font1, font1.copy())
         self.assertNotEqual(font1, 0)
 
-tests_gui = (FontTest, )
+
+tests_gui = (FontTest,)
 
 if __name__ == "__main__":
     run_unittest(*tests_gui)

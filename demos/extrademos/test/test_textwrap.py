@@ -15,23 +15,24 @@ from textwrap import TextWrapper, wrap, fill, dedent
 
 
 class BaseTestCase(unittest.TestCase):
-    '''Parent class with utility methods for textwrap tests.'''
+    """Parent class with utility methods for textwrap tests."""
 
     def show(self, textin):
         if isinstance(textin, list):
             result = []
             for i in range(len(textin)):
                 result.append("  %d: %r" % (i, textin[i]))
-            result = '\n'.join(result)
+            result = "\n".join(result)
         elif isinstance(textin, str):
             result = "  %s\n" % repr(textin)
         return result
 
-
     def check(self, result, expect):
-        self.assertEqual(result, expect,
-            'expected:\n%s\nbut got:\n%s' % (
-                self.show(expect), self.show(result)))
+        self.assertEqual(
+            result,
+            expect,
+            "expected:\n%s\nbut got:\n%s" % (self.show(expect), self.show(result)),
+        )
 
     def check_wrap(self, text, width, expect, **kwargs):
         result = wrap(text, width, **kwargs)
@@ -39,13 +40,12 @@ class BaseTestCase(unittest.TestCase):
 
     def check_split(self, text, expect):
         result = self.wrapper._split(text)
-        self.assertEqual(result, expect,
-                         "\nexpected %r\n"
-                         "but got  %r" % (expect, result))
+        self.assertEqual(
+            result, expect, "\nexpected %r\nbut got  %r" % (expect, result)
+        )
 
 
 class WrapTestCase(BaseTestCase):
-
     def setUp(self):
         self.wrapper = TextWrapper(width=45)
 
@@ -54,18 +54,24 @@ class WrapTestCase(BaseTestCase):
 
         text = "Hello there, how are you this fine day?  I'm glad to hear it!"
 
-        self.check_wrap(text, 12,
-                        ["Hello there,",
-                         "how are you",
-                         "this fine",
-                         "day?  I'm",
-                         "glad to hear",
-                         "it!"])
-        self.check_wrap(text, 42,
-                        ["Hello there, how are you this fine day?",
-                         "I'm glad to hear it!"])
+        self.check_wrap(
+            text,
+            12,
+            [
+                "Hello there,",
+                "how are you",
+                "this fine",
+                "day?  I'm",
+                "glad to hear",
+                "it!",
+            ],
+        )
+        self.check_wrap(
+            text,
+            42,
+            ["Hello there, how are you this fine day?", "I'm glad to hear it!"],
+        )
         self.check_wrap(text, 80, [text])
-
 
     def test_whitespace(self):
         # Whitespace munging and end-of-sentence detection
@@ -78,18 +84,20 @@ Some lines are \ttabbed too.
 What a mess!
 """
 
-        expect = ["This is a paragraph that already has line",
-                  "breaks.  But some of its lines are much",
-                  "longer than the others, so it needs to be",
-                  "wrapped.  Some lines are  tabbed too.  What a",
-                  "mess!"]
+        expect = [
+            "This is a paragraph that already has line",
+            "breaks.  But some of its lines are much",
+            "longer than the others, so it needs to be",
+            "wrapped.  Some lines are  tabbed too.  What a",
+            "mess!",
+        ]
 
         wrapper = TextWrapper(45, fix_sentence_endings=True)
         result = wrapper.wrap(text)
         self.check(result, expect)
 
         result = wrapper.fill(text)
-        self.check(result, '\n'.join(expect))
+        self.check(result, "\n".join(expect))
 
     def test_fix_sentence_endings(self):
         wrapper = TextWrapper(60, fix_sentence_endings=True)
@@ -116,21 +124,19 @@ What a mess!
         self.check(wrapper.wrap(text), expect)
 
         wrapper.width = 20
-        expect = ['I say, chaps!', 'Anyone for "tennis?"', 'Hmmph!']
+        expect = ["I say, chaps!", 'Anyone for "tennis?"', "Hmmph!"]
         self.check(wrapper.wrap(text), expect)
 
         text = 'And she said, "Go to hell!"\nCan you believe that?'
-        expect = ['And she said, "Go to',
-                  'hell!"  Can you',
-                  'believe that?']
+        expect = ['And she said, "Go to', 'hell!"  Can you', "believe that?"]
         self.check(wrapper.wrap(text), expect)
 
         wrapper.width = 60
         expect = ['And she said, "Go to hell!"  Can you believe that?']
         self.check(wrapper.wrap(text), expect)
 
-        text = 'File stdio.h is nice.'
-        expect = ['File stdio.h is nice.']
+        text = "File stdio.h is nice."
+        expect = ["File stdio.h is nice."]
         self.check(wrapper.wrap(text), expect)
 
     def test_wrap_short(self):
@@ -138,10 +144,8 @@ What a mess!
 
         text = "This is a\nshort paragraph."
 
-        self.check_wrap(text, 20, ["This is a short",
-                                   "paragraph."])
+        self.check_wrap(text, 20, ["This is a short", "paragraph."])
         self.check_wrap(text, 40, ["This is a short paragraph."])
-
 
     def test_wrap_short_1line(self):
         # Test endcases
@@ -149,134 +153,164 @@ What a mess!
         text = "This is a short line."
 
         self.check_wrap(text, 30, ["This is a short line."])
-        self.check_wrap(text, 30, ["(1) This is a short line."],
-                        initial_indent="(1) ")
-
+        self.check_wrap(text, 30, ["(1) This is a short line."], initial_indent="(1) ")
 
     def test_hyphenated(self):
         # Test breaking hyphenated words
 
-        text = ("this-is-a-useful-feature-for-"
-                "reformatting-posts-from-tim-peters'ly")
+        text = "this-is-a-useful-feature-for-reformatting-posts-from-tim-peters'ly"
 
-        self.check_wrap(text, 40,
-                        ["this-is-a-useful-feature-for-",
-                         "reformatting-posts-from-tim-peters'ly"])
-        self.check_wrap(text, 41,
-                        ["this-is-a-useful-feature-for-",
-                         "reformatting-posts-from-tim-peters'ly"])
-        self.check_wrap(text, 42,
-                        ["this-is-a-useful-feature-for-reformatting-",
-                         "posts-from-tim-peters'ly"])
+        self.check_wrap(
+            text,
+            40,
+            ["this-is-a-useful-feature-for-", "reformatting-posts-from-tim-peters'ly"],
+        )
+        self.check_wrap(
+            text,
+            41,
+            ["this-is-a-useful-feature-for-", "reformatting-posts-from-tim-peters'ly"],
+        )
+        self.check_wrap(
+            text,
+            42,
+            ["this-is-a-useful-feature-for-reformatting-", "posts-from-tim-peters'ly"],
+        )
 
     def test_hyphenated_numbers(self):
         # Test that hyphenated numbers (eg. dates) are not broken like words.
-        text = ("Python 1.0.0 was released on 1994-01-26.  Python 1.0.1 was\n"
-                "released on 1994-02-15.")
+        text = (
+            "Python 1.0.0 was released on 1994-01-26.  Python 1.0.1 was\n"
+            "released on 1994-02-15."
+        )
 
-        self.check_wrap(text, 30, ['Python 1.0.0 was released on',
-                                   '1994-01-26.  Python 1.0.1 was',
-                                   'released on 1994-02-15.'])
-        self.check_wrap(text, 40, ['Python 1.0.0 was released on 1994-01-26.',
-                                   'Python 1.0.1 was released on 1994-02-15.'])
+        self.check_wrap(
+            text,
+            30,
+            [
+                "Python 1.0.0 was released on",
+                "1994-01-26.  Python 1.0.1 was",
+                "released on 1994-02-15.",
+            ],
+        )
+        self.check_wrap(
+            text,
+            40,
+            [
+                "Python 1.0.0 was released on 1994-01-26.",
+                "Python 1.0.1 was released on 1994-02-15.",
+            ],
+        )
 
         text = "I do all my shopping at 7-11."
-        self.check_wrap(text, 25, ["I do all my shopping at",
-                                   "7-11."])
-        self.check_wrap(text, 27, ["I do all my shopping at",
-                                   "7-11."])
+        self.check_wrap(text, 25, ["I do all my shopping at", "7-11."])
+        self.check_wrap(text, 27, ["I do all my shopping at", "7-11."])
         self.check_wrap(text, 29, ["I do all my shopping at 7-11."])
 
     def test_em_dash(self):
         # Test text with em-dashes
         text = "Em-dashes should be written -- thus."
-        self.check_wrap(text, 25,
-                        ["Em-dashes should be",
-                         "written -- thus."])
+        self.check_wrap(text, 25, ["Em-dashes should be", "written -- thus."])
 
         # Probe the boundaries of the properly written em-dash,
         # ie. " -- ".
-        self.check_wrap(text, 29,
-                        ["Em-dashes should be written",
-                         "-- thus."])
-        expect = ["Em-dashes should be written --",
-                  "thus."]
+        self.check_wrap(text, 29, ["Em-dashes should be written", "-- thus."])
+        expect = ["Em-dashes should be written --", "thus."]
         self.check_wrap(text, 30, expect)
         self.check_wrap(text, 35, expect)
-        self.check_wrap(text, 36,
-                        ["Em-dashes should be written -- thus."])
+        self.check_wrap(text, 36, ["Em-dashes should be written -- thus."])
 
         # The improperly written em-dash is handled too, because
         # it's adjacent to non-whitespace on both sides.
         text = "You can also do--this or even---this."
-        expect = ["You can also do",
-                  "--this or even",
-                  "---this."]
+        expect = ["You can also do", "--this or even", "---this."]
         self.check_wrap(text, 15, expect)
         self.check_wrap(text, 16, expect)
-        expect = ["You can also do--",
-                  "this or even---",
-                  "this."]
+        expect = ["You can also do--", "this or even---", "this."]
         self.check_wrap(text, 17, expect)
         self.check_wrap(text, 19, expect)
-        expect = ["You can also do--this or even",
-                  "---this."]
+        expect = ["You can also do--this or even", "---this."]
         self.check_wrap(text, 29, expect)
         self.check_wrap(text, 31, expect)
-        expect = ["You can also do--this or even---",
-                  "this."]
+        expect = ["You can also do--this or even---", "this."]
         self.check_wrap(text, 32, expect)
         self.check_wrap(text, 35, expect)
 
         # All of the above behaviour could be deduced by probing the
         # _split() method.
         text = "Here's an -- em-dash and--here's another---and another!"
-        expect = ["Here's", " ", "an", " ", "--", " ", "em-", "dash", " ",
-                  "and", "--", "here's", " ", "another", "---",
-                  "and", " ", "another!"]
+        expect = [
+            "Here's",
+            " ",
+            "an",
+            " ",
+            "--",
+            " ",
+            "em-",
+            "dash",
+            " ",
+            "and",
+            "--",
+            "here's",
+            " ",
+            "another",
+            "---",
+            "and",
+            " ",
+            "another!",
+        ]
         self.check_split(text, expect)
 
         text = "and then--bam!--he was gone"
-        expect = ["and", " ", "then", "--", "bam!", "--",
-                  "he", " ", "was", " ", "gone"]
+        expect = ["and", " ", "then", "--", "bam!", "--", "he", " ", "was", " ", "gone"]
         self.check_split(text, expect)
 
-
-    def test_unix_options (self):
+    def test_unix_options(self):
         # Test that Unix-style command-line options are wrapped correctly.
         # Both Optik (OptionParser) and Docutils rely on this behaviour!
 
         text = "You should use the -n option, or --dry-run in its long form."
-        self.check_wrap(text, 20,
-                        ["You should use the",
-                         "-n option, or --dry-",
-                         "run in its long",
-                         "form."])
-        self.check_wrap(text, 21,
-                        ["You should use the -n",
-                         "option, or --dry-run",
-                         "in its long form."])
-        expect = ["You should use the -n option, or",
-                  "--dry-run in its long form."]
+        self.check_wrap(
+            text,
+            20,
+            ["You should use the", "-n option, or --dry-", "run in its long", "form."],
+        )
+        self.check_wrap(
+            text,
+            21,
+            ["You should use the -n", "option, or --dry-run", "in its long form."],
+        )
+        expect = ["You should use the -n option, or", "--dry-run in its long form."]
         self.check_wrap(text, 32, expect)
         self.check_wrap(text, 34, expect)
         self.check_wrap(text, 35, expect)
         self.check_wrap(text, 38, expect)
-        expect = ["You should use the -n option, or --dry-",
-                  "run in its long form."]
+        expect = ["You should use the -n option, or --dry-", "run in its long form."]
         self.check_wrap(text, 39, expect)
         self.check_wrap(text, 41, expect)
-        expect = ["You should use the -n option, or --dry-run",
-                  "in its long form."]
+        expect = ["You should use the -n option, or --dry-run", "in its long form."]
         self.check_wrap(text, 42, expect)
 
         # Again, all of the above can be deduced from _split().
         text = "the -n option, or --dry-run or --dryrun"
-        expect = ["the", " ", "-n", " ", "option,", " ", "or", " ",
-                  "--dry-", "run", " ", "or", " ", "--dryrun"]
+        expect = [
+            "the",
+            " ",
+            "-n",
+            " ",
+            "option,",
+            " ",
+            "or",
+            " ",
+            "--dry-",
+            "run",
+            " ",
+            "or",
+            " ",
+            "--dryrun",
+        ]
         self.check_split(text, expect)
 
-    def test_funky_hyphens (self):
+    def test_funky_hyphens(self):
         # Screwy edge cases cooked up by David Goodger.  All reported
         # in SF bug #596434.
         self.check_split("what the--hey!", ["what", " ", "the", "--", "hey!"])
@@ -290,8 +324,9 @@ What a mess!
         # below...
         self.check_split("--option", ["--option"])
         self.check_split("--option-opt", ["--option-", "opt"])
-        self.check_split("foo --option-opt bar",
-                         ["foo", " ", "--option-", "opt", " ", "bar"])
+        self.check_split(
+            "foo --option-opt bar", ["foo", " ", "--option-", "opt", " ", "bar"]
+        )
 
     def test_punct_hyphens(self):
         # Oh bother, SF #965425 found another problem with hyphens --
@@ -301,44 +336,51 @@ What a mess!
         # was special-cased for Optik and Docutils.  So test a variety
         # of styles of punctuation around a hyphenated word.
         # (Actually this is based on an Optik bug report, #813077).
-        self.check_split("the 'wibble-wobble' widget",
-                         ['the', ' ', "'wibble-", "wobble'", ' ', 'widget'])
-        self.check_split('the "wibble-wobble" widget',
-                         ['the', ' ', '"wibble-', 'wobble"', ' ', 'widget'])
-        self.check_split("the (wibble-wobble) widget",
-                         ['the', ' ', "(wibble-", "wobble)", ' ', 'widget'])
-        self.check_split("the ['wibble-wobble'] widget",
-                         ['the', ' ', "['wibble-", "wobble']", ' ', 'widget'])
+        self.check_split(
+            "the 'wibble-wobble' widget",
+            ["the", " ", "'wibble-", "wobble'", " ", "widget"],
+        )
+        self.check_split(
+            'the "wibble-wobble" widget',
+            ["the", " ", '"wibble-', 'wobble"', " ", "widget"],
+        )
+        self.check_split(
+            "the (wibble-wobble) widget",
+            ["the", " ", "(wibble-", "wobble)", " ", "widget"],
+        )
+        self.check_split(
+            "the ['wibble-wobble'] widget",
+            ["the", " ", "['wibble-", "wobble']", " ", "widget"],
+        )
 
-    def test_funky_parens (self):
+    def test_funky_parens(self):
         # Second part of SF bug #596434: long option strings inside
         # parentheses.
-        self.check_split("foo (--option) bar",
-                         ["foo", " ", "(--option)", " ", "bar"])
+        self.check_split("foo (--option) bar", ["foo", " ", "(--option)", " ", "bar"])
 
         # Related stuff -- make sure parens work in simpler contexts.
-        self.check_split("foo (bar) baz",
-                         ["foo", " ", "(bar)", " ", "baz"])
-        self.check_split("blah (ding dong), wubba",
-                         ["blah", " ", "(ding", " ", "dong),",
-                          " ", "wubba"])
+        self.check_split("foo (bar) baz", ["foo", " ", "(bar)", " ", "baz"])
+        self.check_split(
+            "blah (ding dong), wubba",
+            ["blah", " ", "(ding", " ", "dong),", " ", "wubba"],
+        )
 
     def test_initial_whitespace(self):
         # SF bug #622849 reported inconsistent handling of leading
         # whitespace; let's test that a bit, shall we?
         text = " This is a sentence with leading whitespace."
-        self.check_wrap(text, 50,
-                        [" This is a sentence with leading whitespace."])
-        self.check_wrap(text, 30,
-                        [" This is a sentence with", "leading whitespace."])
+        self.check_wrap(text, 50, [" This is a sentence with leading whitespace."])
+        self.check_wrap(text, 30, [" This is a sentence with", "leading whitespace."])
 
     def test_no_drop_whitespace(self):
         # SF patch #1581073
         text = " This is a    sentence with     much whitespace."
-        self.check_wrap(text, 10,
-                        [" This is a", "    ", "sentence ",
-                         "with     ", "much white", "space."],
-                        drop_whitespace=False)
+        self.check_wrap(
+            text,
+            10,
+            [" This is a", "    ", "sentence ", "with     ", "much white", "space."],
+            drop_whitespace=False,
+        )
 
     def test_split(self):
         # Ensure that the standard _split() method works as advertised
@@ -347,17 +389,35 @@ What a mess!
         text = "Hello there -- you goof-ball, use the -b option!"
 
         result = self.wrapper._split(text)
-        self.check(result,
-             ["Hello", " ", "there", " ", "--", " ", "you", " ", "goof-",
-              "ball,", " ", "use", " ", "the", " ", "-b", " ",  "option!"])
+        self.check(
+            result,
+            [
+                "Hello",
+                " ",
+                "there",
+                " ",
+                "--",
+                " ",
+                "you",
+                " ",
+                "goof-",
+                "ball,",
+                " ",
+                "use",
+                " ",
+                "the",
+                " ",
+                "-b",
+                " ",
+                "option!",
+            ],
+        )
 
     def test_break_on_hyphens(self):
         # Ensure that the break_on_hyphens attributes work
         text = "yaba daba-doo"
-        self.check_wrap(text, 10, ["yaba daba-", "doo"],
-                        break_on_hyphens=True)
-        self.check_wrap(text, 10, ["yaba", "daba-doo"],
-                        break_on_hyphens=False)
+        self.check_wrap(text, 10, ["yaba daba-", "doo"], break_on_hyphens=True)
+        self.check_wrap(text, 10, ["yaba", "daba-doo"], break_on_hyphens=False)
 
     def test_bad_width(self):
         # Ensure that width <= 0 is caught.
@@ -374,59 +434,80 @@ What a mess!
         self.check_wrap(text, 7, ["aa \xe4\xe4-", "\xe4\xe4"])
 
 
-class LongWordTestCase (BaseTestCase):
+class LongWordTestCase(BaseTestCase):
     def setUp(self):
         self.wrapper = TextWrapper()
-        self.text = '''\
+        self.text = """\
 Did you say "supercalifragilisticexpialidocious?"
 How *do* you spell that odd word, anyways?
-'''
+"""
 
     def test_break_long(self):
         # Wrap text with long words and lots of punctuation
 
-        self.check_wrap(self.text, 30,
-                        ['Did you say "supercalifragilis',
-                         'ticexpialidocious?" How *do*',
-                         'you spell that odd word,',
-                         'anyways?'])
-        self.check_wrap(self.text, 50,
-                        ['Did you say "supercalifragilisticexpialidocious?"',
-                         'How *do* you spell that odd word, anyways?'])
+        self.check_wrap(
+            self.text,
+            30,
+            [
+                'Did you say "supercalifragilis',
+                'ticexpialidocious?" How *do*',
+                "you spell that odd word,",
+                "anyways?",
+            ],
+        )
+        self.check_wrap(
+            self.text,
+            50,
+            [
+                'Did you say "supercalifragilisticexpialidocious?"',
+                "How *do* you spell that odd word, anyways?",
+            ],
+        )
 
         # SF bug 797650.  Prevent an infinite loop by making sure that at
         # least one character gets split off on every pass.
-        self.check_wrap('-'*10+'hello', 10,
-                        ['----------',
-                         '               h',
-                         '               e',
-                         '               l',
-                         '               l',
-                         '               o'],
-                        subsequent_indent = ' '*15)
+        self.check_wrap(
+            "-" * 10 + "hello",
+            10,
+            [
+                "----------",
+                "               h",
+                "               e",
+                "               l",
+                "               l",
+                "               o",
+            ],
+            subsequent_indent=" " * 15,
+        )
 
         # bug 1146.  Prevent a long word to be wrongly wrapped when the
         # preceding word is exactly one character shorter than the width
-        self.check_wrap(self.text, 12,
-                        ['Did you say ',
-                         '"supercalifr',
-                         'agilisticexp',
-                         'ialidocious?',
-                         '" How *do*',
-                         'you spell',
-                         'that odd',
-                         'word,',
-                         'anyways?'])
+        self.check_wrap(
+            self.text,
+            12,
+            [
+                "Did you say ",
+                '"supercalifr',
+                "agilisticexp",
+                "ialidocious?",
+                '" How *do*',
+                "you spell",
+                "that odd",
+                "word,",
+                "anyways?",
+            ],
+        )
 
     def test_nobreak_long(self):
         # Test with break_long_words disabled
         self.wrapper.break_long_words = 0
         self.wrapper.width = 30
-        expect = ['Did you say',
-                  '"supercalifragilisticexpialidocious?"',
-                  'How *do* you spell that odd',
-                  'word, anyways?'
-                  ]
+        expect = [
+            "Did you say",
+            '"supercalifragilisticexpialidocious?"',
+            "How *do* you spell that odd",
+            "word, anyways?",
+        ]
         result = self.wrapper.wrap(self.text)
         self.check(result, expect)
 
@@ -436,32 +517,31 @@ How *do* you spell that odd word, anyways?
 
 
 class IndentTestCases(BaseTestCase):
-
     # called before each test method
     def setUp(self):
-        self.text = '''\
+        self.text = """\
 This paragraph will be filled, first without any indentation,
-and then with some (including a hanging indent).'''
-
+and then with some (including a hanging indent)."""
 
     def test_fill(self):
         # Test the fill() method
 
-        expect = '''\
+        expect = """\
 This paragraph will be filled, first
 without any indentation, and then with
-some (including a hanging indent).'''
+some (including a hanging indent)."""
 
         result = fill(self.text, 40)
         self.check(result, expect)
 
-
     def test_initial_indent(self):
         # Test initial_indent parameter
 
-        expect = ["     This paragraph will be filled,",
-                  "first without any indentation, and then",
-                  "with some (including a hanging indent)."]
+        expect = [
+            "     This paragraph will be filled,",
+            "first without any indentation, and then",
+            "with some (including a hanging indent).",
+        ]
         result = wrap(self.text, 40, initial_indent="     ")
         self.check(result, expect)
 
@@ -469,25 +549,22 @@ some (including a hanging indent).'''
         result = fill(self.text, 40, initial_indent="     ")
         self.check(result, expect)
 
-
     def test_subsequent_indent(self):
         # Test subsequent_indent parameter
 
-        expect = '''\
+        expect = """\
   * This paragraph will be filled, first
     without any indentation, and then
     with some (including a hanging
-    indent).'''
+    indent)."""
 
-        result = fill(self.text, 40,
-                      initial_indent="  * ", subsequent_indent="    ")
+        result = fill(self.text, 40, initial_indent="  * ", subsequent_indent="    ")
         self.check(result, expect)
 
 
 # Despite the similar names, DedentTestCase is *not* the inverse
 # of IndentTestCase!
 class DedentTestCase(unittest.TestCase):
-
     def assertUnchanged(self, text):
         """assert that dedent() has no effect on 'text'"""
         self.assertEqual(text, dedent(text))
@@ -527,16 +604,16 @@ class DedentTestCase(unittest.TestCase):
 
     def test_dedent_uneven(self):
         # Lines indented unevenly.
-        text = '''\
+        text = """\
         def foo():
             while 1:
                 return foo
-        '''
-        expect = '''\
+        """
+        expect = """\
 def foo():
     while 1:
         return foo
-'''
+"""
         self.assertEqual(expect, dedent(text))
 
         # Uneven indentation with a blank line.
@@ -587,10 +664,10 @@ def foo():
 
 
 def test_main():
-    support.run_unittest(WrapTestCase,
-                              LongWordTestCase,
-                              IndentTestCases,
-                              DedentTestCase)
+    support.run_unittest(
+        WrapTestCase, LongWordTestCase, IndentTestCases, DedentTestCase
+    )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test_main()

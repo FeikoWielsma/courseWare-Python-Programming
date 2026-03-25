@@ -4,9 +4,7 @@ def changeme1(mylist):
     print("List inside the function changeme1: ", mylist)
     return
 
-mylistouter = [10,20,30]
+
+mylistouter = [10, 20, 30]
 changeme1(mylistouter)
 print("List outside the function: ", mylistouter)
-
-
-

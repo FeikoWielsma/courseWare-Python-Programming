@@ -3,6 +3,7 @@
 This extension can complete either attribute names of file names. It can pop
 a window with all available names, for the user to select from.
 """
+
 import os
 import sys
 import string
@@ -16,7 +17,7 @@ FILENAME_CHARS = string.ascii_letters + string.digits + os.curdir + "._~#$:-"
 ID_CHARS = string.ascii_letters + string.digits + "_"
 
 # These constants represent the two different types of completions
-COMPLETE_ATTRIBUTES, COMPLETE_FILES = range(1, 2+1)
+COMPLETE_ATTRIBUTES, COMPLETE_FILES = range(1, 2 + 1)
 
 from idlelib import AutoCompleteWindow
 from idlelib.HyperParser import HyperParser
@@ -27,16 +28,20 @@ SEPS = os.sep
 if os.altsep:  # e.g. '/' on Windows...
     SEPS += os.altsep
 
-class AutoComplete:
 
+class AutoComplete:
     menudefs = [
-        ('edit', [
-            ("Show Completions", "<<force-open-completions>>"),
-        ])
+        (
+            "edit",
+            [
+                ("Show Completions", "<<force-open-completions>>"),
+            ],
+        )
     ]
 
-    popupwait = idleConf.GetOption("extensions", "AutoComplete",
-                                   "popupwait", type="int", default=0)
+    popupwait = idleConf.GetOption(
+        "extensions", "AutoComplete", "popupwait", type="int", default=0
+    )
 
     def __init__(self, editwin=None):
         self.editwin = editwin
@@ -72,11 +77,9 @@ class AutoComplete:
         """
         lastchar = self.text.get("insert-1c")
         if lastchar == ".":
-            self._open_completions_later(False, False, False,
-                                         COMPLETE_ATTRIBUTES)
+            self._open_completions_later(False, False, False, COMPLETE_ATTRIBUTES)
         elif lastchar in SEPS:
-            self._open_completions_later(False, False, False,
-                                         COMPLETE_FILES)
+            self._open_completions_later(False, False, False, COMPLETE_FILES)
 
     def autocomplete_event(self, event):
         """Happens when the user wants to complete his word, and if necessary,
@@ -98,9 +101,9 @@ class AutoComplete:
         self._delayed_completion_index = self.text.index("insert")
         if self._delayed_completion_id is not None:
             self.text.after_cancel(self._delayed_completion_id)
-        self._delayed_completion_id = \
-            self.text.after(self.popupwait, self._delayed_open_completions,
-                            *args)
+        self._delayed_completion_id = self.text.after(
+            self.popupwait, self._delayed_open_completions, *args
+        )
 
     def _delayed_open_completions(self, *args):
         self._delayed_completion_id = None
@@ -123,27 +126,26 @@ class AutoComplete:
         hp = HyperParser(self.editwin, "insert")
         curline = self.text.get("insert linestart", "insert")
         i = j = len(curline)
-        if hp.is_in_string() and (not mode or mode==COMPLETE_FILES):
+        if hp.is_in_string() and (not mode or mode == COMPLETE_FILES):
             self._remove_autocomplete_window()
             mode = COMPLETE_FILES
-            while i and curline[i-1] in FILENAME_CHARS:
+            while i and curline[i - 1] in FILENAME_CHARS:
                 i -= 1
             comp_start = curline[i:j]
             j = i
-            while i and curline[i-1] in FILENAME_CHARS + SEPS:
+            while i and curline[i - 1] in FILENAME_CHARS + SEPS:
                 i -= 1
             comp_what = curline[i:j]
-        elif hp.is_in_code() and (not mode or mode==COMPLETE_ATTRIBUTES):
+        elif hp.is_in_code() and (not mode or mode == COMPLETE_ATTRIBUTES):
             self._remove_autocomplete_window()
             mode = COMPLETE_ATTRIBUTES
-            while i and curline[i-1] in ID_CHARS:
+            while i and curline[i - 1] in ID_CHARS:
                 i -= 1
             comp_start = curline[i:j]
-            if i and curline[i-1] == '.':
-                hp.set_index("insert-%dc" % (len(curline)-(i-1)))
+            if i and curline[i - 1] == ".":
+                hp.set_index("insert-%dc" % (len(curline) - (i - 1)))
                 comp_what = hp.get_expression()
-                if not comp_what or \
-                   (not evalfuncs and comp_what.find('(') != -1):
+                if not comp_what or (not evalfuncs and comp_what.find("(") != -1):
                     return
             else:
                 comp_what = ""
@@ -156,11 +158,9 @@ class AutoComplete:
         if not comp_lists[0]:
             return
         self.autocompletewindow = self._make_autocomplete_window()
-        self.autocompletewindow.show_window(comp_lists,
-                                            "insert-%dc" % len(comp_start),
-                                            complete,
-                                            mode,
-                                            userWantsWin)
+        self.autocompletewindow.show_window(
+            comp_lists, "insert-%dc" % len(comp_start), complete, mode, userWantsWin
+        )
         return True
 
     def fetch_completions(self, what, mode):
@@ -180,8 +180,9 @@ class AutoComplete:
         except:
             rpcclt = None
         if rpcclt:
-            return rpcclt.remotecall("exec", "get_the_completion_list",
-                                     (what, mode), {})
+            return rpcclt.remotecall(
+                "exec", "get_the_completion_list", (what, mode), {}
+            )
         else:
             if mode == COMPLETE_ATTRIBUTES:
                 if what == "":
@@ -193,7 +194,7 @@ class AutoComplete:
                         smalll = eval("__all__", namespace)
                         smalll.sort()
                     else:
-                        smalll = [s for s in bigl if s[:1] != '_']
+                        smalll = [s for s in bigl if s[:1] != "_"]
                 else:
                     try:
                         entity = self.get_entity(what)
@@ -203,7 +204,7 @@ class AutoComplete:
                             smalll = entity.__all__
                             smalll.sort()
                         else:
-                            smalll = [s for s in bigl if s[:1] != '_']
+                            smalll = [s for s in bigl if s[:1] != "_"]
                     except:
                         return [], []
 
@@ -214,7 +215,7 @@ class AutoComplete:
                     expandedpath = os.path.expanduser(what)
                     bigl = os.listdir(expandedpath)
                     bigl.sort()
-                    smalll = [s for s in bigl if s[:1] != '.']
+                    smalll = [s for s in bigl if s[:1] != "."]
                 except OSError:
                     return [], []
 

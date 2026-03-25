@@ -29,8 +29,8 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 400, 400
-        self.setGeometry(x, y, w, h)
-        self.setStyleSheet("QLabel { border: 1px solid red; }")
+        self.set_geometry(x, y, w, h)
+        self.set_style_sheet("QLabel { border: 1px solid red; }")
 
         self.label = QtGui.QLabel("hello", self)
         self.label.move(20, 20)
@@ -48,17 +48,17 @@ class Demo(QtGui.QWidget):
 
         print "QPixmap size = ", pix.size()
         print "QLabel size = ", self.label.size()
-        self.label.setPixmap(pix)
-        print "QLabel size (setPixmap called) = ", self.label.size()
+        self.label.set_pixmap(pix)
+        print "QLabel size (set_pixmap called) = ", self.label.size()
 
     def _btn_adjust_cb(self, *args, **kwargs):
         pix = QtGui.QPixmap(get_next_img_file_path())
 
         print "QPixmap size = ", pix.size()
         print "QLabel size = ", self.label.size()
-        self.label.setPixmap(pix)
-        self.label.adjustSize()
-        print "QLabel size (setPixmap && adjustSize called) = ", self.label.size()
+        self.label.set_pixmap(pix)
+        self.label.adjust_size()
+        print "QLabel size (set_pixmap && adjust_size called) = ", self.label.size()
 
     def show_and_raise(self):
         self.show()

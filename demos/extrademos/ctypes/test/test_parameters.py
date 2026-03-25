@@ -1,9 +1,9 @@
-import unittest, sys
+import unittest
+import sys
+
 
 class SimpleTypesTestCase(unittest.TestCase):
-
     def setUp(self):
-        import ctypes
         try:
             from _ctypes import set_conversion_mode
         except ImportError:
@@ -21,15 +21,18 @@ class SimpleTypesTestCase(unittest.TestCase):
 
     def test_subclasses(self):
         from ctypes import c_void_p, c_char_p
+
         # ctypes 0.9.5 and before did overwrite from_param in SimpleType_new
         class CVOIDP(c_void_p):
             def from_param(cls, value):
                 return value * 2
+
             from_param = classmethod(from_param)
 
         class CCHARP(c_char_p):
             def from_param(cls, value):
                 return value * 4
+
             from_param = classmethod(from_param)
 
         self.assertEqual(CVOIDP.from_param("abc"), "abcabc")
@@ -43,13 +46,14 @@ class SimpleTypesTestCase(unittest.TestCase):
         class CWCHARP(c_wchar_p):
             def from_param(cls, value):
                 return value * 3
+
             from_param = classmethod(from_param)
 
         self.assertEqual(CWCHARP.from_param("abc"), "abcabcabc")
 
     # XXX Replace by c_char_p tests
     def test_cstrings(self):
-        from ctypes import c_char_p, byref
+        from ctypes import c_char_p
 
         # c_char_p.from_param on a Python String packs the string
         # into a cparam object
@@ -67,11 +71,10 @@ class SimpleTypesTestCase(unittest.TestCase):
         self.assertTrue(c_char_p.from_param(a) is a)
 
     def test_cw_strings(self):
-        from ctypes import byref
         try:
             from ctypes import c_wchar_p
         except ImportError:
-##            print "(No c_wchar_p)"
+            ##            print "(No c_wchar_p)"
             return
         s = "123"
         if sys.platform == "win32":
@@ -87,10 +90,11 @@ class SimpleTypesTestCase(unittest.TestCase):
 
     def test_int_pointers(self):
         from ctypes import c_short, c_uint, c_int, c_long, POINTER, pointer
+
         LPINT = POINTER(c_int)
 
-##        p = pointer(c_int(42))
-##        x = LPINT.from_param(p)
+        ##        p = pointer(c_int(42))
+        ##        x = LPINT.from_param(p)
         x = LPINT.from_param(pointer(c_int(42)))
         self.assertEqual(x.contents.value, 42)
         self.assertEqual(LPINT(c_int(42)).contents.value, 42)
@@ -105,7 +109,8 @@ class SimpleTypesTestCase(unittest.TestCase):
     def test_byref_pointer(self):
         # The from_param class method of POINTER(typ) classes accepts what is
         # returned by byref(obj), it type(obj) == typ
-        from ctypes import c_short, c_uint, c_int, c_long, pointer, POINTER, byref
+        from ctypes import c_short, c_uint, c_int, c_long, POINTER, byref
+
         LPINT = POINTER(c_int)
 
         LPINT.from_param(byref(c_int(42)))
@@ -129,6 +134,7 @@ class SimpleTypesTestCase(unittest.TestCase):
 
     def test_array_pointers(self):
         from ctypes import c_short, c_uint, c_int, c_long, POINTER
+
         INTARRAY = c_int * 3
         ia = INTARRAY()
         self.assertEqual(len(ia), 3)
@@ -137,13 +143,13 @@ class SimpleTypesTestCase(unittest.TestCase):
         # Pointers are only compatible with arrays containing items of
         # the same type!
         LPINT = POINTER(c_int)
-        LPINT.from_param((c_int*3)())
-        self.assertRaises(TypeError, LPINT.from_param, c_short*3)
-        self.assertRaises(TypeError, LPINT.from_param, c_long*3)
-        self.assertRaises(TypeError, LPINT.from_param, c_uint*3)
+        LPINT.from_param((c_int * 3)())
+        self.assertRaises(TypeError, LPINT.from_param, c_short * 3)
+        self.assertRaises(TypeError, LPINT.from_param, c_long * 3)
+        self.assertRaises(TypeError, LPINT.from_param, c_uint * 3)
 
-##    def test_performance(self):
-##        check_perf()
+    ##    def test_performance(self):
+    ##        check_perf()
 
     def test_noctypes_argtype(self):
         import _ctypes_test
@@ -182,5 +188,5 @@ class SimpleTypesTestCase(unittest.TestCase):
 
 ################################################################
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

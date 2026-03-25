@@ -11,8 +11,8 @@ iter(<>), list(<>), tuple(<>), sorted(<>), ...join(<>), or for V in <>:.
 from .. import fixer_base
 from ..fixer_util import Name, Call, in_special_context
 
-class FixZip(fixer_base.ConditionalFix):
 
+class FixZip(fixer_base.ConditionalFix):
     BM_compatible = True
     PATTERN = """
     power< 'zip' args=trailer< '(' [any] ')' >

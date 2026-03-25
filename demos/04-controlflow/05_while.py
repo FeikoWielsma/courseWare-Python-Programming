@@ -3,7 +3,7 @@ while x <= 5:
     print(x)
     x += 1
 
-name = ''
+name = ""
 while not name:
-    name = input('Please enter your name: ')
-print('Hello, %s!' % name)
+    name = input("Please enter your name: ")
+print("Hello, %s!" % name)

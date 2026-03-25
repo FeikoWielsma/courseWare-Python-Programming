@@ -23,14 +23,14 @@ class Demo(QtGui.QWidget):
     def __init__(self):
         super(Demo, self).__init__()
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
         
         self.combo = QtGui.QComboBox(self)
         self.combo.resize(200, 30)
         self.combo.move(20, 60)
 
-        self.combo.currentIndexChanged.connect(self._combo_currentIndexChanged)
+        self.combo.current_index_changed.connect(self._combo_currentIndexChanged)
 
         self.items = (
             '',
@@ -43,11 +43,11 @@ class Demo(QtGui.QWidget):
         for i in self.items:
             if isinstance(i, tuple):
                 text, icon_path, user_data = i[0], i[1], i[2]
-                self.combo.addItem(QtGui.QIcon(icon_path), text, user_data)
+                self.combo.add_item(QtGui.QIcon(icon_path), text, user_data)
                 # or
-                # self.combo.addItem(text, user_data)
+                # self.combo.add_item(text, user_data)
             else:
-                self.combo.addItem(i)
+                self.combo.add_item(i)
 
 
     def _combo_currentIndexChanged(self, idx):
@@ -62,7 +62,7 @@ class Demo(QtGui.QWidget):
         
         text, icon_path, user_data = item[0], item[1], item[2]
 
-        matched_idx = self.combo.findData(user_data)
+        matched_idx = self.combo.find_data(user_data)
         assert activated_idx == matched_idx
 
         print

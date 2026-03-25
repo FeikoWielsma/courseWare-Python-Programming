@@ -3,46 +3,59 @@ class Rule:
     """
     Base class for all rules.
     """
+
     def action(self, block, handler):
         handler.start(self.type)
         handler.feed(block)
         handler.end(self.type)
         return 1
 
+
 class HeadingRule(Rule):
     """
     A heading is a single line that is at most 70 characters and
     that doesn't end with a colon.
     """
-    type = 'heading'
+
+    type = "heading"
+
     def condition(self, block):
-        return not '\n' in block and len(block) <= 70 and not block[-1] == ':'
+        return "\n" not in block and len(block) <= 70 and not block[-1] == ":"
+
 
 class TitleRule(HeadingRule):
     """
     The title is the first block in the document, provided that it is
     a heading.
     """
-    type = 'title'
+
+    type = "title"
     first = 1
+
     def condition(self, block):
-        if not self.first: return 0
+        if not self.first:
+            return 0
         self.first = 0
         return HeadingRule.condition(self, block)
+
 
 class ListItemRule(Rule):
     """
     A list item is a paragraph that begins with a hyphen. As part of
     the formatting, the hyphen is removed.
     """
-    type = 'listitem'
+
+    type = "listitem"
+
     def condition(self, block):
-        return block[0] == '-'
+        return block[0] == "-"
+
     def action(self, block, handler):
         handler.start(self.type)
         handler.feed(block[1:].strip())
         handler.end(self.type)
         return 1
+
 
 class ListRule(ListItemRule):
     """
@@ -50,10 +63,13 @@ class ListRule(ListItemRule):
     subsequent list item. It ends after the last consecutive list
     item.
     """
-    type = 'list'
+
+    type = "list"
     inside = 0
+
     def condition(self, block):
         return 1
+
     def action(self, block, handler):
         if not self.inside and ListItemRule.condition(self, block):
             handler.start(self.type)
@@ -63,11 +79,14 @@ class ListRule(ListItemRule):
             self.inside = 0
         return 0
 
+
 class ParagraphRule(Rule):
     """
     A paragraph is simply a block that isn't covered by any of the
     other rules.
     """
-    type = 'paragraph'
+
+    type = "paragraph"
+
     def condition(self, block):
         return 1

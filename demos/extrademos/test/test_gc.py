@@ -10,12 +10,14 @@ import weakref
 # Bug 1055820 has several tests of longstanding bugs involving weakrefs and
 # cyclic gc.
 
+
 # An instance of C1055820 has a self-loop, so becomes cyclic trash when
 # unreachable.
 class C1055820(object):
     def __init__(self, i):
         self.i = i
         self.loop = self
+
 
 class GC_Detector(object):
     # Create an instance I.  Then gc hasn't happened again so long as
@@ -34,6 +36,7 @@ class GC_Detector(object):
 
 ### Tests
 ###############################################################################
+
 
 class GCTests(unittest.TestCase):
     def test_list(self):
@@ -63,6 +66,7 @@ class GCTests(unittest.TestCase):
     def test_class(self):
         class A:
             pass
+
         A.a = A
         gc.collect()
         del A
@@ -71,6 +75,7 @@ class GCTests(unittest.TestCase):
     def test_newstyleclass(self):
         class A(object):
             pass
+
         gc.collect()
         del A
         self.assertNotEqual(gc.collect(), 0)
@@ -78,6 +83,7 @@ class GCTests(unittest.TestCase):
     def test_instance(self):
         class A:
             pass
+
         a = A()
         a.a = a
         gc.collect()
@@ -87,15 +93,19 @@ class GCTests(unittest.TestCase):
     def test_newinstance(self):
         class A(object):
             pass
+
         a = A()
         a.a = a
         gc.collect()
         del a
         self.assertNotEqual(gc.collect(), 0)
+
         class B(list):
             pass
+
         class C(B, A):
             pass
+
         a = C()
         a.a = a
         gc.collect()
@@ -113,6 +123,7 @@ class GCTests(unittest.TestCase):
         class A:
             def __init__(self):
                 self.init = self.__init__
+
         a = A()
         gc.collect()
         del a
@@ -122,9 +133,12 @@ class GCTests(unittest.TestCase):
         # A() is uncollectable if it is part of a cycle, make sure it shows up
         # in gc.garbage.
         class A:
-            def __del__(self): pass
+            def __del__(self):
+                pass
+
         class B:
             pass
+
         a = A()
         a.a = a
         id_a = id(a)
@@ -146,9 +160,12 @@ class GCTests(unittest.TestCase):
         # A() is uncollectable if it is part of a cycle, make sure it shows up
         # in gc.garbage.
         class A(object):
-            def __del__(self): pass
+            def __del__(self):
+                pass
+
         class B(object):
             pass
+
         a = A()
         a.a = a
         id_a = id(a)
@@ -178,6 +195,7 @@ class GCTests(unittest.TestCase):
     def test_frame(self):
         def f():
             frame = sys._getframe()
+
         gc.collect()
         f()
         self.assertEqual(gc.collect(), 1)
@@ -215,6 +233,7 @@ class GCTests(unittest.TestCase):
         class A:
             def __del__(self):
                 dir(self)
+
         a = A()
         del a
 
@@ -230,6 +249,7 @@ class GCTests(unittest.TestCase):
         class A(object):
             def __del__(self):
                 dir(self)
+
         a = A()
         del a
 
@@ -267,6 +287,7 @@ class GCTests(unittest.TestCase):
     def test_trashcan(self):
         class Ouch:
             n = 0
+
             def __del__(self):
                 Ouch.n = Ouch.n + 1
                 if Ouch.n % 17 == 0:
@@ -413,7 +434,7 @@ class GCTests(unittest.TestCase):
         got.sort()
         self.assertEqual(got, [0, 0] + list(range(5)))
 
-        self.assertEqual(gc.get_referents(1, 'a', 4j), [])
+        self.assertEqual(gc.get_referents(1, "a", 4j), [])
 
     def test_is_tracked(self):
         # Atomic built-in types are not tracked, user-defined objects and
@@ -436,6 +457,7 @@ class GCTests(unittest.TestCase):
 
         class UserClass:
             pass
+
         self.assertTrue(gc.is_tracked(gc))
         self.assertTrue(gc.is_tracked(UserClass))
         self.assertTrue(gc.is_tracked(UserClass()))
@@ -446,6 +468,7 @@ class GCTests(unittest.TestCase):
         # Corresponds to temp2b.py in the bug report.
 
         ouch = []
+
         def callback(ignored):
             ouch[:] = [wr() for wr in WRs]
 
@@ -468,6 +491,7 @@ class GCTests(unittest.TestCase):
 
     def test_garbage_at_shutdown(self):
         import subprocess
+
         code = """if 1:
             import gc
             class X:
@@ -484,10 +508,13 @@ class GCTests(unittest.TestCase):
             del x
             gc.set_debug(%s)
         """
+
         def run_command(code):
-            p = subprocess.Popen([sys.executable, "-Wd", "-c", code],
+            p = subprocess.Popen(
+                [sys.executable, "-Wd", "-c", code],
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE)
+                stderr=subprocess.PIPE,
+            )
             stdout, stderr = p.communicate()
             p.stdout.close()
             p.stderr.close()
@@ -496,16 +523,20 @@ class GCTests(unittest.TestCase):
             return strip_python_stderr(stderr)
 
         stderr = run_command(code % "0")
-        self.assertIn(b"ResourceWarning: gc: 2 uncollectable objects at "
-                      b"shutdown; use", stderr)
+        self.assertIn(
+            b"ResourceWarning: gc: 2 uncollectable objects at shutdown; use", stderr
+        )
         self.assertNotIn(b"<X 'first'>", stderr)
         # With DEBUG_UNCOLLECTABLE, the garbage list gets printed
         stderr = run_command(code % "gc.DEBUG_UNCOLLECTABLE")
-        self.assertIn(b"ResourceWarning: gc: 2 uncollectable objects at "
-                      b"shutdown", stderr)
+        self.assertIn(
+            b"ResourceWarning: gc: 2 uncollectable objects at shutdown", stderr
+        )
         self.assertTrue(
-            (b"[<X 'first'>, <X 'second'>]" in stderr) or
-            (b"[<X 'second'>, <X 'first'>]" in stderr), stderr)
+            (b"[<X 'first'>, <X 'second'>]" in stderr)
+            or (b"[<X 'second'>, <X 'first'>]" in stderr),
+            stderr,
+        )
         # With DEBUG_SAVEALL, no additional message should get printed
         # (because gc.garbage also contains normally reclaimable cyclic
         # references, and its elements get printed at runtime anyway).
@@ -530,12 +561,13 @@ class GCTogglingTests(unittest.TestCase):
 
         c1 = C1055820(1)
         c1.keep_c0_alive = c0
-        del c0.loop # now only c1 keeps c0 alive
+        del c0.loop  # now only c1 keeps c0 alive
 
         c2 = C1055820(2)
-        c2wr = weakref.ref(c2) # no callback!
+        c2wr = weakref.ref(c2)  # no callback!
 
         ouch = []
+
         def callback(ignored):
             ouch[:] = [c2wr()]
 
@@ -555,7 +587,7 @@ class GCTogglingTests(unittest.TestCase):
         #               ^
         #               |
         #               |     Generation 2 above dots
-        #. . . . . . . .|. . . . . . . . . . . . . . . . . . . . . . . .
+        # . . . . . . . .|. . . . . . . . . . . . . . . . . . . . . . . .
         #               |     Generation 0 below dots
         #               |
         #               |
@@ -596,6 +628,7 @@ class GCTogglingTests(unittest.TestCase):
         # callback to sneak in a resurrection of cyclic trash.
 
         ouch = []
+
         class D(C1055820):
             def __del__(self):
                 ouch[:] = [c2wr()]
@@ -606,10 +639,10 @@ class GCTogglingTests(unittest.TestCase):
 
         c1 = C1055820(1)
         c1.keep_d0_alive = d0
-        del d0.loop # now only c1 keeps d0 alive
+        del d0.loop  # now only c1 keeps d0 alive
 
         c2 = C1055820(2)
-        c2wr = weakref.ref(c2) # no callback!
+        c2wr = weakref.ref(c2)  # no callback!
 
         d0 = c1 = c2 = None
 
@@ -623,7 +656,7 @@ class GCTogglingTests(unittest.TestCase):
         #               ^
         #               |
         #               |     Generation 2 above dots
-        #. . . . . . . .|. . . . . . . . . . . . . . . . . . . . . . . .
+        # . . . . . . . .|. . . . . . . . . . . . . . . . . . . . . . . .
         #               |     Generation 0 below dots
         #               |
         #               |
@@ -657,15 +690,16 @@ class GCTogglingTests(unittest.TestCase):
             # empty __dict__.
             self.assertEqual(x, None)
 
+
 def test_main():
     enabled = gc.isenabled()
     gc.disable()
     assert not gc.isenabled()
     debug = gc.get_debug()
-    gc.set_debug(debug & ~gc.DEBUG_LEAK) # this test is supposed to leak
+    gc.set_debug(debug & ~gc.DEBUG_LEAK)  # this test is supposed to leak
 
     try:
-        gc.collect() # Delete 2nd generation garbage
+        gc.collect()  # Delete 2nd generation garbage
         run_unittest(GCTests, GCTogglingTests)
     finally:
         gc.set_debug(debug)
@@ -677,6 +711,7 @@ def test_main():
         assert gc.isenabled()
         if not enabled:
             gc.disable()
+
 
 if __name__ == "__main__":
     test_main()

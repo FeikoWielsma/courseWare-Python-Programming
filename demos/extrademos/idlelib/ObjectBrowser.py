@@ -17,20 +17,26 @@ myrepr = Repr()
 myrepr.maxstring = 100
 myrepr.maxother = 100
 
+
 class ObjectTreeItem(TreeItem):
     def __init__(self, labeltext, object, setfunction=None):
         self.labeltext = labeltext
         self.object = object
         self.setfunction = setfunction
+
     def GetLabelText(self):
         return self.labeltext
+
     def GetText(self):
         return myrepr.repr(self.object)
+
     def GetIconName(self):
         if not self.IsExpandable():
             return "python"
+
     def IsEditable(self):
         return self.setfunction is not None
+
     def SetText(self, text):
         try:
             value = eval(text)
@@ -39,8 +45,10 @@ class ObjectTreeItem(TreeItem):
             pass
         else:
             self.object = value
+
     def IsExpandable(self):
         return not not dir(self.object)
+
     def GetSubList(self):
         keys = dir(self.object)
         sublist = []
@@ -52,33 +60,38 @@ class ObjectTreeItem(TreeItem):
             item = make_objecttreeitem(
                 str(key) + " =",
                 value,
-                lambda value, key=key, object=self.object:
-                    setattr(object, key, value))
+                lambda value, key=key, object=self.object: setattr(object, key, value),
+            )
             sublist.append(item)
         return sublist
+
 
 class ClassTreeItem(ObjectTreeItem):
     def IsExpandable(self):
         return True
+
     def GetSubList(self):
         sublist = ObjectTreeItem.GetSubList(self)
         if len(self.object.__bases__) == 1:
-            item = make_objecttreeitem("__bases__[0] =",
-                self.object.__bases__[0])
+            item = make_objecttreeitem("__bases__[0] =", self.object.__bases__[0])
         else:
             item = make_objecttreeitem("__bases__ =", self.object.__bases__)
         sublist.insert(0, item)
         return sublist
 
+
 class AtomicObjectTreeItem(ObjectTreeItem):
     def IsExpandable(self):
         return 0
 
+
 class SequenceTreeItem(ObjectTreeItem):
     def IsExpandable(self):
         return len(self.object) > 0
+
     def keys(self):
         return range(len(self.object))
+
     def GetSubList(self):
         sublist = []
         for key in self.keys():
@@ -86,11 +99,14 @@ class SequenceTreeItem(ObjectTreeItem):
                 value = self.object[key]
             except KeyError:
                 continue
+
             def setfunction(value, key=key, object=self.object):
                 object[key] = value
+
             item = make_objecttreeitem("%r:" % (key,), value, setfunction)
             sublist.append(item)
         return sublist
+
 
 class DictTreeItem(SequenceTreeItem):
     def keys(self):
@@ -100,6 +116,7 @@ class DictTreeItem(SequenceTreeItem):
         except:
             pass
         return keys
+
 
 dispatch = {
     int: AtomicObjectTreeItem,
@@ -111,6 +128,7 @@ dispatch = {
     type: ClassTreeItem,
 }
 
+
 def make_objecttreeitem(labeltext, object, setfunction=None):
     t = type(object)
     if t in dispatch:
@@ -119,11 +137,14 @@ def make_objecttreeitem(labeltext, object, setfunction=None):
         c = ObjectTreeItem
     return c(labeltext, object, setfunction)
 
+
 # Test script
+
 
 def _test():
     import sys
     from tkinter import Tk
+
     root = Tk()
     root.configure(bd=0, bg="yellow")
     root.focus_set()
@@ -134,5 +155,6 @@ def _test():
     node.update()
     root.mainloop()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     _test()

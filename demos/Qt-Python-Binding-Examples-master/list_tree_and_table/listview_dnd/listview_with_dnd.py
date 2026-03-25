@@ -39,11 +39,11 @@ class ListModel(QtCore.QAbstractListModel):
         super(ListModel, self).__init__()
         self.os_list = os_list
 
-    def rowCount(self, parent):
+    def row_count(self, parent):
         return len(self.os_list)
 
     def data(self, index, role = QtCore.Qt.DisplayRole):
-        if not index.isValid():
+        if not index.is_valid():
             return None
 
         os_name, os_logo_path = self.os_list[index.row()]
@@ -55,7 +55,7 @@ class ListModel(QtCore.QAbstractListModel):
         return None
 
     def flags(self, idx):
-        if idx.isValid():
+        if idx.is_valid():
             return QtCore.Qt.ItemIsDragEnabled | QtCore.Qt.ItemIsDropEnabled |\
                    QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled
         else:
@@ -63,21 +63,21 @@ class ListModel(QtCore.QAbstractListModel):
                    QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled
 
     # DND
-    def supportedDropActions(self):
+    def supported_drop_actions(self):
         return QtCore.Qt.MoveAction
 
-    def mimeData(self, idxes):
-        super(ListModel, self).mimeData(idxes)
+    def mime_data(self, idxes):
+        super(ListModel, self).mime_data(idxes)
 
         mime_data = QtCore.QMimeData()
 
         encoded_data = ""
 
         for idx in idxes:
-            if idx.isValid():
+            if idx.is_valid():
                 encoded_data += '\r\n' + self.data(idx, role = QtCore.Qt.DisplayRole)
 
-        mime_data.setData('text/plain', encoded_data)
+        mime_data.set_data('text/plain', encoded_data)
 
         return mime_data
 
@@ -88,32 +88,32 @@ class ListView(QtGui.QListView):
 
         self.data_sources = create_data_source()
         list_model = ListModel(self.data_sources)
-        self.setModel(list_model)
+        self.set_model(list_model)
 
         # size
-        self.setIconSize(QtCore.QSize(50, 50))
-        self.setSpacing(5)
-        self.setUniformItemSizes(True)
+        self.set_icon_size(QtCore.QSize(50, 50))
+        self.set_spacing(5)
+        self.set_uniform_item_sizes(True)
 
         # view
-        self.setDropIndicatorShown(True)
+        self.set_drop_indicator_shown(True)
 
         # interactive in DND mode
-        self.setMovement(QtGui.QListView.Free)
-        self.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
-        self.setDragEnabled(True)
-        self.setAcceptDrops(True)
+        self.set_movement(QtGui.QListView.Free)
+        self.set_selection_mode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.set_drag_enabled(True)
+        self.set_accept_drops(True)
 
-#    def dragEnterEvent(self, evt):
+#    def drag_enter_event(self, evt):
 #        evt.accept()
-#        if evt.mimeData().hasFormat('text/plain'):
+#        if evt.mime_data().has_format('text/plain'):
 #            evt.accept()
 #        else:
 #            evt.ignore()
 #
-#    def dropEvent(self, evt):
+#    def drop_event(self, evt):
 #        evt.accept()
-#        mime_data = evt.mimeData()
+#        mime_data = evt.mime_data()
 #
 #        print mime_data.data('text/plain')
 
@@ -129,24 +129,24 @@ class ChatWin(QtGui.QWidget):
         self.demo = parent
 
         x, y, w, h = 200, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
-        self.setAcceptDrops(True)
+        self.set_accept_drops(True)
 
     def show_and_raise(self):
         self.show()
         self.raise_()
 
-    def dragEnterEvent(self, evt):
+    def drag_enter_event(self, evt):
         evt.accept()
-        if evt.mimeData().hasFormat('text/plain'):
+        if evt.mime_data().has_format('text/plain'):
             evt.accept()
         else:
             evt.ignore()
 
-    def dropEvent(self, evt):
+    def drop_event(self, evt):
         evt.accept()
-        mime_data = evt.mimeData()
+        mime_data = evt.mime_data()
         
         print mime_data.data('text/plain')
 
@@ -155,16 +155,16 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
 
         self.list_view = ListView(self)
         x, y, w, h = 5, 5, 290, 250
-        self.list_view.setGeometry(x, y, w, h)
+        self.list_view.set_geometry(x, y, w, h)
 
         self.lineedit = QtGui.QLineEdit(self)
         self.lineedit.move(5, 260)
-        self.lineedit.textEdited.connect(self._lineedit_textEdited)
+        self.lineedit.text_edited.connect(self._lineedit_textEdited)
 
 
         self.chat_win = ChatWin(self)
@@ -173,11 +173,11 @@ class Demo(QtGui.QWidget):
 
     def _lineedit_textEdited(self, text):
         if not text:
-            self.list_view.clearSelection()
+            self.list_view.clear_selection()
         else:
-            self.list_view.keyboardSearch(text)
-            idx = self.list_view.currentIndex()
-            if idx.isValid():
+            self.list_view.keyboard_search(text)
+            idx = self.list_view.current_index()
+            if idx.is_valid():
                 if len(self.list_view.data_sources) - 1 >= idx.row():
                     self.list_view.data_sources.pop(idx.row())
                     self.list_view.update()

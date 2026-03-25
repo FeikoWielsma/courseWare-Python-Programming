@@ -5,14 +5,15 @@ import signal
 import os
 import sys
 from test.support import run_unittest, import_module
-thread = import_module('_thread')
+
+thread = import_module("_thread")
 import time
 
-if sys.platform[:3] in ('win', 'os2') or sys.platform=='riscos':
+if sys.platform[:3] in ("win", "os2") or sys.platform == "riscos":
     raise unittest.SkipTest("Can't test signal on %s" % sys.platform)
 
 process_pid = os.getpid()
-signalled_all=thread.allocate_lock()
+signalled_all = thread.allocate_lock()
 
 
 def registerSignals(for_usr1, for_usr2, for_alrm):
@@ -24,9 +25,10 @@ def registerSignals(for_usr1, for_usr2, for_alrm):
 
 # The signal handler. Just note that the signal occurred and
 # from who.
-def handle_signals(sig,frame):
-    signal_blackboard[sig]['tripped'] += 1
-    signal_blackboard[sig]['tripped_by'] = thread.get_ident()
+def handle_signals(sig, frame):
+    signal_blackboard[sig]["tripped"] += 1
+    signal_blackboard[sig]["tripped_by"] = thread.get_ident()
+
 
 # a function that will be spawned as a separate thread.
 def send_signals():
@@ -34,8 +36,8 @@ def send_signals():
     os.kill(process_pid, signal.SIGUSR2)
     signalled_all.release()
 
-class ThreadSignals(unittest.TestCase):
 
+class ThreadSignals(unittest.TestCase):
     def test_signals(self):
         # Test signal handling semantics of threads.
         # We spawn a thread, have the thread send two signals, and
@@ -50,18 +52,22 @@ class ThreadSignals(unittest.TestCase):
         # and might be out of order.)  If we haven't seen
         # the signals yet, send yet another signal and
         # wait for it return.
-        if signal_blackboard[signal.SIGUSR1]['tripped'] == 0 \
-           or signal_blackboard[signal.SIGUSR2]['tripped'] == 0:
+        if (
+            signal_blackboard[signal.SIGUSR1]["tripped"] == 0
+            or signal_blackboard[signal.SIGUSR2]["tripped"] == 0
+        ):
             signal.alarm(1)
             signal.pause()
             signal.alarm(0)
 
-        self.assertEqual( signal_blackboard[signal.SIGUSR1]['tripped'], 1)
-        self.assertEqual( signal_blackboard[signal.SIGUSR1]['tripped_by'],
-                           thread.get_ident())
-        self.assertEqual( signal_blackboard[signal.SIGUSR2]['tripped'], 1)
-        self.assertEqual( signal_blackboard[signal.SIGUSR2]['tripped_by'],
-                           thread.get_ident())
+        self.assertEqual(signal_blackboard[signal.SIGUSR1]["tripped"], 1)
+        self.assertEqual(
+            signal_blackboard[signal.SIGUSR1]["tripped_by"], thread.get_ident()
+        )
+        self.assertEqual(signal_blackboard[signal.SIGUSR2]["tripped"], 1)
+        self.assertEqual(
+            signal_blackboard[signal.SIGUSR2]["tripped_by"], thread.get_ident()
+        )
         signalled_all.release()
 
     def spawnSignallingThread(self):
@@ -88,10 +94,12 @@ class ThreadSignals(unittest.TestCase):
         oldalrm = signal.signal(signal.SIGALRM, self.alarm_interrupt)
         try:
             rlock = thread.RLock()
+
             # For reentrant locks, the initial acquisition must be in another
             # thread.
             def other_thread():
                 rlock.acquire()
+
             thread.start_new_thread(other_thread, ())
             # Wait until we can't acquire it without blocking...
             while rlock.acquire(blocking=False):
@@ -104,10 +112,13 @@ class ThreadSignals(unittest.TestCase):
 
     def acquire_retries_on_intr(self, lock):
         self.sig_recvd = False
+
         def my_handler(signal, frame):
             self.sig_recvd = True
+
         old_handler = signal.signal(signal.SIGUSR1, my_handler)
         try:
+
             def other_thread():
                 # Acquire the lock in a non-main thread, so this test works for
                 # RLocks.
@@ -120,6 +131,7 @@ class ThreadSignals(unittest.TestCase):
                 # the lock acquisition.  Then we'll let it run.
                 time.sleep(0.5)
                 lock.release()
+
             thread.start_new_thread(other_thread, ())
             # Wait until we can't acquire it without blocking...
             while lock.acquire(blocking=False):
@@ -152,14 +164,18 @@ class ThreadSignals(unittest.TestCase):
         done.acquire()
         lock = thread.allocate_lock()
         lock.acquire()
+
         def my_handler(signum, frame):
             self.sigs_recvd += 1
+
         old_handler = signal.signal(signal.SIGUSR1, my_handler)
         try:
+
             def timed_acquire():
                 self.start = time.time()
                 lock.acquire(timeout=0.5)
                 self.end = time.time()
+
             def send_signals():
                 for _ in range(40):
                     time.sleep(0.02)
@@ -186,9 +202,11 @@ class ThreadSignals(unittest.TestCase):
 def test_main():
     global signal_blackboard
 
-    signal_blackboard = { signal.SIGUSR1 : {'tripped': 0, 'tripped_by': 0 },
-                          signal.SIGUSR2 : {'tripped': 0, 'tripped_by': 0 },
-                          signal.SIGALRM : {'tripped': 0, 'tripped_by': 0 } }
+    signal_blackboard = {
+        signal.SIGUSR1: {"tripped": 0, "tripped_by": 0},
+        signal.SIGUSR2: {"tripped": 0, "tripped_by": 0},
+        signal.SIGALRM: {"tripped": 0, "tripped_by": 0},
+    }
 
     oldsigs = registerSignals(handle_signals, handle_signals, handle_signals)
     try:
@@ -196,5 +214,6 @@ def test_main():
     finally:
         registerSignals(*oldsigs)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test_main()

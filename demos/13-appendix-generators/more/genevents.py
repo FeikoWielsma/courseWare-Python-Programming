@@ -29,7 +29,7 @@ if __name__ == '__main__':
     import threading
     acc_thr = threading.Thread(target=acceptor,
                                args = (clientset, addr))
-    acc_thr.setDaemon(True)
+    acc_thr.set_daemon(True)
     acc_thr.start()
     
     for evt,s in gen_events(clientset):

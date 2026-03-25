@@ -15,15 +15,18 @@ On the Mac EasyDialogs.AskPassword is used, if available.
 #          Guido van Rossum (Windows support and cleanup)
 #          Gregory P. Smith (tty support & GetPassWarning)
 
-import os, sys, warnings
+import os
+import sys
+import warnings
 
-__all__ = ["getpass","getuser","GetPassWarning"]
+__all__ = ["getpass", "getuser", "GetPassWarning"]
 
 
-class GetPassWarning(UserWarning): pass
+class GetPassWarning(UserWarning):
+    pass
 
 
-def unix_getpass(prompt='Password: ', stream=None):
+def unix_getpass(prompt="Password: ", stream=None):
     """Prompt for a password, with echo turned off.
 
     Args:
@@ -42,12 +45,12 @@ def unix_getpass(prompt='Password: ', stream=None):
     tty = None
     try:
         # Always try reading and writing directly on the tty first.
-        fd = os.open('/dev/tty', os.O_RDWR|os.O_NOCTTY)
-        tty = os.fdopen(fd, 'w+', 1)
+        fd = os.open("/dev/tty", os.O_RDWR | os.O_NOCTTY)
+        tty = os.fdopen(fd, "w+", 1)
         input = tty
         if not stream:
             stream = tty
-    except EnvironmentError as e:
+    except EnvironmentError:
         # If that fails, see if stdin can be controlled.
         try:
             fd = sys.stdin.fileno()
@@ -60,11 +63,11 @@ def unix_getpass(prompt='Password: ', stream=None):
     if fd is not None:
         passwd = None
         try:
-            old = termios.tcgetattr(fd)     # a copy to save
+            old = termios.tcgetattr(fd)  # a copy to save
             new = old[:]
-            new[3] &= ~(termios.ECHO|termios.ISIG)  # 3 == 'lflags'
+            new[3] &= ~(termios.ECHO | termios.ISIG)  # 3 == 'lflags'
             tcsetattr_flags = termios.TCSAFLUSH
-            if hasattr(termios, 'TCSASOFT'):
+            if hasattr(termios, "TCSASOFT"):
                 tcsetattr_flags |= termios.TCSASOFT
             try:
                 termios.tcsetattr(fd, tcsetattr_flags, new)
@@ -72,7 +75,7 @@ def unix_getpass(prompt='Password: ', stream=None):
             finally:
                 termios.tcsetattr(fd, tcsetattr_flags, old)
                 stream.flush()  # issue7208
-        except termios.error as e:
+        except termios.error:
             if passwd is not None:
                 # _raw_input succeeded.  The final tcsetattr failed.  Reraise
                 # instead of leaving the terminal in an unknown state.
@@ -82,36 +85,36 @@ def unix_getpass(prompt='Password: ', stream=None):
             del input, tty  # clean up unused file objects before blocking
             passwd = fallback_getpass(prompt, stream)
 
-    stream.write('\n')
+    stream.write("\n")
     return passwd
 
 
-def win_getpass(prompt='Password: ', stream=None):
+def win_getpass(prompt="Password: ", stream=None):
     """Prompt for password with echo off, using Windows getch()."""
     if sys.stdin is not sys.__stdin__:
         return fallback_getpass(prompt, stream)
     import msvcrt
+
     for c in prompt:
         msvcrt.putwch(c)
     pw = ""
     while 1:
         c = msvcrt.getwch()
-        if c == '\r' or c == '\n':
+        if c == "\r" or c == "\n":
             break
-        if c == '\003':
+        if c == "\003":
             raise KeyboardInterrupt
-        if c == '\b':
+        if c == "\b":
             pw = pw[:-1]
         else:
             pw = pw + c
-    msvcrt.putwch('\r')
-    msvcrt.putwch('\n')
+    msvcrt.putwch("\r")
+    msvcrt.putwch("\n")
     return pw
 
 
-def fallback_getpass(prompt='Password: ', stream=None):
-    warnings.warn("Can not control echo on the terminal.", GetPassWarning,
-                  stacklevel=2)
+def fallback_getpass(prompt="Password: ", stream=None):
+    warnings.warn("Can not control echo on the terminal.", GetPassWarning, stacklevel=2)
     if not stream:
         stream = sys.stderr
     print("Warning: Password input may be echoed.", file=stream)
@@ -132,7 +135,7 @@ def _raw_input(prompt="", stream=None, input=None):
     line = input.readline()
     if not line:
         raise EOFError
-    if line[-1] == '\n':
+    if line[-1] == "\n":
         line = line[:-1]
     return line
 
@@ -147,18 +150,21 @@ def getuser():
 
     import os
 
-    for name in ('LOGNAME', 'USER', 'LNAME', 'USERNAME'):
+    for name in ("LOGNAME", "USER", "LNAME", "USERNAME"):
         user = os.environ.get(name)
         if user:
             return user
 
     # If this fails, the exception will "explain" why
     import pwd
+
     return pwd.getpwuid(os.getuid())[0]
+
 
 # Bind the name getpass to the appropriate function
 try:
     import termios
+
     # it's possible there is an incompatible termios from the
     # McMillan Installer, make sure we have a UNIX-compatible termios
     termios.tcgetattr, termios.tcsetattr

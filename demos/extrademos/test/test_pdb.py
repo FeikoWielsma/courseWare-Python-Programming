@@ -7,6 +7,7 @@ import unittest
 import subprocess
 
 from test import support
+
 # This little helper class is essential for testing pdb under doctest.
 from test.test_doctest import _FakeInput
 
@@ -274,8 +275,10 @@ def test_pdb_breakpoint_commands():
 def do_nothing():
     pass
 
+
 def do_something():
     print(42)
+
 
 def test_list_commands():
     """Test the list and source commands of pdb.
@@ -459,8 +462,8 @@ def test_pdb_skip_modules():
 
 
 # Module for testing skipping of module that makes a callback
-mod = imp.new_module('module_to_skip')
-exec('def foo_pony(callback): x = 1; callback(); return None', mod.__dict__)
+mod = imp.new_module("module_to_skip")
+exec("def foo_pony(callback): x = 1; callback(); return None", mod.__dict__)
 
 
 def test_pdb_skip_modules_with_callback():
@@ -550,7 +553,7 @@ def test_pdb_continue_in_bottomframe():
 
 def pdb_invoke(method, arg):
     """Run pdb.method(arg)."""
-    import pdb
+
     getattr(pdb.Pdb(nosigint=True), method)(arg)
 
 
@@ -594,21 +597,22 @@ def test_pdb_run_with_code_object():
 
 
 class PdbTestCase(unittest.TestCase):
-
     def test_issue7964(self):
         # open the file as binary so we can force \r\n newline
-        with open(support.TESTFN, 'wb') as f:
+        with open(support.TESTFN, "wb") as f:
             f.write(b'print("testing my pdb")\r\n')
-        cmd = [sys.executable, '-m', 'pdb', support.TESTFN]
-        proc = subprocess.Popen(cmd,
+        cmd = [sys.executable, "-m", "pdb", support.TESTFN]
+        proc = subprocess.Popen(
+            cmd,
             stdout=subprocess.PIPE,
             stdin=subprocess.PIPE,
             stderr=subprocess.STDOUT,
-            )
+        )
         self.addCleanup(proc.stdout.close)
-        stdout, stderr = proc.communicate(b'quit\n')
-        self.assertNotIn(b'SyntaxError', stdout,
-                         "Got a syntax error running test script under PDB")
+        stdout, stderr = proc.communicate(b"quit\n")
+        self.assertNotIn(
+            b"SyntaxError", stdout, "Got a syntax error running test script under PDB"
+        )
 
     def tearDown(self):
         support.unlink(support.TESTFN)
@@ -616,9 +620,10 @@ class PdbTestCase(unittest.TestCase):
 
 def test_main():
     from test import test_pdb
+
     support.run_doctest(test_pdb, verbosity=True)
     support.run_unittest(PdbTestCase)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_main()

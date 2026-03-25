@@ -1,12 +1,13 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
 demo template
 
 Tested environment:
     Mac OS X 10.6.8
-    
+
 """
+
 import sys
 
 try:
@@ -18,23 +19,22 @@ except ImportError:
 
 
 class SheetWin(QtGui.QWidget):
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         super(SheetWin, self).__init__(parent)
 
-        self.setWindowFlags(QtCore.Qt.Sheet)
-
+        self.set_window_flags(QtCore.Qt.Sheet)
 
         btn = QtGui.QPushButton("close", self)
         btn.move(10, 10)
         btn.clicked.connect(self.close)
-        
+
 
 class Demo(QtGui.QWidget):
     def __init__(self):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
         btn = QtGui.QPushButton("btn", self)
         btn.clicked.connect(self.btn_cb)

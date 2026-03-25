@@ -3,9 +3,8 @@
 import sys as _sys
 import _thread
 
-from time import time as _time, sleep as _sleep
+from time import time as _time
 from traceback import format_exc as _format_exc
-from collections import deque
 
 # Note regarding PEP 8 compliant names
 #  This threading model was originally inspired by Java, and inherited
@@ -17,9 +16,24 @@ from collections import deque
 # with the multiprocessing module, which doesn't provide the old
 # Java inspired names.
 
-__all__ = ['active_count', 'Condition', 'current_thread', 'enumerate', 'Event',
-           'Lock', 'RLock', 'Semaphore', 'BoundedSemaphore', 'Thread', 'Barrier',
-           'Timer', 'setprofile', 'settrace', 'local', 'stack_size']
+__all__ = [
+    "active_count",
+    "Condition",
+    "current_thread",
+    "enumerate",
+    "Event",
+    "Lock",
+    "RLock",
+    "Semaphore",
+    "BoundedSemaphore",
+    "Thread",
+    "Barrier",
+    "Timer",
+    "setprofile",
+    "settrace",
+    "local",
+    "stack_size",
+]
 
 # Rename some stuff so "from threading import *" is safe
 _start_new_thread = _thread.start_new_thread
@@ -41,7 +55,6 @@ _VERBOSE = False
 if __debug__:
 
     class _Verbose(object):
-
         def __init__(self, verbose=None):
             if verbose is None:
                 verbose = _VERBOSE
@@ -65,6 +78,7 @@ else:
     class _Verbose(object):
         def __init__(self, verbose=None):
             pass
+
         def _note(self, *args):
             pass
 
@@ -73,17 +87,21 @@ else:
 _profile_hook = None
 _trace_hook = None
 
+
 def setprofile(func):
     global _profile_hook
     _profile_hook = func
+
 
 def settrace(func):
     global _trace_hook
     _trace_hook = func
 
+
 # Synchronization classes
 
 Lock = _allocate_lock
+
 
 def RLock(verbose=None, *args, **kwargs):
     if verbose is None:
@@ -92,8 +110,8 @@ def RLock(verbose=None, *args, **kwargs):
         return _PyRLock(verbose, *args, **kwargs)
     return _CRLock(*args, **kwargs)
 
-class _RLock(_Verbose):
 
+class _RLock(_Verbose):
     def __init__(self, verbose=None):
         _Verbose.__init__(self, verbose)
         self._block = _allocate_lock()
@@ -106,8 +124,7 @@ class _RLock(_Verbose):
             owner = _active[owner].name
         except KeyError:
             pass
-        return "<%s owner=%r count=%d>" % (
-                self.__class__.__name__, owner, self._count)
+        return "<%s owner=%r count=%d>" % (self.__class__.__name__, owner, self._count)
 
     def acquire(self, blocking=True, timeout=-1):
         me = _get_ident()
@@ -166,14 +183,15 @@ class _RLock(_Verbose):
     def _is_owned(self):
         return self._owner == _get_ident()
 
+
 _PyRLock = _RLock
 
 
 def Condition(*args, **kwargs):
     return _Condition(*args, **kwargs)
 
-class _Condition(_Verbose):
 
+class _Condition(_Verbose):
     def __init__(self, lock=None, verbose=None):
         _Verbose.__init__(self, verbose)
         if lock is None:
@@ -209,10 +227,10 @@ class _Condition(_Verbose):
         return "<Condition(%s, %d)>" % (self._lock, len(self._waiters))
 
     def _release_save(self):
-        self._lock.release()           # No state to save
+        self._lock.release()  # No state to save
 
     def _acquire_restore(self, x):
-        self._lock.acquire()           # Ignore saved state
+        self._lock.acquire()  # Ignore saved state
 
     def _is_owned(self):
         # Return True if lock is owned by current_thread.
@@ -230,7 +248,7 @@ class _Condition(_Verbose):
         waiter.acquire()
         self._waiters.append(waiter)
         saved_state = self._release_save()
-        try:    # restore state no matter what (e.g., KeyboardInterrupt)
+        try:  # restore state no matter what (e.g., KeyboardInterrupt)
             if timeout is None:
                 waiter.acquire()
                 gotit = True
@@ -267,18 +285,26 @@ class _Condition(_Verbose):
                     waittime = endtime - _time()
                     if waittime <= 0:
                         if __debug__:
-                            self._note("%s.wait_for(%r, %r): Timed out.",
-                                       self, predicate, timeout)
+                            self._note(
+                                "%s.wait_for(%r, %r): Timed out.",
+                                self,
+                                predicate,
+                                timeout,
+                            )
                         break
             if __debug__:
-                self._note("%s.wait_for(%r, %r): Waiting with timeout=%s.",
-                           self, predicate, timeout, waittime)
+                self._note(
+                    "%s.wait_for(%r, %r): Waiting with timeout=%s.",
+                    self,
+                    predicate,
+                    timeout,
+                    waittime,
+                )
             self.wait(waittime)
             result = predicate()
         else:
             if __debug__:
-                self._note("%s.wait_for(%r, %r): Success.",
-                           self, predicate, timeout)
+                self._note("%s.wait_for(%r, %r): Success.", self, predicate, timeout)
         return result
 
     def notify(self, n=1):
@@ -290,8 +316,7 @@ class _Condition(_Verbose):
             if __debug__:
                 self._note("%s.notify(): no waiters", self)
             return
-        self._note("%s.notify(): notifying %d waiter%s", self, n,
-                   n!=1 and "s" or "")
+        self._note("%s.notify(): notifying %d waiter%s", self, n, n != 1 and "s" or "")
         for waiter in waiters:
             waiter.release()
             try:
@@ -308,8 +333,8 @@ class _Condition(_Verbose):
 def Semaphore(*args, **kwargs):
     return _Semaphore(*args, **kwargs)
 
-class _Semaphore(_Verbose):
 
+class _Semaphore(_Verbose):
     # After Tim Peters' semaphore class, but not quite the same (no maximum)
 
     def __init__(self, value=1, verbose=None):
@@ -329,8 +354,12 @@ class _Semaphore(_Verbose):
             if not blocking:
                 break
             if __debug__:
-                self._note("%s.acquire(%s): blocked waiting, value=%s",
-                           self, blocking, self._value)
+                self._note(
+                    "%s.acquire(%s): blocked waiting, value=%s",
+                    self,
+                    blocking,
+                    self._value,
+                )
             if timeout is not None:
                 if endtime is None:
                     endtime = _time() + timeout
@@ -342,8 +371,7 @@ class _Semaphore(_Verbose):
         else:
             self._value = self._value - 1
             if __debug__:
-                self._note("%s.acquire: success, value=%s",
-                           self, self._value)
+                self._note("%s.acquire: success, value=%s", self, self._value)
             rc = True
         self._cond.release()
         return rc
@@ -354,8 +382,7 @@ class _Semaphore(_Verbose):
         self._cond.acquire()
         self._value = self._value + 1
         if __debug__:
-            self._note("%s.release: success, value=%s",
-                       self, self._value)
+            self._note("%s.release: success, value=%s", self, self._value)
         self._cond.notify()
         self._cond.release()
 
@@ -366,8 +393,10 @@ class _Semaphore(_Verbose):
 def BoundedSemaphore(*args, **kwargs):
     return _BoundedSemaphore(*args, **kwargs)
 
+
 class _BoundedSemaphore(_Semaphore):
     """Semaphore that checks that # releases is <= # acquires"""
+
     def __init__(self, value=1, verbose=None):
         _Semaphore.__init__(self, value, verbose)
         self._initial_value = value
@@ -381,8 +410,8 @@ class _BoundedSemaphore(_Semaphore):
 def Event(*args, **kwargs):
     return _Event(*args, **kwargs)
 
-class _Event(_Verbose):
 
+class _Event(_Verbose):
     # After Tim Peters' event class (without is_posted())
 
     def __init__(self, verbose=None):
@@ -441,6 +470,7 @@ class Barrier(_Verbose):
     at known synchronization points.  Threads block on 'wait()' and are
     simultaneously once they have all made that call.
     """
+
     def __init__(self, parties, action=None, timeout=None, verbose=None):
         """
         Create a barrier, initialised to 'parties' threads.
@@ -455,7 +485,7 @@ class Barrier(_Verbose):
         self._action = action
         self._timeout = timeout
         self._parties = parties
-        self._state = 0 #0 filling, 1, draining, -1 resetting, -2 broken
+        self._state = 0  # 0 filling, 1, draining, -1 resetting, -2 broken
         self._count = 0
 
     def wait(self, timeout=None):
@@ -469,7 +499,7 @@ class Barrier(_Verbose):
         if timeout is None:
             timeout = self._timeout
         with self._cond:
-            self._enter() # Block while the barrier drains.
+            self._enter()  # Block while the barrier drains.
             index = self._count
             self._count += 1
             try:
@@ -491,7 +521,7 @@ class Barrier(_Verbose):
         while self._state in (-1, 1):
             # It is draining or resetting, wait until done
             self._cond.wait()
-        #see if the barrier is in a broken state
+        # see if the barrier is in a broken state
         if self._state < 0:
             raise BrokenBarrierError
         assert self._state == 0
@@ -506,15 +536,15 @@ class Barrier(_Verbose):
             self._state = 1
             self._cond.notify_all()
         except:
-            #an exception during the _action handler.  Break and reraise
+            # an exception during the _action handler.  Break and reraise
             self._break()
             raise
 
     # Wait in the barrier until we are relased.  Raise an exception
     # if the barrier is reset or broken.
     def _wait(self, timeout):
-        if not self._cond.wait_for(lambda : self._state != 0, timeout):
-            #timed out.  Break the barrier
+        if not self._cond.wait_for(lambda: self._state != 0, timeout):
+            # timed out.  Break the barrier
             self._break()
             raise BrokenBarrierError
         if self._state < 0:
@@ -526,7 +556,7 @@ class Barrier(_Verbose):
     def _exit(self):
         if self._count == 0:
             if self._state in (-1, 1):
-                #resetting or draining
+                # resetting or draining
                 self._state = 0
                 self._cond.notify_all()
 
@@ -539,11 +569,11 @@ class Barrier(_Verbose):
         with self._cond:
             if self._count > 0:
                 if self._state == 0:
-                    #reset the barrier, waking up threads
+                    # reset the barrier, waking up threads
                     self._state = -1
                 elif self._state == -2:
-                    #was broken, set it to reset state
-                    #which clears when the last thread exits
+                    # was broken, set it to reset state
+                    # which clears when the last thread exits
                     self._state = -1
             else:
                 self._state = 0
@@ -590,27 +620,32 @@ class Barrier(_Verbose):
         """
         return self._state == -2
 
-#exception raised by the Barrier class
-class BrokenBarrierError(RuntimeError): pass
+
+# exception raised by the Barrier class
+class BrokenBarrierError(RuntimeError):
+    pass
 
 
 # Helper to generate new thread names
 _counter = 0
+
+
 def _newname(template="Thread-%d"):
     global _counter
     _counter = _counter + 1
     return template % _counter
 
+
 # Active thread administration
 _active_limbo_lock = _allocate_lock()
-_active = {}    # maps thread id to Thread object
+_active = {}  # maps thread id to Thread object
 _limbo = {}
 
 
 # Main class for threads
 
-class Thread(_Verbose):
 
+class Thread(_Verbose):
     __initialized = False
     # Need to store a reference to sys.exc_info for printing
     # out exceptions when a thread tries to use a global var. during interp.
@@ -619,10 +654,11 @@ class Thread(_Verbose):
     __exc_info = _sys.exc_info
     # Keep sys.exc_clear too to clear the exception just before
     # allowing .join() to return.
-    #XXX __exc_clear = _sys.exc_clear
+    # XXX __exc_clear = _sys.exc_clear
 
-    def __init__(self, group=None, target=None, name=None,
-                 args=(), kwargs=None, verbose=None):
+    def __init__(
+        self, group=None, target=None, name=None, args=(), kwargs=None, verbose=None
+    ):
         assert group is None, "group argument must be None for now"
         _Verbose.__init__(self, verbose)
         if kwargs is None:
@@ -644,7 +680,7 @@ class Thread(_Verbose):
     def _reset_internal_locks(self):
         # private!  Called by _after_fork() to reset our internal locks as
         # they may be in an invalid state leading to a deadlock or crash.
-        if hasattr(self, '_block'):  # DummyThread deletes _block
+        if hasattr(self, "_block"):  # DummyThread deletes _block
             self._block.__init__()
         self._started._reset_internal_locks()
 
@@ -745,25 +781,36 @@ class Thread(_Verbose):
                 # _sys) in case sys.stderr was redefined since the creation of
                 # self.
                 if _sys:
-                    _sys.stderr.write("Exception in thread %s:\n%s\n" %
-                                      (self.name, _format_exc()))
+                    _sys.stderr.write(
+                        "Exception in thread %s:\n%s\n" % (self.name, _format_exc())
+                    )
                 else:
                     # Do the best job possible w/o a huge amt. of code to
                     # approximate a traceback (code ideas from
                     # Lib/traceback.py)
                     exc_type, exc_value, exc_tb = self._exc_info()
                     try:
-                        print((
-                            "Exception in thread " + self.name +
-                            " (most likely raised during interpreter shutdown):"), file=self._stderr)
-                        print((
-                            "Traceback (most recent call last):"), file=self._stderr)
+                        print(
+                            (
+                                "Exception in thread "
+                                + self.name
+                                + " (most likely raised during interpreter shutdown):"
+                            ),
+                            file=self._stderr,
+                        )
+                        print(("Traceback (most recent call last):"), file=self._stderr)
                         while exc_tb:
-                            print((
-                                '  File "%s", line %s, in %s' %
-                                (exc_tb.tb_frame.f_code.co_filename,
-                                    exc_tb.tb_lineno,
-                                    exc_tb.tb_frame.f_code.co_name)), file=self._stderr)
+                            print(
+                                (
+                                    '  File "%s", line %s, in %s'
+                                    % (
+                                        exc_tb.tb_frame.f_code.co_filename,
+                                        exc_tb.tb_lineno,
+                                        exc_tb.tb_frame.f_code.co_name,
+                                    )
+                                ),
+                                file=self._stderr,
+                            )
                             exc_tb = exc_tb.tb_next
                         print(("%s: %s" % (exc_type, exc_value)), file=self._stderr)
                     # Make sure that exc_tb gets deleted since it is a memory
@@ -778,7 +825,7 @@ class Thread(_Verbose):
                 # test_threading.test_no_refcycle_through_target when
                 # the exception keeps the target alive past when we
                 # assert that it's dead.
-                #XXX self.__exc_clear()
+                # XXX self.__exc_clear()
                 pass
         finally:
             with _active_limbo_lock:
@@ -828,7 +875,7 @@ class Thread(_Verbose):
                 # could try to acquire the lock again in the same thread, (in
                 # current_thread()), and would block.
         except KeyError:
-            if 'dummy_threading' not in _sys.modules:
+            if "dummy_threading" not in _sys.modules:
                 raise
 
     def join(self, timeout=None):
@@ -896,7 +943,7 @@ class Thread(_Verbose):
         if not self._initialized:
             raise RuntimeError("Thread.__init__() not called")
         if self._started.is_set():
-            raise RuntimeError("cannot set daemon status of active thread");
+            raise RuntimeError("cannot set daemon status of active thread")
         self._daemonic = daemonic
 
     def isDaemon(self):
@@ -911,10 +958,13 @@ class Thread(_Verbose):
     def setName(self, name):
         self.name = name
 
+
 # The timer class was contributed by Itamar Shtull-Trauring
+
 
 def Timer(*args, **kwargs):
     return _Timer(*args, **kwargs)
+
 
 class _Timer(Thread):
     """Call a function after a specified number of seconds:
@@ -942,11 +992,12 @@ class _Timer(Thread):
             self.function(*self.args, **self.kwargs)
         self.finished.set()
 
+
 # Special thread class to represent the main thread
 # This is garbage collected through an exit handler
 
-class _MainThread(Thread):
 
+class _MainThread(Thread):
     def __init__(self):
         Thread.__init__(self, name="MainThread")
         self._started.set()
@@ -970,6 +1021,7 @@ class _MainThread(Thread):
             self._note("%s: exiting", self)
         self._delete()
 
+
 def _pickSomeNonDaemonThread():
     for t in enumerate():
         if not t.daemon and t.is_alive():
@@ -985,8 +1037,8 @@ def _pickSomeNonDaemonThread():
 # They are marked as daemon threads so we won't wait for them
 # when we exit (conform previous semantics).
 
-class _DummyThread(Thread):
 
+class _DummyThread(Thread):
     def __init__(self):
         Thread.__init__(self, name=_newname("Dummy-%d"))
 
@@ -1009,6 +1061,7 @@ class _DummyThread(Thread):
 
 # Global API functions
 
+
 def current_thread():
     try:
         return _active[_get_ident()]
@@ -1016,21 +1069,27 @@ def current_thread():
         ##print "current_thread(): no current thread for", _get_ident()
         return _DummyThread()
 
+
 currentThread = current_thread
+
 
 def active_count():
     with _active_limbo_lock:
         return len(_active) + len(_limbo)
 
+
 activeCount = active_count
+
 
 def _enumerate():
     # Same as enumerate(), but without the lock. Internal use only.
     return list(_active.values()) + list(_limbo.values())
 
+
 def enumerate():
     with _active_limbo_lock:
         return list(_active.values()) + list(_limbo.values())
+
 
 from _thread import stack_size
 

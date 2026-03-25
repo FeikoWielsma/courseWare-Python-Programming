@@ -6,7 +6,6 @@ except ImportError:
 
 import io
 import os
-import sys
 import imp
 import time
 import shutil
@@ -24,20 +23,23 @@ from test.support import TESTFN, run_unittest, findfile, unlink
 TESTFN2 = TESTFN + "2"
 TESTFNDIR = TESTFN + "d"
 FIXEDTEST_SIZE = 1000
-DATAFILES_DIR = 'zipfile_datafiles'
+DATAFILES_DIR = "zipfile_datafiles"
 
-SMALL_TEST_DATA = [('_ziptest1', '1q2w3e4r5t'),
-                   ('ziptest2dir/_ziptest2', 'qawsedrftg'),
-                   ('/ziptest2dir/ziptest3dir/_ziptest3', 'azsxdcfvgb'),
-                   ('ziptest2dir/ziptest3dir/ziptest4dir/_ziptest3', '6y7u8i9o0p')]
+SMALL_TEST_DATA = [
+    ("_ziptest1", "1q2w3e4r5t"),
+    ("ziptest2dir/_ziptest2", "qawsedrftg"),
+    ("/ziptest2dir/ziptest3dir/_ziptest3", "azsxdcfvgb"),
+    ("ziptest2dir/ziptest3dir/ziptest4dir/_ziptest3", "6y7u8i9o0p"),
+]
 
 
 class TestsWithSourceFile(unittest.TestCase):
     def setUp(self):
-        self.line_gen = (bytes("Zipfile test line %d. random float: %f" %
-                               (i, random()), "ascii")
-                         for i in range(FIXEDTEST_SIZE))
-        self.data = b'\n'.join(self.line_gen) + b'\n'
+        self.line_gen = (
+            bytes("Zipfile test line %d. random float: %f" % (i, random()), "ascii")
+            for i in range(FIXEDTEST_SIZE)
+        )
+        self.data = b"\n".join(self.line_gen) + b"\n"
 
         # Make a source file with some lines
         with open(TESTFN, "wb") as fp:
@@ -64,16 +66,16 @@ class TestsWithSourceFile(unittest.TestCase):
             zipfp.printdir(file=fp)
             directory = fp.getvalue()
             lines = directory.splitlines()
-            self.assertEqual(len(lines), 4) # Number of files + header
+            self.assertEqual(len(lines), 4)  # Number of files + header
 
-            self.assertIn('File Name', lines[0])
-            self.assertIn('Modified', lines[0])
-            self.assertIn('Size', lines[0])
+            self.assertIn("File Name", lines[0])
+            self.assertIn("Modified", lines[0])
+            self.assertIn("Size", lines[0])
 
             fn, date, time_, size = lines[1].split()
-            self.assertEqual(fn, 'another.name')
-            self.assertTrue(time.strptime(date, '%Y-%m-%d'))
-            self.assertTrue(time.strptime(time_, '%H:%M:%S'))
+            self.assertEqual(fn, "another.name")
+            self.assertTrue(time.strptime(date, "%Y-%m-%d"))
+            self.assertTrue(time.strptime(time_, "%H:%M:%S"))
             self.assertEqual(size, str(len(self.data)))
 
             # Check the namelist
@@ -129,8 +131,8 @@ class TestsWithSourceFile(unittest.TestCase):
                         break
                     zipdata2.append(read_data)
 
-            self.assertEqual(b''.join(zipdata1), self.data)
-            self.assertEqual(b''.join(zipdata2), self.data)
+            self.assertEqual(b"".join(zipdata1), self.data)
+            self.assertEqual(b"".join(zipdata2), self.data)
         if not isinstance(f, str):
             f.close()
 
@@ -169,7 +171,7 @@ class TestsWithSourceFile(unittest.TestCase):
                         break
                     zipdata1.append(read_data)
 
-            self.assertEqual(b''.join(zipdata1), self.data)
+            self.assertEqual(b"".join(zipdata1), self.data)
         if not isinstance(f, str):
             f.close()
 
@@ -180,19 +182,19 @@ class TestsWithSourceFile(unittest.TestCase):
     def test_univeral_readaheads(self):
         f = io.BytesIO()
 
-        data = b'a\r\n' * 16 * 1024
-        zipfp = zipfile.ZipFile(f, 'w', zipfile.ZIP_STORED)
+        data = b"a\r\n" * 16 * 1024
+        zipfp = zipfile.ZipFile(f, "w", zipfile.ZIP_STORED)
         zipfp.writestr(TESTFN, data)
         zipfp.close()
 
-        data2 = b''
-        zipfp = zipfile.ZipFile(f, 'r')
-        with zipfp.open(TESTFN, 'rU') as zipopen:
+        data2 = b""
+        zipfp = zipfile.ZipFile(f, "r")
+        with zipfp.open(TESTFN, "rU") as zipopen:
             for line in zipopen:
                 data2 += line
         zipfp.close()
 
-        self.assertEqual(data, data2.replace(b'\n', b'\r\n'))
+        self.assertEqual(data, data2.replace(b"\n", b"\r\n"))
 
     def zip_readline_read_test(self, f, compression):
         self.make_test_archive(f, compression)
@@ -200,7 +202,7 @@ class TestsWithSourceFile(unittest.TestCase):
         # Read the ZIP archive
         zipfp = zipfile.ZipFile(f, "r")
         with zipfp.open(TESTFN) as zipopen:
-            data = b''
+            data = b""
             while True:
                 read = zipopen.readline()
                 if not read:
@@ -225,7 +227,7 @@ class TestsWithSourceFile(unittest.TestCase):
             with zipfp.open(TESTFN) as zipopen:
                 for line in self.line_gen:
                     linedata = zipopen.readline()
-                    self.assertEqual(linedata, line + '\n')
+                    self.assertEqual(linedata, line + "\n")
         if not isinstance(f, str):
             f.close()
 
@@ -237,7 +239,7 @@ class TestsWithSourceFile(unittest.TestCase):
             with zipfp.open(TESTFN) as zipopen:
                 ziplines = zipopen.readlines()
             for line, zipline in zip(self.line_gen, ziplines):
-                self.assertEqual(zipline, line + '\n')
+                self.assertEqual(zipline, line + "\n")
         if not isinstance(f, str):
             f.close()
 
@@ -248,7 +250,7 @@ class TestsWithSourceFile(unittest.TestCase):
         with zipfile.ZipFile(f, "r") as zipfp:
             with zipfp.open(TESTFN) as zipopen:
                 for line, zipline in zip(self.line_gen, zipopen):
-                    self.assertEqual(zipline, line + '\n')
+                    self.assertEqual(zipline, line + "\n")
         if not isinstance(f, str):
             f.close()
 
@@ -273,7 +275,6 @@ class TestsWithSourceFile(unittest.TestCase):
     def test_deflated(self):
         for f in (TESTFN2, TemporaryFile(), io.BytesIO()):
             self.zip_test(f, zipfile.ZIP_DEFLATED)
-
 
     @skipUnless(zlib, "requires zlib")
     def test_open_deflated(self):
@@ -311,13 +312,13 @@ class TestsWithSourceFile(unittest.TestCase):
         """Check for cases where compressed data is larger than original."""
         # Create the ZIP archive
         with zipfile.ZipFile(TESTFN2, "w", zipfile.ZIP_DEFLATED) as zipfp:
-            zipfp.writestr("strfile", '12')
+            zipfp.writestr("strfile", "12")
 
         # Get an open object for strfile
         with zipfile.ZipFile(TESTFN2, "r", zipfile.ZIP_DEFLATED) as zipfp:
             with zipfp.open("strfile") as openobj:
-                self.assertEqual(openobj.read(1), b'1')
-                self.assertEqual(openobj.read(1), b'2')
+                self.assertEqual(openobj.read(1), b"1")
+                self.assertEqual(openobj.read(1), b"2")
 
     def test_absolute_arcnames(self):
         with zipfile.ZipFile(TESTFN2, "w", zipfile.ZIP_STORED) as zipfp:
@@ -339,14 +340,14 @@ class TestsWithSourceFile(unittest.TestCase):
         """Test appending to an existing file that is not a zipfile."""
         # NOTE: this test fails if len(d) < 22 because of the first
         # line "fpin.seek(-22, 2)" in _EndRecData
-        data = b'I am not a ZipFile!'*10
-        with open(TESTFN2, 'wb') as f:
+        data = b"I am not a ZipFile!" * 10
+        with open(TESTFN2, "wb") as f:
             f.write(data)
 
         with zipfile.ZipFile(TESTFN2, "a", zipfile.ZIP_STORED) as zipfp:
             zipfp.write(TESTFN, TESTFN)
 
-        with open(TESTFN2, 'rb') as f:
+        with open(TESTFN2, "rb") as f:
             f.seek(len(data))
             with zipfile.ZipFile(f, "r") as zipfp:
                 self.assertEqual(zipfp.namelist(), [TESTFN])
@@ -364,10 +365,10 @@ class TestsWithSourceFile(unittest.TestCase):
         """Check that files within a Zip archive can have different
         compression options."""
         with zipfile.ZipFile(TESTFN2, "w") as zipfp:
-            zipfp.write(TESTFN, 'storeme', zipfile.ZIP_STORED)
-            zipfp.write(TESTFN, 'deflateme', zipfile.ZIP_DEFLATED)
-            sinfo = zipfp.getinfo('storeme')
-            dinfo = zipfp.getinfo('deflateme')
+            zipfp.write(TESTFN, "storeme", zipfile.ZIP_STORED)
+            zipfp.write(TESTFN, "deflateme", zipfile.ZIP_DEFLATED)
+            sinfo = zipfp.getinfo("storeme")
+            dinfo = zipfp.getinfo("deflateme")
             self.assertEqual(sinfo.compress_type, zipfile.ZIP_STORED)
             self.assertEqual(dinfo.compress_type, zipfile.ZIP_DEFLATED)
 
@@ -405,7 +406,7 @@ class TestsWithSourceFile(unittest.TestCase):
                 os.remove(writtenfile)
 
         # remove the test file subdirectories
-        shutil.rmtree(os.path.join(os.getcwd(), 'ziptest2dir'))
+        shutil.rmtree(os.path.join(os.getcwd(), "ziptest2dir"))
 
     def test_extract_all(self):
         with zipfile.ZipFile(TESTFN2, "w", zipfile.ZIP_STORED) as zipfp:
@@ -426,7 +427,7 @@ class TestsWithSourceFile(unittest.TestCase):
                 os.remove(outfile)
 
         # remove the test file subdirectories
-        shutil.rmtree(os.path.join(os.getcwd(), 'ziptest2dir'))
+        shutil.rmtree(os.path.join(os.getcwd(), "ziptest2dir"))
 
     def test_writestr_compression(self):
         zipfp = zipfile.ZipFile(TESTFN2, "w")
@@ -434,13 +435,12 @@ class TestsWithSourceFile(unittest.TestCase):
         if zlib:
             zipfp.writestr("b.txt", "hello world", compress_type=zipfile.ZIP_DEFLATED)
 
-        info = zipfp.getinfo('a.txt')
+        info = zipfp.getinfo("a.txt")
         self.assertEqual(info.compress_type, zipfile.ZIP_STORED)
 
         if zlib:
-            info = zipfp.getinfo('b.txt')
+            info = zipfp.getinfo("b.txt")
             self.assertEqual(info.compress_type, zipfile.ZIP_DEFLATED)
-
 
     def zip_test_writestr_permissions(self, f, compression):
         # Make sure that writestr creates files with mode 0600,
@@ -448,7 +448,7 @@ class TestsWithSourceFile(unittest.TestCase):
 
         self.make_test_archive(f, compression)
         with zipfile.ZipFile(f, "r") as zipfp:
-            zinfo = zipfp.getinfo('strfile')
+            zinfo = zipfp.getinfo("strfile")
             self.assertEqual(zinfo.external_attr, 0o600 << 16)
         if not isinstance(f, str):
             f.close()
@@ -458,8 +458,8 @@ class TestsWithSourceFile(unittest.TestCase):
             self.zip_test_writestr_permissions(f, zipfile.ZIP_STORED)
 
     def test_writestr_extended_local_header_issue1202(self):
-        with zipfile.ZipFile(TESTFN2, 'w') as orig_zip:
-            for data in 'abcdefghijklmnop':
+        with zipfile.ZipFile(TESTFN2, "w") as orig_zip:
+            for data in "abcdefghijklmnop":
                 zinfo = zipfile.ZipInfo(data)
                 zinfo.flag_bits |= 0x08  # Include an extended local header.
                 orig_zip.writestr(zinfo, data)
@@ -469,12 +469,12 @@ class TestsWithSourceFile(unittest.TestCase):
         with zipfile.ZipFile(TESTFN2, "w") as zipfp:
             for fpath, fdata in SMALL_TEST_DATA:
                 zipfp.writestr(fpath, fdata)
-                self.assertTrue(zipfp.fp is not None, 'zipfp is not open')
-        self.assertTrue(zipfp.fp is None, 'zipfp is not closed')
+                self.assertTrue(zipfp.fp is not None, "zipfp is not open")
+        self.assertTrue(zipfp.fp is None, "zipfp is not closed")
 
         with zipfile.ZipFile(TESTFN2, "r") as zipfp:
-            self.assertTrue(zipfp.fp is not None, 'zipfp is not open')
-        self.assertTrue(zipfp.fp is None, 'zipfp is not closed')
+            self.assertTrue(zipfp.fp is not None, "zipfp is not open")
+        self.assertTrue(zipfp.fp is None, "zipfp is not closed")
 
     def test_close_on_exception(self):
         """Check that the zipfile is closed if an exception is raised in the
@@ -487,11 +487,11 @@ class TestsWithSourceFile(unittest.TestCase):
             with zipfile.ZipFile(TESTFN2, "r") as zipfp2:
                 raise zipfile.BadZipFile()
         except zipfile.BadZipFile:
-            self.assertTrue(zipfp2.fp is None, 'zipfp is not closed')
+            self.assertTrue(zipfp2.fp is None, "zipfp is not closed")
 
     def test_unicode_filenames(self):
         # bug #10801
-        fname = findfile('zip_cp437_header.zip')
+        fname = findfile("zip_cp437_header.zip")
         with zipfile.ZipFile(fname) as zipfp:
             for name in zipfp.namelist():
                 zipfp.open(name).close()
@@ -509,9 +509,11 @@ class TestZip64InSmallFiles(unittest.TestCase):
         self._limit = zipfile.ZIP64_LIMIT
         zipfile.ZIP64_LIMIT = 5
 
-        line_gen = (bytes("Test of zipfile line %d." % i, "ascii")
-                    for i in range(0, FIXEDTEST_SIZE))
-        self.data = b'\n'.join(line_gen)
+        line_gen = (
+            bytes("Test of zipfile line %d." % i, "ascii")
+            for i in range(0, FIXEDTEST_SIZE)
+        )
+        self.data = b"\n".join(line_gen)
 
         # Make a source file with some lines
         with open(TESTFN, "wb") as fp:
@@ -519,13 +521,13 @@ class TestZip64InSmallFiles(unittest.TestCase):
 
     def large_file_exception_test(self, f, compression):
         with zipfile.ZipFile(f, "w", compression) as zipfp:
-            self.assertRaises(zipfile.LargeZipFile,
-                              zipfp.write, TESTFN, "another.name")
+            self.assertRaises(zipfile.LargeZipFile, zipfp.write, TESTFN, "another.name")
 
     def large_file_exception_test2(self, f, compression):
         with zipfile.ZipFile(f, "w", compression) as zipfp:
-            self.assertRaises(zipfile.LargeZipFile,
-                              zipfp.writestr, "another.name", self.data)
+            self.assertRaises(
+                zipfile.LargeZipFile, zipfp.writestr, "another.name", self.data
+            )
         if not isinstance(f, str):
             f.close()
 
@@ -553,16 +555,16 @@ class TestZip64InSmallFiles(unittest.TestCase):
 
             directory = fp.getvalue()
             lines = directory.splitlines()
-            self.assertEqual(len(lines), 4) # Number of files + header
+            self.assertEqual(len(lines), 4)  # Number of files + header
 
-            self.assertIn('File Name', lines[0])
-            self.assertIn('Modified', lines[0])
-            self.assertIn('Size', lines[0])
+            self.assertIn("File Name", lines[0])
+            self.assertIn("Modified", lines[0])
+            self.assertIn("Size", lines[0])
 
             fn, date, time_, size = lines[1].split()
-            self.assertEqual(fn, 'another.name')
-            self.assertTrue(time.strptime(date, '%Y-%m-%d'))
-            self.assertTrue(time.strptime(time_, '%H:%M:%S'))
+            self.assertEqual(fn, "another.name")
+            self.assertTrue(time.strptime(date, "%Y-%m-%d"))
+            self.assertTrue(time.strptime(time_, "%H:%M:%S"))
             self.assertEqual(size, str(len(self.data)))
 
             # Check the namelist
@@ -603,8 +605,9 @@ class TestZip64InSmallFiles(unittest.TestCase):
             self.zip_test(f, zipfile.ZIP_DEFLATED)
 
     def test_absolute_arcnames(self):
-        with zipfile.ZipFile(TESTFN2, "w", zipfile.ZIP_STORED,
-                             allowZip64=True) as zipfp:
+        with zipfile.ZipFile(
+            TESTFN2, "w", zipfile.ZIP_STORED, allowZip64=True
+        ) as zipfp:
             zipfp.write(TESTFN, "/absolute")
 
         with zipfile.ZipFile(TESTFN2, "r", zipfile.ZIP_STORED) as zipfp:
@@ -620,11 +623,11 @@ class PyZipFileTests(unittest.TestCase):
     def test_write_pyfile(self):
         with TemporaryFile() as t, zipfile.PyZipFile(t, "w") as zipfp:
             fn = __file__
-            if fn.endswith('.pyc') or fn.endswith('.pyo'):
+            if fn.endswith(".pyc") or fn.endswith(".pyo"):
                 path_split = fn.split(os.sep)
                 if os.altsep is not None:
                     path_split.extend(fn.split(os.altsep))
-                if '__pycache__' in path_split:
+                if "__pycache__" in path_split:
                     fn = imp.source_from_cache(fn)
                 else:
                     fn = fn[:-1]
@@ -633,23 +636,26 @@ class PyZipFileTests(unittest.TestCase):
 
             bn = os.path.basename(fn)
             self.assertNotIn(bn, zipfp.namelist())
-            self.assertTrue(bn + 'o' in zipfp.namelist() or
-                            bn + 'c' in zipfp.namelist())
+            self.assertTrue(
+                bn + "o" in zipfp.namelist() or bn + "c" in zipfp.namelist()
+            )
 
         with TemporaryFile() as t, zipfile.PyZipFile(t, "w") as zipfp:
             fn = __file__
-            if fn.endswith(('.pyc', '.pyo')):
+            if fn.endswith((".pyc", ".pyo")):
                 fn = fn[:-1]
 
             zipfp.writepy(fn, "testpackage")
 
             bn = "%s/%s" % ("testpackage", os.path.basename(fn))
             self.assertNotIn(bn, zipfp.namelist())
-            self.assertTrue(bn + 'o' in zipfp.namelist() or
-                            bn + 'c' in zipfp.namelist())
+            self.assertTrue(
+                bn + "o" in zipfp.namelist() or bn + "c" in zipfp.namelist()
+            )
 
     def test_write_python_package(self):
         import email
+
         packagedir = os.path.dirname(email.__file__)
 
         with TemporaryFile() as t, zipfile.PyZipFile(t, "w") as zipfp:
@@ -658,26 +664,31 @@ class PyZipFileTests(unittest.TestCase):
             # Check for a couple of modules at different levels of the
             # hierarchy
             names = zipfp.namelist()
-            self.assertTrue('email/__init__.pyo' in names or
-                            'email/__init__.pyc' in names)
-            self.assertTrue('email/mime/text.pyo' in names or
-                            'email/mime/text.pyc' in names)
+            self.assertTrue(
+                "email/__init__.pyo" in names or "email/__init__.pyc" in names
+            )
+            self.assertTrue(
+                "email/mime/text.pyo" in names or "email/mime/text.pyc" in names
+            )
 
     def test_write_with_optimization(self):
         import email
+
         packagedir = os.path.dirname(email.__file__)
         # use .pyc if running test in optimization mode,
         # use .pyo if running test in debug mode
         optlevel = 1 if __debug__ else 0
-        ext = '.pyo' if optlevel == 1 else '.pyc'
+        ext = ".pyo" if optlevel == 1 else ".pyc"
 
-        with TemporaryFile() as t, \
-                 zipfile.PyZipFile(t, "w", optimize=optlevel) as zipfp:
+        with (
+            TemporaryFile() as t,
+            zipfile.PyZipFile(t, "w", optimize=optlevel) as zipfp,
+        ):
             zipfp.writepy(packagedir)
 
             names = zipfp.namelist()
-            self.assertIn('email/__init__' + ext, names)
-            self.assertIn('email/mime/text' + ext, names)
+            self.assertIn("email/__init__" + ext, names)
+            self.assertIn("email/mime/text" + ext, names)
 
     def test_write_python_directory(self):
         os.mkdir(TESTFN2)
@@ -695,17 +706,17 @@ class PyZipFileTests(unittest.TestCase):
                 zipfp.writepy(TESTFN2)
 
                 names = zipfp.namelist()
-                self.assertTrue('mod1.pyc' in names or 'mod1.pyo' in names)
-                self.assertTrue('mod2.pyc' in names or 'mod2.pyo' in names)
-                self.assertNotIn('mod2.txt', names)
+                self.assertTrue("mod1.pyc" in names or "mod1.pyo" in names)
+                self.assertTrue("mod2.pyc" in names or "mod2.pyo" in names)
+                self.assertNotIn("mod2.txt", names)
 
         finally:
             shutil.rmtree(TESTFN2)
 
     def test_write_non_pyfile(self):
         with TemporaryFile() as t, zipfile.PyZipFile(t, "w") as zipfp:
-            with open(TESTFN, 'w') as f:
-                f.write('most definitely not a python file')
+            with open(TESTFN, "w") as f:
+                f.write("most definitely not a python file")
             self.assertRaises(RuntimeError, zipfp.writepy, TESTFN)
             os.remove(TESTFN)
 
@@ -713,23 +724,25 @@ class PyZipFileTests(unittest.TestCase):
 class OtherTests(unittest.TestCase):
     zips_with_bad_crc = {
         zipfile.ZIP_STORED: (
-            b'PK\003\004\024\0\0\0\0\0 \213\212;:r'
-            b'\253\377\f\0\0\0\f\0\0\0\005\0\0\000af'
-            b'ilehello,AworldP'
-            b'K\001\002\024\003\024\0\0\0\0\0 \213\212;:'
-            b'r\253\377\f\0\0\0\f\0\0\0\005\0\0\0\0'
-            b'\0\0\0\0\0\0\0\200\001\0\0\0\000afi'
-            b'lePK\005\006\0\0\0\0\001\0\001\0003\000'
-            b'\0\0/\0\0\0\0\0'),
+            b"PK\003\004\024\0\0\0\0\0 \213\212;:r"
+            b"\253\377\f\0\0\0\f\0\0\0\005\0\0\000af"
+            b"ilehello,AworldP"
+            b"K\001\002\024\003\024\0\0\0\0\0 \213\212;:"
+            b"r\253\377\f\0\0\0\f\0\0\0\005\0\0\0\0"
+            b"\0\0\0\0\0\0\0\200\001\0\0\0\000afi"
+            b"lePK\005\006\0\0\0\0\001\0\001\0003\000"
+            b"\0\0/\0\0\0\0\0"
+        ),
         zipfile.ZIP_DEFLATED: (
-            b'PK\x03\x04\x14\x00\x00\x00\x08\x00n}\x0c=FA'
-            b'KE\x10\x00\x00\x00n\x00\x00\x00\x05\x00\x00\x00af'
-            b'ile\xcbH\xcd\xc9\xc9W(\xcf/\xcaI\xc9\xa0'
-            b'=\x13\x00PK\x01\x02\x14\x03\x14\x00\x00\x00\x08\x00n'
-            b'}\x0c=FAKE\x10\x00\x00\x00n\x00\x00\x00\x05'
-            b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x01\x00\x00\x00'
-            b'\x00afilePK\x05\x06\x00\x00\x00\x00\x01\x00'
-            b'\x01\x003\x00\x00\x003\x00\x00\x00\x00\x00'),
+            b"PK\x03\x04\x14\x00\x00\x00\x08\x00n}\x0c=FA"
+            b"KE\x10\x00\x00\x00n\x00\x00\x00\x05\x00\x00\x00af"
+            b"ile\xcbH\xcd\xc9\xc9W(\xcf/\xcaI\xc9\xa0"
+            b"=\x13\x00PK\x01\x02\x14\x03\x14\x00\x00\x00\x08\x00n"
+            b"}\x0c=FAKE\x10\x00\x00\x00n\x00\x00\x00\x05"
+            b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\x01\x00\x00\x00"
+            b"\x00afilePK\x05\x06\x00\x00\x00\x00\x01\x00"
+            b"\x01\x003\x00\x00\x003\x00\x00\x00\x00\x00"
+        ),
     }
 
     def test_unicode_filenames(self):
@@ -746,18 +759,18 @@ class OtherTests(unittest.TestCase):
         if os.path.exists(TESTFN):
             os.unlink(TESTFN)
 
-        filename = 'testfile.txt'
-        content = b'hello, world. this is some content.'
+        filename = "testfile.txt"
+        content = b"hello, world. this is some content."
 
         try:
-            with zipfile.ZipFile(TESTFN, 'a') as zf:
+            with zipfile.ZipFile(TESTFN, "a") as zf:
                 zf.writestr(filename, content)
         except IOError:
-            self.fail('Could not append data to a non-existent zip file.')
+            self.fail("Could not append data to a non-existent zip file.")
 
         self.assertTrue(os.path.exists(TESTFN))
 
-        with zipfile.ZipFile(TESTFN, 'r') as zf:
+        with zipfile.ZipFile(TESTFN, "r") as zf:
             self.assertEqual(zf.read(filename), content)
 
     def test_close_erroneous_file(self):
@@ -833,11 +846,11 @@ class OtherTests(unittest.TestCase):
         self.assertRaises(IOError, zipfile.ZipFile, TESTFN)
 
     def test_empty_file_raises_BadZipFile(self):
-        f = open(TESTFN, 'w')
+        f = open(TESTFN, "w")
         f.close()
         self.assertRaises(zipfile.BadZipFile, zipfile.ZipFile, TESTFN)
 
-        with open(TESTFN, 'w') as fp:
+        with open(TESTFN, "w") as fp:
             fp.write("short file")
         self.assertRaises(zipfile.BadZipFile, zipfile.ZipFile, TESTFN)
 
@@ -855,8 +868,8 @@ class OtherTests(unittest.TestCase):
         self.assertRaises(RuntimeError, zipf.open, "foo.txt")
         self.assertRaises(RuntimeError, zipf.testzip)
         self.assertRaises(RuntimeError, zipf.writestr, "bogus.txt", "bogus")
-        with open(TESTFN, 'w') as f:
-            f.write('zipfile test data')
+        with open(TESTFN, "w") as f:
+            f.write("zipfile test data")
         self.assertRaises(RuntimeError, zipf.write, TESTFN)
 
     def test_bad_constructor_mode(self):
@@ -869,7 +882,7 @@ class OtherTests(unittest.TestCase):
             zipf.writestr("foo.txt", "O, for a Muse of Fire!")
 
         with zipfile.ZipFile(TESTFN, mode="r") as zipf:
-        # read the data to make sure the file is there
+            # read the data to make sure the file is there
             zipf.read("foo.txt")
             self.assertRaises(RuntimeError, zipf.open, "foo.txt", "q")
 
@@ -881,7 +894,7 @@ class OtherTests(unittest.TestCase):
             # read the data to make sure the file is there
             with zipf.open("foo.txt") as f:
                 for i in range(FIXEDTEST_SIZE):
-                    self.assertEqual(f.read(0), b'')
+                    self.assertEqual(f.read(0), b"")
 
                 self.assertEqual(f.read(), b"O, for a Muse of Fire!")
 
@@ -901,7 +914,7 @@ class OtherTests(unittest.TestCase):
         terminated."""
         with zipfile.ZipFile(TESTFN, mode="w") as zipf:
             zipf.writestr("foo.txt\x00qqq", b"O, for a Muse of Fire!")
-            self.assertEqual(zipf.namelist(), ['foo.txt'])
+            self.assertEqual(zipf.namelist(), ["foo.txt"])
 
     def test_struct_sizes(self):
         """Check that ZIP internal structure sizes are calculated correctly."""
@@ -915,14 +928,14 @@ class OtherTests(unittest.TestCase):
 
         # check default comment is empty
         with zipfile.ZipFile(TESTFN, mode="w") as zipf:
-            self.assertEqual(zipf.comment, b'')
+            self.assertEqual(zipf.comment, b"")
             zipf.writestr("foo.txt", "O, for a Muse of Fire!")
 
         with zipfile.ZipFile(TESTFN, mode="r") as zipfr:
-            self.assertEqual(zipfr.comment, b'')
+            self.assertEqual(zipfr.comment, b"")
 
         # check a simple short comment
-        comment = b'Bravely taking to his feet, he beat a very brave retreat.'
+        comment = b"Bravely taking to his feet, he beat a very brave retreat."
         with zipfile.ZipFile(TESTFN, mode="w") as zipf:
             zipf.comment = comment
             zipf.writestr("foo.txt", "O, for a Muse of Fire!")
@@ -930,7 +943,7 @@ class OtherTests(unittest.TestCase):
             self.assertEqual(zipf.comment, comment)
 
         # check a comment of max length
-        comment2 = ''.join(['%d' % (i**3 % 10) for i in range((1 << 16)-1)])
+        comment2 = "".join(["%d" % (i**3 % 10) for i in range((1 << 16) - 1)])
         comment2 = comment2.encode("ascii")
         with zipfile.ZipFile(TESTFN, mode="w") as zipf:
             zipf.comment = comment2
@@ -941,7 +954,7 @@ class OtherTests(unittest.TestCase):
 
         # check a comment that is too long is truncated
         with zipfile.ZipFile(TESTFN, mode="w") as zipf:
-            zipf.comment = comment2 + b'oops'
+            zipf.comment = comment2 + b"oops"
             zipf.writestr("foo.txt", "O, for a Muse of Fire!")
         with zipfile.ZipFile(TESTFN, mode="r") as zipfr:
             self.assertEqual(zipfr.comment, comment2)
@@ -952,7 +965,7 @@ class OtherTests(unittest.TestCase):
 
         with zipfile.ZipFile(io.BytesIO(zipdata), mode="r") as zipf:
             # testzip returns the name of the first corrupt file, or None
-            self.assertEqual('afile', zipf.testzip())
+            self.assertEqual("afile", zipf.testzip())
 
     def test_testzip_with_bad_crc_stored(self):
         self.check_testzip_with_bad_crc(zipfile.ZIP_STORED)
@@ -967,16 +980,16 @@ class OtherTests(unittest.TestCase):
 
         # Using ZipFile.read()
         with zipfile.ZipFile(io.BytesIO(zipdata), mode="r") as zipf:
-            self.assertRaises(zipfile.BadZipFile, zipf.read, 'afile')
+            self.assertRaises(zipfile.BadZipFile, zipf.read, "afile")
 
         # Using ZipExtFile.read()
         with zipfile.ZipFile(io.BytesIO(zipdata), mode="r") as zipf:
-            with zipf.open('afile', 'r') as corrupt_file:
+            with zipf.open("afile", "r") as corrupt_file:
                 self.assertRaises(zipfile.BadZipFile, corrupt_file.read)
 
         # Same with small reads (in order to exercise the buffering logic)
         with zipfile.ZipFile(io.BytesIO(zipdata), mode="r") as zipf:
-            with zipf.open('afile', 'r') as corrupt_file:
+            with zipf.open("afile", "r") as corrupt_file:
                 corrupt_file.MIN_READ_SIZE = 2
                 with self.assertRaises(zipfile.BadZipFile):
                     while corrupt_file.read(2):
@@ -994,11 +1007,10 @@ class OtherTests(unittest.TestCase):
         # than requested.
         for test_size in (1, 4095, 4096, 4097, 16384):
             file_size = test_size + 1
-            junk = b''.join(struct.pack('B', randint(0, 255))
-                            for x in range(file_size))
+            junk = b"".join(struct.pack("B", randint(0, 255)) for x in range(file_size))
             with zipfile.ZipFile(io.BytesIO(), "w", compression) as zipf:
-                zipf.writestr('foo', junk)
-                with zipf.open('foo', 'r') as fp:
+                zipf.writestr("foo", junk)
+                with zipf.open("foo", "r") as fp:
                     buf = fp.read(test_size)
                     self.assertEqual(len(buf), test_size)
 
@@ -1030,9 +1042,9 @@ class OtherTests(unittest.TestCase):
         # Issue 1710703: Check that opening a file with less than 22 bytes
         # raises a BadZipFile exception (rather than the previously unhelpful
         # IOError)
-        f = open(TESTFN, 'w')
+        f = open(TESTFN, "w")
         f.close()
-        self.assertRaises(zipfile.BadZipFile, zipfile.ZipFile, TESTFN, 'r')
+        self.assertRaises(zipfile.BadZipFile, zipfile.ZipFile, TESTFN, "r")
 
     def tearDown(self):
         unlink(TESTFN)
@@ -1045,25 +1057,27 @@ class DecryptionTests(unittest.TestCase):
     ZIP file."""
 
     data = (
-    b'PK\x03\x04\x14\x00\x01\x00\x00\x00n\x92i.#y\xef?&\x00\x00\x00\x1a\x00'
-    b'\x00\x00\x08\x00\x00\x00test.txt\xfa\x10\xa0gly|\xfa-\xc5\xc0=\xf9y'
-    b'\x18\xe0\xa8r\xb3Z}Lg\xbc\xae\xf9|\x9b\x19\xe4\x8b\xba\xbb)\x8c\xb0\xdbl'
-    b'PK\x01\x02\x14\x00\x14\x00\x01\x00\x00\x00n\x92i.#y\xef?&\x00\x00\x00'
-    b'\x1a\x00\x00\x00\x08\x00\x00\x00\x00\x00\x00\x00\x01\x00 \x00\xb6\x81'
-    b'\x00\x00\x00\x00test.txtPK\x05\x06\x00\x00\x00\x00\x01\x00\x01\x006\x00'
-    b'\x00\x00L\x00\x00\x00\x00\x00' )
+        b"PK\x03\x04\x14\x00\x01\x00\x00\x00n\x92i.#y\xef?&\x00\x00\x00\x1a\x00"
+        b"\x00\x00\x08\x00\x00\x00test.txt\xfa\x10\xa0gly|\xfa-\xc5\xc0=\xf9y"
+        b"\x18\xe0\xa8r\xb3Z}Lg\xbc\xae\xf9|\x9b\x19\xe4\x8b\xba\xbb)\x8c\xb0\xdbl"
+        b"PK\x01\x02\x14\x00\x14\x00\x01\x00\x00\x00n\x92i.#y\xef?&\x00\x00\x00"
+        b"\x1a\x00\x00\x00\x08\x00\x00\x00\x00\x00\x00\x00\x01\x00 \x00\xb6\x81"
+        b"\x00\x00\x00\x00test.txtPK\x05\x06\x00\x00\x00\x00\x01\x00\x01\x006\x00"
+        b"\x00\x00L\x00\x00\x00\x00\x00"
+    )
     data2 = (
-    b'PK\x03\x04\x14\x00\t\x00\x08\x00\xcf}38xu\xaa\xb2\x14\x00\x00\x00\x00\x02'
-    b'\x00\x00\x04\x00\x15\x00zeroUT\t\x00\x03\xd6\x8b\x92G\xda\x8b\x92GUx\x04'
-    b'\x00\xe8\x03\xe8\x03\xc7<M\xb5a\xceX\xa3Y&\x8b{oE\xd7\x9d\x8c\x98\x02\xc0'
-    b'PK\x07\x08xu\xaa\xb2\x14\x00\x00\x00\x00\x02\x00\x00PK\x01\x02\x17\x03'
-    b'\x14\x00\t\x00\x08\x00\xcf}38xu\xaa\xb2\x14\x00\x00\x00\x00\x02\x00\x00'
-    b'\x04\x00\r\x00\x00\x00\x00\x00\x00\x00\x00\x00\xa4\x81\x00\x00\x00\x00ze'
-    b'roUT\x05\x00\x03\xd6\x8b\x92GUx\x00\x00PK\x05\x06\x00\x00\x00\x00\x01'
-    b'\x00\x01\x00?\x00\x00\x00[\x00\x00\x00\x00\x00' )
+        b"PK\x03\x04\x14\x00\t\x00\x08\x00\xcf}38xu\xaa\xb2\x14\x00\x00\x00\x00\x02"
+        b"\x00\x00\x04\x00\x15\x00zeroUT\t\x00\x03\xd6\x8b\x92G\xda\x8b\x92GUx\x04"
+        b"\x00\xe8\x03\xe8\x03\xc7<M\xb5a\xceX\xa3Y&\x8b{oE\xd7\x9d\x8c\x98\x02\xc0"
+        b"PK\x07\x08xu\xaa\xb2\x14\x00\x00\x00\x00\x02\x00\x00PK\x01\x02\x17\x03"
+        b"\x14\x00\t\x00\x08\x00\xcf}38xu\xaa\xb2\x14\x00\x00\x00\x00\x02\x00\x00"
+        b"\x04\x00\r\x00\x00\x00\x00\x00\x00\x00\x00\x00\xa4\x81\x00\x00\x00\x00ze"
+        b"roUT\x05\x00\x03\xd6\x8b\x92GUx\x00\x00PK\x05\x06\x00\x00\x00\x00\x01"
+        b"\x00\x01\x00?\x00\x00\x00[\x00\x00\x00\x00\x00"
+    )
 
-    plain = b'zipfile.py encryption test'
-    plain2 = b'\x00'*512
+    plain = b"zipfile.py encryption test"
+    plain2 = b"\x00" * 512
 
     def setUp(self):
         with open(TESTFN, "wb") as fp:
@@ -1107,9 +1121,10 @@ class DecryptionTests(unittest.TestCase):
 
 class TestsWithRandomBinaryFiles(unittest.TestCase):
     def setUp(self):
-        datacount = randint(16, 64)*1024 + randint(1, 1024)
-        self.data = b''.join(struct.pack('<f', random()*randint(-1000, 1000))
-                             for i in range(datacount))
+        datacount = randint(16, 64) * 1024 + randint(1, 1024)
+        self.data = b"".join(
+            struct.pack("<f", random() * randint(-1000, 1000)) for i in range(datacount)
+        )
 
         # Make a source file with some lines
         with open(TESTFN, "wb") as fp:
@@ -1167,11 +1182,11 @@ class TestsWithRandomBinaryFiles(unittest.TestCase):
                         break
                     zipdata2.append(read_data)
 
-            testdata1 = b''.join(zipdata1)
+            testdata1 = b"".join(zipdata1)
             self.assertEqual(len(testdata1), len(self.data))
             self.assertEqual(testdata1, self.data)
 
-            testdata2 = b''.join(zipdata2)
+            testdata2 = b"".join(zipdata2)
             self.assertEqual(len(testdata2), len(self.data))
             self.assertEqual(testdata2, self.data)
         if not isinstance(f, str):
@@ -1199,7 +1214,7 @@ class TestsWithRandomBinaryFiles(unittest.TestCase):
                         break
                     zipdata1.append(read_data)
 
-            testdata = b''.join(zipdata1)
+            testdata = b"".join(zipdata1)
             self.assertEqual(len(testdata), len(self.data))
             self.assertEqual(testdata, self.data)
         if not isinstance(f, str):
@@ -1220,14 +1235,14 @@ class TestsWithMultipleOpens(unittest.TestCase):
     def setUp(self):
         # Create the ZIP archive
         with zipfile.ZipFile(TESTFN2, "w", zipfile.ZIP_DEFLATED) as zipfp:
-            zipfp.writestr('ones', '1'*FIXEDTEST_SIZE)
-            zipfp.writestr('twos', '2'*FIXEDTEST_SIZE)
+            zipfp.writestr("ones", "1" * FIXEDTEST_SIZE)
+            zipfp.writestr("twos", "2" * FIXEDTEST_SIZE)
 
     def test_same_file(self):
         # Verify that (when the ZipFile is in control of creating file objects)
         # multiple open() calls can be made without interfering with each other.
         with zipfile.ZipFile(TESTFN2, mode="r") as zipf:
-            with zipf.open('ones') as zopen1, zipf.open('ones') as zopen2:
+            with zipf.open("ones") as zopen1, zipf.open("ones") as zopen2:
                 data1 = zopen1.read(500)
                 data2 = zopen2.read(500)
                 data1 += zopen1.read(500)
@@ -1238,25 +1253,25 @@ class TestsWithMultipleOpens(unittest.TestCase):
         # Verify that (when the ZipFile is in control of creating file objects)
         # multiple open() calls can be made without interfering with each other.
         with zipfile.ZipFile(TESTFN2, mode="r") as zipf:
-            with zipf.open('ones') as zopen1, zipf.open('twos') as zopen2:
+            with zipf.open("ones") as zopen1, zipf.open("twos") as zopen2:
                 data1 = zopen1.read(500)
                 data2 = zopen2.read(500)
                 data1 += zopen1.read(500)
                 data2 += zopen2.read(500)
-            self.assertEqual(data1, b'1'*FIXEDTEST_SIZE)
-            self.assertEqual(data2, b'2'*FIXEDTEST_SIZE)
+            self.assertEqual(data1, b"1" * FIXEDTEST_SIZE)
+            self.assertEqual(data2, b"2" * FIXEDTEST_SIZE)
 
     def test_interleaved(self):
         # Verify that (when the ZipFile is in control of creating file objects)
         # multiple open() calls can be made without interfering with each other.
         with zipfile.ZipFile(TESTFN2, mode="r") as zipf:
-            with zipf.open('ones') as zopen1, zipf.open('twos') as zopen2:
+            with zipf.open("ones") as zopen1, zipf.open("twos") as zopen2:
                 data1 = zopen1.read(500)
                 data2 = zopen2.read(500)
                 data1 += zopen1.read(500)
                 data2 += zopen2.read(500)
-            self.assertEqual(data1, b'1'*FIXEDTEST_SIZE)
-            self.assertEqual(data2, b'2'*FIXEDTEST_SIZE)
+            self.assertEqual(data1, b"1" * FIXEDTEST_SIZE)
+            self.assertEqual(data2, b"2" * FIXEDTEST_SIZE)
 
     def tearDown(self):
         unlink(TESTFN2)
@@ -1292,14 +1307,16 @@ class TestWithDirectory(unittest.TestCase):
 
 class UniversalNewlineTests(unittest.TestCase):
     def setUp(self):
-        self.line_gen = [bytes("Test of zipfile line %d." % i, "ascii")
-                         for i in range(FIXEDTEST_SIZE)]
-        self.seps = ('\r', '\r\n', '\n')
+        self.line_gen = [
+            bytes("Test of zipfile line %d." % i, "ascii")
+            for i in range(FIXEDTEST_SIZE)
+        ]
+        self.seps = ("\r", "\r\n", "\n")
         self.arcdata, self.arcfiles = {}, {}
         for n, s in enumerate(self.seps):
             b = s.encode("ascii")
             self.arcdata[s] = b.join(self.line_gen) + b
-            self.arcfiles[s] = '%s-%d' % (TESTFN, n)
+            self.arcfiles[s] = "%s-%d" % (TESTFN, n)
             f = open(self.arcfiles[s], "wb")
             try:
                 f.write(self.arcdata[s])
@@ -1331,7 +1348,7 @@ class UniversalNewlineTests(unittest.TestCase):
         with zipfile.ZipFile(f, "r") as zipfp:
             for sep, fn in self.arcfiles.items():
                 with zipfp.open(fn, "rU") as zipopen:
-                    data = b''
+                    data = b""
                     while True:
                         read = zipopen.readline()
                         if not read:
@@ -1343,7 +1360,7 @@ class UniversalNewlineTests(unittest.TestCase):
                             break
                         data += read
 
-            self.assertEqual(data, self.arcdata['\n'])
+            self.assertEqual(data, self.arcdata["\n"])
 
         if not isinstance(f, str):
             f.close()
@@ -1357,7 +1374,7 @@ class UniversalNewlineTests(unittest.TestCase):
                 with zipfp.open(fn, "rU") as zipopen:
                     for line in self.line_gen:
                         linedata = zipopen.readline()
-                        self.assertEqual(linedata, line + b'\n')
+                        self.assertEqual(linedata, line + b"\n")
         if not isinstance(f, str):
             f.close()
 
@@ -1370,7 +1387,7 @@ class UniversalNewlineTests(unittest.TestCase):
                 with zipfp.open(fn, "rU") as fp:
                     ziplines = fp.readlines()
                 for line, zipline in zip(self.line_gen, ziplines):
-                    self.assertEqual(zipline, line + b'\n')
+                    self.assertEqual(zipline, line + b"\n")
         if not isinstance(f, str):
             f.close()
 
@@ -1382,7 +1399,7 @@ class UniversalNewlineTests(unittest.TestCase):
             for sep, fn in self.arcfiles.items():
                 with zipfp.open(fn, "rU") as fp:
                     for line, zipline in zip(self.line_gen, fp):
-                        self.assertEqual(zipline, line + b'\n')
+                        self.assertEqual(zipline, line + b"\n")
         if not isinstance(f, str):
             f.close()
 
@@ -1441,10 +1458,18 @@ class UniversalNewlineTests(unittest.TestCase):
 
 
 def test_main():
-    run_unittest(TestsWithSourceFile, TestZip64InSmallFiles, OtherTests,
-                 PyZipFileTests, DecryptionTests, TestsWithMultipleOpens,
-                 TestWithDirectory, UniversalNewlineTests,
-                 TestsWithRandomBinaryFiles)
+    run_unittest(
+        TestsWithSourceFile,
+        TestZip64InSmallFiles,
+        OtherTests,
+        PyZipFileTests,
+        DecryptionTests,
+        TestsWithMultipleOpens,
+        TestWithDirectory,
+        UniversalNewlineTests,
+        TestsWithRandomBinaryFiles,
+    )
+
 
 if __name__ == "__main__":
     test_main()

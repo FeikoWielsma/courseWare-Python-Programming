@@ -1,47 +1,73 @@
 class A(object):
     def __init__(self):
-        print ("A",)
+        print(
+            "A",
+        )
         super(A, self).__init__()
+
 
 class B(object):
     def __init__(self):
-        print ("B",)
+        print(
+            "B",
+        )
         super(B, self).__init__()
+
 
 class N(object):
     def __init__(self):
-        print ("N",)
+        print(
+            "N",
+        )
+
+
 class M(object):
     def __init__(self):
-        print ("M",)
+        print(
+            "M",
+        )
 
 
-class F1(A,B,N):
+class F1(A, B, N):
     def __init__(self):
-        print ("F1",)
+        print(
+            "F1",
+        )
         super(F1, self).__init__()
 
-class F2(A,N,B):
+
+class F2(A, N, B):
     def __init__(self):
-        print ("F2",)
+        print(
+            "F2",
+        )
         super(F2, self).__init__()
 
-class F3(N,A,B):
+
+class F3(N, A, B):
     def __init__(self):
-        print ("F3",)
+        print(
+            "F3",
+        )
         super(F3, self).__init__()
 
-class F4(A,B,N,M):
+
+class F4(A, B, N, M):
     def __init__(self):
-        print ("F3",)
+        print(
+            "F3",
+        )
         super(F4, self).__init__()
 
-        
+
 def test(cl):
-    print ("MRO:", [x.__name__ for x in cl.__mro__])
-    print ("Calls:",)
+    print("MRO:", [x.__name__ for x in cl.__mro__])
+    print(
+        "Calls:",
+    )
     cl()
     print()
+
 
 test(F1)
 test(F2)

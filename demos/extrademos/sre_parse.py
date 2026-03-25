@@ -34,11 +34,11 @@ ESCAPES = {
     r"\r": (LITERAL, ord("\r")),
     r"\t": (LITERAL, ord("\t")),
     r"\v": (LITERAL, ord("\v")),
-    r"\\": (LITERAL, ord("\\"))
+    r"\\": (LITERAL, ord("\\")),
 }
 
 CATEGORIES = {
-    r"\A": (AT, AT_BEGINNING_STRING), # start of string
+    r"\A": (AT, AT_BEGINNING_STRING),  # start of string
     r"\b": (AT, AT_BOUNDARY),
     r"\B": (AT, AT_NON_BOUNDARY),
     r"\d": (IN, [(CATEGORY, CATEGORY_DIGIT)]),
@@ -47,7 +47,7 @@ CATEGORIES = {
     r"\S": (IN, [(CATEGORY, CATEGORY_NOT_SPACE)]),
     r"\w": (IN, [(CATEGORY, CATEGORY_WORD)]),
     r"\W": (IN, [(CATEGORY, CATEGORY_NOT_WORD)]),
-    r"\Z": (AT, AT_END_STRING), # end of string
+    r"\Z": (AT, AT_END_STRING),  # end of string
 }
 
 FLAGS = {
@@ -63,6 +63,7 @@ FLAGS = {
     "u": SRE_FLAG_UNICODE,
 }
 
+
 class Pattern:
     # master pattern object.  keeps track of global attributes
     def __init__(self):
@@ -70,21 +71,27 @@ class Pattern:
         self.open = []
         self.groups = 1
         self.groupdict = {}
+
     def opengroup(self, name=None):
         gid = self.groups
         self.groups = gid + 1
         if name is not None:
             ogid = self.groupdict.get(name, None)
             if ogid is not None:
-                raise error("redefinition of group name %s as group %d; "
-                            "was group %d" % (repr(name), gid,  ogid))
+                raise error(
+                    "redefinition of group name %s as group %d; "
+                    "was group %d" % (repr(name), gid, ogid)
+                )
             self.groupdict[name] = gid
         self.open.append(gid)
         return gid
+
     def closegroup(self, gid):
         self.open.remove(gid)
+
     def checkgroup(self, gid):
         return gid < self.groups and gid not in self.open
+
 
 class SubPattern:
     # a subpattern, in intermediate form
@@ -94,50 +101,68 @@ class SubPattern:
             data = []
         self.data = data
         self.width = None
+
     def dump(self, level=0):
         nl = 1
         seqtypes = (tuple, list)
         for op, av in self.data:
-            print(level*"  " + op, end=' '); nl = 0
+            print(level * "  " + op, end=" ")
+            nl = 0
             if op == "in":
                 # member sublanguage
-                print(); nl = 1
+                print()
+                nl = 1
                 for op, a in av:
-                    print((level+1)*"  " + op, a)
+                    print((level + 1) * "  " + op, a)
             elif op == "branch":
-                print(); nl = 1
+                print()
+                nl = 1
                 i = 0
                 for a in av[1]:
                     if i > 0:
-                        print(level*"  " + "or")
-                    a.dump(level+1); nl = 1
+                        print(level * "  " + "or")
+                    a.dump(level + 1)
+                    nl = 1
                     i = i + 1
             elif isinstance(av, seqtypes):
                 for a in av:
                     if isinstance(a, SubPattern):
-                        if not nl: print()
-                        a.dump(level+1); nl = 1
+                        if not nl:
+                            print()
+                        a.dump(level + 1)
+                        nl = 1
                     else:
-                        print(a, end=' ') ; nl = 0
+                        print(a, end=" ")
+                        nl = 0
             else:
-                print(av, end=' ') ; nl = 0
-            if not nl: print()
+                print(av, end=" ")
+                nl = 0
+            if not nl:
+                print()
+
     def __repr__(self):
         return repr(self.data)
+
     def __len__(self):
         return len(self.data)
+
     def __delitem__(self, index):
         del self.data[index]
+
     def __getitem__(self, index):
         if isinstance(index, slice):
             return SubPattern(self.pattern, self.data[index])
         return self.data[index]
+
     def __setitem__(self, index, code):
         self.data[index] = code
+
     def insert(self, index, code):
         self.data.insert(index, code)
+
     def append(self, code):
         self.data.append(code)
+
     def getwidth(self):
         # determine the width (min, max) for this subpattern
         if self.width:
@@ -175,16 +200,18 @@ class SubPattern:
         self.width = int(min(lo, sys.maxsize)), int(min(hi, sys.maxsize))
         return self.width
 
+
 class Tokenizer:
     def __init__(self, string):
         self.string = string
         self.index = 0
         self.__next()
+
     def __next(self):
         if self.index >= len(self.string):
             self.next = None
             return
-        char = self.string[self.index:self.index+1]
+        char = self.string[self.index : self.index + 1]
         # Special case for the str8, since indexing returns a integer
         # XXX This is only needed for test_bug_926075 in test_re.py
         if char and isinstance(char, bytes):
@@ -199,26 +226,33 @@ class Tokenizer:
             char = char + c
         self.index = self.index + len(char)
         self.next = char
+
     def match(self, char, skip=1):
         if char == self.next:
             if skip:
                 self.__next()
             return 1
         return 0
+
     def get(self):
         this = self.next
         self.__next()
         return this
+
     def tell(self):
         return self.index, self.next
+
     def seek(self, index):
         self.index, self.next = index
+
 
 def isident(char):
     return "a" <= char <= "z" or "A" <= char <= "Z" or char == "_"
 
+
 def isdigit(char):
     return "0" <= char <= "9"
+
 
 def isname(name):
     # check that group name is a valid string
@@ -228,6 +262,7 @@ def isname(name):
         if not isident(char) and not isdigit(char):
             return False
     return True
+
 
 def _class_escape(source, escape):
     # handle escape code inside character class
@@ -246,13 +281,13 @@ def _class_escape(source, escape):
             escape = escape[2:]
             if len(escape) != 2:
                 raise error("bogus escape: %s" % repr("\\" + escape))
-            return LITERAL, int(escape, 16) & 0xff
+            return LITERAL, int(escape, 16) & 0xFF
         elif c in OCTDIGITS:
             # octal escape (up to three digits)
             while source.next in OCTDIGITS and len(escape) < 4:
                 escape = escape + source.get()
             escape = escape[1:]
-            return LITERAL, int(escape, 8) & 0xff
+            return LITERAL, int(escape, 8) & 0xFF
         elif c in DIGITS:
             raise error("bogus escape: %s" % repr(escape))
         if len(escape) == 2:
@@ -260,6 +295,7 @@ def _class_escape(source, escape):
     except ValueError:
         pass
     raise error("bogus escape: %s" % repr(escape))
+
 
 def _escape(source, escape, state):
     # handle escape code in expression
@@ -277,21 +313,24 @@ def _escape(source, escape, state):
                 escape = escape + source.get()
             if len(escape) != 4:
                 raise ValueError
-            return LITERAL, int(escape[2:], 16) & 0xff
+            return LITERAL, int(escape[2:], 16) & 0xFF
         elif c == "0":
             # octal escape
             while source.next in OCTDIGITS and len(escape) < 4:
                 escape = escape + source.get()
-            return LITERAL, int(escape[1:], 8) & 0xff
+            return LITERAL, int(escape[1:], 8) & 0xFF
         elif c in DIGITS:
             # octal escape *or* decimal group reference (sigh)
             if source.next in DIGITS:
                 escape = escape + source.get()
-                if (escape[1] in OCTDIGITS and escape[2] in OCTDIGITS and
-                    source.next in OCTDIGITS):
+                if (
+                    escape[1] in OCTDIGITS
+                    and escape[2] in OCTDIGITS
+                    and source.next in OCTDIGITS
+                ):
                     # got three octal digits; this is an octal escape
                     escape = escape + source.get()
-                    return LITERAL, int(escape[1:], 8) & 0xff
+                    return LITERAL, int(escape[1:], 8) & 0xFF
             # not an octal escape, so this is a group reference
             group = int(escape[1:])
             if group < state.groups:
@@ -304,6 +343,7 @@ def _escape(source, escape, state):
     except ValueError:
         pass
     raise error("bogus escape: %s" % repr(escape))
+
 
 def _parse_sub(source, state, nested=1):
     # parse an alternation: a|b|c
@@ -344,7 +384,7 @@ def _parse_sub(source, state, nested=1):
             for item in items:
                 del item[0]
             subpatternappend(prefix)
-            continue # check next one
+            continue  # check next one
         break
 
     # check if the branch can be replaced by a character set
@@ -364,6 +404,7 @@ def _parse_sub(source, state, nested=1):
     subpattern.append((BRANCH, (None, items)))
     return subpattern
 
+
 def _parse_sub_cond(source, state, condgroup):
     item_yes = _parse(source, state)
     if source.match("|"):
@@ -378,10 +419,12 @@ def _parse_sub_cond(source, state, condgroup):
     subpattern.append((GROUPREF_EXISTS, (condgroup, item_yes, item_no)))
     return subpattern
 
+
 _PATTERNENDERS = set("|)")
 _ASSERTCHARS = set("=!<")
 _LOOKBEHINDASSERTCHARS = set("=!")
 _REPEATCODES = set([MIN_REPEAT, MAX_REPEAT])
+
 
 def _parse(source, state):
     # parse a simple pattern
@@ -398,12 +441,11 @@ def _parse(source, state):
     REPEATCODES = _REPEATCODES
 
     while 1:
-
         if source.next in PATTERNENDERS:
-            break # end of subpattern
+            break  # end of subpattern
         this = sourceget()
         if this is None:
-            break # end of pattern
+            break  # end of pattern
 
         if state.flags & SRE_FLAG_VERBOSE:
             # skip whitespace and comments
@@ -423,8 +465,8 @@ def _parse(source, state):
             # character set
             set = []
             setappend = set.append
-##          if sourcematch(":"):
-##              pass # handle character classes
+            ##          if sourcematch(":"):
+            ##              pass # handle character classes
             if sourcematch("^"):
                 setappend((NEGATE, None))
             # check remaining characters
@@ -468,10 +510,10 @@ def _parse(source, state):
                     setappend(code1)
 
             # XXX: <fl> should move set optimization to compiler!
-            if _len(set)==1 and set[0][0] is LITERAL:
-                subpatternappend(set[0]) # optimization
-            elif _len(set)==2 and set[0][0] is NEGATE and set[1][0] is LITERAL:
-                subpatternappend((NOT_LITERAL, set[1][1])) # optimization
+            if _len(set) == 1 and set[0][0] is LITERAL:
+                subpatternappend(set[0])  # optimization
+            elif _len(set) == 2 and set[0][0] is NEGATE and set[1][0] is LITERAL:
+                subpatternappend((NOT_LITERAL, set[1][1]))  # optimization
             else:
                 # XXX: <fl> should add charmap optimization here
                 subpatternappend((IN, set))
@@ -591,7 +633,7 @@ def _parse(source, state):
                     if char == "<":
                         if source.next not in LOOKBEHINDASSERTCHARS:
                             raise error("syntax error")
-                        dir = -1 # lookbehind
+                        dir = -1  # lookbehind
                         char = sourceget()
                     p = _parse_sub(source, state)
                     if not sourcematch(")"):
@@ -623,7 +665,7 @@ def _parse(source, state):
                             raise error("bad character in group name")
                 else:
                     # flags
-                    if not source.next in FLAGS:
+                    if source.next not in FLAGS:
                         raise error("unexpected end of pattern")
                     while source.next in FLAGS:
                         state.flags = state.flags | FLAGS[sourceget()]
@@ -667,6 +709,7 @@ def _parse(source, state):
 
     return subpattern
 
+
 def fix_flags(src, flags):
     # Check and fix flags according to the type of pattern (str or bytes)
     if isinstance(src, str):
@@ -678,6 +721,7 @@ def fix_flags(src, flags):
         if flags & SRE_FLAG_UNICODE:
             raise ValueError("can't use UNICODE flag with a bytes pattern")
     return flags
+
 
 def parse(str, flags=0, pattern=None):
     # parse 're' pattern into list of (opcode, argument) tuples
@@ -708,6 +752,7 @@ def parse(str, flags=0, pattern=None):
 
     return p
 
+
 def parse_template(source, pattern):
     # parse 're' replacement string into list of literals and
     # group references
@@ -715,11 +760,13 @@ def parse_template(source, pattern):
     sget = s.get
     p = []
     a = p.append
+
     def literal(literal, p=p, pappend=a):
         if p and p[-1][0] is LITERAL:
             p[-1] = LITERAL, p[-1][1] + literal
         else:
             pappend((LITERAL, literal))
+
     sep = source[:0]
     if isinstance(sep, str):
         makechar = chr
@@ -728,7 +775,7 @@ def parse_template(source, pattern):
     while 1:
         this = sget()
         if this is None:
-            break # end of replacement string
+            break  # end of replacement string
         if this and this[0] == "\\":
             # group
             c = this[1:2]
@@ -761,16 +808,15 @@ def parse_template(source, pattern):
                     this = this + sget()
                     if s.next in OCTDIGITS:
                         this = this + sget()
-                literal(makechar(int(this[1:], 8) & 0xff))
+                literal(makechar(int(this[1:], 8) & 0xFF))
             elif c in DIGITS:
                 isoctal = False
                 if s.next in DIGITS:
                     this = this + sget()
-                    if (c in OCTDIGITS and this[2] in OCTDIGITS and
-                        s.next in OCTDIGITS):
+                    if c in OCTDIGITS and this[2] in OCTDIGITS and s.next in OCTDIGITS:
                         this = this + sget()
                         isoctal = True
-                        literal(makechar(int(this[1:], 8) & 0xff))
+                        literal(makechar(int(this[1:], 8) & 0xFF))
                 if not isoctal:
                     a((MARK, int(this[1:])))
             else:
@@ -791,7 +837,7 @@ def parse_template(source, pattern):
     else:
         # The tokenizer implicitly decodes bytes objects as latin-1, we must
         # therefore re-encode the final representation.
-        encode = lambda x: x.encode('latin1')
+        encode = lambda x: x.encode("latin1")
     for c, s in p:
         if c is MARK:
             groupsappend((i, s))
@@ -800,6 +846,7 @@ def parse_template(source, pattern):
             literals[i] = encode(s)
         i = i + 1
     return groups, literals
+
 
 def expand_template(template, match):
     g = match.group

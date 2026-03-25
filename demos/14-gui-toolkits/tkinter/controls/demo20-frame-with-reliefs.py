@@ -8,12 +8,12 @@ border_effects = {
     "ridge": tk.RIDGE,
 }
 
-mainWindow = tk.Tk()
+main_window = tk.Tk()
 
 for relief_name, relief in border_effects.items():
-    frame = tk.Frame(master=mainWindow, relief=relief, borderwidth=5)
+    frame = tk.Frame(master=main_window, relief=relief, borderwidth=5)
     frame.pack(side=tk.LEFT)
     label = tk.Label(master=frame, text=relief_name)
     label.pack()
 
-mainWindow.mainloop()
+main_window.mainloop()

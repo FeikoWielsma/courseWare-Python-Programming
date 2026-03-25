@@ -1,7 +1,11 @@
-import glob, sys, os, pprint
+import glob
+import sys
+import os
+import pprint
+
 allsizes = []
 for srcdir in sys.path:
-    pypatt  = os.path.join(srcdir, '*.py')
+    pypatt = os.path.join(srcdir, "*.py")
     pyfiles = glob.glob(pypatt)
     for filename in pyfiles:
         pysize = os.path.getsize(filename)
@@ -10,4 +14,3 @@ for srcdir in sys.path:
 allsizes.sort()
 pprint.pprint(allsizes[:3])
 pprint.pprint(allsizes[-3:])
-

@@ -8,8 +8,6 @@
 # of much interest anymore), and a few were fiddled to make the output
 # deterministic.
 
-from test.support import sortdict
-import pprint
 
 class defaultdict(dict):
     def __init__(self, default=None):
@@ -31,6 +29,7 @@ class defaultdict(dict):
         for key in other:
             if key not in self:
                 self[key] = other[key]
+
 
 test_1 = """
 
@@ -99,8 +98,9 @@ just like classic classes:
     >>>
 """
 
+
 class defaultdict2(dict):
-    __slots__ = ['default']
+    __slots__ = ["default"]
 
     def __init__(self, default=None):
         dict.__init__(self)
@@ -121,6 +121,7 @@ class defaultdict2(dict):
         for key in other:
             if key not in self:
                 self[key] = other[key]
+
 
 test_2 = """
 
@@ -405,17 +406,21 @@ called C.save()
 called C.save()
 """
 
+
 class A(object):
     def m(self):
         return "A"
+
 
 class B(A):
     def m(self):
         return "B" + super(B, self).m()
 
+
 class C(A):
     def m(self):
         return "C" + super(C, self).m()
+
 
 class D(C, B):
     def m(self):
@@ -455,14 +460,17 @@ called A.foo()
 called A.foo()
 """
 
-__test__ = {"tut1": test_1,
-            "tut2": test_2,
-            "tut3": test_3,
-            "tut4": test_4,
-            "tut5": test_5,
-            "tut6": test_6,
-            "tut7": test_7,
-            "tut8": test_8}
+__test__ = {
+    "tut1": test_1,
+    "tut2": test_2,
+    "tut3": test_3,
+    "tut4": test_4,
+    "tut5": test_5,
+    "tut6": test_6,
+    "tut7": test_7,
+    "tut8": test_8,
+}
+
 
 # Magic test name that regrtest.py invokes *after* importing this module.
 # This worms around a bootstrap problem.
@@ -475,7 +483,9 @@ def test_main(verbose=None):
     # business is used the name can change depending on how the test is
     # invoked.
     from test import support, test_descrtut
+
     support.run_doctest(test_descrtut, verbose)
+
 
 # This part isn't needed for regrtest, but for running the test directly.
 if __name__ == "__main__":

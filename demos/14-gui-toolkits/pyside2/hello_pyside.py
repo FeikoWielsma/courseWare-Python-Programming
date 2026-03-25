@@ -3,12 +3,14 @@ import pandas as pd
 
 from PySide2.QtCore import QDateTime, QTimeZone
 
+
 def transform_date(utc, timezone=None):
-    utc_fmt = "yyyy-MM-ddTHH:mm:ss.zzzZ"
-    new_date = QDateTime().fromString(utc, utc_fmt)
+    utc_fmt = "yyyy-MM-dd_thh:mm:ss.zzz_z"
+    new_date = QDateTime().from_string(utc, utc_fmt)
     if timezone:
-        new_date.setTimeZone(timezone)
+        new_date.set_time_zone(timezone)
     return new_date
+
 
 def read_data(fname):
     # Read the CSV content

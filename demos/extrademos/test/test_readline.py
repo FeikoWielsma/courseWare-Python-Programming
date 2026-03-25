@@ -5,13 +5,15 @@ These tests were added to check that the libedit emulation on OSX and
 the "real" readline have the same interface for history manipulation. That's
 why the tests cover only a small subset of the interface.
 """
+
 import unittest
 from test.support import run_unittest, import_module
 
 # Skip tests if there is no readline module
-readline = import_module('readline')
+readline = import_module("readline")
 
-class TestHistoryManipulation (unittest.TestCase):
+
+class TestHistoryManipulation(unittest.TestCase):
     def testHistoryUpdates(self):
         readline.clear_history()
 
@@ -38,6 +40,7 @@ class TestHistoryManipulation (unittest.TestCase):
 
 def test_main():
     run_unittest(TestHistoryManipulation)
+
 
 if __name__ == "__main__":
     test_main()

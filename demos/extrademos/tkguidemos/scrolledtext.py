@@ -11,10 +11,11 @@ Most methods calls are inherited from the Text widget; Pack, Grid and
 Place methods are redirected to the Frame widget however.
 """
 
-__all__ = ['ScrolledText']
+__all__ = ["ScrolledText"]
 
 from tkinter import Frame, Text, Scrollbar, Pack, Grid, Place
 from tkinter.constants import RIGHT, LEFT, Y, BOTH
+
 
 class ScrolledText(Text):
     def __init__(self, master=None, **kw):
@@ -22,10 +23,10 @@ class ScrolledText(Text):
         self.vbar = Scrollbar(self.frame)
         self.vbar.pack(side=RIGHT, fill=Y)
 
-        kw.update({'yscrollcommand': self.vbar.set})
+        kw.update({"yscrollcommand": self.vbar.set})
         Text.__init__(self, self.frame, **kw)
         self.pack(side=LEFT, fill=BOTH, expand=True)
-        self.vbar['command'] = self.yview
+        self.vbar["command"] = self.yview
 
         # Copy geometry methods of self.frame without overriding Text
         # methods -- hack!
@@ -34,7 +35,7 @@ class ScrolledText(Text):
         methods = methods.difference(text_meths)
 
         for m in methods:
-            if m[0] != '_' and m != 'config' and m != 'configure':
+            if m[0] != "_" and m != "config" and m != "configure":
                 setattr(self, m, getattr(self.frame, m))
 
     def __str__(self):
@@ -44,11 +45,12 @@ class ScrolledText(Text):
 def example():
     from tkinter.constants import END
 
-    stext = ScrolledText(bg='white', height=10)
+    stext = ScrolledText(bg="white", height=10)
     stext.insert(END, __doc__)
     stext.pack(fill=BOTH, side=LEFT, expand=True)
     stext.focus_set()
     stext.mainloop()
+
 
 if __name__ == "__main__":
     example()

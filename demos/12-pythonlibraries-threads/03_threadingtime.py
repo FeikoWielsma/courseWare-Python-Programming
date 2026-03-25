@@ -1,15 +1,18 @@
 import threading
 import time
- 
-threadBreak = False
+
+thread_break = False
+
+
 def TimeProcess():
-    while not threadBreak:
-        print (time.time() - startTime)
- 
-startTime = time.time()
- 
-threading.Thread(target = TimeProcess).start()
- 
+    while not thread_break:
+        print(time.time() - start_time)
+
+
+start_time = time.time()
+
+threading.Thread(target=TimeProcess).start()
+
 input()
-threadBreak = True
+thread_break = True
 quit()

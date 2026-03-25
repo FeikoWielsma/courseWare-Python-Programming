@@ -1,12 +1,14 @@
-from Tkinter import *                 
+from Tkinter import *
 from tkMessageBox import showinfo
 
+
 def reply(name):
-    showinfo(title='Reply', message='Hello %s!' % name)
+    showinfo(title="Reply", message="Hello %s!" % name)
+
 
 top = Tk()
-top.title('Echo')
-top.iconbitmap('py-blue-trans-out.ico')
+top.title("Echo")
+top.iconbitmap("py-blue-trans-out.ico")
 
 Label(top, text="Enter your name:").pack(side=TOP)
 ent = Entry(top)

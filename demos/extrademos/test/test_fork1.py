@@ -1,5 +1,4 @@
-"""This test checks for correct fork() behavior.
-"""
+"""This test checks for correct fork() behavior."""
 
 import imp
 import os
@@ -8,13 +7,19 @@ import sys
 import time
 
 from test.fork_wait import ForkWait
-from test.support import (run_unittest, reap_children, get_attribute,
-                          import_module, verbose)
+from test.support import (
+    run_unittest,
+    reap_children,
+    get_attribute,
+    import_module,
+    verbose,
+)
 
-threading = import_module('threading')
+threading = import_module("threading")
 
 # Skip test if fork does not exist.
-get_attribute(os, 'fork')
+get_attribute(os, "fork")
+
 
 class ForkTest(ForkWait):
     def wait_impl(self, cpid):
@@ -27,7 +32,9 @@ class ForkTest(ForkWait):
             time.sleep(1.0)
 
         self.assertEqual(spid, cpid)
-        self.assertEqual(status, 0, "cause = %d, exit = %d" % (status&0xff, status>>8))
+        self.assertEqual(
+            status, 0, "cause = %d, exit = %d" % (status & 0xFF, status >> 8)
+        )
 
     def test_threaded_import_lock_fork(self):
         """Check fork() in main thread works while a subthread is doing an import"""
@@ -35,13 +42,15 @@ class ForkTest(ForkWait):
         fake_module_name = "fake test module"
         partial_module = "partial"
         complete_module = "complete"
+
         def importer():
             imp.acquire_lock()
             sys.modules[fake_module_name] = partial_module
             import_started.set()
-            time.sleep(0.01) # Give the other thread time to try and acquire.
+            time.sleep(0.01)  # Give the other thread time to try and acquire.
             sys.modules[fake_module_name] = complete_module
             imp.release_lock()
+
         t = threading.Thread(target=importer)
         t.start()
         import_started.wait()
@@ -70,9 +79,9 @@ class ForkTest(ForkWait):
             except OSError:
                 pass
 
-
     def test_nested_import_lock_fork(self):
         """Check fork() in main thread works while the main thread is doing an import"""
+
         # Issue 9573: this used to trigger RuntimeError in the child process
         def fork_with_import_lock(level):
             release = 0
@@ -106,6 +115,7 @@ class ForkTest(ForkWait):
 def test_main():
     run_unittest(ForkTest)
     reap_children()
+
 
 if __name__ == "__main__":
     test_main()

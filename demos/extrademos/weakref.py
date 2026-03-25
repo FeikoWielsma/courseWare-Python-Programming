@@ -10,13 +10,14 @@ http://www.python.org/dev/peps/pep-0205/
 # the module-global ref() function imported from _weakref.
 
 from _weakref import (
-     getweakrefcount,
-     getweakrefs,
-     ref,
-     proxy,
-     CallableProxyType,
-     ProxyType,
-     ReferenceType)
+    getweakrefcount,
+    getweakrefs,
+    ref,
+    proxy,
+    CallableProxyType,
+    ProxyType,
+    ReferenceType,
+)
 
 from _weakrefset import WeakSet, _IterationGuard
 
@@ -24,10 +25,19 @@ import collections  # Import after _weakref to avoid circular import.
 
 ProxyTypes = (ProxyType, CallableProxyType)
 
-__all__ = ["ref", "proxy", "getweakrefcount", "getweakrefs",
-           "WeakKeyDictionary", "ReferenceType", "ProxyType",
-           "CallableProxyType", "ProxyTypes", "WeakValueDictionary",
-           "WeakSet"]
+__all__ = [
+    "ref",
+    "proxy",
+    "getweakrefcount",
+    "getweakrefs",
+    "WeakKeyDictionary",
+    "ReferenceType",
+    "ProxyType",
+    "CallableProxyType",
+    "ProxyTypes",
+    "WeakValueDictionary",
+    "WeakSet",
+]
 
 
 class WeakValueDictionary(collections.MutableMapping):
@@ -36,6 +46,7 @@ class WeakValueDictionary(collections.MutableMapping):
     Entries in the dictionary will be discarded when no strong
     reference to the value exists anymore
     """
+
     # We inherit the constructor without worrying about the input
     # dictionary; since it uses our .update() method, we get the right
     # checks (if the other dictionary is a WeakValueDictionary,
@@ -50,6 +61,7 @@ class WeakValueDictionary(collections.MutableMapping):
                     self._pending_removals.append(wr.key)
                 else:
                     del self.data[wr.key]
+
         self._remove = remove
         # A list of keys to be removed
         self._pending_removals = []
@@ -107,6 +119,7 @@ class WeakValueDictionary(collections.MutableMapping):
 
     def __deepcopy__(self, memo):
         from copy import deepcopy
+
         new = self.__class__()
         for key, wr in self.data.items():
             o = wr()
@@ -232,7 +245,7 @@ class KeyedRef(ref):
 
     """
 
-    __slots__ = "key",
+    __slots__ = ("key",)
 
     def __new__(type, ob, callback, key):
         self = ref.__new__(type, ob, callback)
@@ -244,7 +257,7 @@ class KeyedRef(ref):
 
 
 class WeakKeyDictionary(collections.MutableMapping):
-    """ Mapping class that references keys weakly.
+    """Mapping class that references keys weakly.
 
     Entries in the dictionary will be discarded when there is no
     longer a strong reference to the key. This can be used to
@@ -256,6 +269,7 @@ class WeakKeyDictionary(collections.MutableMapping):
 
     def __init__(self, dict=None):
         self.data = {}
+
         def remove(k, selfref=ref(self)):
             self = selfref()
             if self is not None:
@@ -263,6 +277,7 @@ class WeakKeyDictionary(collections.MutableMapping):
                     self._pending_removals.append(k)
                 else:
                     del self.data[k]
+
         self._remove = remove
         # A list of dead weakrefs (keys to be removed)
         self._pending_removals = []
@@ -310,6 +325,7 @@ class WeakKeyDictionary(collections.MutableMapping):
 
     def __deepcopy__(self, memo):
         from copy import deepcopy
+
         new = self.__class__()
         for key, value in self.data.items():
             o = key()
@@ -318,7 +334,7 @@ class WeakKeyDictionary(collections.MutableMapping):
         return new
 
     def get(self, key, default=None):
-        return self.data.get(ref(key),default)
+        return self.data.get(ref(key), default)
 
     def __contains__(self, key):
         try:
@@ -372,7 +388,7 @@ class WeakKeyDictionary(collections.MutableMapping):
         return self.data.pop(ref(key), *args)
 
     def setdefault(self, key, default=None):
-        return self.data.setdefault(ref(key, self._remove),default)
+        return self.data.setdefault(ref(key, self._remove), default)
 
     def update(self, dict=None, **kwargs):
         d = self.data

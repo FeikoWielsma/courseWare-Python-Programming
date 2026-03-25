@@ -4,31 +4,30 @@
 
 """Classes to generate plain text from a message object tree."""
 
-__all__ = ['Generator', 'DecodedGenerator']
+__all__ = ["Generator", "DecodedGenerator"]
 
 import re
 import sys
 import time
 import random
-import warnings
 
 from io import StringIO, BytesIO
 from email.header import Header
 from email.message import _has_surrogates
 
-UNDERSCORE = '_'
-NL = '\n'  # XXX: no longer used by the code below.
+UNDERSCORE = "_"
+NL = "\n"  # XXX: no longer used by the code below.
 
-fcre = re.compile(r'^From ', re.MULTILINE)
+fcre = re.compile(r"^From ", re.MULTILINE)
 
 
-
 class Generator:
     """Generates output from a Message object tree.
 
     This basic generator writes the message to the given file object as plain
     text.
     """
+
     #
     # Public interface
     #
@@ -58,7 +57,7 @@ class Generator:
         # Just delegate to the file object
         self._fp.write(s)
 
-    def flatten(self, msg, unixfrom=False, linesep='\n'):
+    def flatten(self, msg, unixfrom=False, linesep="\n"):
         """Print the message object tree rooted at msg to the output file
         specified when the Generator instance was created.
 
@@ -78,12 +77,12 @@ class Generator:
         # inserted into a temporary buffer.
         self._NL = linesep
         self._encoded_NL = self._encode(linesep)
-        self._EMPTY = ''
-        self._encoded_EMTPY = self._encode('')
+        self._EMPTY = ""
+        self._encoded_EMTPY = self._encode("")
         if unixfrom:
             ufrom = msg.get_unixfrom()
             if not ufrom:
-                ufrom = 'From nobody ' + time.ctime(time.time())
+                ufrom = "From nobody " + time.ctime(time.time())
             self.write(ufrom + self._NL)
         self._write(msg)
 
@@ -106,7 +105,7 @@ class Generator:
 
     # Similarly, we have _XXX and _encoded_XXX attributes that are used on
     # source and buffer data, respectively.
-    _encoded_EMPTY = ''
+    _encoded_EMPTY = ""
 
     def _new_buffer(self):
         # BytesGenerator overrides this to return BytesIO.
@@ -136,7 +135,7 @@ class Generator:
             self._fp = oldfp
         # Write the headers.  First we see if the message object wants to
         # handle that itself.  If not, we'll do it generically.
-        meth = getattr(msg, '_write_headers', None)
+        meth = getattr(msg, "_write_headers", None)
         if meth is None:
             self._write_headers(msg)
         else:
@@ -150,11 +149,11 @@ class Generator:
         # that's missing too, then dispatch to self._writeBody().
         main = msg.get_content_maintype()
         sub = msg.get_content_subtype()
-        specific = UNDERSCORE.join((main, sub)).replace('-', '_')
-        meth = getattr(self, '_handle_' + specific, None)
+        specific = UNDERSCORE.join((main, sub)).replace("-", "_")
+        meth = getattr(self, "_handle_" + specific, None)
         if meth is None:
-            generic = main.replace('-', '_')
-            meth = getattr(self, '_handle_' + generic, None)
+            generic = main.replace("-", "_")
+            meth = getattr(self, "_handle_" + generic, None)
             if meth is None:
                 meth = self._writeBody
         meth(msg)
@@ -165,15 +164,15 @@ class Generator:
 
     def _write_headers(self, msg):
         for h, v in msg.items():
-            self.write('%s: ' % h)
+            self.write("%s: " % h)
             if isinstance(v, Header):
-                self.write(v.encode(
-                    maxlinelen=self._maxheaderlen, linesep=self._NL)+self._NL)
+                self.write(
+                    v.encode(maxlinelen=self._maxheaderlen, linesep=self._NL) + self._NL
+                )
             else:
                 # Header's got lots of smarts, so use it.
-                header = Header(v, maxlinelen=self._maxheaderlen,
-                                header_name=h)
-                self.write(header.encode(linesep=self._NL)+self._NL)
+                header = Header(v, maxlinelen=self._maxheaderlen, header_name=h)
+                self.write(header.encode(linesep=self._NL) + self._NL)
         # A blank line always separates headers from body
         self.write(self._NL)
 
@@ -186,15 +185,15 @@ class Generator:
         if payload is None:
             return
         if not isinstance(payload, str):
-            raise TypeError('string payload expected: %s' % type(payload))
+            raise TypeError("string payload expected: %s" % type(payload))
         if _has_surrogates(msg._payload):
-            charset = msg.get_param('charset')
+            charset = msg.get_param("charset")
             if charset is not None:
-                del msg['content-transfer-encoding']
+                del msg["content-transfer-encoding"]
                 msg.set_payload(payload, charset)
                 payload = msg.get_payload()
         if self._mangle_from_:
-            payload = fcre.sub('>From ', payload)
+            payload = fcre.sub(">From ", payload)
         self.write(payload)
 
     # Default body handler
@@ -232,7 +231,7 @@ class Generator:
         if msg.preamble is not None:
             self.write(msg.preamble + self._NL)
         # dash-boundary transport-padding CRLF
-        self.write('--' + boundary + self._NL)
+        self.write("--" + boundary + self._NL)
         # body-part
         if msgtexts:
             self._fp.write(msgtexts.pop(0))
@@ -241,11 +240,11 @@ class Generator:
         # --> CRLF body-part
         for body_part in msgtexts:
             # delimiter transport-padding CRLF
-            self.write(self._NL + '--' + boundary + self._NL)
+            self.write(self._NL + "--" + boundary + self._NL)
             # body-part
             self._fp.write(body_part)
         # close-delimiter transport-padding
-        self.write(self._NL + '--' + boundary + '--')
+        self.write(self._NL + "--" + boundary + "--")
         if msg.epilogue is not None:
             self.write(self._NL)
             self.write(msg.epilogue)
@@ -310,16 +309,16 @@ class Generator:
         # Craft a random boundary.  If text is given, ensure that the chosen
         # boundary doesn't appear in the text.
         token = random.randrange(sys.maxsize)
-        boundary = ('=' * 15) + (_fmt % token) + '=='
+        boundary = ("=" * 15) + (_fmt % token) + "=="
         if text is None:
             return boundary
         b = boundary
         counter = 0
         while True:
-            cre = cls._compile_re('^--' + re.escape(b) + '(--)?$', re.MULTILINE)
+            cre = cls._compile_re("^--" + re.escape(b) + "(--)?$", re.MULTILINE)
             if not cre.search(text):
                 break
-            b = boundary + '.' + str(counter)
+            b = boundary + "." + str(counter)
             counter += 1
         return b
 
@@ -327,7 +326,7 @@ class Generator:
     def _compile_re(cls, s, flags):
         return re.compile(s, flags)
 
-
+
 class BytesGenerator(Generator):
     """Generates a bytes version of a Message object tree.
 
@@ -340,24 +339,24 @@ class BytesGenerator(Generator):
 
     # Bytes versions of this constant for use in manipulating data from
     # the BytesIO buffer.
-    _encoded_EMPTY = b''
+    _encoded_EMPTY = b""
 
     def write(self, s):
-        self._fp.write(s.encode('ascii', 'surrogateescape'))
+        self._fp.write(s.encode("ascii", "surrogateescape"))
 
     def _new_buffer(self):
         return BytesIO()
 
     def _encode(self, s):
-        return s.encode('ascii')
+        return s.encode("ascii")
 
     def _write_headers(self, msg):
         # This is almost the same as the string version, except for handling
         # strings with 8bit bytes.
         for h, v in msg._headers:
-            self.write('%s: ' % h)
+            self.write("%s: " % h)
             if isinstance(v, Header):
-                self.write(v.encode(maxlinelen=self._maxheaderlen)+NL)
+                self.write(v.encode(maxlinelen=self._maxheaderlen) + NL)
             elif _has_surrogates(v):
                 # If we have raw 8bit data in a byte string, we have no idea
                 # what the encoding is.  There is no safe way to split this
@@ -365,12 +364,11 @@ class BytesGenerator(Generator):
                 # ascii split, but if it's multibyte then we could break the
                 # string.  There's no way to know so the least harm seems to
                 # be to not split the string and risk it being too long.
-                self.write(v+NL)
+                self.write(v + NL)
             else:
                 # Header's got lots of smarts and this string is safe...
-                header = Header(v, maxlinelen=self._maxheaderlen,
-                                header_name=h)
-                self.write(header.encode(linesep=self._NL)+self._NL)
+                header = Header(v, maxlinelen=self._maxheaderlen, header_name=h)
+                self.write(header.encode(linesep=self._NL) + self._NL)
         # A blank line always separates headers from body
         self.write(self._NL)
 
@@ -382,15 +380,15 @@ class BytesGenerator(Generator):
         if _has_surrogates(msg._payload):
             self.write(msg._payload)
         else:
-            super(BytesGenerator,self)._handle_text(msg)
+            super(BytesGenerator, self)._handle_text(msg)
 
     @classmethod
     def _compile_re(cls, s, flags):
-        return re.compile(s.encode('ascii'), flags)
+        return re.compile(s.encode("ascii"), flags)
 
 
-
-_FMT = '[Non-text (%(type)s) part of message omitted, filename %(filename)s]'
+_FMT = "[Non-text (%(type)s) part of message omitted, filename %(filename)s]"
+
 
 class DecodedGenerator(Generator):
     """Generates a text representation of a message.
@@ -398,6 +396,7 @@ class DecodedGenerator(Generator):
     Like the Generator base class, except that non-text parts are substituted
     with a format string representing the part.
     """
+
     def __init__(self, outfp, mangle_from_=True, maxheaderlen=78, fmt=None):
         """Like Generator.__init__() except that an additional optional
         argument is allowed.
@@ -429,28 +428,33 @@ class DecodedGenerator(Generator):
     def _dispatch(self, msg):
         for part in msg.walk():
             maintype = part.get_content_maintype()
-            if maintype == 'text':
+            if maintype == "text":
                 print(part.get_payload(decode=False), file=self)
-            elif maintype == 'multipart':
+            elif maintype == "multipart":
                 # Just skip this
                 pass
             else:
-                print(self._fmt % {
-                    'type'       : part.get_content_type(),
-                    'maintype'   : part.get_content_maintype(),
-                    'subtype'    : part.get_content_subtype(),
-                    'filename'   : part.get_filename('[no filename]'),
-                    'description': part.get('Content-Description',
-                                            '[no description]'),
-                    'encoding'   : part.get('Content-Transfer-Encoding',
-                                            '[no encoding]'),
-                    }, file=self)
+                print(
+                    self._fmt
+                    % {
+                        "type": part.get_content_type(),
+                        "maintype": part.get_content_maintype(),
+                        "subtype": part.get_content_subtype(),
+                        "filename": part.get_filename("[no filename]"),
+                        "description": part.get(
+                            "Content-Description", "[no description]"
+                        ),
+                        "encoding": part.get(
+                            "Content-Transfer-Encoding", "[no encoding]"
+                        ),
+                    },
+                    file=self,
+                )
 
 
-
 # Helper used by Generator._make_boundary
-_width = len(repr(sys.maxsize-1))
-_fmt = '%%0%dd' % _width
+_width = len(repr(sys.maxsize - 1))
+_fmt = "%%0%dd" % _width
 
 # Backward compatibility
 _make_boundary = Generator._make_boundary

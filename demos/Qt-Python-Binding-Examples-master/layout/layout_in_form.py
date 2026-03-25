@@ -1,46 +1,44 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
 layout in form
 
 Tested environment:
     Mac OS X 10.6.8
-    
+
 """
+
 import sys
 
 try:
     from PySide import QtCore
     from PySide import QtGui
 except ImportError:
-    from PyQt4 import QtCore
     from PyQt4 import QtGui
+
 
 class Demo(QtGui.QWidget):
     def __init__(self):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
-
+        self.set_geometry(x, y, w, h)
 
         form = QtGui.QFormLayout(self)
 
         name_label = QtGui.QLabel("Name", self)
         name_lineedit = QtGui.QLineEdit(self)
-        form.addRow(name_label, name_lineedit)
+        form.add_row(name_label, name_lineedit)
 
         age_label = QtGui.QLabel("Age", self)
         age_lineedit = QtGui.QLineEdit(self)
-        form.addRow(age_label, age_lineedit)
+        form.add_row(age_label, age_lineedit)
 
         location_label = QtGui.QLabel("Location", self)
         location_lineedit = QtGui.QLineEdit(self)
-        form.addRow(location_label, location_lineedit)
+        form.add_row(location_label, location_lineedit)
 
-
-        self.setLayout(form)
-
+        self.set_layout(form)
 
     def show_and_raise(self):
         self.show()

@@ -1,7 +1,7 @@
 from tkinter import *
 
-class WindowList:
 
+class WindowList:
     def __init__(self):
         self.dict = {}
         self.callbacks = []
@@ -18,7 +18,7 @@ class WindowList:
             pass
         self.call_callbacks()
 
-    def add_windows_to_menu(self,  menu):
+    def add_windows_to_menu(self, menu):
         list = []
         for key in self.dict:
             window = self.dict[key]
@@ -48,6 +48,7 @@ class WindowList:
                 t, v, tb = sys.exc_info()
                 print("warning: callback failed in WindowList", t, ":", v)
 
+
 registry = WindowList()
 
 add_windows_to_menu = registry.add_windows_to_menu
@@ -56,7 +57,6 @@ unregister_callback = registry.unregister_callback
 
 
 class ListedToplevel(Toplevel):
-
     def __init__(self, master, **kw):
         Toplevel.__init__(self, master, kw)
         registry.add(self)

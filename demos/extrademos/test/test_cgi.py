@@ -6,13 +6,16 @@ import tempfile
 import unittest
 from io import StringIO, BytesIO
 
+
 class HackedSysModule:
     # The regression test will have real values in sys.argv, which
     # will completely confuse the test of the cgi module
     argv = []
     stdin = sys.stdin
 
+
 cgi.sys = HackedSysModule()
+
 
 class ComparableException:
     def __init__(self, err):
@@ -24,29 +27,30 @@ class ComparableException:
     def __eq__(self, anExc):
         if not isinstance(anExc, Exception):
             return NotImplemented
-        return (self.err.__class__ == anExc.__class__ and
-                self.err.args == anExc.args)
+        return self.err.__class__ == anExc.__class__ and self.err.args == anExc.args
 
     def __getattr__(self, attr):
         return getattr(self.err, attr)
+
 
 def do_test(buf, method):
     env = {}
     if method == "GET":
         fp = None
-        env['REQUEST_METHOD'] = 'GET'
-        env['QUERY_STRING'] = buf
+        env["REQUEST_METHOD"] = "GET"
+        env["QUERY_STRING"] = buf
     elif method == "POST":
-        fp = BytesIO(buf.encode('latin-1')) # FieldStorage expects bytes
-        env['REQUEST_METHOD'] = 'POST'
-        env['CONTENT_TYPE'] = 'application/x-www-form-urlencoded'
-        env['CONTENT_LENGTH'] = str(len(buf))
+        fp = BytesIO(buf.encode("latin-1"))  # FieldStorage expects bytes
+        env["REQUEST_METHOD"] = "POST"
+        env["CONTENT_TYPE"] = "application/x-www-form-urlencoded"
+        env["CONTENT_LENGTH"] = str(len(buf))
     else:
         raise ValueError("unknown method: %s" % method)
     try:
         return cgi.parse(fp, env, strict_parsing=1)
     except Exception as err:
         return ComparableException(err)
+
 
 parse_strict_test_cases = [
     ("", ValueError("bad query field: ''")),
@@ -59,53 +63,62 @@ parse_strict_test_cases = [
     ("=&=", {}),
     ("=;=", {}),
     # This rest seem to make sense
-    ("=a", {'': ['a']}),
+    ("=a", {"": ["a"]}),
     ("&=a", ValueError("bad query field: ''")),
     ("=a&", ValueError("bad query field: ''")),
     ("=&a", ValueError("bad query field: 'a'")),
-    ("b=a", {'b': ['a']}),
-    ("b+=a", {'b ': ['a']}),
-    ("a=b=a", {'a': ['b=a']}),
-    ("a=+b=a", {'a': [' b=a']}),
+    ("b=a", {"b": ["a"]}),
+    ("b+=a", {"b ": ["a"]}),
+    ("a=b=a", {"a": ["b=a"]}),
+    ("a=+b=a", {"a": [" b=a"]}),
     ("&b=a", ValueError("bad query field: ''")),
     ("b&=a", ValueError("bad query field: 'b'")),
-    ("a=a+b&b=b+c", {'a': ['a b'], 'b': ['b c']}),
-    ("a=a+b&a=b+a", {'a': ['a b', 'b a']}),
-    ("x=1&y=2.0&z=2-3.%2b0", {'x': ['1'], 'y': ['2.0'], 'z': ['2-3.+0']}),
-    ("x=1;y=2.0&z=2-3.%2b0", {'x': ['1'], 'y': ['2.0'], 'z': ['2-3.+0']}),
-    ("x=1;y=2.0;z=2-3.%2b0", {'x': ['1'], 'y': ['2.0'], 'z': ['2-3.+0']}),
-    ("Hbc5161168c542333633315dee1182227:key_store_seqid=400006&cuyer=r&view=bustomer&order_id=0bb2e248638833d48cb7fed300000f1b&expire=964546263&lobale=en-US&kid=130003.300038&ss=env",
-     {'Hbc5161168c542333633315dee1182227:key_store_seqid': ['400006'],
-      'cuyer': ['r'],
-      'expire': ['964546263'],
-      'kid': ['130003.300038'],
-      'lobale': ['en-US'],
-      'order_id': ['0bb2e248638833d48cb7fed300000f1b'],
-      'ss': ['env'],
-      'view': ['bustomer'],
-      }),
+    ("a=a+b&b=b+c", {"a": ["a b"], "b": ["b c"]}),
+    ("a=a+b&a=b+a", {"a": ["a b", "b a"]}),
+    ("x=1&y=2.0&z=2-3.%2b0", {"x": ["1"], "y": ["2.0"], "z": ["2-3.+0"]}),
+    ("x=1;y=2.0&z=2-3.%2b0", {"x": ["1"], "y": ["2.0"], "z": ["2-3.+0"]}),
+    ("x=1;y=2.0;z=2-3.%2b0", {"x": ["1"], "y": ["2.0"], "z": ["2-3.+0"]}),
+    (
+        "Hbc5161168c542333633315dee1182227:key_store_seqid=400006&cuyer=r&view=bustomer&order_id=0bb2e248638833d48cb7fed300000f1b&expire=964546263&lobale=en-US&kid=130003.300038&ss=env",
+        {
+            "Hbc5161168c542333633315dee1182227:key_store_seqid": ["400006"],
+            "cuyer": ["r"],
+            "expire": ["964546263"],
+            "kid": ["130003.300038"],
+            "lobale": ["en-US"],
+            "order_id": ["0bb2e248638833d48cb7fed300000f1b"],
+            "ss": ["env"],
+            "view": ["bustomer"],
+        },
+    ),
+    (
+        "group_id=5470&set=custom&_assigned_to=31392&_status=1&_category=100&SUBMIT=Browse",
+        {
+            "SUBMIT": ["Browse"],
+            "_assigned_to": ["31392"],
+            "_category": ["100"],
+            "_status": ["1"],
+            "group_id": ["5470"],
+            "set": ["custom"],
+        },
+    ),
+]
 
-    ("group_id=5470&set=custom&_assigned_to=31392&_status=1&_category=100&SUBMIT=Browse",
-     {'SUBMIT': ['Browse'],
-      '_assigned_to': ['31392'],
-      '_category': ['100'],
-      '_status': ['1'],
-      'group_id': ['5470'],
-      'set': ['custom'],
-      })
-    ]
 
 def norm(seq):
     return sorted(seq, key=repr)
 
+
 def first_elts(list):
     return [p[0] for p in list]
+
 
 def first_second_elts(list):
     return [(p[0], p[1][0]) for p in list]
 
+
 def gen_result(data, environ):
-    encoding = 'latin-1'
+    encoding = "latin-1"
     fake_stdin = BytesIO(data.encode(encoding))
     fake_stdin.seek(0)
     form = cgi.FieldStorage(fp=fake_stdin, environ=environ, encoding=encoding)
@@ -116,8 +129,8 @@ def gen_result(data, environ):
 
     return result
 
-class CgiTests(unittest.TestCase):
 
+class CgiTests(unittest.TestCase):
     def test_strict(self):
         for orig, expect in parse_strict_test_cases:
             # Test basic parsing
@@ -126,7 +139,7 @@ class CgiTests(unittest.TestCase):
             d = do_test(orig, "POST")
             self.assertEqual(d, expect, "Error parsing %s method POST" % repr(orig))
 
-            env = {'QUERY_STRING': orig}
+            env = {"QUERY_STRING": orig}
             fs = cgi.FieldStorage(environ=env)
             if isinstance(expect, dict):
                 # test dict interface
@@ -175,7 +188,7 @@ class CgiTests(unittest.TestCase):
                     return self.file.readline()
 
             def __getattr__(self, name):
-                file = self.__dict__['file']
+                file = self.__dict__["file"]
                 a = getattr(file, name)
                 if not isinstance(a, int):
                     setattr(self, name, a)
@@ -183,9 +196,9 @@ class CgiTests(unittest.TestCase):
 
         f = TestReadlineFile(tempfile.TemporaryFile("wb+"))
         self.addCleanup(f.close)
-        f.write(b'x' * 256 * 1024)
+        f.write(b"x" * 256 * 1024)
         f.seek(0)
-        env = {'REQUEST_METHOD':'PUT'}
+        env = {"REQUEST_METHOD": "PUT"}
         fs = cgi.FieldStorage(fp=f, environ=env)
         self.addCleanup(fs.file.close)
         # if we're not chunking properly, readline is only called twice
@@ -195,8 +208,12 @@ class CgiTests(unittest.TestCase):
         f.close()
 
     def test_fieldstorage_multipart(self):
-        #Test basic FieldStorage multipart parsing
-        env = {'REQUEST_METHOD':'POST', 'CONTENT_TYPE':'multipart/form-data; boundary=---------------------------721837373350705526688164684', 'CONTENT_LENGTH':'558'}
+        # Test basic FieldStorage multipart parsing
+        env = {
+            "REQUEST_METHOD": "POST",
+            "CONTENT_TYPE": "multipart/form-data; boundary=---------------------------721837373350705526688164684",
+            "CONTENT_LENGTH": "558",
+        }
         postdata = """-----------------------------721837373350705526688164684
 Content-Disposition: form-data; name="id"
 
@@ -217,32 +234,35 @@ Content-Disposition: form-data; name="submit"
  Add\x20
 -----------------------------721837373350705526688164684--
 """
-        encoding = 'ascii'
+        encoding = "ascii"
         fp = BytesIO(postdata.encode(encoding))
         fs = cgi.FieldStorage(fp, environ=env, encoding=encoding)
         self.assertEqual(len(fs.list), 4)
-        expect = [{'name':'id', 'filename':None, 'value':'1234'},
-                  {'name':'title', 'filename':None, 'value':''},
-                  {'name':'file', 'filename':'test.txt', 'value':b'Testing 123.\n'},
-                  {'name':'submit', 'filename':None, 'value':' Add '}]
+        expect = [
+            {"name": "id", "filename": None, "value": "1234"},
+            {"name": "title", "filename": None, "value": ""},
+            {"name": "file", "filename": "test.txt", "value": b"Testing 123.\n"},
+            {"name": "submit", "filename": None, "value": " Add "},
+        ]
         for x in range(len(fs.list)):
             for k, exp in expect[x].items():
                 got = getattr(fs.list[x], k)
                 self.assertEqual(got, exp)
 
     _qs_result = {
-        'key1': 'value1',
-        'key2': ['value2x', 'value2y'],
-        'key3': 'value3',
-        'key4': 'value4'
+        "key1": "value1",
+        "key2": ["value2x", "value2y"],
+        "key3": "value3",
+        "key4": "value4",
     }
+
     def testQSAndUrlEncode(self):
         data = "key2=value2x&key3=value3&key4=value4"
         environ = {
-            'CONTENT_LENGTH':   str(len(data)),
-            'CONTENT_TYPE':     'application/x-www-form-urlencoded',
-            'QUERY_STRING':     'key1=value1&key2=value2y',
-            'REQUEST_METHOD':   'POST',
+            "CONTENT_LENGTH": str(len(data)),
+            "CONTENT_TYPE": "application/x-www-form-urlencoded",
+            "QUERY_STRING": "key1=value1&key2=value2y",
+            "REQUEST_METHOD": "POST",
         }
         v = gen_result(data, environ)
         self.assertEqual(self._qs_result, v)
@@ -263,10 +283,10 @@ value4
 ---123--
 """
         environ = {
-            'CONTENT_LENGTH':   str(len(data)),
-            'CONTENT_TYPE':     'multipart/form-data; boundary=-123',
-            'QUERY_STRING':     'key1=value1&key2=value2x',
-            'REQUEST_METHOD':   'POST',
+            "CONTENT_LENGTH": str(len(data)),
+            "CONTENT_TYPE": "multipart/form-data; boundary=-123",
+            "QUERY_STRING": "key1=value1&key2=value2x",
+            "REQUEST_METHOD": "POST",
         }
         v = gen_result(data, environ)
         self.assertEqual(self._qs_result, v)
@@ -293,61 +313,75 @@ this is the content of the fake file
 ---123--
 """
         environ = {
-            'CONTENT_LENGTH':   str(len(data)),
-            'CONTENT_TYPE':     'multipart/form-data; boundary=-123',
-            'QUERY_STRING':     'key1=value1&key2=value2x',
-            'REQUEST_METHOD':   'POST',
+            "CONTENT_LENGTH": str(len(data)),
+            "CONTENT_TYPE": "multipart/form-data; boundary=-123",
+            "QUERY_STRING": "key1=value1&key2=value2x",
+            "REQUEST_METHOD": "POST",
         }
         result = self._qs_result.copy()
-        result.update({
-            'upload': b'this is the content of the fake file\n'
-        })
+        result.update({"upload": b"this is the content of the fake file\n"})
         v = gen_result(data, environ)
         self.assertEqual(result, v)
 
     def test_deprecated_parse_qs(self):
         # this func is moved to urllib.parse, this is just a sanity check
-        with check_warnings(('cgi.parse_qs is deprecated, use urllib.parse.'
-                             'parse_qs instead', DeprecationWarning)):
-            self.assertEqual({'a': ['A1'], 'B': ['B3'], 'b': ['B2']},
-                             cgi.parse_qs('a=A1&b=B2&B=B3'))
+        with check_warnings(
+            (
+                "cgi.parse_qs is deprecated, use urllib.parse.parse_qs instead",
+                DeprecationWarning,
+            )
+        ):
+            self.assertEqual(
+                {"a": ["A1"], "B": ["B3"], "b": ["B2"]}, cgi.parse_qs("a=A1&b=B2&B=B3")
+            )
 
     def test_deprecated_parse_qsl(self):
         # this func is moved to urllib.parse, this is just a sanity check
-        with check_warnings(('cgi.parse_qsl is deprecated, use urllib.parse.'
-                             'parse_qsl instead', DeprecationWarning)):
-            self.assertEqual([('a', 'A1'), ('b', 'B2'), ('B', 'B3')],
-                             cgi.parse_qsl('a=A1&b=B2&B=B3'))
+        with check_warnings(
+            (
+                "cgi.parse_qsl is deprecated, use urllib.parse.parse_qsl instead",
+                DeprecationWarning,
+            )
+        ):
+            self.assertEqual(
+                [("a", "A1"), ("b", "B2"), ("B", "B3")], cgi.parse_qsl("a=A1&b=B2&B=B3")
+            )
 
     def test_parse_header(self):
-        self.assertEqual(
-            cgi.parse_header("text/plain"),
-            ("text/plain", {}))
+        self.assertEqual(cgi.parse_header("text/plain"), ("text/plain", {}))
         self.assertEqual(
             cgi.parse_header("text/vnd.just.made.this.up ; "),
-            ("text/vnd.just.made.this.up", {}))
+            ("text/vnd.just.made.this.up", {}),
+        )
         self.assertEqual(
             cgi.parse_header("text/plain;charset=us-ascii"),
-            ("text/plain", {"charset": "us-ascii"}))
+            ("text/plain", {"charset": "us-ascii"}),
+        )
         self.assertEqual(
             cgi.parse_header('text/plain ; charset="us-ascii"'),
-            ("text/plain", {"charset": "us-ascii"}))
+            ("text/plain", {"charset": "us-ascii"}),
+        )
         self.assertEqual(
             cgi.parse_header('text/plain ; charset="us-ascii"; another=opt'),
-            ("text/plain", {"charset": "us-ascii", "another": "opt"}))
+            ("text/plain", {"charset": "us-ascii", "another": "opt"}),
+        )
         self.assertEqual(
             cgi.parse_header('attachment; filename="silly.txt"'),
-            ("attachment", {"filename": "silly.txt"}))
+            ("attachment", {"filename": "silly.txt"}),
+        )
         self.assertEqual(
             cgi.parse_header('attachment; filename="strange;name"'),
-            ("attachment", {"filename": "strange;name"}))
+            ("attachment", {"filename": "strange;name"}),
+        )
         self.assertEqual(
             cgi.parse_header('attachment; filename="strange;name";size=123;'),
-            ("attachment", {"filename": "strange;name", "size": "123"}))
+            ("attachment", {"filename": "strange;name", "size": "123"}),
+        )
 
 
 def test_main():
     run_unittest(CgiTests)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test_main()

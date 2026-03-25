@@ -67,13 +67,16 @@ def sanity():
     >>> from xml.etree import ElementPath
     """
 
+
 def check_method(method):
-    if not hasattr(method, '__call__'):
+    if not hasattr(method, "__call__"):
         print(method, "not callable")
 
-def serialize(elem, to_string=True, encoding='unicode', **options):
+
+def serialize(elem, to_string=True, encoding="unicode", **options):
     import io
-    if encoding != 'unicode':
+
+    if encoding != "unicode":
         file = io.BytesIO()
     else:
         file = io.StringIO()
@@ -85,13 +88,16 @@ def serialize(elem, to_string=True, encoding='unicode', **options):
         file.seek(0)
         return file
 
+
 def summarize(elem):
     if elem.tag == ET.Comment:
         return "<Comment>"
     return elem.tag
 
+
 def summarize_list(seq):
     return [summarize(elem) for elem in seq]
+
 
 def normalize_crlf(tree):
     for elem in tree.iter():
@@ -100,6 +106,7 @@ def normalize_crlf(tree):
         if elem.tail:
             elem.tail = elem.tail.replace("\r\n", "\n")
 
+
 def normalize_exception(func, *args, **kwargs):
     # Ignore the exception __module__
     try:
@@ -107,6 +114,7 @@ def normalize_exception(func, *args, **kwargs):
     except Exception as err:
         print("Traceback (most recent call last):")
         print("{}: {}".format(err.__class__.__name__, err))
+
 
 def check_string(string):
     len(string)
@@ -117,6 +125,7 @@ def check_string(string):
     new_string = string + " "
     string[:0]
 
+
 def check_mapping(mapping):
     len(mapping)
     keys = mapping.keys()
@@ -126,6 +135,7 @@ def check_mapping(mapping):
     mapping["key"] = "value"
     if mapping["key"] != "value":
         print("expected value string, got %r" % mapping["key"])
+
 
 def check_element(element):
     if not ET.iselement(element):
@@ -148,8 +158,10 @@ def check_element(element):
     for elem in element:
         check_element(elem)
 
+
 # --------------------------------------------------------------------
 # element tree tests
+
 
 def interface():
     """
@@ -201,6 +213,7 @@ def interface():
     >>> assert ET.PI == ET.ProcessingInstruction
     >>> assert ET.XMLParser == ET.XMLTreeBuilder
     """
+
 
 def simpleops():
     """
@@ -258,6 +271,7 @@ def simpleops():
     '<tag key="value"><subtag /><subtag /></tag>'
     """
 
+
 def cdata():
     """
     Test CDATA handling (etc).
@@ -269,6 +283,7 @@ def cdata():
     >>> serialize(ET.XML("<tag><![CDATA[hello]]></tag>"))
     '<tag>hello</tag>'
     """
+
 
 # Only with Python implementation
 def simplefind():
@@ -305,6 +320,7 @@ def simplefind():
 
     >>> ElementTree.ElementPath = CurrentElementPath
     """
+
 
 def find():
     """
@@ -428,6 +444,7 @@ def find():
     ['{http://effbot.org/ns}tag', '{http://effbot.org/ns}tag', '{http://effbot.org/ns}tag']
     """
 
+
 def file_init():
     """
     >>> import io
@@ -446,6 +463,7 @@ def file_init():
     'empty-element'
     """
 
+
 def bad_find():
     """
     Check bad or unsupported path expressions.
@@ -455,6 +473,7 @@ def bad_find():
     Traceback (most recent call last):
     SyntaxError: cannot use absolute path on element
     """
+
 
 def path_cache():
     """
@@ -474,6 +493,7 @@ def path_cache():
     True
     """
 
+
 def copy():
     """
     Test copy handling (etc).
@@ -491,6 +511,7 @@ def copy():
     '<tag>hello<foo /></tag>'
 
     """
+
 
 def attrib():
     """
@@ -550,6 +571,7 @@ def attrib():
     b'<test testa="testval" testb="test1" testc="test2">aa</test>'
     """
 
+
 def makeelement():
     """
     Test makeelement handling.
@@ -580,6 +602,7 @@ def makeelement():
     '<tag><subtag key="value" /></tag>'
 
     """
+
 
 def parsefile():
     """
@@ -636,6 +659,7 @@ def parsefile():
     </root>
     """
 
+
 def parseliteral():
     """
     >>> element = ET.XML("<html><body>text</body></html>")
@@ -661,6 +685,7 @@ def parseliteral():
     >>> ids["body"].tag
     'body'
     """
+
 
 def iterparse():
     """
@@ -757,6 +782,7 @@ def iterparse():
     junk after document element: line 1, column 12
     """
 
+
 def writefile():
     """
     >>> elem = ET.Element("tag")
@@ -778,6 +804,7 @@ def writefile():
     >>> serialize(elem)
     'text<?key value?><subtag>subtext</subtag>'
     """
+
 
 def custom_builder():
     """
@@ -833,6 +860,7 @@ def custom_builder():
 
     """
 
+
 def getchildren():
     """
     Test Element.getchildren()
@@ -880,6 +908,7 @@ def getchildren():
     []
     """
 
+
 def writestring():
     """
     >>> elem = ET.XML("<html><body>text</body></html>")
@@ -889,6 +918,7 @@ def writestring():
     >>> ET.tostring(elem)
     b'<html><body>text</body></html>'
     """
+
 
 def check_encoding(encoding):
     """
@@ -900,6 +930,7 @@ def check_encoding(encoding):
     >>> check_encoding("mac-roman")
     """
     ET.XML("<?xml version='1.0' encoding='%s'?><xml />" % encoding)
+
 
 def encoding():
     r"""
@@ -960,6 +991,7 @@ def encoding():
     b'<?xml version=\'1.0\' encoding=\'iso-8859-1\'?>\n<tag key="\xe5\xf6\xf6&lt;&gt;" />'
     """
 
+
 def methods():
     r"""
     Test serialization methods.
@@ -977,6 +1009,7 @@ def methods():
     >>> serialize(e, method="text")
     '1 < 2\n'
     """
+
 
 def iterators():
     """
@@ -1008,6 +1041,7 @@ def iterators():
     AttributeError: 'NoneType' object has no attribute 'iter'
     """
 
+
 ENTITY_XML = """\
 <!DOCTYPE points [
 <!ENTITY % user-entities SYSTEM 'user-entities.xml'>
@@ -1015,6 +1049,7 @@ ENTITY_XML = """\
 ]>
 <document>&entity;</document>
 """
+
 
 def entity():
     """
@@ -1048,6 +1083,7 @@ def entity():
     '<document>text</document>'
     """
 
+
 def error(xml):
     """
 
@@ -1067,6 +1103,7 @@ def error(xml):
         ET.XML(xml)
     except ET.ParseError:
         return sys.exc_info()[1]
+
 
 def namespace():
     """
@@ -1103,6 +1140,7 @@ def namespace():
       </ns0:section>
     </ns0:body>
     """
+
 
 def qname():
     """
@@ -1177,6 +1215,7 @@ def qname():
     True
     """
 
+
 def doctype_public():
     """
     Test PUBLIC doctype.
@@ -1187,6 +1226,7 @@ def doctype_public():
     ...   '<html>text</html>')
 
     """
+
 
 def xpath_tokenizer(p):
     """
@@ -1237,10 +1277,12 @@ def xpath_tokenizer(p):
     ['.', '//', '{http://spam}egg']
     """
     from xml.etree import ElementPath
+
     out = []
     for op, tag in ElementPath.xpath_tokenizer(p):
         out.append(op or tag)
     return out
+
 
 def processinginstruction():
     """
@@ -1258,6 +1300,7 @@ def processinginstruction():
     >>> ET.tostring(ET.PI('test', '<testing&>\xe3'), 'latin1')
     b"<?xml version='1.0' encoding='latin1'?>\\n<?test <testing&>\\xe3?>"
     """
+
 
 #
 # xinclude tests (samples from appendix C of the xinclude specification)
@@ -1335,6 +1378,7 @@ XINCLUDE["default.xml"] = """\
 </document>
 """.format(html.escape(SIMPLE_XMLFILE, True))
 
+
 def xinclude_loader(href, parse="xml", encoding=None):
     try:
         data = XINCLUDE[href]
@@ -1342,8 +1386,10 @@ def xinclude_loader(href, parse="xml", encoding=None):
         raise IOError("resource not found")
     if parse == "xml":
         from xml.etree.ElementTree import XML
+
         return XML(data)
     return data
+
 
 def xinclude():
     r"""
@@ -1408,6 +1454,7 @@ def xinclude():
     >>> # print(serialize(document)) # C5
     """
 
+
 def xinclude_default():
     """
     >>> from xml.etree import ElementInclude
@@ -1424,6 +1471,7 @@ def xinclude_default():
     </root>
     </document>
     """
+
 
 #
 # badly formatted xi:include tags
@@ -1444,6 +1492,7 @@ XINCLUDE_BAD["B2.xml"] = """\
     <xi:fallback></xi:fallback>
 </div>
 """
+
 
 def xinclude_failures():
     r"""
@@ -1481,8 +1530,10 @@ def xinclude_failures():
     xml.etree.ElementInclude.FatalIncludeError: xi:fallback tag must be child of xi:include ('{http://www.w3.org/2001/XInclude}fallback')
     """
 
+
 # --------------------------------------------------------------------
 # reported bugs
+
 
 def bug_xmltoolkit21():
     """
@@ -1516,6 +1567,7 @@ def bug_xmltoolkit21():
 
     """
 
+
 def bug_xmltoolkit25():
     """
 
@@ -1530,6 +1582,7 @@ def bug_xmltoolkit25():
 
     """
 
+
 def bug_xmltoolkit28():
     """
 
@@ -1543,6 +1596,7 @@ def bug_xmltoolkit28():
 
     """
 
+
 def bug_xmltoolkitX1():
     """
 
@@ -1554,6 +1608,7 @@ def bug_xmltoolkitX1():
     tail
 
     """
+
 
 def bug_xmltoolkit39():
     """
@@ -1585,6 +1640,7 @@ def bug_xmltoolkit39():
 
     """
 
+
 def bug_xmltoolkit54():
     """
 
@@ -1598,6 +1654,7 @@ def bug_xmltoolkit54():
 
     """
 
+
 def bug_xmltoolkit55():
     """
 
@@ -1609,9 +1666,11 @@ def bug_xmltoolkit55():
 
     """
 
+
 class ExceptionFile:
     def read(self, x):
         raise IOError
+
 
 def xmltoolkit60():
     """
@@ -1622,6 +1681,7 @@ def xmltoolkit60():
     IOError
 
     """
+
 
 XMLTOOLKIT62_DOC = """<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE patent-application-publication SYSTEM "pap-v15-2001-01-31.dtd" []>
@@ -1641,12 +1701,13 @@ def xmltoolkit62():
     'A new cultivar of Begonia plant named \u2018BCT9801BEG\u2019.'
 
     """
-    ENTITIES = {'rsquo': '\u2019', 'lsquo': '\u2018'}
+    ENTITIES = {"rsquo": "\u2019", "lsquo": "\u2018"}
     parser = ET.XMLTreeBuilder()
     parser.entity.update(ENTITIES)
     parser.feed(XMLTOOLKIT62_DOC)
     t = parser.close()
-    return t.find('.//paragraph').text
+    return t.find(".//paragraph").text
+
 
 def xmltoolkit63():
     """
@@ -1665,6 +1726,7 @@ def xmltoolkit63():
     tree.data("text")
     tree.end("tag")
 
+
 # --------------------------------------------------------------------
 
 
@@ -1682,6 +1744,7 @@ def bug_200708_newline():
     b'<SomeTag text="def _f():&#10;  return 3&#10;" />'
 
     """
+
 
 def bug_200708_close():
     """
@@ -1702,6 +1765,7 @@ def bug_200708_close():
     'element'
 
     """
+
 
 def bug_200709_default_namespace():
     """
@@ -1726,6 +1790,7 @@ def bug_200709_default_namespace():
 
     """
 
+
 def bug_200709_register_namespace():
     """
 
@@ -1741,6 +1806,7 @@ def bug_200709_register_namespace():
     b'<dc:title xmlns:dc="http://purl.org/dc/elements/1.1/" />'
 
     """
+
 
 def bug_200709_element_comment():
     """
@@ -1760,6 +1826,7 @@ def bug_200709_element_comment():
 
     """
 
+
 def bug_200709_element_insert():
     """
 
@@ -1776,6 +1843,7 @@ def bug_200709_element_insert():
 
     """
 
+
 def bug_200709_iter_comment():
     """
 
@@ -1788,8 +1856,10 @@ def bug_200709_iter_comment():
 
     """
 
+
 # --------------------------------------------------------------------
 # reported on bugs.python.org
+
 
 def bug_1534630():
     """
@@ -1804,6 +1874,7 @@ def bug_1534630():
 
     """
 
+
 def check_issue6233():
     """
 
@@ -1816,6 +1887,7 @@ def check_issue6233():
 
     """
 
+
 def check_issue3151():
     """
 
@@ -1827,6 +1899,7 @@ def check_issue3151():
     b'<ns0:localname xmlns:ns0="${stuff}" />'
 
     """
+
 
 def check_issue6565():
     """
@@ -1841,6 +1914,7 @@ def check_issue6565():
 
     """
 
+
 def check_issue10777():
     """
     Registering a namespace twice caused a "dictionary changed size during
@@ -1850,11 +1924,13 @@ def check_issue10777():
     >>> ET.register_namespace('test10777', 'http://myuri/')
     """
 
+
 # --------------------------------------------------------------------
 
 
 class CleanContext(object):
     """Provide default namespace mapping and path cache."""
+
     checkwarnings = None
 
     def __init__(self, quiet=False):
@@ -1864,21 +1940,33 @@ class CleanContext(object):
             quiet = True
         deprecations = (
             # Search behaviour is broken if search path starts with "/".
-            ("This search is broken in 1.3 and earlier, and will be fixed "
-             "in a future version.  If you rely on the current behaviour, "
-             "change it to '.+'", FutureWarning),
+            (
+                "This search is broken in 1.3 and earlier, and will be fixed "
+                "in a future version.  If you rely on the current behaviour, "
+                "change it to '.+'",
+                FutureWarning,
+            ),
             # Element.getchildren() and Element.getiterator() are deprecated.
-            ("This method will be removed in future versions.  "
-             "Use .+ instead.", DeprecationWarning),
-            ("This method will be removed in future versions.  "
-             "Use .+ instead.", PendingDeprecationWarning),
+            (
+                "This method will be removed in future versions.  Use .+ instead.",
+                DeprecationWarning,
+            ),
+            (
+                "This method will be removed in future versions.  Use .+ instead.",
+                PendingDeprecationWarning,
+            ),
             # XMLParser.doctype() is deprecated.
-            ("This method of XMLParser is deprecated.  Define doctype.. "
-             "method on the TreeBuilder target.", DeprecationWarning))
+            (
+                "This method of XMLParser is deprecated.  Define doctype.. "
+                "method on the TreeBuilder target.",
+                DeprecationWarning,
+            ),
+        )
         self.checkwarnings = support.check_warnings(*deprecations, quiet=quiet)
 
     def __enter__(self):
         from xml.etree import ElementTree
+
         self._nsmap = ElementTree._namespace_map
         self._path_cache = ElementTree.ElementPath._cache
         # Copy the default namespace mapping
@@ -1889,16 +1977,17 @@ class CleanContext(object):
 
     def __exit__(self, *args):
         from xml.etree import ElementTree
+
         # Restore mapping and path cache
         ElementTree._namespace_map = self._nsmap
         ElementTree.ElementPath._cache = self._path_cache
         self.checkwarnings.__exit__(*args)
 
 
-def test_main(module_name='xml.etree.ElementTree'):
+def test_main(module_name="xml.etree.ElementTree"):
     from test import test_xml_etree
 
-    use_py_module = (module_name == 'xml.etree.ElementTree')
+    use_py_module = module_name == "xml.etree.ElementTree"
 
     # The same doctests are used for both the Python and the C implementations
     assert test_xml_etree.ET.__name__ == module_name
@@ -1910,5 +1999,6 @@ def test_main(module_name='xml.etree.ElementTree'):
     # The module should not be changed by the tests
     assert test_xml_etree.ET.__name__ == module_name
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test_main()

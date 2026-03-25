@@ -4,8 +4,8 @@ import re
 import tkinter.messagebox as tkMessageBox
 from idlelib import IOBinding
 
-class OutputWindow(EditorWindow):
 
+class OutputWindow(EditorWindow):
     """An editor window that can serve as an output file.
 
     Also the future base class for the Python shell window.
@@ -57,10 +57,10 @@ class OutputWindow(EditorWindow):
     file_line_pats = [
         # order of patterns matters
         r'file "([^"]*)", line (\d+)',
-        r'([^\s]+)\((\d+)\)',
-        r'^(\s*\S.*?):\s*(\d+):',  # Win filename, maybe starting with spaces
-        r'([^\s]+):\s*(\d+):',     # filename or path, ltrim
-        r'^\s*(\S.*?):\s*(\d+):',  # Win abs path with embedded spaces, ltrim
+        r"([^\s]+)\((\d+)\)",
+        r"^(\s*\S.*?):\s*(\d+):",  # Win filename, maybe starting with spaces
+        r"([^\s]+):\s*(\d+):",  # filename or path, ltrim
+        r"^\s*(\S.*?):\s*(\d+):",  # Win abs path with embedded spaces, ltrim
     ]
 
     file_line_progs = None
@@ -78,15 +78,15 @@ class OutputWindow(EditorWindow):
         if not result:
             # Try the previous line.  This is handy e.g. in tracebacks,
             # where you tend to right-click on the displayed source line
-            line = self.text.get("insert -1line linestart",
-                                 "insert -1line lineend")
+            line = self.text.get("insert -1line linestart", "insert -1line lineend")
             result = self._file_line_helper(line)
             if not result:
                 tkMessageBox.showerror(
                     "No special line",
                     "The line you point at doesn't look like "
                     "a valid file name followed by a line number.",
-                    master=self.text)
+                    master=self.text,
+                )
                 return
         filename, lineno = result
         edit = self.flist.open(filename)
@@ -110,14 +110,15 @@ class OutputWindow(EditorWindow):
         except TypeError:
             return None
 
+
 # These classes are currently not used but might come in handy
 
-class OnDemandOutputWindow:
 
+class OnDemandOutputWindow:
     tagdefs = {
         # XXX Should use IdlePrefs.ColorPrefs
-        "stdout":  {"foreground": "blue"},
-        "stderr":  {"foreground": "#007700"},
+        "stdout": {"foreground": "blue"},
+        "stderr": {"foreground": "#007700"},
     }
 
     def __init__(self, flist):
@@ -135,5 +136,5 @@ class OnDemandOutputWindow:
         for tag, cnf in self.tagdefs.items():
             if cnf:
                 text.tag_configure(tag, **cnf)
-        text.tag_raise('sel')
+        text.tag_raise("sel")
         self.write = self.owin.write

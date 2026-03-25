@@ -520,10 +520,11 @@ import warnings
 
 from test import support
 
-class SyntaxTestCase(unittest.TestCase):
 
-    def _check_error(self, code, errtext,
-                     filename="<testcase>", mode="exec", subclass=None):
+class SyntaxTestCase(unittest.TestCase):
+    def _check_error(
+        self, code, errtext, filename="<testcase>", mode="exec", subclass=None
+    ):
         """Check that compiling code raises SyntaxError with errtext.
 
         errtest is a regular expression that must be present in the
@@ -557,7 +558,7 @@ class SyntaxTestCase(unittest.TestCase):
                 b = 1
                 global b  # SyntaxWarning
             """
-        warnings.filterwarnings(action='ignore', category=SyntaxWarning)
+        warnings.filterwarnings(action="ignore", category=SyntaxWarning)
         self._check_error(source, "global")
         warnings.filters.pop(0)
 
@@ -565,25 +566,32 @@ class SyntaxTestCase(unittest.TestCase):
         self._check_error("break", "outside loop")
 
     def test_unexpected_indent(self):
-        self._check_error("foo()\n bar()\n", "unexpected indent",
-                          subclass=IndentationError)
+        self._check_error(
+            "foo()\n bar()\n", "unexpected indent", subclass=IndentationError
+        )
 
     def test_no_indent(self):
-        self._check_error("if 1:\nfoo()", "expected an indented block",
-                          subclass=IndentationError)
+        self._check_error(
+            "if 1:\nfoo()", "expected an indented block", subclass=IndentationError
+        )
 
     def test_bad_outdent(self):
-        self._check_error("if 1:\n  foo()\n bar()",
-                          "unindent does not match .* level",
-                          subclass=IndentationError)
+        self._check_error(
+            "if 1:\n  foo()\n bar()",
+            "unindent does not match .* level",
+            subclass=IndentationError,
+        )
 
     def test_kwargs_last(self):
         self._check_error("int(base=10, '2')", "non-keyword arg")
 
+
 def test_main():
     support.run_unittest(SyntaxTestCase)
     from test import test_syntax
+
     support.run_doctest(test_syntax, verbosity=True)
+
 
 if __name__ == "__main__":
     test_main()

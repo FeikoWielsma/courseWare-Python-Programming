@@ -1,18 +1,19 @@
 #!/usr/bin/python
 
-# statusbar.py 
+# statusbar.py
 
 import sys
 from PyQt4 import QtGui
+
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
 
         self.resize(250, 150)
-        self.setWindowTitle('statusbar')
+        self.set_window_title("statusbar")
 
-        self.statusBar().showMessage('Ready')
+        self.status_bar().show_message("Ready")
 
 
 app = QtGui.QApplication(sys.argv)

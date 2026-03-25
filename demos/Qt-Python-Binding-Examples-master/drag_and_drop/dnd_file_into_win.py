@@ -5,21 +5,22 @@ DND file into window
 Tested environment:
     Mac OS X 10.6.8
 """
+
 import sys
 import logging
 from PySide import QtGui
 
-logging.getLogger().setLevel(logging.DEBUG)
+logging.get_logger().set_level(logging.DEBUG)
 
 
-def print_data(mime_data, msg_prefix = ""):
-    if mime_data.hasImage():
-        msg = repr(mime_data.imageData())
-    elif mime_data.hasHtml():
+def print_data(mime_data, msg_prefix=""):
+    if mime_data.has_image():
+        msg = repr(mime_data.image_data())
+    elif mime_data.has_html():
         msg = repr(mime_data.html())
-    elif mime_data.hasText():
+    elif mime_data.has_text():
         msg = repr(mime_data.text())
-    elif mime_data.hasUrls():
+    elif mime_data.has_urls():
         msg = repr(mime_data.urls())
     else:
         raise Exception("unexpected mime data")
@@ -30,29 +31,29 @@ def print_data(mime_data, msg_prefix = ""):
 class DropArea(QtGui.QWidget):
     def __init__(self, *args, **kwargs):
         super(DropArea, self).__init__(*args, **kwargs)
-        self.setAcceptDrops(True)
+        self.set_accept_drops(True)
 
-    def dragEnterEvent(self, evt):
-#        mime_data = evt.mimeData()
-#        print_data(mime_data)
+    def drag_enter_event(self, evt):
+        #        mime_data = evt.mime_data()
+        #        print_data(mime_data)
 
-        evt.acceptProposedAction()
+        evt.accept_proposed_action()
 
-    def dragMoveEvent(self, evt):
-#        mime_data = evt.mimeData()
-#        print_data(mime_data)
+    def drag_move_event(self, evt):
+        #        mime_data = evt.mime_data()
+        #        print_data(mime_data)
 
-        evt.acceptProposedAction()
+        evt.accept_proposed_action()
 
-    def dropEvent(self, evt):
-        mime_data = evt.mimeData()
+    def drop_event(self, evt):
+        mime_data = evt.mime_data()
         print_data(mime_data, msg_prefix="drop ")
 
-        evt.acceptProposedAction()
+        evt.accept_proposed_action()
 
-    def dragLeaveEvent(self, evt):
-#        mime_data = evt.mimeData()
-#        print_data(mime_data)
+    def drag_leave_event(self, evt):
+        #        mime_data = evt.mime_data()
+        #        print_data(mime_data)
 
         evt.accept()
 

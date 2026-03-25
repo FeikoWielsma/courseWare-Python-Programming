@@ -4,7 +4,6 @@ import unittest
 
 
 class MacPathTestCase(unittest.TestCase):
-
     def test_abspath(self):
         self.assertEqual(macpath.abspath("xx:yy"), "xx:yy")
 
@@ -28,55 +27,53 @@ class MacPathTestCase(unittest.TestCase):
 
     def test_split(self):
         split = macpath.split
-        self.assertEqual(split("foo:bar"),
-                          ('foo:', 'bar'))
-        self.assertEqual(split("conky:mountpoint:foo:bar"),
-                          ('conky:mountpoint:foo', 'bar'))
+        self.assertEqual(split("foo:bar"), ("foo:", "bar"))
+        self.assertEqual(
+            split("conky:mountpoint:foo:bar"), ("conky:mountpoint:foo", "bar")
+        )
 
-        self.assertEqual(split(":"), ('', ''))
-        self.assertEqual(split(":conky:mountpoint:"),
-                          (':conky:mountpoint', ''))
+        self.assertEqual(split(":"), ("", ""))
+        self.assertEqual(split(":conky:mountpoint:"), (":conky:mountpoint", ""))
 
-        self.assertEqual(split(b"foo:bar"),
-                          (b'foo:', b'bar'))
-        self.assertEqual(split(b"conky:mountpoint:foo:bar"),
-                          (b'conky:mountpoint:foo', b'bar'))
+        self.assertEqual(split(b"foo:bar"), (b"foo:", b"bar"))
+        self.assertEqual(
+            split(b"conky:mountpoint:foo:bar"), (b"conky:mountpoint:foo", b"bar")
+        )
 
-        self.assertEqual(split(b":"), (b'', b''))
-        self.assertEqual(split(b":conky:mountpoint:"),
-                          (b':conky:mountpoint', b''))
+        self.assertEqual(split(b":"), (b"", b""))
+        self.assertEqual(split(b":conky:mountpoint:"), (b":conky:mountpoint", b""))
 
     def test_join(self):
         join = macpath.join
-        self.assertEqual(join('a', 'b'), ':a:b')
-        self.assertEqual(join('', 'a:b'), 'a:b')
-        self.assertEqual(join('a:b', 'c'), 'a:b:c')
-        self.assertEqual(join('a:b', ':c'), 'a:b:c')
-        self.assertEqual(join('a', ':b', ':c'), ':a:b:c')
+        self.assertEqual(join("a", "b"), ":a:b")
+        self.assertEqual(join("", "a:b"), "a:b")
+        self.assertEqual(join("a:b", "c"), "a:b:c")
+        self.assertEqual(join("a:b", ":c"), "a:b:c")
+        self.assertEqual(join("a", ":b", ":c"), ":a:b:c")
 
-        self.assertEqual(join(b'a', b'b'), b':a:b')
-        self.assertEqual(join(b'', b'a:b'), b'a:b')
-        self.assertEqual(join(b'a:b', b'c'), b'a:b:c')
-        self.assertEqual(join(b'a:b', b':c'), b'a:b:c')
-        self.assertEqual(join(b'a', b':b', b':c'), b':a:b:c')
+        self.assertEqual(join(b"a", b"b"), b":a:b")
+        self.assertEqual(join(b"", b"a:b"), b"a:b")
+        self.assertEqual(join(b"a:b", b"c"), b"a:b:c")
+        self.assertEqual(join(b"a:b", b":c"), b"a:b:c")
+        self.assertEqual(join(b"a", b":b", b":c"), b":a:b:c")
 
     def test_splitext(self):
         splitext = macpath.splitext
-        self.assertEqual(splitext(":foo.ext"), (':foo', '.ext'))
-        self.assertEqual(splitext("foo:foo.ext"), ('foo:foo', '.ext'))
-        self.assertEqual(splitext(".ext"), ('.ext', ''))
-        self.assertEqual(splitext("foo.ext:foo"), ('foo.ext:foo', ''))
-        self.assertEqual(splitext(":foo.ext:"), (':foo.ext:', ''))
-        self.assertEqual(splitext(""), ('', ''))
-        self.assertEqual(splitext("foo.bar.ext"), ('foo.bar', '.ext'))
+        self.assertEqual(splitext(":foo.ext"), (":foo", ".ext"))
+        self.assertEqual(splitext("foo:foo.ext"), ("foo:foo", ".ext"))
+        self.assertEqual(splitext(".ext"), (".ext", ""))
+        self.assertEqual(splitext("foo.ext:foo"), ("foo.ext:foo", ""))
+        self.assertEqual(splitext(":foo.ext:"), (":foo.ext:", ""))
+        self.assertEqual(splitext(""), ("", ""))
+        self.assertEqual(splitext("foo.bar.ext"), ("foo.bar", ".ext"))
 
-        self.assertEqual(splitext(b":foo.ext"), (b':foo', b'.ext'))
-        self.assertEqual(splitext(b"foo:foo.ext"), (b'foo:foo', b'.ext'))
-        self.assertEqual(splitext(b".ext"), (b'.ext', b''))
-        self.assertEqual(splitext(b"foo.ext:foo"), (b'foo.ext:foo', b''))
-        self.assertEqual(splitext(b":foo.ext:"), (b':foo.ext:', b''))
-        self.assertEqual(splitext(b""), (b'', b''))
-        self.assertEqual(splitext(b"foo.bar.ext"), (b'foo.bar', b'.ext'))
+        self.assertEqual(splitext(b":foo.ext"), (b":foo", b".ext"))
+        self.assertEqual(splitext(b"foo:foo.ext"), (b"foo:foo", b".ext"))
+        self.assertEqual(splitext(b".ext"), (b".ext", b""))
+        self.assertEqual(splitext(b"foo.ext:foo"), (b"foo.ext:foo", b""))
+        self.assertEqual(splitext(b":foo.ext:"), (b":foo.ext:", b""))
+        self.assertEqual(splitext(b""), (b"", b""))
+        self.assertEqual(splitext(b"foo.bar.ext"), (b"foo.bar", b".ext"))
 
     def test_ismount(self):
         ismount = macpath.ismount

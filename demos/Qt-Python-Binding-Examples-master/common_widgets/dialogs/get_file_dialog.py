@@ -24,26 +24,26 @@ class Demo(QtGui.QMainWindow):
         super(Demo, self).__init__()
         
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
         
         self.text_edit = QtGui.QTextEdit()
-        self.setCentralWidget(self.text_edit)
-        self.statusBar()
-        self.setFocus()
+        self.set_central_widget(self.text_edit)
+        self.status_bar()
+        self.set_focus()
         
 #        open_file_action = QtGui.QAction(QtGui.QIcon('open.png'), 'Open', self)
         open_file_action = QtGui.QAction('Open', self)
-        open_file_action.setShortcut('Ctrl+O') # `command + O` on Mac OS X 
-        open_file_action.setStatusTip('Open new File')
+        open_file_action.set_shortcut('Ctrl+O') # `command + O` on Mac OS X 
+        open_file_action.set_status_tip('Open new File')
         open_file_action.triggered.connect(self._open_file_cb)
 
-        menubar = self.menuBar()
-        file_menu = menubar.addMenu('&File')
-        file_menu.addAction(open_file_action)
+        menubar = self.menu_bar()
+        file_menu = menubar.add_menu('&File')
+        file_menu.add_action(open_file_action)
         
     def _open_file_cb(self):
-        filename, filter = QtGui.QFileDialog.getOpenFileName(parent=self,
+        filename, filter = QtGui.QFileDialog.get_open_file_name(parent=self,
                                                              caption='Open file',
                                                              dir=os.getenv("HOME"))
         print 'filename:', filename
@@ -51,7 +51,7 @@ class Demo(QtGui.QMainWindow):
         
         if os.path.exists(filename):
             buf = open(filename).read()
-            self.text_edit.setText(buf)
+            self.text_edit.set_text(buf)
 
     def show_and_raise(self):
         self.show()

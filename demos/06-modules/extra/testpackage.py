@@ -1,11 +1,10 @@
-#from package_example import *
+# from package_example import *
 #
-#print dir()
+# print dir()
 #
-#c1 = class1()
-#c2 = class2()
-#c1.show()
-#c2.show()
-
+# c1 = class1()
+# c2 = class2()
+# c1.show()
+# c2.show()
 
 

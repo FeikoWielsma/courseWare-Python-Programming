@@ -1,12 +1,13 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
 custom QToolButton icon
 
 Tested environment:
     Mac OS X 10.6.8
-    
+
 """
+
 import sys
 
 try:
@@ -16,38 +17,35 @@ except ImportError:
     from PyQt4 import QtCore
     from PyQt4 import QtGui
 
+
 class Demo(QtGui.QWidget):
     def __init__(self):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
-
+        self.set_geometry(x, y, w, h)
 
         path = "mic-64x64.png"
         pix = QtGui.QPixmap(path)
-        
+
         label = QtGui.QLabel(self)
         label.move(10, 10)
-        label.setPixmap(pix)
-
+        label.set_pixmap(pix)
 
         btn = QtGui.QToolButton(self)
         btn.move(10, 100)
-        btn.setIconSize(QtCore.QSize(64, 64))
+        btn.set_icon_size(QtCore.QSize(64, 64))
 
         # way A
-#        btn.setIcon(pix)
+        #        btn.set_icon(pix)
 
         # way B
         icon = QtGui.QIcon(pix)
         act = QtGui.QAction(icon, "Send", self)
-        btn.setDefaultAction(act)
-
+        btn.set_default_action(act)
 
         style = "QLabel, QToolButton { border : 1px solid red; }"
-        self.setStyleSheet(style)
-
+        self.set_style_sheet(style)
 
     def show_and_raise(self):
         self.show()

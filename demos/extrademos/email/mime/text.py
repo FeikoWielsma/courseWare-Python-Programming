@@ -4,17 +4,15 @@
 
 """Class representing text/* type MIME documents."""
 
-__all__ = ['MIMEText']
+__all__ = ["MIMEText"]
 
-from email.encoders import encode_7or8bit
 from email.mime.nonmultipart import MIMENonMultipart
 
 
-
 class MIMEText(MIMENonMultipart):
     """Class for generating text/* type MIME documents."""
 
-    def __init__(self, _text, _subtype='plain', _charset='us-ascii'):
+    def __init__(self, _text, _subtype="plain", _charset="us-ascii"):
         """Create a text/* type MIME document.
 
         _text is the string for this message object.
@@ -25,6 +23,5 @@ class MIMEText(MIMENonMultipart):
         header.  This defaults to "us-ascii".  Note that as a side-effect, the
         Content-Transfer-Encoding header will also be set.
         """
-        MIMENonMultipart.__init__(self, 'text', _subtype,
-                                  **{'charset': _charset})
+        MIMENonMultipart.__init__(self, "text", _subtype, **{"charset": _charset})
         self.set_payload(_text, _charset)

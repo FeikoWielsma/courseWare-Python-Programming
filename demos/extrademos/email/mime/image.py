@@ -4,7 +4,7 @@
 
 """Class representing image/* type MIME documents."""
 
-__all__ = ['MIMEImage']
+__all__ = ["MIMEImage"]
 
 import imghdr
 
@@ -12,12 +12,12 @@ from email import encoders
 from email.mime.nonmultipart import MIMENonMultipart
 
 
-
 class MIMEImage(MIMENonMultipart):
     """Class for generating image/* type MIME documents."""
 
-    def __init__(self, _imagedata, _subtype=None,
-                 _encoder=encoders.encode_base64, **_params):
+    def __init__(
+        self, _imagedata, _subtype=None, _encoder=encoders.encode_base64, **_params
+    ):
         """Create an image/* type MIME document.
 
         _imagedata is a string containing the raw image data.  If this data
@@ -40,7 +40,7 @@ class MIMEImage(MIMENonMultipart):
         if _subtype is None:
             _subtype = imghdr.what(None, _imagedata)
         if _subtype is None:
-            raise TypeError('Could not guess image MIME subtype')
-        MIMENonMultipart.__init__(self, 'image', _subtype, **_params)
+            raise TypeError("Could not guess image MIME subtype")
+        MIMENonMultipart.__init__(self, "image", _subtype, **_params)
         self.set_payload(_imagedata)
         _encoder(self)

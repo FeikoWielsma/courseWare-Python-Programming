@@ -4,6 +4,7 @@ Tests assume the initial paths in sys.path once the interpreter has begun
 executing have not been removed.
 
 """
+
 import unittest
 import sys
 import os
@@ -11,24 +12,38 @@ import subprocess
 import shutil
 from copy import copy, deepcopy
 
-from test.support import (run_unittest, TESTFN, unlink, get_attribute,
-                          captured_stdout, skip_unless_symlink)
+from test.support import (
+    run_unittest,
+    TESTFN,
+    unlink,
+    captured_stdout,
+    skip_unless_symlink,
+)
 
 import sysconfig
-from sysconfig import (get_paths, get_platform, get_config_vars,
-                       get_path, get_path_names, _INSTALL_SCHEMES,
-                       _get_default_scheme, _expand_vars,
-                       get_scheme_names, get_config_var, _main)
+from sysconfig import (
+    get_paths,
+    get_platform,
+    get_config_vars,
+    get_path,
+    get_path_names,
+    _INSTALL_SCHEMES,
+    _get_default_scheme,
+    _expand_vars,
+    get_scheme_names,
+    get_config_var,
+    _main,
+)
+
 
 class TestSysConfig(unittest.TestCase):
-
     def setUp(self):
         """Make a copy of sys.path"""
         super(TestSysConfig, self).setUp()
         self.sys_path = sys.path[:]
         self.makefile = None
         # patching os.uname
-        if hasattr(os, 'uname'):
+        if hasattr(os, "uname"):
             self.uname = os.uname
             self._uname = os.uname()
         else:
@@ -113,120 +128,159 @@ class TestSysConfig(unittest.TestCase):
 
     def test_get_platform(self):
         # windows XP, 32bits
-        os.name = 'nt'
-        sys.version = ('2.4.4 (#71, Oct 18 2006, 08:34:43) '
-                       '[MSC v.1310 32 bit (Intel)]')
-        sys.platform = 'win32'
-        self.assertEqual(get_platform(), 'win32')
+        os.name = "nt"
+        sys.version = "2.4.4 (#71, Oct 18 2006, 08:34:43) [MSC v.1310 32 bit (Intel)]"
+        sys.platform = "win32"
+        self.assertEqual(get_platform(), "win32")
 
         # windows XP, amd64
-        os.name = 'nt'
-        sys.version = ('2.4.4 (#71, Oct 18 2006, 08:34:43) '
-                       '[MSC v.1310 32 bit (Amd64)]')
-        sys.platform = 'win32'
-        self.assertEqual(get_platform(), 'win-amd64')
+        os.name = "nt"
+        sys.version = "2.4.4 (#71, Oct 18 2006, 08:34:43) [MSC v.1310 32 bit (Amd64)]"
+        sys.platform = "win32"
+        self.assertEqual(get_platform(), "win-amd64")
 
         # windows XP, itanium
-        os.name = 'nt'
-        sys.version = ('2.4.4 (#71, Oct 18 2006, 08:34:43) '
-                       '[MSC v.1310 32 bit (Itanium)]')
-        sys.platform = 'win32'
-        self.assertEqual(get_platform(), 'win-ia64')
+        os.name = "nt"
+        sys.version = "2.4.4 (#71, Oct 18 2006, 08:34:43) [MSC v.1310 32 bit (Itanium)]"
+        sys.platform = "win32"
+        self.assertEqual(get_platform(), "win-ia64")
 
         # macbook
-        os.name = 'posix'
-        sys.version = ('2.5 (r25:51918, Sep 19 2006, 08:49:13) '
-                       '\n[GCC 4.0.1 (Apple Computer, Inc. build 5341)]')
-        sys.platform = 'darwin'
-        self._set_uname(('Darwin', 'macziade', '8.11.1',
-                   ('Darwin Kernel Version 8.11.1: '
-                    'Wed Oct 10 18:23:28 PDT 2007; '
-                    'root:xnu-792.25.20~1/RELEASE_I386'), 'PowerPC'))
-        os.environ['MACOSX_DEPLOYMENT_TARGET'] = '10.3'
+        os.name = "posix"
+        sys.version = (
+            "2.5 (r25:51918, Sep 19 2006, 08:49:13) "
+            "\n[GCC 4.0.1 (Apple Computer, Inc. build 5341)]"
+        )
+        sys.platform = "darwin"
+        self._set_uname(
+            (
+                "Darwin",
+                "macziade",
+                "8.11.1",
+                (
+                    "Darwin Kernel Version 8.11.1: "
+                    "Wed Oct 10 18:23:28 PDT 2007; "
+                    "root:xnu-792.25.20~1/RELEASE_I386"
+                ),
+                "PowerPC",
+            )
+        )
+        os.environ["MACOSX_DEPLOYMENT_TARGET"] = "10.3"
 
-        get_config_vars()['CFLAGS'] = ('-fno-strict-aliasing -DNDEBUG -g '
-                                       '-fwrapv -O3 -Wall -Wstrict-prototypes')
+        get_config_vars()["CFLAGS"] = (
+            "-fno-strict-aliasing -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes"
+        )
 
         maxint = sys.maxsize
         try:
             sys.maxsize = 2147483647
-            self.assertEqual(get_platform(), 'macosx-10.3-ppc')
+            self.assertEqual(get_platform(), "macosx-10.3-ppc")
             sys.maxsize = 9223372036854775807
-            self.assertEqual(get_platform(), 'macosx-10.3-ppc64')
+            self.assertEqual(get_platform(), "macosx-10.3-ppc64")
         finally:
             sys.maxsize = maxint
 
+        self._set_uname(
+            (
+                "Darwin",
+                "macziade",
+                "8.11.1",
+                (
+                    "Darwin Kernel Version 8.11.1: "
+                    "Wed Oct 10 18:23:28 PDT 2007; "
+                    "root:xnu-792.25.20~1/RELEASE_I386"
+                ),
+                "i386",
+            )
+        )
+        get_config_vars()["MACOSX_DEPLOYMENT_TARGET"] = "10.3"
+        os.environ["MACOSX_DEPLOYMENT_TARGET"] = "10.3"
 
-        self._set_uname(('Darwin', 'macziade', '8.11.1',
-                   ('Darwin Kernel Version 8.11.1: '
-                    'Wed Oct 10 18:23:28 PDT 2007; '
-                    'root:xnu-792.25.20~1/RELEASE_I386'), 'i386'))
-        get_config_vars()['MACOSX_DEPLOYMENT_TARGET'] = '10.3'
-        os.environ['MACOSX_DEPLOYMENT_TARGET'] = '10.3'
-
-        get_config_vars()['CFLAGS'] = ('-fno-strict-aliasing -DNDEBUG -g '
-                                       '-fwrapv -O3 -Wall -Wstrict-prototypes')
+        get_config_vars()["CFLAGS"] = (
+            "-fno-strict-aliasing -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes"
+        )
         maxint = sys.maxsize
         try:
             sys.maxsize = 2147483647
-            self.assertEqual(get_platform(), 'macosx-10.3-i386')
+            self.assertEqual(get_platform(), "macosx-10.3-i386")
             sys.maxsize = 9223372036854775807
-            self.assertEqual(get_platform(), 'macosx-10.3-x86_64')
+            self.assertEqual(get_platform(), "macosx-10.3-x86_64")
         finally:
             sys.maxsize = maxint
 
         # macbook with fat binaries (fat, universal or fat64)
-        os.environ['MACOSX_DEPLOYMENT_TARGET'] = '10.4'
-        get_config_vars()['CFLAGS'] = ('-arch ppc -arch i386 -isysroot '
-                                       '/Developer/SDKs/MacOSX10.4u.sdk  '
-                                       '-fno-strict-aliasing -fno-common '
-                                       '-dynamic -DNDEBUG -g -O3')
+        os.environ["MACOSX_DEPLOYMENT_TARGET"] = "10.4"
+        get_config_vars()["CFLAGS"] = (
+            "-arch ppc -arch i386 -isysroot "
+            "/Developer/SDKs/MacOSX10.4u.sdk  "
+            "-fno-strict-aliasing -fno-common "
+            "-dynamic -DNDEBUG -g -O3"
+        )
 
-        self.assertEqual(get_platform(), 'macosx-10.4-fat')
+        self.assertEqual(get_platform(), "macosx-10.4-fat")
 
-        get_config_vars()['CFLAGS'] = ('-arch x86_64 -arch i386 -isysroot '
-                                       '/Developer/SDKs/MacOSX10.4u.sdk  '
-                                       '-fno-strict-aliasing -fno-common '
-                                       '-dynamic -DNDEBUG -g -O3')
+        get_config_vars()["CFLAGS"] = (
+            "-arch x86_64 -arch i386 -isysroot "
+            "/Developer/SDKs/MacOSX10.4u.sdk  "
+            "-fno-strict-aliasing -fno-common "
+            "-dynamic -DNDEBUG -g -O3"
+        )
 
-        self.assertEqual(get_platform(), 'macosx-10.4-intel')
+        self.assertEqual(get_platform(), "macosx-10.4-intel")
 
-        get_config_vars()['CFLAGS'] = ('-arch x86_64 -arch ppc -arch i386 -isysroot '
-                                       '/Developer/SDKs/MacOSX10.4u.sdk  '
-                                       '-fno-strict-aliasing -fno-common '
-                                       '-dynamic -DNDEBUG -g -O3')
-        self.assertEqual(get_platform(), 'macosx-10.4-fat3')
+        get_config_vars()["CFLAGS"] = (
+            "-arch x86_64 -arch ppc -arch i386 -isysroot "
+            "/Developer/SDKs/MacOSX10.4u.sdk  "
+            "-fno-strict-aliasing -fno-common "
+            "-dynamic -DNDEBUG -g -O3"
+        )
+        self.assertEqual(get_platform(), "macosx-10.4-fat3")
 
-        get_config_vars()['CFLAGS'] = ('-arch ppc64 -arch x86_64 -arch ppc -arch i386 -isysroot '
-                                       '/Developer/SDKs/MacOSX10.4u.sdk  '
-                                       '-fno-strict-aliasing -fno-common '
-                                       '-dynamic -DNDEBUG -g -O3')
-        self.assertEqual(get_platform(), 'macosx-10.4-universal')
+        get_config_vars()["CFLAGS"] = (
+            "-arch ppc64 -arch x86_64 -arch ppc -arch i386 -isysroot "
+            "/Developer/SDKs/MacOSX10.4u.sdk  "
+            "-fno-strict-aliasing -fno-common "
+            "-dynamic -DNDEBUG -g -O3"
+        )
+        self.assertEqual(get_platform(), "macosx-10.4-universal")
 
-        get_config_vars()['CFLAGS'] = ('-arch x86_64 -arch ppc64 -isysroot '
-                                       '/Developer/SDKs/MacOSX10.4u.sdk  '
-                                       '-fno-strict-aliasing -fno-common '
-                                       '-dynamic -DNDEBUG -g -O3')
+        get_config_vars()["CFLAGS"] = (
+            "-arch x86_64 -arch ppc64 -isysroot "
+            "/Developer/SDKs/MacOSX10.4u.sdk  "
+            "-fno-strict-aliasing -fno-common "
+            "-dynamic -DNDEBUG -g -O3"
+        )
 
-        self.assertEqual(get_platform(), 'macosx-10.4-fat64')
+        self.assertEqual(get_platform(), "macosx-10.4-fat64")
 
-        for arch in ('ppc', 'i386', 'x86_64', 'ppc64'):
-            get_config_vars()['CFLAGS'] = ('-arch %s -isysroot '
-                                           '/Developer/SDKs/MacOSX10.4u.sdk  '
-                                           '-fno-strict-aliasing -fno-common '
-                                           '-dynamic -DNDEBUG -g -O3'%(arch,))
+        for arch in ("ppc", "i386", "x86_64", "ppc64"):
+            get_config_vars()["CFLAGS"] = (
+                "-arch %s -isysroot "
+                "/Developer/SDKs/MacOSX10.4u.sdk  "
+                "-fno-strict-aliasing -fno-common "
+                "-dynamic -DNDEBUG -g -O3" % (arch,)
+            )
 
-            self.assertEqual(get_platform(), 'macosx-10.4-%s'%(arch,))
+            self.assertEqual(get_platform(), "macosx-10.4-%s" % (arch,))
 
         # linux debian sarge
-        os.name = 'posix'
-        sys.version = ('2.3.5 (#1, Jul  4 2007, 17:28:59) '
-                       '\n[GCC 4.1.2 20061115 (prerelease) (Debian 4.1.1-21)]')
-        sys.platform = 'linux2'
-        self._set_uname(('Linux', 'aglae', '2.6.21.1dedibox-r7',
-                    '#1 Mon Apr 30 17:25:38 CEST 2007', 'i686'))
+        os.name = "posix"
+        sys.version = (
+            "2.3.5 (#1, Jul  4 2007, 17:28:59) "
+            "\n[GCC 4.1.2 20061115 (prerelease) (Debian 4.1.1-21)]"
+        )
+        sys.platform = "linux2"
+        self._set_uname(
+            (
+                "Linux",
+                "aglae",
+                "2.6.21.1dedibox-r7",
+                "#1 Mon Apr 30 17:25:38 CEST 2007",
+                "i686",
+            )
+        )
 
-        self.assertEqual(get_platform(), 'linux-i686')
+        self.assertEqual(get_platform(), "linux-i686")
 
         # XXX more platforms to tests here
 
@@ -234,15 +288,22 @@ class TestSysConfig(unittest.TestCase):
         config_h = sysconfig.get_config_h_filename()
         self.assertTrue(os.path.isfile(config_h), config_h)
 
-    @unittest.skipIf(sys.platform.startswith('win'),
-                     'Test is not Windows compatible')
+    @unittest.skipIf(sys.platform.startswith("win"), "Test is not Windows compatible")
     def test_get_makefile_filename(self):
         makefile = sysconfig.get_makefile_filename()
         self.assertTrue(os.path.isfile(makefile), makefile)
 
     def test_get_scheme_names(self):
-        wanted = ('nt', 'nt_user', 'os2', 'os2_home', 'osx_framework_user',
-                  'posix_home', 'posix_prefix', 'posix_user')
+        wanted = (
+            "nt",
+            "nt_user",
+            "os2",
+            "os2_home",
+            "osx_framework_user",
+            "posix_home",
+            "posix_prefix",
+            "posix_user",
+        )
         self.assertEqual(get_scheme_names(), wanted)
 
     @skip_unless_symlink
@@ -251,14 +312,15 @@ class TestSysConfig(unittest.TestCase):
         # to add the directory to the path.
         if sys.platform == "win32":
             os.environ["Path"] = "{};{}".format(
-                os.path.dirname(sys.executable), os.environ["Path"])
+                os.path.dirname(sys.executable), os.environ["Path"]
+            )
 
         # Issue 7880
         def get(python):
-            cmd = [python, '-c',
-                   'import sysconfig; print(sysconfig.get_platform())']
+            cmd = [python, "-c", "import sysconfig; print(sysconfig.get_platform())"]
             p = subprocess.Popen(cmd, stdout=subprocess.PIPE, env=os.environ)
             return p.communicate()
+
         real = os.path.realpath(sys.executable)
         link = os.path.abspath(TESTFN)
         os.symlink(real, link)
@@ -270,29 +332,30 @@ class TestSysConfig(unittest.TestCase):
     def test_user_similar(self):
         # Issue 8759 : make sure the posix scheme for the users
         # is similar to the global posix_prefix one
-        base = get_config_var('base')
-        user = get_config_var('userbase')
-        for name in ('stdlib', 'platstdlib', 'purelib', 'platlib'):
-            global_path = get_path(name, 'posix_prefix')
-            user_path = get_path(name, 'posix_user')
+        base = get_config_var("base")
+        user = get_config_var("userbase")
+        for name in ("stdlib", "platstdlib", "purelib", "platlib"):
+            global_path = get_path(name, "posix_prefix")
+            user_path = get_path(name, "posix_user")
             self.assertEqual(user_path, global_path.replace(base, user))
 
     def test_main(self):
         # just making sure _main() runs and returns things in the stdout
         with captured_stdout() as output:
             _main()
-        self.assertTrue(len(output.getvalue().split('\n')) > 0)
+        self.assertTrue(len(output.getvalue().split("\n")) > 0)
 
     @unittest.skipIf(sys.platform == "win32", "Does not apply to Windows")
     def test_ldshared_value(self):
-        ldflags = sysconfig.get_config_var('LDFLAGS')
-        ldshared = sysconfig.get_config_var('LDSHARED')
+        ldflags = sysconfig.get_config_var("LDFLAGS")
+        ldshared = sysconfig.get_config_var("LDSHARED")
 
         self.assertIn(ldflags, ldshared)
 
 
 def test_main():
     run_unittest(TestSysConfig)
+
 
 if __name__ == "__main__":
     test_main()

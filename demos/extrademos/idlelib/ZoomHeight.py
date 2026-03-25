@@ -5,12 +5,15 @@ import sys
 
 from idlelib import macosxSupport
 
-class ZoomHeight:
 
+class ZoomHeight:
     menudefs = [
-        ('windows', [
-            ('_Zoom Height', '<<zoom-height>>'),
-         ])
+        (
+            "windows",
+            [
+                ("_Zoom Height", "<<zoom-height>>"),
+            ],
+        )
     ]
 
     def __init__(self, editwin):
@@ -20,6 +23,7 @@ class ZoomHeight:
         top = self.editwin.top
         zoom_height(top)
 
+
 def zoom_height(top):
     geom = top.wm_geometry()
     m = re.match(r"(\d+)x(\d+)\+(-?\d+)\+(-?\d+)", geom)
@@ -28,7 +32,7 @@ def zoom_height(top):
         return
     width, height, x, y = map(int, m.groups())
     newheight = top.winfo_screenheight()
-    if sys.platform == 'win32':
+    if sys.platform == "win32":
         newy = 0
         newheight = newheight - 72
 
@@ -40,9 +44,9 @@ def zoom_height(top):
         newheight = newheight - newy - 88
 
     else:
-        #newy = 24
+        # newy = 24
         newy = 0
-        #newheight = newheight - 96
+        # newheight = newheight - 96
         newheight = newheight - 88
     if height >= newheight:
         newgeom = ""

@@ -1,5 +1,4 @@
-"""Mock socket module used by the smtpd and smtplib tests.
-"""
+"""Mock socket module used by the smtpd and smtplib tests."""
 
 # imported for _GLOBAL_DEFAULT_TIMEOUT
 import socket as socket_module
@@ -7,6 +6,7 @@ import socket as socket_module
 # Mock socket module
 _defaulttimeout = None
 _reply_data = None
+
 
 # This is used to queue up data to be read through socket.makefile, typically
 # *before* the socket object is even created. It is intended to handle a single
@@ -17,19 +17,21 @@ def reply_with(line):
 
 
 class MockFile:
-    """Mock file object returned by MockSocket.makefile().
-    """
+    """Mock file object returned by MockSocket.makefile()."""
+
     def __init__(self, lines):
         self.lines = lines
+
     def readline(self):
-        return self.lines.pop(0) + b'\r\n'
+        return self.lines.pop(0) + b"\r\n"
+
     def close(self):
         pass
 
 
 class MockSocket:
-    """Mock socket object used by smtpd and smtplib tests.
-    """
+    """Mock socket object used by smtpd and smtplib tests."""
+
     def __init__(self):
         global _reply_data
         self.output = []
@@ -44,7 +46,7 @@ class MockSocket:
         self.lines.append(line)
 
     def recv(self, bufsize, flags=None):
-        data = self.lines.pop(0) + b'\r\n'
+        data = self.lines.pop(0) + b"\r\n"
         return data
 
     def fileno(self):
@@ -70,10 +72,10 @@ class MockSocket:
 
     def accept(self):
         self.conn = MockSocket()
-        return self.conn, 'c'
+        return self.conn, "c"
 
     def getsockname(self):
-        return ('0.0.0.0', 0)
+        return ("0.0.0.0", 0)
 
     def setblocking(self, flag):
         pass
@@ -81,7 +83,7 @@ class MockSocket:
     def listen(self, backlog):
         pass
 
-    def makefile(self, mode='r', bufsize=-1):
+    def makefile(self, mode="r", bufsize=-1):
         handle = MockFile(self.lines)
         return handle
 
@@ -96,7 +98,7 @@ class MockSocket:
         return len(data)
 
     def getpeername(self):
-        return 'peer'
+        return "peer"
 
     def close(self):
         pass

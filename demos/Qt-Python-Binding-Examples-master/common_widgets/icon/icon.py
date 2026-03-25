@@ -23,22 +23,22 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
         icon = QtGui.QIcon("exit.png")
         lab = QtGui.QLabel('foo', self)
         pixmap = icon.pixmap(32, 32, QtGui.QIcon.Normal, QtGui.QIcon.On)
-        lab.setPixmap(pixmap)
+        lab.set_pixmap(pixmap)
         x, y = 10, 10
         lab.move(x, y)
 
-        print "icon:", icon.isNull()
+        print "icon:", icon.is_null()
 
 
         icon2 = QtGui.QIcon("exit.png")
         lab2 = QtGui.QLabel('foo', self)
         pixmap = icon2.pixmap(32, 32, QtGui.QIcon.Disabled, QtGui.QIcon.Off)
-        lab2.setPixmap(pixmap)
+        lab2.set_pixmap(pixmap)
         x, y = 10, 110
         lab2.move(x, y)
 

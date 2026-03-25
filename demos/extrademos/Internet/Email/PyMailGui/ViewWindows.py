@@ -11,7 +11,7 @@
 # CHANGE NOV '06: use more platform-neutral grid() for mail headers, not pack()
 ###############################################################################
 
-from SharedNames import *     # program-wide global objects
+from SharedNames import *  # program-wide global objects
 
 
 ###############################################################################
@@ -24,15 +24,17 @@ class ViewWindow(windows.PopupWindow, mailtools.MailParser):
     a custom Toplevel, with embedded TextEditor
     inherits saveParts,partsList from mailtools.MailParser
     """
+
     # class attributes
-    modelabel       = 'View'                   # used in window titles
-    from mailconfig import okayToOpenParts     # open any attachments at all?
-    from mailconfig import verifyPartOpens     # ask before open each part?
-    from mailconfig import maxPartButtons      # show up to this many + '...'
-    tempPartDir     = 'TempParts'              # where 1 selected part saved
+    modelabel = "View"  # used in window titles
+    from mailconfig import okayToOpenParts  # open any attachments at all?
+    from mailconfig import verifyPartOpens  # ask before open each part?
+    from mailconfig import maxPartButtons  # show up to this many + '...'
+
+    tempPartDir = "TempParts"  # where 1 selected part saved
 
     # all view windows use same dialog: remembers last dir
-    partsDialog = Directory(title=appname + ': Select parts save directory')
+    partsDialog = Directory(title=appname + ": Select parts save directory")
 
     def __init__(self, headermap, showtext, origmessage=None):
         """
@@ -43,7 +45,7 @@ class ViewWindow(windows.PopupWindow, mailtools.MailParser):
         windows.PopupWindow.__init__(self, appname, self.modelabel)
         self.origMessage = origmessage
         self.makeWidgets(headermap, showtext)
-        
+
     def makeWidgets(self, headermap, showtext):
         """
         add headers, actions, attachments, text editor
@@ -51,92 +53,94 @@ class ViewWindow(windows.PopupWindow, mailtools.MailParser):
         actionsframe = self.makeHeaders(headermap)
         if self.origMessage and self.okayToOpenParts:
             self.makePartButtons()
-        self.editor  = textEditor.TextEditorComponentMinimal(self)
-        myactions    = self.actionButtons()
-        for (label, callback) in myactions:
+        self.editor = textEditor.TextEditorComponentMinimal(self)
+        myactions = self.actionButtons()
+        for label, callback in myactions:
             b = Button(actionsframe, text=label, command=callback)
-            b.config(bg='beige', relief=RIDGE, bd=2)
+            b.config(bg="beige", relief=RIDGE, bd=2)
             b.pack(side=TOP, expand=YES, fill=BOTH)
-        
+
         # body text, pack last=clip first
-        self.editor.pack(side=BOTTOM)               # may be multiple editors
-        self.editor.setAllText(showtext)            # each has own content
+        self.editor.pack(side=BOTTOM)  # may be multiple editors
+        self.editor.setAllText(showtext)  # each has own content
         lines = len(showtext.splitlines())
         lines = min(lines + 3, mailconfig.viewheight or 20)
-        self.editor.setHeight(lines)                # else height=24, width=80
-        self.editor.setWidth(80)                    # or from PyEdit textConfig
+        self.editor.setHeight(lines)  # else height=24, width=80
+        self.editor.setWidth(80)  # or from PyEdit textConfig
         if mailconfig.viewbg:
-            self.editor.setBg(mailconfig.viewbg)    # colors, font in mailconfig
+            self.editor.setBg(mailconfig.viewbg)  # colors, font in mailconfig
         if mailconfig.viewfg:
             self.editor.setFg(mailconfig.viewfg)
-        if mailconfig.viewfont:                     # also via editor Tools menu
+        if mailconfig.viewfont:  # also via editor Tools menu
             self.editor.setFont(mailconfig.viewfont)
 
-
-################################################################################
-##    Changed Nov '06 to use grid() instead of pack() for more
-##    platform-neutral headers layout; original code in book:
-##
-##    def makeHeaders(self, headermap):
-##        """
-##        add header entry fields, return action buttons frame
-##        """
-##        top    = Frame(self); top.pack   (side=TOP,   fill=X)
-##        left   = Frame(top);  left.pack  (side=LEFT,  expand=NO,  fill=BOTH)
-##        middle = Frame(top);  middle.pack(side=LEFT,  expand=NO,  fill=NONE)
-##        right  = Frame(top);  right.pack (side=RIGHT, expand=YES, fill=BOTH)
-##
-##        # headers set may be extended in mailconfig (Bcc)
-##        self.userHdrs = ()
-##        showhdrs = ('From', 'To', 'Cc', 'Subject')
-##        if hasattr(mailconfig, 'viewheaders') and mailconfig.viewheaders:
-##            self.userHdrs = mailconfig.viewheaders
-##            showhdrs += self.userHdrs
-##            
-##        self.hdrFields = []
-##        for header in showhdrs:
-##            lab = Label(middle, text=header+':', justify=LEFT)
-##            ent = Entry(right)
-##            lab.pack(side=TOP, expand=YES, fill=X)
-##            ent.pack(side=TOP, expand=YES, fill=X)
-##            ent.insert('0', headermap.get(header, '?'))
-##            self.hdrFields.append(ent)             # order matters in onSend
-##        return left
-################################################################################
-
+    ################################################################################
+    ##    Changed Nov '06 to use grid() instead of pack() for more
+    ##    platform-neutral headers layout; original code in book:
+    ##
+    ##    def makeHeaders(self, headermap):
+    ##        """
+    ##        add header entry fields, return action buttons frame
+    ##        """
+    ##        top    = Frame(self); top.pack   (side=TOP,   fill=X)
+    ##        left   = Frame(top);  left.pack  (side=LEFT,  expand=NO,  fill=BOTH)
+    ##        middle = Frame(top);  middle.pack(side=LEFT,  expand=NO,  fill=NONE)
+    ##        right  = Frame(top);  right.pack (side=RIGHT, expand=YES, fill=BOTH)
+    ##
+    ##        # headers set may be extended in mailconfig (Bcc)
+    ##        self.userHdrs = ()
+    ##        showhdrs = ('From', 'To', 'Cc', 'Subject')
+    ##        if hasattr(mailconfig, 'viewheaders') and mailconfig.viewheaders:
+    ##            self.userHdrs = mailconfig.viewheaders
+    ##            showhdrs += self.userHdrs
+    ##
+    ##        self.hdrFields = []
+    ##        for header in showhdrs:
+    ##            lab = Label(middle, text=header+':', justify=LEFT)
+    ##            ent = Entry(right)
+    ##            lab.pack(side=TOP, expand=YES, fill=X)
+    ##            ent.pack(side=TOP, expand=YES, fill=X)
+    ##            ent.insert('0', headermap.get(header, '?'))
+    ##            self.hdrFields.append(ent)             # order matters in onSend
+    ##        return left
+    ################################################################################
 
     def makeHeaders(self, headermap):
         """
         add header entry fields, return action buttons frame
         """
-        top    = Frame(self); top.pack   (side=TOP,   fill=X)
-        left   = Frame(top);  left.pack  (side=LEFT,  expand=NO,  fill=BOTH)
-        middle = Frame(top);  middle.pack(side=LEFT,  expand=YES, fill=BOTH)
+        top = Frame(self)
+        top.pack(side=TOP, fill=X)
+        left = Frame(top)
+        left.pack(side=LEFT, expand=NO, fill=BOTH)
+        middle = Frame(top)
+        middle.pack(side=LEFT, expand=YES, fill=BOTH)
 
         # headers set may be extended in mailconfig (Bcc)
         self.userHdrs = ()
-        showhdrs = ('From', 'To', 'Cc', 'Subject')
-        if hasattr(mailconfig, 'viewheaders') and mailconfig.viewheaders:
+        showhdrs = ("From", "To", "Cc", "Subject")
+        if hasattr(mailconfig, "viewheaders") and mailconfig.viewheaders:
             self.userHdrs = mailconfig.viewheaders
             showhdrs += self.userHdrs
-            
+
         self.hdrFields = []
-        for (i, header) in enumerate(showhdrs):
-            lab = Label(middle, text=header+':', justify=LEFT)
+        for i, header in enumerate(showhdrs):
+            lab = Label(middle, text=header + ":", justify=LEFT)
             ent = Entry(middle)
             lab.grid(row=i, column=0, sticky=EW)
             ent.grid(row=i, column=1, sticky=EW)
             middle.rowconfigure(i, weight=1)
-            ent.insert('0', headermap.get(header, '?'))
-            self.hdrFields.append(ent)             # order matters in onSend
+            ent.insert("0", headermap.get(header, "?"))
+            self.hdrFields.append(ent)  # order matters in onSend
         middle.columnconfigure(1, weight=1)
         return left
 
-
-    def actionButtons(self):                       # must be method for self
-        return [('Cancel', self.destroy),          # close view window silently
-                ('Parts',  self.onParts),          # multiparts list or the body
-                ('Split',  self.onSplit)]
+    def actionButtons(self):  # must be method for self
+        return [
+            ("Cancel", self.destroy),  # close view window silently
+            ("Parts", self.onParts),  # multiparts list or the body
+            ("Split", self.onSplit),
+        ]
 
     def makePartButtons(self):
         """
@@ -147,19 +151,22 @@ class ViewWindow(windows.PopupWindow, mailtools.MailParser):
         partname=partname is required in lambda in Py2.4;
         caveat: we could try to skip the main text part;
         """
+
         def makeButton(parent, text, callback):
             link = Button(parent, text=text, command=callback, relief=SUNKEN)
-            if mailconfig.partfg: link.config(fg=mailconfig.partfg)
-            if mailconfig.partbg: link.config(bg=mailconfig.partbg) 
+            if mailconfig.partfg:
+                link.config(fg=mailconfig.partfg)
+            if mailconfig.partbg:
+                link.config(bg=mailconfig.partbg)
             link.pack(side=LEFT, fill=X, expand=YES)
 
         parts = Frame(self)
         parts.pack(side=TOP, expand=NO, fill=X)
-        for (count, partname) in enumerate(self.partsList(self.origMessage)):
+        for count, partname in enumerate(self.partsList(self.origMessage)):
             if count == self.maxPartButtons:
-                makeButton(parts, '...', self.onSplit)
+                makeButton(parts, "...", self.onSplit)
                 break
-            openpart = (lambda partname=partname: self.onOnePart(partname))
+            openpart = lambda partname=partname: self.onOnePart(partname)
             makeButton(parts, partname, openpart)
 
     def onOnePart(self, partname):
@@ -172,11 +179,11 @@ class ViewWindow(windows.PopupWindow, mailtools.MailParser):
         could use tempfile module like html main text part code;
         """
         try:
-            savedir  = self.tempPartDir
-            message  = self.origMessage
+            savedir = self.tempPartDir
+            message = self.origMessage
             (contype, savepath) = self.saveOnePart(savedir, partname, message)
         except:
-            showerror(appname, 'Error while writing part file')
+            showerror(appname, "Error while writing part file")
             printStack(sys.exc_info())
         else:
             self.openParts([(contype, os.path.abspath(savepath))])
@@ -188,9 +195,9 @@ class ViewWindow(windows.PopupWindow, mailtools.MailParser):
         if non-multipart, single part = full body text
         """
         partnames = self.partsList(self.origMessage)
-        msg = '\n'.join(['Message parts:\n'] + partnames)
+        msg = "\n".join(["Message parts:\n"] + partnames)
         showinfo(appname, msg)
-       
+
     def onSplit(self):
         """
         popup save dir dialog and save all parts/attachments there;
@@ -199,22 +206,23 @@ class ViewWindow(windows.PopupWindow, mailtools.MailParser):
         could show parts in View windows where embedded texteditor
         would provide a save button, but most are not readable text;
         """
-        savedir = self.partsDialog.show()          # class attr: at prior dir
-        if savedir:                                # tk dir chooser, not file
+        savedir = self.partsDialog.show()  # class attr: at prior dir
+        if savedir:  # tk dir chooser, not file
             try:
                 partfiles = self.saveParts(savedir, self.origMessage)
             except:
-                showerror(appname, 'Error while writing part files')
+                showerror(appname, "Error while writing part files")
                 printStack(sys.exc_info())
             else:
-                if self.okayToOpenParts: self.openParts(partfiles)
+                if self.okayToOpenParts:
+                    self.openParts(partfiles)
 
     def askOpen(self, appname, prompt):
         if not self.verifyPartOpens:
             return True
         else:
-            return askyesno(appname, prompt)   # popup dialog
-        
+            return askyesno(appname, prompt)  # popup dialog
+
     def openParts(self, partfiles):
         """
         auto-open well known and safe file types, but
@@ -224,39 +232,41 @@ class ViewWindow(windows.PopupWindow, mailtools.MailParser):
         even if safe filename extension such as .html;
         caveat: image/audio/video could use playfile.py;
         """
-        for (contype, fullfilename) in partfiles:
-            maintype  = contype.split('/')[0]                      # left side
-            extension = os.path.splitext(fullfilename)[1]          # or [-4:]
-            basename  = os.path.basename(fullfilename)             # strip dir
-            
+        for contype, fullfilename in partfiles:
+            maintype = contype.split("/")[0]  # left side
+            extension = os.path.splitext(fullfilename)[1]  # or [-4:]
+            basename = os.path.basename(fullfilename)  # strip dir
+
             # html and xml text, web pages, some media
-            if contype  in ['text/html', 'text/xml']:
+            if contype in ["text/html", "text/xml"]:
                 if self.askOpen(appname, 'Open "%s" in browser?' % basename):
                     try:
-                        webbrowser.open_new('file://' + fullfilename)
+                        webbrowser.open_new("file://" + fullfilename)
                     except:
-                        showerror(appname, 'Browser failed: using editor')
+                        showerror(appname, "Browser failed: using editor")
                         textEditor.TextEditorMainPopup(self, fullfilename)
 
             # text/plain, text/x-python, etc.
-            elif maintype == 'text':
+            elif maintype == "text":
                 if self.askOpen(appname, 'Open text part "%s"?' % basename):
                     textEditor.TextEditorMainPopup(self, fullfilename)
 
             # multimedia types: windows opens mediaplayer, imageviewer, etc.
-            elif maintype in ['image', 'audio', 'video']:
+            elif maintype in ["image", "audio", "video"]:
                 if self.askOpen(appname, 'Open media part "%s"?' % basename):
                     try:
-                        webbrowser.open_new('file://' + fullfilename)
+                        webbrowser.open_new("file://" + fullfilename)
                     except:
-                        showerror(appname, 'Error opening browser')
+                        showerror(appname, "Error opening browser")
 
             # common windows documents: word, adobe, excel, archives, etc.
-            elif (sys.platform[:3] == 'win' and
-                  maintype == 'application' and
-                  extension in ['.doc', '.pdf', '.xls', '.zip','.tar', '.wmv']):
-                    if self.askOpen(appname, 'Open part "%s"?' % basename):
-                        os.startfile(fullfilename)
+            elif (
+                sys.platform[:3] == "win"
+                and maintype == "application"
+                and extension in [".doc", ".pdf", ".xls", ".zip", ".tar", ".wmv"]
+            ):
+                if self.askOpen(appname, 'Open part "%s"?' % basename):
+                    os.startfile(fullfilename)
 
             else:  # punt!
                 msg = 'Cannot open part: "%s"\nOpen manually in: "%s"'
@@ -269,49 +279,52 @@ class ViewWindow(windows.PopupWindow, mailtools.MailParser):
 ###############################################################################
 
 
-if mailconfig.smtpuser:                              # user set in mailconfig?
-    MailSenderClass = mailtools.MailSenderAuth       # login/password required
+if mailconfig.smtpuser:  # user set in mailconfig?
+    MailSenderClass = mailtools.MailSenderAuth  # login/password required
 else:
     MailSenderClass = mailtools.MailSender
 
-    
+
 class WriteWindow(ViewWindow, MailSenderClass):
     """
     customize view display for composing new mail
     inherits sendMessage form mailtools.MailSender
     """
-    modelabel = 'Write'
+
+    modelabel = "Write"
 
     def __init__(self, headermap, starttext):
         ViewWindow.__init__(self, headermap, starttext)
         MailSenderClass.__init__(self)
-        self.attaches   = []                     # each win has own open dialog
-        self.openDialog = None                   # dialog remembers last dir
+        self.attaches = []  # each win has own open dialog
+        self.openDialog = None  # dialog remembers last dir
 
     def actionButtons(self):
-        return [('Cancel', self.quit),           # need method to use self
-                ('Parts',  self.onParts),        # PopupWindow verifies cancel
-                ('Attach', self.onAttach),
-                ('Send  ', self.onSend)]
+        return [
+            ("Cancel", self.quit),  # need method to use self
+            ("Parts", self.onParts),  # PopupWindow verifies cancel
+            ("Attach", self.onAttach),
+            ("Send  ", self.onSend),
+        ]
 
     def onParts(self):
         # caveat: deletes not currently supported
         if not self.attaches:
-            showinfo(appname, 'Nothing attached')
+            showinfo(appname, "Nothing attached")
         else:
-            msg = '\n'.join(['Already attached:\n'] + self.attaches)
+            msg = "\n".join(["Already attached:\n"] + self.attaches)
             showinfo(appname, msg)
-       
+
     def onAttach(self):
         """
         attach a file to the mail: name added
         here will be added as a part on Send;
         """
         if not self.openDialog:
-            self.openDialog = Open(title=appname + ': Select Attachmment File')
-        filename = self.openDialog.show()        # remember prior dir
+            self.openDialog = Open(title=appname + ": Select Attachmment File")
+        filename = self.openDialog.show()  # remember prior dir
         if filename:
-            self.attaches.append(filename)       # to be opened in send method
+            self.attaches.append(filename)  # to be opened in send method
 
     def onSend(self):
         """
@@ -320,43 +333,51 @@ class WriteWindow(ViewWindow, MailSenderClass):
         Exit,Fail run by threadChecker via queue in after callback
         caveat: no progress here, because send mail call is atomic
         assumes multiple recipient addrs are separated with ';'
-        
+
         caveat: should parse To,Cc,Bcc instead of splitting on ';',
         or use a multi-line input widgets instead of simple entry;
         as is, reply logic and gui user must avoid embedded ';'
         characters in addresses - very unlikely but not impossible;
         mailtools module saves sent message text in a local file
         """
-        fieldvalues = [entry.get() for entry in self.hdrFields]     
+        fieldvalues = [entry.get() for entry in self.hdrFields]
         From, To, Cc, Subj = fieldvalues[:4]
-        extraHdrs  = [('Cc', Cc), ('X-Mailer', appname + ' (Python)')]
-        extraHdrs += zip(self.userHdrs, fieldvalues[4:]) 
+        extraHdrs = [("Cc", Cc), ("X-Mailer", appname + " (Python)")]
+        extraHdrs += zip(self.userHdrs, fieldvalues[4:])
         bodytext = self.editor.getAllText()
 
         # split multiple recipient lists, fix empty fields
-        Tos = To.split(';')                                     # split to list
-        Tos = [addr.strip() for addr in Tos]                    # spaces around
-        for (ix, (name, value)) in enumerate(extraHdrs):
-            if value:                                           # ignored if ''
-                if value == '?':                                # ? not replaced
-                    extraHdrs[ix] = (name, '')
-                elif name.lower() in ['cc', 'bcc']:
-                    values = value.split(';')
+        Tos = To.split(";")  # split to list
+        Tos = [addr.strip() for addr in Tos]  # spaces around
+        for ix, (name, value) in enumerate(extraHdrs):
+            if value:  # ignored if ''
+                if value == "?":  # ? not replaced
+                    extraHdrs[ix] = (name, "")
+                elif name.lower() in ["cc", "bcc"]:
+                    values = value.split(";")
                     extraHdrs[ix] = (name, [addr.strip() for addr in values])
-       
+
         # withdraw to disallow send during send
         # caveat: withdraw not foolproof- user may deiconify
         self.withdraw()
-        self.getPassword()      # if needed; don't run popup in send thread!
-        popup = popuputil.BusyBoxNowait(appname, 'Sending message')
+        self.getPassword()  # if needed; don't run popup in send thread!
+        popup = popuputil.BusyBoxNowait(appname, "Sending message")
         sendingBusy.incr()
         threadtools.startThread(
-            action  = self.sendMessage,
-            args    = (From, Tos, Subj, extraHdrs, bodytext, self.attaches,
-                                                     saveMailSeparator),
-            context = (popup,),
-            onExit  = self.onSendExit,
-            onFail  = self.onSendFail)
+            action=self.sendMessage,
+            args=(
+                From,
+                Tos,
+                Subj,
+                extraHdrs,
+                bodytext,
+                self.attaches,
+                saveMailSeparator,
+            ),
+            context=(popup,),
+            onExit=self.onSendExit,
+            onFail=self.onSendFail,
+        )
 
     def onSendExit(self, popup):
         # erase wait window, erase view window, decr send count
@@ -368,8 +389,8 @@ class WriteWindow(ViewWindow, MailSenderClass):
 
         # poss \ when opened, / in mailconfig
         sentname = os.path.abspath(mailconfig.sentmailfile)  # also expands '.'
-        if sentname in openSaveFiles.keys():                 # sent file open?
-            window = openSaveFiles[sentname]                 # update list,raise
+        if sentname in openSaveFiles.keys():  # sent file open?
+            window = openSaveFiles[sentname]  # update list,raise
             window.loadMailFileThread()
 
     def onSendFail(self, exc_info, popup):
@@ -377,9 +398,9 @@ class WriteWindow(ViewWindow, MailSenderClass):
         popup.quit()
         self.deiconify()
         self.lift()
-        showerror(appname, 'Send failed: \n%s\n%s' % exc_info[:2])
+        showerror(appname, "Send failed: \n%s\n%s" % exc_info[:2])
         printStack(exc_info)
-        self.smtpPassword = None        # try again
+        self.smtpPassword = None  # try again
         sendingBusy.decr()
 
     def askSmtpPassword(self):
@@ -389,10 +410,9 @@ class WriteWindow(ViewWindow, MailSenderClass):
         time, so goes into a loop until input is provided; see
         pop paswd input logic for a non-looping alternative
         """
-        password = ''
+        password = ""
         while not password:
-            prompt = ('Password for %s on %s?' %
-                     (self.smtpUser, self.smtpServerName))
+            prompt = "Password for %s on %s?" % (self.smtpUser, self.smtpServerName)
             password = popuputil.askPasswordWindow(appname, prompt)
         return password
 
@@ -402,7 +422,8 @@ class ReplyWindow(WriteWindow):
     customize write display for replying
     text and headers set up by list window
     """
-    modelabel = 'Reply'
+
+    modelabel = "Reply"
 
 
 class ForwardWindow(WriteWindow):
@@ -410,4 +431,5 @@ class ForwardWindow(WriteWindow):
     customize reply display for forwarding
     text and headers set up by list window
     """
-    modelabel = 'Forward'
+
+    modelabel = "Forward"

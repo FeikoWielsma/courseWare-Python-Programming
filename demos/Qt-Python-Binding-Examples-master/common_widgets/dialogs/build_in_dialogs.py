@@ -49,7 +49,7 @@ class Demo(QtGui.QMainWindow):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
         self.show_and_raise()
 

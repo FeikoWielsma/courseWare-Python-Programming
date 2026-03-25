@@ -6,7 +6,8 @@ Later...
 """
 
 from ctypes import *
-import sys, unittest
+import sys
+import unittest
 
 try:
     WINFUNCTYPE
@@ -15,17 +16,21 @@ except NameError:
     WINFUNCTYPE = CFUNCTYPE
 
 import _ctypes_test
+
 dll = CDLL(_ctypes_test.__file__)
 if sys.platform == "win32":
     windll = WinDLL(_ctypes_test.__file__)
 
+
 class POINT(Structure):
     _fields_ = [("x", c_int), ("y", c_int)]
-class RECT(Structure):
-    _fields_ = [("left", c_int), ("top", c_int),
-                ("right", c_int), ("bottom", c_int)]
-class FunctionTestCase(unittest.TestCase):
 
+
+class RECT(Structure):
+    _fields_ = [("left", c_int), ("top", c_int), ("right", c_int), ("bottom", c_int)]
+
+
+class FunctionTestCase(unittest.TestCase):
     def test_mro(self):
         # in Python 2.3, this raises TypeError: MRO conflict among bases classes,
         # in Python 2.2 it works.
@@ -35,33 +40,37 @@ class FunctionTestCase(unittest.TestCase):
         # Found by Greg Chapman.
 
         try:
+
             class X(object, Array):
                 _length_ = 5
                 _type_ = "i"
         except TypeError:
             pass
 
-
         from _ctypes import _Pointer
+
         try:
+
             class X(object, _Pointer):
                 pass
         except TypeError:
             pass
 
         from _ctypes import _SimpleCData
+
         try:
+
             class X(object, _SimpleCData):
                 _type_ = "i"
         except TypeError:
             pass
 
         try:
+
             class X(object, Structure):
                 _fields_ = []
         except TypeError:
             pass
-
 
     def test_wchar_parm(self):
         try:
@@ -83,7 +92,7 @@ class FunctionTestCase(unittest.TestCase):
         f.argtypes = [c_byte, c_short, c_int, c_long, c_float, c_double]
         f.restype = c_wchar
         result = f(0, 0, 0, 0, 0, 0)
-        self.assertEqual(result, '\x00')
+        self.assertEqual(result, "\x00")
 
     def test_voidresult(self):
         f = dll._testfunc_v
@@ -224,15 +233,34 @@ class FunctionTestCase(unittest.TestCase):
         class X(Structure):
             _fields_ = [("y", c_int)]
 
-        self.assertRaises(TypeError, f, X()) #cannot convert parameter
+        self.assertRaises(TypeError, f, X())  # cannot convert parameter
 
     ################################################################
     def test_shorts(self):
         f = dll._testfunc_callback_i_if
 
         args = []
-        expected = [262144, 131072, 65536, 32768, 16384, 8192, 4096, 2048,
-                    1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1]
+        expected = [
+            262144,
+            131072,
+            65536,
+            32768,
+            16384,
+            8192,
+            4096,
+            2048,
+            1024,
+            512,
+            256,
+            128,
+            64,
+            32,
+            16,
+            8,
+            4,
+            2,
+            1,
+        ]
 
         def callback(v):
             args.append(v)
@@ -246,7 +274,6 @@ class FunctionTestCase(unittest.TestCase):
 
     ################################################################
 
-
     def test_callbacks(self):
         f = dll._testfunc_callback_i_if
         f.restype = c_int
@@ -254,7 +281,7 @@ class FunctionTestCase(unittest.TestCase):
         MyCallback = CFUNCTYPE(c_int, c_int)
 
         def callback(value):
-            #print "called back with", value
+            # print "called back with", value
             return value
 
         cb = MyCallback(callback)
@@ -274,7 +301,6 @@ class FunctionTestCase(unittest.TestCase):
         cb = AnotherCallback(callback)
         self.assertRaises(ArgumentError, f, -10, cb)
 
-
     def test_callbacks_2(self):
         # Can also use simple datatypes as argument type specifiers
         # for the callback function.
@@ -287,7 +313,7 @@ class FunctionTestCase(unittest.TestCase):
         f.argtypes = [c_int, MyCallback]
 
         def callback(value):
-            #print "called back with", value
+            # print "called back with", value
             self.assertEqual(type(value), int)
             return value
 
@@ -296,7 +322,6 @@ class FunctionTestCase(unittest.TestCase):
         self.assertEqual(result, -18)
 
     def test_longlong_callbacks(self):
-
         f = dll._testfunc_callback_q_qf
         f.restype = c_longlong
 
@@ -317,7 +342,6 @@ class FunctionTestCase(unittest.TestCase):
         self.assertRaises(ValueError, c_int.in_dll, dll, "_xxx_yyy")
 
     def test_byval(self):
-
         # without prototype
         ptin = POINT(1, 2)
         ptout = POINT()
@@ -339,69 +363,82 @@ class FunctionTestCase(unittest.TestCase):
 
     def test_struct_return_2H(self):
         class S2H(Structure):
-            _fields_ = [("x", c_short),
-                        ("y", c_short)]
+            _fields_ = [("x", c_short), ("y", c_short)]
+
         dll.ret_2h_func.restype = S2H
         dll.ret_2h_func.argtypes = [S2H]
         inp = S2H(99, 88)
         s2h = dll.ret_2h_func(inp)
-        self.assertEqual((s2h.x, s2h.y), (99*2, 88*3))
+        self.assertEqual((s2h.x, s2h.y), (99 * 2, 88 * 3))
 
     if sys.platform == "win32":
+
         def test_struct_return_2H_stdcall(self):
             class S2H(Structure):
-                _fields_ = [("x", c_short),
-                            ("y", c_short)]
+                _fields_ = [("x", c_short), ("y", c_short)]
 
             windll.s_ret_2h_func.restype = S2H
             windll.s_ret_2h_func.argtypes = [S2H]
             s2h = windll.s_ret_2h_func(S2H(99, 88))
-            self.assertEqual((s2h.x, s2h.y), (99*2, 88*3))
+            self.assertEqual((s2h.x, s2h.y), (99 * 2, 88 * 3))
 
     def test_struct_return_8H(self):
         class S8I(Structure):
-            _fields_ = [("a", c_int),
-                        ("b", c_int),
-                        ("c", c_int),
-                        ("d", c_int),
-                        ("e", c_int),
-                        ("f", c_int),
-                        ("g", c_int),
-                        ("h", c_int)]
+            _fields_ = [
+                ("a", c_int),
+                ("b", c_int),
+                ("c", c_int),
+                ("d", c_int),
+                ("e", c_int),
+                ("f", c_int),
+                ("g", c_int),
+                ("h", c_int),
+            ]
+
         dll.ret_8i_func.restype = S8I
         dll.ret_8i_func.argtypes = [S8I]
         inp = S8I(9, 8, 7, 6, 5, 4, 3, 2)
         s8i = dll.ret_8i_func(inp)
-        self.assertEqual((s8i.a, s8i.b, s8i.c, s8i.d, s8i.e, s8i.f, s8i.g, s8i.h),
-                             (9*2, 8*3, 7*4, 6*5, 5*6, 4*7, 3*8, 2*9))
+        self.assertEqual(
+            (s8i.a, s8i.b, s8i.c, s8i.d, s8i.e, s8i.f, s8i.g, s8i.h),
+            (9 * 2, 8 * 3, 7 * 4, 6 * 5, 5 * 6, 4 * 7, 3 * 8, 2 * 9),
+        )
 
     if sys.platform == "win32":
+
         def test_struct_return_8H_stdcall(self):
             class S8I(Structure):
-                _fields_ = [("a", c_int),
-                            ("b", c_int),
-                            ("c", c_int),
-                            ("d", c_int),
-                            ("e", c_int),
-                            ("f", c_int),
-                            ("g", c_int),
-                            ("h", c_int)]
+                _fields_ = [
+                    ("a", c_int),
+                    ("b", c_int),
+                    ("c", c_int),
+                    ("d", c_int),
+                    ("e", c_int),
+                    ("f", c_int),
+                    ("g", c_int),
+                    ("h", c_int),
+                ]
+
             windll.s_ret_8i_func.restype = S8I
             windll.s_ret_8i_func.argtypes = [S8I]
             inp = S8I(9, 8, 7, 6, 5, 4, 3, 2)
             s8i = windll.s_ret_8i_func(inp)
-            self.assertEqual((s8i.a, s8i.b, s8i.c, s8i.d, s8i.e, s8i.f, s8i.g, s8i.h),
-                                 (9*2, 8*3, 7*4, 6*5, 5*6, 4*7, 3*8, 2*9))
+            self.assertEqual(
+                (s8i.a, s8i.b, s8i.c, s8i.d, s8i.e, s8i.f, s8i.g, s8i.h),
+                (9 * 2, 8 * 3, 7 * 4, 6 * 5, 5 * 6, 4 * 7, 3 * 8, 2 * 9),
+            )
 
     def test_sf1651235(self):
         # see http://www.python.org/sf/1651235
 
         proto = CFUNCTYPE(c_int, RECT, POINT)
+
         def callback(*args):
             return 0
 
         callback = proto(callback)
         self.assertRaises(ArgumentError, lambda: callback((1, 2, 3, 4), POINT()))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

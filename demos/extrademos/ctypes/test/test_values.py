@@ -7,8 +7,8 @@ from ctypes import *
 
 import _ctypes_test
 
-class ValuesTestCase(unittest.TestCase):
 
+class ValuesTestCase(unittest.TestCase):
     def test_an_integer(self):
         # This test checks and changes an integer stored inside the
         # _ctypes_test dll/shared lib.
@@ -17,7 +17,7 @@ class ValuesTestCase(unittest.TestCase):
         x = an_integer.value
         self.assertEqual(x, ctdll.get_an_integer())
         an_integer.value *= 2
-        self.assertEqual(x*2, ctdll.get_an_integer())
+        self.assertEqual(x * 2, ctdll.get_an_integer())
         # To avoid test failures when this test is repeated several
         # times the original value must be restored
         an_integer.value = x
@@ -56,9 +56,12 @@ class ValuesTestCase(unittest.TestCase):
             # module, and a __phello__ package containing a spam
             # module.
             class struct_frozen(Structure):
-                _fields_ = [("name", c_char_p),
-                            ("code", POINTER(c_ubyte)),
-                            ("size", c_int)]
+                _fields_ = [
+                    ("name", c_char_p),
+                    ("code", POINTER(c_ubyte)),
+                    ("size", c_int),
+                ]
+
             FrozenTable = POINTER(struct_frozen)
 
             ft = FrozenTable.in_dll(pydll, "PyImport_FrozenModules")
@@ -72,17 +75,28 @@ class ValuesTestCase(unittest.TestCase):
                     break
                 items.append((entry.name, entry.size))
             import sys
+
             if sys.version_info[:2] >= (2, 3):
-                expected = [("__hello__", 104), ("__phello__", -104), ("__phello__.spam", 104)]
+                expected = [
+                    ("__hello__", 104),
+                    ("__phello__", -104),
+                    ("__phello__.spam", 104),
+                ]
             else:
-                expected = [("__hello__", 100), ("__phello__", -100), ("__phello__.spam", 100)]
+                expected = [
+                    ("__hello__", 100),
+                    ("__phello__", -100),
+                    ("__phello__.spam", 100),
+                ]
             self.assertEqual(items, expected)
 
             from ctypes import _pointer_type_cache
+
             del _pointer_type_cache[struct_frozen]
 
         def test_undefined(self):
             self.assertRaises(ValueError, c_int.in_dll, pydll, "Undefined_Symbol")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

@@ -1,6 +1,11 @@
-import os, sys, unittest, getopt, time
+import os
+import sys
+import unittest
+import getopt
+import time
 
 use_resources = []
+
 
 class ResourceDenied(Exception):
     """Test skipped because it requested a disallowed resource.
@@ -9,19 +14,24 @@ class ResourceDenied(Exception):
     has not be enabled.  Resources are defined by test modules.
     """
 
+
 def is_resource_enabled(resource):
     """Test whether a resource is enabled.
 
     If the caller's module is __main__ then automatically return True."""
     if sys._getframe().f_back.f_globals.get("__name__") == "__main__":
         return True
-    result = use_resources is not None and \
-           (resource in use_resources or "*" in use_resources)
+    result = use_resources is not None and (
+        resource in use_resources or "*" in use_resources
+    )
     if not result:
         _unavail[resource] = None
     return result
 
+
 _unavail = {}
+
+
 def requires(resource, msg=None):
     """Raise ResourceDenied if the specified resource is not available.
 
@@ -35,10 +45,11 @@ def requires(resource, msg=None):
             msg = "Use of the `%s' resource not enabled" % resource
         raise ResourceDenied(msg)
 
+
 def find_package_modules(package, mask):
     import fnmatch
-    if (hasattr(package, "__loader__") and
-            hasattr(package.__loader__, '_files')):
+
+    if hasattr(package, "__loader__") and hasattr(package.__loader__, "_files"):
         path = package.__name__.replace(".", os.path.sep)
         mask = os.path.join(path, mask)
         for fnm in package.__loader__._files.keys():
@@ -49,6 +60,7 @@ def find_package_modules(package, mask):
         for fnm in os.listdir(path):
             if fnmatch.fnmatchcase(fnm, mask):
                 yield "%s.%s" % (package.__name__, os.path.splitext(fnm)[0])
+
 
 def get_tests(package, mask, verbosity, exclude=()):
     """Return a list of skipped test modules, and a list of test cases."""
@@ -61,7 +73,7 @@ def get_tests(package, mask, verbosity, exclude=()):
                 print("Skipped %s: excluded" % modname, file=sys.stderr)
             continue
         try:
-            mod = __import__(modname, globals(), locals(), ['*'])
+            mod = __import__(modname, globals(), locals(), ["*"])
         except ResourceDenied as detail:
             skipped.append(modname)
             if verbosity > 1:
@@ -75,14 +87,17 @@ def get_tests(package, mask, verbosity, exclude=()):
                 tests.append(o)
     return skipped, tests
 
+
 def usage():
     print(__doc__)
     return 1
+
 
 def test_with_refcounts(runner, verbosity, testcase):
     """Run testcase several times, tracking reference counts."""
     import gc
     import ctypes
+
     ptc = ctypes._pointer_type_cache.copy()
     cfc = ctypes._c_functype_cache.copy()
     wfc = ctypes._win_functype_cache.copy()
@@ -112,6 +127,7 @@ def test_with_refcounts(runner, verbosity, testcase):
     elif verbosity:
         print("%s: ok." % testcase)
 
+
 class TestRunner(unittest.TextTestRunner):
     def run(self, test, skipped):
         "Run the given test case or test suite."
@@ -125,17 +141,24 @@ class TestRunner(unittest.TextTestRunner):
         result.printErrors()
         self.stream.writeln(result.separator2)
         run = result.testsRun
-        if _unavail: #skipped:
+        if _unavail:  # skipped:
             requested = list(_unavail.keys())
             requested.sort()
-            self.stream.writeln("Ran %d test%s in %.3fs (%s module%s skipped)" %
-                                (run, run != 1 and "s" or "", timeTaken,
-                                 len(skipped),
-                                 len(skipped) != 1 and "s" or ""))
+            self.stream.writeln(
+                "Ran %d test%s in %.3fs (%s module%s skipped)"
+                % (
+                    run,
+                    run != 1 and "s" or "",
+                    timeTaken,
+                    len(skipped),
+                    len(skipped) != 1 and "s" or "",
+                )
+            )
             self.stream.writeln("Unavailable resources: %s" % ", ".join(requested))
         else:
-            self.stream.writeln("Ran %d test%s in %.3fs" %
-                                (run, run != 1 and "s" or "", timeTaken))
+            self.stream.writeln(
+                "Ran %d test%s in %.3fs" % (run, run != 1 and "s" or "", timeTaken)
+            )
         self.stream.writeln()
         if not result.wasSuccessful():
             self.stream.write("FAILED (")
@@ -143,7 +166,8 @@ class TestRunner(unittest.TextTestRunner):
             if failed:
                 self.stream.write("failures=%d" % failed)
             if errored:
-                if failed: self.stream.write(", ")
+                if failed:
+                    self.stream.write(", ")
                 self.stream.write("errors=%d" % errored)
             self.stream.writeln(")")
         else:
@@ -200,6 +224,7 @@ def run_tests(package, mask, verbosity, search_leaks, exclude):
             test_with_refcounts(runner, verbosity, t)
 
     return bool(result.errors)
+
 
 class BasicTestRunner:
     def run(self, test):

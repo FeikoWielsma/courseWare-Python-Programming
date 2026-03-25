@@ -1,9 +1,9 @@
 from tkinter import *
 
-mainWindow = Tk()
-mainWindow.title("Hello tkinter")
+main_window = Tk()
+main_window.title("Hello tkinter")
 
-lbl = Label(mainWindow, text="Hello")
+lbl = Label(main_window, text="Hello")
 lbl.grid(column=0, row=0)
 
-mainWindow.mainloop()
+main_window.mainloop()

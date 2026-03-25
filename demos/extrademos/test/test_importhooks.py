@@ -17,9 +17,12 @@ relimp = "from . import sub\n"
 deeprelimp = "from .... import sub\n"
 futimp = "from __future__ import absolute_import\n"
 
-reload_src = test_src+"""\
+reload_src = (
+    test_src
+    + """\
 reloaded = True
 """
+)
 
 test_co = compile(test_src, "<???>", "exec")
 reload_co = compile(reload_src, "<???>", "exec")
@@ -34,7 +37,6 @@ test_path = "!!!_test_!!!"
 
 
 class TestImporter:
-
     modules = {
         "hooktestmodule": (False, test_co),
         "hooktestpackage": (True, test_co),
@@ -67,7 +69,7 @@ class TestImporter:
 
     def load_module(self, fullname):
         ispkg, code = self.modules[fullname]
-        mod = sys.modules.setdefault(fullname,imp.new_module(fullname))
+        mod = sys.modules.setdefault(fullname, imp.new_module(fullname))
         mod.__file__ = "<%s>" % self.__class__.__name__
         mod.__loader__ = self
         if ispkg:
@@ -80,6 +82,7 @@ class MetaImporter(TestImporter):
     def _get__path__(self):
         return []
 
+
 class PathImporter(TestImporter):
     def _get__path__(self):
         return [self.path]
@@ -89,18 +92,20 @@ class ImportBlocker:
     """Place an ImportBlocker instance on sys.meta_path and you
     can be sure the modules you specified can't be imported, even
     if it's a builtin."""
+
     def __init__(self, *namestoblock):
         self.namestoblock = dict.fromkeys(namestoblock)
+
     def find_module(self, fullname, path=None):
         if fullname in self.namestoblock:
             return self
         return None
+
     def load_module(self, fullname):
         raise ImportError("I dare you")
 
 
 class ImpWrapper:
-
     def __init__(self, path=None):
         if path is not None and not os.path.isdir(path):
             raise ImportError
@@ -122,7 +127,6 @@ class ImpWrapper:
 
 
 class ImpLoader:
-
     def __init__(self, file, filename, stuff):
         self.file = file
         self.filename = filename
@@ -137,7 +141,6 @@ class ImpLoader:
 
 
 class ImportHooksBaseTestCase(unittest.TestCase):
-
     def setUp(self):
         self.path = sys.path[:]
         self.meta_path = sys.meta_path[:]
@@ -154,59 +157,56 @@ class ImportHooksBaseTestCase(unittest.TestCase):
 
 
 class ImportHooksTestCase(ImportHooksBaseTestCase):
-
     def doTestImports(self, importer=None):
         import hooktestmodule
         import hooktestpackage
         import hooktestpackage.sub
         import hooktestpackage.sub.subber
-        self.assertEqual(hooktestmodule.get_name(),
-                         "hooktestmodule")
-        self.assertEqual(hooktestpackage.get_name(),
-                         "hooktestpackage")
-        self.assertEqual(hooktestpackage.sub.get_name(),
-                         "hooktestpackage.sub")
-        self.assertEqual(hooktestpackage.sub.subber.get_name(),
-                         "hooktestpackage.sub.subber")
+
+        self.assertEqual(hooktestmodule.get_name(), "hooktestmodule")
+        self.assertEqual(hooktestpackage.get_name(), "hooktestpackage")
+        self.assertEqual(hooktestpackage.sub.get_name(), "hooktestpackage.sub")
+        self.assertEqual(
+            hooktestpackage.sub.subber.get_name(), "hooktestpackage.sub.subber"
+        )
         if importer:
             self.assertEqual(hooktestmodule.__loader__, importer)
             self.assertEqual(hooktestpackage.__loader__, importer)
             self.assertEqual(hooktestpackage.sub.__loader__, importer)
             self.assertEqual(hooktestpackage.sub.subber.__loader__, importer)
 
-        TestImporter.modules['reloadmodule'] = (False, test_co)
+        TestImporter.modules["reloadmodule"] = (False, test_co)
         import reloadmodule
-        self.assertFalse(hasattr(reloadmodule,'reloaded'))
+
+        self.assertFalse(hasattr(reloadmodule, "reloaded"))
 
         import hooktestpackage.newrel
-        self.assertEqual(hooktestpackage.newrel.get_name(),
-                         "hooktestpackage.newrel")
-        self.assertEqual(hooktestpackage.newrel.sub,
-                         hooktestpackage.sub)
+
+        self.assertEqual(hooktestpackage.newrel.get_name(), "hooktestpackage.newrel")
+        self.assertEqual(hooktestpackage.newrel.sub, hooktestpackage.sub)
 
         import hooktestpackage.sub.subber.subest as subest
-        self.assertEqual(subest.get_name(),
-                         "hooktestpackage.sub.subber.subest")
-        self.assertEqual(subest.sub,
-                         hooktestpackage.sub)
+
+        self.assertEqual(subest.get_name(), "hooktestpackage.sub.subber.subest")
+        self.assertEqual(subest.sub, hooktestpackage.sub)
 
         import hooktestpackage.futrel
-        self.assertEqual(hooktestpackage.futrel.get_name(),
-                         "hooktestpackage.futrel")
-        self.assertEqual(hooktestpackage.futrel.sub,
-                         hooktestpackage.sub)
+
+        self.assertEqual(hooktestpackage.futrel.get_name(), "hooktestpackage.futrel")
+        self.assertEqual(hooktestpackage.futrel.sub, hooktestpackage.sub)
 
         import sub
+
         self.assertEqual(sub.get_name(), "sub")
 
         import hooktestpackage.oldabs
-        self.assertEqual(hooktestpackage.oldabs.get_name(),
-                         "hooktestpackage.oldabs")
+
+        self.assertEqual(hooktestpackage.oldabs.get_name(), "hooktestpackage.oldabs")
         self.assertEqual(hooktestpackage.oldabs.sub, sub)
 
         import hooktestpackage.newabs
-        self.assertEqual(hooktestpackage.newabs.get_name(),
-                         "hooktestpackage.newabs")
+
+        self.assertEqual(hooktestpackage.newabs.get_name(), "hooktestpackage.newabs")
         self.assertEqual(hooktestpackage.newabs.sub, sub)
 
     def testMetaPath(self):
@@ -242,6 +242,7 @@ class ImportHooksTestCase(ImportHooksBaseTestCase):
 
 def test_main():
     support.run_unittest(ImportHooksTestCase)
+
 
 if __name__ == "__main__":
     test_main()

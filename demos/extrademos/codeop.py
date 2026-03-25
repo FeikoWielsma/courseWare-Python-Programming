@@ -58,29 +58,29 @@ Compile():
 
 import __future__
 
-_features = [getattr(__future__, fname)
-             for fname in __future__.all_feature_names]
+_features = [getattr(__future__, fname) for fname in __future__.all_feature_names]
 
 __all__ = ["compile_command", "Compile", "CommandCompiler"]
 
-PyCF_DONT_IMPLY_DEDENT = 0x200          # Matches pythonrun.h
+PyCF_DONT_IMPLY_DEDENT = 0x200  # Matches pythonrun.h
+
 
 def _maybe_compile(compiler, source, filename, symbol):
     # Check for source consisting of only blank lines and comments
     for line in source.split("\n"):
         line = line.strip()
-        if line and line[0] != '#':
-            break               # Leave it alone
+        if line and line[0] != "#":
+            break  # Leave it alone
     else:
         if symbol != "eval":
-            source = "pass"     # Replace it with a 'pass' statement
+            source = "pass"  # Replace it with a 'pass' statement
 
     err = err1 = err2 = None
     code = code1 = code2 = None
 
     try:
         code = compiler(source, filename, symbol)
-    except SyntaxError as err:
+    except SyntaxError:
         pass
 
     try:
@@ -98,8 +98,10 @@ def _maybe_compile(compiler, source, filename, symbol):
     if not code1 and repr(err1) == repr(err2):
         raise err1
 
+
 def _compile(source, filename, symbol):
     return compile(source, filename, symbol, PyCF_DONT_IMPLY_DEDENT)
+
 
 def compile_command(source, filename="<input>", symbol="single"):
     r"""Compile a command and determine whether it is incomplete.
@@ -121,11 +123,13 @@ def compile_command(source, filename="<input>", symbol="single"):
     """
     return _maybe_compile(_compile, source, filename, symbol)
 
+
 class Compile:
     """Instances of this class behave much like the built-in compile
     function, but if one is used to compile text containing a future
     statement, it "remembers" and compiles all subsequent program texts
     with the statement in force."""
+
     def __init__(self):
         self.flags = PyCF_DONT_IMPLY_DEDENT
 
@@ -136,6 +140,7 @@ class Compile:
                 self.flags |= feature.compiler_flag
         return codeob
 
+
 class CommandCompiler:
     """Instances of this class have __call__ methods identical in
     signature to compile_command; the difference is that if the
@@ -143,7 +148,9 @@ class CommandCompiler:
     the instance 'remembers' and compiles all subsequent program texts
     with the statement in force."""
 
-    def __init__(self,):
+    def __init__(
+        self,
+    ):
         self.compiler = Compile()
 
     def __call__(self, source, filename="<input>", symbol="single"):

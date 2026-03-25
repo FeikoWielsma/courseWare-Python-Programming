@@ -1,4 +1,3 @@
 import foo
 
 foo.bar()
-

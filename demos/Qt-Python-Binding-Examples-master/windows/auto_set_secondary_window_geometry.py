@@ -1,12 +1,13 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
-auto set the geometry of secondary window base on primary window geometry 
+auto set the geometry of secondary window base on primary window geometry
 
 Tested environment:
     Mac OS X 10.6.8
-    
+
 """
+
 import sys
 
 try:
@@ -20,6 +21,7 @@ except ImportError:
 _auto_set_geometry_offset_is_zero_if_mare_then = 5
 _auto_set_geometry_offset_last_x = 0
 _auto_set_geometry_offset_step = 10
+
 
 def get_offset_for_auto_set_gemetry():
     global _auto_set_geometry_offset_is_zero_if_mare_then
@@ -39,6 +41,7 @@ def get_offset_for_auto_set_gemetry():
 
     return offset_x, offset_y
 
+
 def auto_set_geometry(primary, secondary):
     desktop = QtGui.QApplication.desktop()
 
@@ -57,26 +60,29 @@ def auto_set_geometry(primary, secondary):
 
 
 class SecondaryWindow(QtGui.QWidget):
-    def __init__(self, name = ""):
+    def __init__(self, name=""):
         super(SecondaryWindow, self).__init__()
-        self.setWindowTitle('Window #%s' % name)
+        self.set_window_title("Window #%s" % name)
 
         self.resize(200, 200)
 
-    def keyPressEvent(self, evt):
-        close_win_cmd_w = (evt.key() == QtCore.Qt.Key_W and evt.modifiers() == QtCore.Qt.ControlModifier)
-        close_win_esc = (evt.key() == QtCore.Qt.Key_Escape)
+    def key_press_event(self, evt):
+        close_win_cmd_w = (
+            evt.key() == QtCore.Qt.Key_W
+            and evt.modifiers() == QtCore.Qt.ControlModifier
+        )
+        close_win_esc = evt.key() == QtCore.Qt.Key_Escape
 
         if close_win_cmd_w or close_win_esc:
             self.close()
 
-            
+
 class Demo(QtGui.QWidget):
     def __init__(self):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
         btn = QtGui.QPushButton("create", self)
         btn.clicked.connect(self._btn_cb)
@@ -89,13 +95,12 @@ class Demo(QtGui.QWidget):
         # following is optional
         win_name = str(len(self.win_list))
 
-        secondary_win_obj = SecondaryWindow(name = win_name)
-        auto_set_geometry(primary = self, secondary = secondary_win_obj)
+        secondary_win_obj = SecondaryWindow(name=win_name)
+        auto_set_geometry(primary=self, secondary=secondary_win_obj)
         secondary_win_obj.show()
 
         # following is optional
         self.win_list.append(secondary_win_obj)
-
 
     def show_and_raise(self):
         self.show()

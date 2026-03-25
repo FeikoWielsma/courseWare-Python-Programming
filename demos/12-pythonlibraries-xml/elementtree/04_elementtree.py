@@ -8,4 +8,4 @@ xml_file = os.path.join(xml_file, "memo.xml")
 try:
     tree = ET.parse(xml_file)
 except Exception as inst:
-    print ("Unexpected error opening %s: %s" % (xml_file, inst))
+    print("Unexpected error opening %s: %s" % (xml_file, inst))

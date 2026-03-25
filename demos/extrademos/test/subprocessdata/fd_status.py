@@ -10,6 +10,7 @@ try:
 except:
     _MAXFD = 256
 
+
 def isopen(fd):
     """Return True if the fd is open, and False otherwise"""
     try:
@@ -20,5 +21,6 @@ def isopen(fd):
         raise
     return True
 
+
 if __name__ == "__main__":
-    print(','.join(str(fd) for fd in range(0, _MAXFD) if isopen(fd)))
+    print(",".join(str(fd) for fd in range(0, _MAXFD) if isopen(fd)))

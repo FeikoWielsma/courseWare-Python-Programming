@@ -1,43 +1,49 @@
-""" Python Character Mapping Codec generated from 'hp_roman8.txt' with gencodec.py.
+"""Python Character Mapping Codec generated from 'hp_roman8.txt' with gencodec.py.
 
-    Based on data from ftp://dkuug.dk/i18n/charmaps/HP-ROMAN8 (Keld Simonsen)
+Based on data from ftp://dkuug.dk/i18n/charmaps/HP-ROMAN8 (Keld Simonsen)
 
-    Original source: LaserJet IIP Printer User's Manual HP part no
-    33471-90901, Hewlet-Packard, June 1989.
+Original source: LaserJet IIP Printer User's Manual HP part no
+33471-90901, Hewlet-Packard, June 1989.
 
-"""#"
+"""  # "
 
 import codecs
 
 ### Codec APIs
 
+
 class Codec(codecs.Codec):
+    def encode(self, input, errors="strict"):
+        return codecs.charmap_encode(input, errors, encoding_map)
 
-    def encode(self,input,errors='strict'):
-        return codecs.charmap_encode(input,errors,encoding_map)
+    def decode(self, input, errors="strict"):
+        return codecs.charmap_decode(input, errors, decoding_map)
 
-    def decode(self,input,errors='strict'):
-        return codecs.charmap_decode(input,errors,decoding_map)
 
 class IncrementalEncoder(codecs.IncrementalEncoder):
     def encode(self, input, final=False):
-        return codecs.charmap_encode(input,self.errors,encoding_map)[0]
+        return codecs.charmap_encode(input, self.errors, encoding_map)[0]
+
 
 class IncrementalDecoder(codecs.IncrementalDecoder):
     def decode(self, input, final=False):
-        return codecs.charmap_decode(input,self.errors,decoding_map)[0]
+        return codecs.charmap_decode(input, self.errors, decoding_map)[0]
 
-class StreamWriter(Codec,codecs.StreamWriter):
+
+class StreamWriter(Codec, codecs.StreamWriter):
     pass
 
-class StreamReader(Codec,codecs.StreamReader):
+
+class StreamReader(Codec, codecs.StreamReader):
     pass
+
 
 ### encodings module API
 
+
 def getregentry():
     return codecs.CodecInfo(
-        name='hp-roman8',
+        name="hp-roman8",
         encode=Codec().encode,
         decode=Codec().decode,
         incrementalencoder=IncrementalEncoder,
@@ -46,106 +52,109 @@ def getregentry():
         streamreader=StreamReader,
     )
 
+
 ### Decoding Map
 
 decoding_map = codecs.make_identity_dict(range(256))
-decoding_map.update({
-        0x00a1: 0x00c0, #       LATIN CAPITAL LETTER A WITH GRAVE
-        0x00a2: 0x00c2, #       LATIN CAPITAL LETTER A WITH CIRCUMFLEX
-        0x00a3: 0x00c8, #       LATIN CAPITAL LETTER E WITH GRAVE
-        0x00a4: 0x00ca, #       LATIN CAPITAL LETTER E WITH CIRCUMFLEX
-        0x00a5: 0x00cb, #       LATIN CAPITAL LETTER E WITH DIAERESIS
-        0x00a6: 0x00ce, #       LATIN CAPITAL LETTER I WITH CIRCUMFLEX
-        0x00a7: 0x00cf, #       LATIN CAPITAL LETTER I WITH DIAERESIS
-        0x00a8: 0x00b4, #       ACUTE ACCENT
-        0x00a9: 0x02cb, #       MODIFIER LETTER GRAVE ACCENT (Mandarin Chinese fourth tone)
-        0x00aa: 0x02c6, #       MODIFIER LETTER CIRCUMFLEX ACCENT
-        0x00ab: 0x00a8, #       DIAERESIS
-        0x00ac: 0x02dc, #       SMALL TILDE
-        0x00ad: 0x00d9, #       LATIN CAPITAL LETTER U WITH GRAVE
-        0x00ae: 0x00db, #       LATIN CAPITAL LETTER U WITH CIRCUMFLEX
-        0x00af: 0x20a4, #       LIRA SIGN
-        0x00b0: 0x00af, #       MACRON
-        0x00b1: 0x00dd, #       LATIN CAPITAL LETTER Y WITH ACUTE
-        0x00b2: 0x00fd, #       LATIN SMALL LETTER Y WITH ACUTE
-        0x00b3: 0x00b0, #       DEGREE SIGN
-        0x00b4: 0x00c7, #       LATIN CAPITAL LETTER C WITH CEDILLA
-        0x00b5: 0x00e7, #       LATIN SMALL LETTER C WITH CEDILLA
-        0x00b6: 0x00d1, #       LATIN CAPITAL LETTER N WITH TILDE
-        0x00b7: 0x00f1, #       LATIN SMALL LETTER N WITH TILDE
-        0x00b8: 0x00a1, #       INVERTED EXCLAMATION MARK
-        0x00b9: 0x00bf, #       INVERTED QUESTION MARK
-        0x00ba: 0x00a4, #       CURRENCY SIGN
-        0x00bb: 0x00a3, #       POUND SIGN
-        0x00bc: 0x00a5, #       YEN SIGN
-        0x00bd: 0x00a7, #       SECTION SIGN
-        0x00be: 0x0192, #       LATIN SMALL LETTER F WITH HOOK
-        0x00bf: 0x00a2, #       CENT SIGN
-        0x00c0: 0x00e2, #       LATIN SMALL LETTER A WITH CIRCUMFLEX
-        0x00c1: 0x00ea, #       LATIN SMALL LETTER E WITH CIRCUMFLEX
-        0x00c2: 0x00f4, #       LATIN SMALL LETTER O WITH CIRCUMFLEX
-        0x00c3: 0x00fb, #       LATIN SMALL LETTER U WITH CIRCUMFLEX
-        0x00c4: 0x00e1, #       LATIN SMALL LETTER A WITH ACUTE
-        0x00c5: 0x00e9, #       LATIN SMALL LETTER E WITH ACUTE
-        0x00c6: 0x00f3, #       LATIN SMALL LETTER O WITH ACUTE
-        0x00c7: 0x00fa, #       LATIN SMALL LETTER U WITH ACUTE
-        0x00c8: 0x00e0, #       LATIN SMALL LETTER A WITH GRAVE
-        0x00c9: 0x00e8, #       LATIN SMALL LETTER E WITH GRAVE
-        0x00ca: 0x00f2, #       LATIN SMALL LETTER O WITH GRAVE
-        0x00cb: 0x00f9, #       LATIN SMALL LETTER U WITH GRAVE
-        0x00cc: 0x00e4, #       LATIN SMALL LETTER A WITH DIAERESIS
-        0x00cd: 0x00eb, #       LATIN SMALL LETTER E WITH DIAERESIS
-        0x00ce: 0x00f6, #       LATIN SMALL LETTER O WITH DIAERESIS
-        0x00cf: 0x00fc, #       LATIN SMALL LETTER U WITH DIAERESIS
-        0x00d0: 0x00c5, #       LATIN CAPITAL LETTER A WITH RING ABOVE
-        0x00d1: 0x00ee, #       LATIN SMALL LETTER I WITH CIRCUMFLEX
-        0x00d2: 0x00d8, #       LATIN CAPITAL LETTER O WITH STROKE
-        0x00d3: 0x00c6, #       LATIN CAPITAL LETTER AE
-        0x00d4: 0x00e5, #       LATIN SMALL LETTER A WITH RING ABOVE
-        0x00d5: 0x00ed, #       LATIN SMALL LETTER I WITH ACUTE
-        0x00d6: 0x00f8, #       LATIN SMALL LETTER O WITH STROKE
-        0x00d7: 0x00e6, #       LATIN SMALL LETTER AE
-        0x00d8: 0x00c4, #       LATIN CAPITAL LETTER A WITH DIAERESIS
-        0x00d9: 0x00ec, #       LATIN SMALL LETTER I WITH GRAVE
-        0x00da: 0x00d6, #       LATIN CAPITAL LETTER O WITH DIAERESIS
-        0x00db: 0x00dc, #       LATIN CAPITAL LETTER U WITH DIAERESIS
-        0x00dc: 0x00c9, #       LATIN CAPITAL LETTER E WITH ACUTE
-        0x00dd: 0x00ef, #       LATIN SMALL LETTER I WITH DIAERESIS
-        0x00de: 0x00df, #       LATIN SMALL LETTER SHARP S (German)
-        0x00df: 0x00d4, #       LATIN CAPITAL LETTER O WITH CIRCUMFLEX
-        0x00e0: 0x00c1, #       LATIN CAPITAL LETTER A WITH ACUTE
-        0x00e1: 0x00c3, #       LATIN CAPITAL LETTER A WITH TILDE
-        0x00e2: 0x00e3, #       LATIN SMALL LETTER A WITH TILDE
-        0x00e3: 0x00d0, #       LATIN CAPITAL LETTER ETH (Icelandic)
-        0x00e4: 0x00f0, #       LATIN SMALL LETTER ETH (Icelandic)
-        0x00e5: 0x00cd, #       LATIN CAPITAL LETTER I WITH ACUTE
-        0x00e6: 0x00cc, #       LATIN CAPITAL LETTER I WITH GRAVE
-        0x00e7: 0x00d3, #       LATIN CAPITAL LETTER O WITH ACUTE
-        0x00e8: 0x00d2, #       LATIN CAPITAL LETTER O WITH GRAVE
-        0x00e9: 0x00d5, #       LATIN CAPITAL LETTER O WITH TILDE
-        0x00ea: 0x00f5, #       LATIN SMALL LETTER O WITH TILDE
-        0x00eb: 0x0160, #       LATIN CAPITAL LETTER S WITH CARON
-        0x00ec: 0x0161, #       LATIN SMALL LETTER S WITH CARON
-        0x00ed: 0x00da, #       LATIN CAPITAL LETTER U WITH ACUTE
-        0x00ee: 0x0178, #       LATIN CAPITAL LETTER Y WITH DIAERESIS
-        0x00ef: 0x00ff, #       LATIN SMALL LETTER Y WITH DIAERESIS
-        0x00f0: 0x00de, #       LATIN CAPITAL LETTER THORN (Icelandic)
-        0x00f1: 0x00fe, #       LATIN SMALL LETTER THORN (Icelandic)
-        0x00f2: 0x00b7, #       MIDDLE DOT
-        0x00f3: 0x00b5, #       MICRO SIGN
-        0x00f4: 0x00b6, #       PILCROW SIGN
-        0x00f5: 0x00be, #       VULGAR FRACTION THREE QUARTERS
-        0x00f6: 0x2014, #       EM DASH
-        0x00f7: 0x00bc, #       VULGAR FRACTION ONE QUARTER
-        0x00f8: 0x00bd, #       VULGAR FRACTION ONE HALF
-        0x00f9: 0x00aa, #       FEMININE ORDINAL INDICATOR
-        0x00fa: 0x00ba, #       MASCULINE ORDINAL INDICATOR
-        0x00fb: 0x00ab, #       LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
-        0x00fc: 0x25a0, #       BLACK SQUARE
-        0x00fd: 0x00bb, #       RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
-        0x00fe: 0x00b1, #       PLUS-MINUS SIGN
-        0x00ff: None,
-})
+decoding_map.update(
+    {
+        0x00A1: 0x00C0,  #       LATIN CAPITAL LETTER A WITH GRAVE
+        0x00A2: 0x00C2,  #       LATIN CAPITAL LETTER A WITH CIRCUMFLEX
+        0x00A3: 0x00C8,  #       LATIN CAPITAL LETTER E WITH GRAVE
+        0x00A4: 0x00CA,  #       LATIN CAPITAL LETTER E WITH CIRCUMFLEX
+        0x00A5: 0x00CB,  #       LATIN CAPITAL LETTER E WITH DIAERESIS
+        0x00A6: 0x00CE,  #       LATIN CAPITAL LETTER I WITH CIRCUMFLEX
+        0x00A7: 0x00CF,  #       LATIN CAPITAL LETTER I WITH DIAERESIS
+        0x00A8: 0x00B4,  #       ACUTE ACCENT
+        0x00A9: 0x02CB,  #       MODIFIER LETTER GRAVE ACCENT (Mandarin Chinese fourth tone)
+        0x00AA: 0x02C6,  #       MODIFIER LETTER CIRCUMFLEX ACCENT
+        0x00AB: 0x00A8,  #       DIAERESIS
+        0x00AC: 0x02DC,  #       SMALL TILDE
+        0x00AD: 0x00D9,  #       LATIN CAPITAL LETTER U WITH GRAVE
+        0x00AE: 0x00DB,  #       LATIN CAPITAL LETTER U WITH CIRCUMFLEX
+        0x00AF: 0x20A4,  #       LIRA SIGN
+        0x00B0: 0x00AF,  #       MACRON
+        0x00B1: 0x00DD,  #       LATIN CAPITAL LETTER Y WITH ACUTE
+        0x00B2: 0x00FD,  #       LATIN SMALL LETTER Y WITH ACUTE
+        0x00B3: 0x00B0,  #       DEGREE SIGN
+        0x00B4: 0x00C7,  #       LATIN CAPITAL LETTER C WITH CEDILLA
+        0x00B5: 0x00E7,  #       LATIN SMALL LETTER C WITH CEDILLA
+        0x00B6: 0x00D1,  #       LATIN CAPITAL LETTER N WITH TILDE
+        0x00B7: 0x00F1,  #       LATIN SMALL LETTER N WITH TILDE
+        0x00B8: 0x00A1,  #       INVERTED EXCLAMATION MARK
+        0x00B9: 0x00BF,  #       INVERTED QUESTION MARK
+        0x00BA: 0x00A4,  #       CURRENCY SIGN
+        0x00BB: 0x00A3,  #       POUND SIGN
+        0x00BC: 0x00A5,  #       YEN SIGN
+        0x00BD: 0x00A7,  #       SECTION SIGN
+        0x00BE: 0x0192,  #       LATIN SMALL LETTER F WITH HOOK
+        0x00BF: 0x00A2,  #       CENT SIGN
+        0x00C0: 0x00E2,  #       LATIN SMALL LETTER A WITH CIRCUMFLEX
+        0x00C1: 0x00EA,  #       LATIN SMALL LETTER E WITH CIRCUMFLEX
+        0x00C2: 0x00F4,  #       LATIN SMALL LETTER O WITH CIRCUMFLEX
+        0x00C3: 0x00FB,  #       LATIN SMALL LETTER U WITH CIRCUMFLEX
+        0x00C4: 0x00E1,  #       LATIN SMALL LETTER A WITH ACUTE
+        0x00C5: 0x00E9,  #       LATIN SMALL LETTER E WITH ACUTE
+        0x00C6: 0x00F3,  #       LATIN SMALL LETTER O WITH ACUTE
+        0x00C7: 0x00FA,  #       LATIN SMALL LETTER U WITH ACUTE
+        0x00C8: 0x00E0,  #       LATIN SMALL LETTER A WITH GRAVE
+        0x00C9: 0x00E8,  #       LATIN SMALL LETTER E WITH GRAVE
+        0x00CA: 0x00F2,  #       LATIN SMALL LETTER O WITH GRAVE
+        0x00CB: 0x00F9,  #       LATIN SMALL LETTER U WITH GRAVE
+        0x00CC: 0x00E4,  #       LATIN SMALL LETTER A WITH DIAERESIS
+        0x00CD: 0x00EB,  #       LATIN SMALL LETTER E WITH DIAERESIS
+        0x00CE: 0x00F6,  #       LATIN SMALL LETTER O WITH DIAERESIS
+        0x00CF: 0x00FC,  #       LATIN SMALL LETTER U WITH DIAERESIS
+        0x00D0: 0x00C5,  #       LATIN CAPITAL LETTER A WITH RING ABOVE
+        0x00D1: 0x00EE,  #       LATIN SMALL LETTER I WITH CIRCUMFLEX
+        0x00D2: 0x00D8,  #       LATIN CAPITAL LETTER O WITH STROKE
+        0x00D3: 0x00C6,  #       LATIN CAPITAL LETTER AE
+        0x00D4: 0x00E5,  #       LATIN SMALL LETTER A WITH RING ABOVE
+        0x00D5: 0x00ED,  #       LATIN SMALL LETTER I WITH ACUTE
+        0x00D6: 0x00F8,  #       LATIN SMALL LETTER O WITH STROKE
+        0x00D7: 0x00E6,  #       LATIN SMALL LETTER AE
+        0x00D8: 0x00C4,  #       LATIN CAPITAL LETTER A WITH DIAERESIS
+        0x00D9: 0x00EC,  #       LATIN SMALL LETTER I WITH GRAVE
+        0x00DA: 0x00D6,  #       LATIN CAPITAL LETTER O WITH DIAERESIS
+        0x00DB: 0x00DC,  #       LATIN CAPITAL LETTER U WITH DIAERESIS
+        0x00DC: 0x00C9,  #       LATIN CAPITAL LETTER E WITH ACUTE
+        0x00DD: 0x00EF,  #       LATIN SMALL LETTER I WITH DIAERESIS
+        0x00DE: 0x00DF,  #       LATIN SMALL LETTER SHARP S (German)
+        0x00DF: 0x00D4,  #       LATIN CAPITAL LETTER O WITH CIRCUMFLEX
+        0x00E0: 0x00C1,  #       LATIN CAPITAL LETTER A WITH ACUTE
+        0x00E1: 0x00C3,  #       LATIN CAPITAL LETTER A WITH TILDE
+        0x00E2: 0x00E3,  #       LATIN SMALL LETTER A WITH TILDE
+        0x00E3: 0x00D0,  #       LATIN CAPITAL LETTER ETH (Icelandic)
+        0x00E4: 0x00F0,  #       LATIN SMALL LETTER ETH (Icelandic)
+        0x00E5: 0x00CD,  #       LATIN CAPITAL LETTER I WITH ACUTE
+        0x00E6: 0x00CC,  #       LATIN CAPITAL LETTER I WITH GRAVE
+        0x00E7: 0x00D3,  #       LATIN CAPITAL LETTER O WITH ACUTE
+        0x00E8: 0x00D2,  #       LATIN CAPITAL LETTER O WITH GRAVE
+        0x00E9: 0x00D5,  #       LATIN CAPITAL LETTER O WITH TILDE
+        0x00EA: 0x00F5,  #       LATIN SMALL LETTER O WITH TILDE
+        0x00EB: 0x0160,  #       LATIN CAPITAL LETTER S WITH CARON
+        0x00EC: 0x0161,  #       LATIN SMALL LETTER S WITH CARON
+        0x00ED: 0x00DA,  #       LATIN CAPITAL LETTER U WITH ACUTE
+        0x00EE: 0x0178,  #       LATIN CAPITAL LETTER Y WITH DIAERESIS
+        0x00EF: 0x00FF,  #       LATIN SMALL LETTER Y WITH DIAERESIS
+        0x00F0: 0x00DE,  #       LATIN CAPITAL LETTER THORN (Icelandic)
+        0x00F1: 0x00FE,  #       LATIN SMALL LETTER THORN (Icelandic)
+        0x00F2: 0x00B7,  #       MIDDLE DOT
+        0x00F3: 0x00B5,  #       MICRO SIGN
+        0x00F4: 0x00B6,  #       PILCROW SIGN
+        0x00F5: 0x00BE,  #       VULGAR FRACTION THREE QUARTERS
+        0x00F6: 0x2014,  #       EM DASH
+        0x00F7: 0x00BC,  #       VULGAR FRACTION ONE QUARTER
+        0x00F8: 0x00BD,  #       VULGAR FRACTION ONE HALF
+        0x00F9: 0x00AA,  #       FEMININE ORDINAL INDICATOR
+        0x00FA: 0x00BA,  #       MASCULINE ORDINAL INDICATOR
+        0x00FB: 0x00AB,  #       LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+        0x00FC: 0x25A0,  #       BLACK SQUARE
+        0x00FD: 0x00BB,  #       RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+        0x00FE: 0x00B1,  #       PLUS-MINUS SIGN
+        0x00FF: None,
+    }
+)
 
 ### Encoding Map
 

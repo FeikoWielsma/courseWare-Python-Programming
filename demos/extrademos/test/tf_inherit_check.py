@@ -5,7 +5,7 @@
 import sys
 import os
 
-verbose = (sys.argv[1] == 'v')
+verbose = sys.argv[1] == "v"
 try:
     fd = int(sys.argv[2])
 

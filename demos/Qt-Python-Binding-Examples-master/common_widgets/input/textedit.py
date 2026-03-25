@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
 QTextEdit demo
 
@@ -12,6 +12,7 @@ Tested environment:
 http://doc.qt.nokia.com/latest/qtextedit.html
 http://www.pyside.org/docs/pyside/PySide/QtGui/QTextEdit.html
 """
+
 import os
 import sys
 
@@ -23,8 +24,7 @@ except ImportError:
     from PyQt4 import QtGui
 
 
-
-css = '''
+css = """
 div {
     line-height: 27px;
 }
@@ -35,31 +35,34 @@ div {
 .ts {
     color: #7F7F7F;
 }
-'''
+"""
+
 
 class Demo(QtGui.QMainWindow):
     def __init__(self):
         super(Demo, self).__init__()
-        
+
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
         self.text_doc = QtGui.QTextDocument()
-        self.text_doc.setDefaultStyleSheet(css)
+        self.text_doc.set_default_style_sheet(css)
 
         self.text_edit = QtGui.QTextEdit(self)
-        self.setCentralWidget(self.text_edit)
-        self.text_edit.setDocument(self.text_doc)
-        self.text_edit.setTextInteractionFlags(QtCore.Qt.TextSelectableByKeyboard | QtCore.Qt.TextSelectableByMouse)
-#        self.text_edit.setReadOnly(True)
-        self.log(msg = ' ')
-        self.log(msg = 'hello\nworld')
-        self.log(msg = 'hello\nworld')
-        self.log(msg = u'中文输入\n法 KDE 桌面环境')
-        self.log(msg = 'hello\nworld')
-        self.log(msg = 'hello\nworld')
-        self.log(msg = 'hello\nworld')
-        self.log(msg = 'hello\nworld')
+        self.set_central_widget(self.text_edit)
+        self.text_edit.set_document(self.text_doc)
+        self.text_edit.set_text_interaction_flags(
+            QtCore.Qt.TextSelectableByKeyboard | QtCore.Qt.TextSelectableByMouse
+        )
+        #        self.text_edit.set_read_only(True)
+        self.log(msg=" ")
+        self.log(msg="hello\nworld")
+        self.log(msg="hello\nworld")
+        self.log(msg="中文输入\n法 KDE 桌面环境")
+        self.log(msg="hello\nworld")
+        self.log(msg="hello\nworld")
+        self.log(msg="hello\nworld")
+        self.log(msg="hello\nworld")
 
         self.top_btn = QtGui.QPushButton("top", self)
         self.top_btn.move(150, 280)
@@ -68,43 +71,46 @@ class Demo(QtGui.QMainWindow):
         self.buttom_btn = QtGui.QPushButton("bottom", self)
         self.buttom_btn.move(150, 300)
         self.buttom_btn.clicked.connect(self.goto_buttom_btn_clicked)
-        
-        #t = self.text_edit.toHtml()
-        
+
+        # t = self.text_edit.to_html()
+
         self.show()
 
     def goto_top_btn_clicked(self):
-        scroll_bar = self.text_edit.verticalScrollBar()
-        scroll_bar.setSliderPosition(scroll_bar.minimum())
+        scroll_bar = self.text_edit.vertical_scroll_bar()
+        scroll_bar.set_slider_position(scroll_bar.minimum())
 
     def goto_buttom_btn_clicked(self):
-        scroll_bar = self.text_edit.verticalScrollBar()
-        scroll_bar.setSliderPosition(scroll_bar.maximum())
+        scroll_bar = self.text_edit.vertical_scroll_bar()
+        scroll_bar.set_slider_position(scroll_bar.maximum())
 
-    def log(self, nickname = 'foo', msg = None):
+    def log(self, nickname="foo", msg=None):
         t = QtCore.QTime()
-        now_time = t.currentTime().toString()
+        now_time = t.current_time().to_string()
 
-        msg = msg.replace(os.linesep, '<br />')
-        log = '''<div><span class="nickname">%s</span>&nbsp;&nbsp;<span class="ts">%s</span><p class="msg">%s</p></div>''' % \
-            (nickname, now_time, msg)
+        msg = msg.replace(os.linesep, "<br />")
+        log = (
+            """<div><span class="nickname">%s</span>&nbsp;&nbsp;<span class="ts">%s</span><p class="msg">%s</p></div>"""
+            % (nickname, now_time, msg)
+        )
         self.text_edit.append(log)
 
-#        t = self.text_doc.toHtml()
-#        with open('log.txt', 'w') as f:
-#            f.write(t.toUtf8())
+    #        t = self.text_doc.to_html()
+    #        with open('log.txt', 'w') as f:
+    #            f.write(t.to_utf8())
 
-#        # buf = t
-#        buf = QtCore.QString('<html><body>你好</body></html>'.decode('utf-8'))
-#        self.text_doc.setHtml(buf)
+    #        # buf = t
+    #        buf = QtCore.QString('<html><body>你好</body></html>'.decode('utf-8'))
+    #        self.text_doc.set_html(buf)
 
-#        t = self.text_doc.toHtml()
-#        with open('log2.txt', 'w') as f:
-#            f.write(t.toUtf8())
+    #        t = self.text_doc.to_html()
+    #        with open('log2.txt', 'w') as f:
+    #            f.write(t.to_utf8())
 
     def show_and_raise(self):
         self.show()
         self.raise_()
+
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

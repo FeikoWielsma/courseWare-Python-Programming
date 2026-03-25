@@ -1,4 +1,5 @@
-""" xml validation """
+"""xml validation"""
+
 import sys
 from xml.parsers.xmlproc import xmlval
 from xpHandlers import BadOrderErrorHandler, DTDHandler

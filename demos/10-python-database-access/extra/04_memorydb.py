@@ -1,5 +1,6 @@
 import sqlite3
 
+
 class MySum:
     def __init__(self):
         self.count = 0
@@ -9,6 +10,7 @@ class MySum:
 
     def finalize(self):
         return self.count
+
 
 con = sqlite3.connect(":memory:")
 con.create_aggregate("mysum", 1, MySum)

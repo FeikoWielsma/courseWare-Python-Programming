@@ -18,12 +18,9 @@ XXX GvR Redesign this interface (yet again) as follows:
 """
 
 import os
-import re
-import string
 import tabnanny
 import tokenize
 import tkinter.messagebox as tkMessageBox
-from idlelib.EditorWindow import EditorWindow
 from idlelib import PyShell, IOBinding
 
 from idlelib.configHandler import idleConf
@@ -38,12 +35,18 @@ To fix case 2, change all tabs to spaces by using Edit->Select All followed \
 by Format->Untabify Region and specify the number of columns used by each tab.
 """
 
-class ScriptBinding:
 
+class ScriptBinding:
     menudefs = [
-        ('run', [None,
-                 ('Check Module', '<<check-module>>'),
-                 ('Run Module', '<<run-module>>'), ]), ]
+        (
+            "run",
+            [
+                None,
+                ("Check Module", "<<check-module>>"),
+                ("Run Module", "<<run-module>>"),
+            ],
+        ),
+    ]
 
     def __init__(self, editwin):
         self.editwin = editwin
@@ -55,27 +58,26 @@ class ScriptBinding:
     def check_module_event(self, event):
         filename = self.getfilename()
         if not filename:
-            return 'break'
+            return "break"
         if not self.checksyntax(filename):
-            return 'break'
+            return "break"
         if not self.tabnanny(filename):
-            return 'break'
+            return "break"
 
     def tabnanny(self, filename):
         # XXX: tabnanny should work on binary files as well
-        with open(filename, 'r', encoding='iso-8859-1') as f:
+        with open(filename, "r", encoding="iso-8859-1") as f:
             two_lines = f.readline() + f.readline()
         encoding = IOBinding.coding_spec(two_lines)
         if not encoding:
-            encoding = 'utf-8'
-        f = open(filename, 'r', encoding=encoding)
+            encoding = "utf-8"
+        f = open(filename, "r", encoding=encoding)
         try:
             tabnanny.process_tokens(tokenize.generate_tokens(f.readline))
         except tokenize.TokenError as msg:
             msgtxt, (lineno, start) = msg
             self.editwin.gotoline(lineno)
-            self.errorbox("Tabnanny Tokenizing Error",
-                          "Token Error: %s" % msgtxt)
+            self.errorbox("Tabnanny Tokenizing Error", "Token Error: %s" % msgtxt)
             return False
         except tabnanny.NannyNag as nag:
             # The error messages from tabnanny are too confusing...
@@ -88,14 +90,14 @@ class ScriptBinding:
         self.shell = shell = self.flist.open_shell()
         saved_stream = shell.get_warning_stream()
         shell.set_warning_stream(shell.stderr)
-        f = open(filename, 'rb')
+        f = open(filename, "rb")
         source = f.read()
         f.close()
-        if b'\r' in source:
-            source = source.replace(b'\r\n', b'\n')
-            source = source.replace(b'\r', b'\n')
-        if source and source[-1] != ord(b'\n'):
-            source = source + b'\n'
+        if b"\r" in source:
+            source = source.replace(b"\r\n", b"\n")
+            source = source.replace(b"\r", b"\n")
+        if source and source[-1] != ord(b"\n"):
+            source = source + b"\n"
         editwin = self.editwin
         text = editwin.text
         text.tag_remove("ERROR", "1.0", "end")
@@ -107,8 +109,8 @@ class ScriptBinding:
             lineno = value.lineno or 1
             offset = value.offset or 0
             if offset == 0:
-                lineno += 1  #mark end of offending line
-            pos = "0.0 + %d lines + %d chars" % (lineno-1, offset-1)
+                lineno += 1  # mark end of offending line
+            pos = "0.0 + %d lines + %d chars" % (lineno - 1, offset - 1)
             editwin.colorize_syntax_error(text, pos)
             self.errorbox("SyntaxError", "%-20s" % msg)
             return False
@@ -126,19 +128,20 @@ class ScriptBinding:
         """
         filename = self.getfilename()
         if not filename:
-            return 'break'
+            return "break"
         code = self.checksyntax(filename)
         if not code:
-            return 'break'
+            return "break"
         if not self.tabnanny(filename):
-            return 'break'
+            return "break"
         shell = self.shell
         interp = shell.interp
         if PyShell.use_subprocess:
             shell.restart_shell()
         dirname = os.path.dirname(filename)
         # XXX Too often this discards arguments the user just set...
-        interp.runcommand("""if 1:
+        interp.runcommand(
+            """if 1:
             _filename = %r
             import sys as _sys
             from os.path import basename as _basename
@@ -148,13 +151,15 @@ class ScriptBinding:
             import os as _os
             _os.chdir(%r)
             del _filename, _sys, _basename, _os
-            \n""" % (filename, dirname))
+            \n"""
+            % (filename, dirname)
+        )
         interp.prepend_syspath(filename)
         # XXX KBK 03Jul04 When run w/o subprocess, runtime warnings still
         #         go to __stderr__.  With subprocess, they go to the shell.
         #         Need to change streams in PyShell.ModifiedInterpreter.
         interp.runcode(code)
-        return 'break'
+        return "break"
 
     def getfilename(self):
         """Get source filename.  If not saved, offer to save (or create) file
@@ -169,8 +174,7 @@ class ScriptBinding:
         """
         filename = self.editwin.io.filename
         if not self.editwin.get_saved():
-            autosave = idleConf.GetOption('main', 'General',
-                                          'autosave', type='bool')
+            autosave = idleConf.GetOption("main", "General", "autosave", type="bool")
             if autosave and filename:
                 self.editwin.io.save(None)
             else:
@@ -184,13 +188,15 @@ class ScriptBinding:
         return filename
 
     def ask_save_dialog(self):
-        msg = "Source Must Be Saved\n" + 5*' ' + "OK to Save?"
-        mb = tkMessageBox.Message(title="Save Before Run or Check",
-                                  message=msg,
-                                  icon=tkMessageBox.QUESTION,
-                                  type=tkMessageBox.OKCANCEL,
-                                  default=tkMessageBox.OK,
-                                  master=self.editwin.text)
+        msg = "Source Must Be Saved\n" + 5 * " " + "OK to Save?"
+        mb = tkMessageBox.Message(
+            title="Save Before Run or Check",
+            message=msg,
+            icon=tkMessageBox.QUESTION,
+            type=tkMessageBox.OKCANCEL,
+            default=tkMessageBox.OK,
+            master=self.editwin.text,
+        )
         return mb.show()
 
     def errorbox(self, title, message):

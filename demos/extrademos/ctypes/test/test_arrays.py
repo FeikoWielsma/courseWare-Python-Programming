@@ -3,8 +3,20 @@ from ctypes import *
 
 formats = "bBhHiIlLqQfd"
 
-formats = c_byte, c_ubyte, c_short, c_ushort, c_int, c_uint, \
-          c_long, c_ulonglong, c_float, c_double, c_longdouble
+formats = (
+    c_byte,
+    c_ubyte,
+    c_short,
+    c_ushort,
+    c_int,
+    c_uint,
+    c_long,
+    c_ulonglong,
+    c_float,
+    c_double,
+    c_longdouble,
+)
+
 
 class ArrayTestCase(unittest.TestCase):
     def test_simple(self):
@@ -27,7 +39,8 @@ class ArrayTestCase(unittest.TestCase):
 
             # change the items
             from operator import setitem
-            new_values = list(range(42, 42+alen))
+
+            new_values = list(range(42, 42 + alen))
             [setitem(ia, n, new_values[n]) for n in range(alen)]
             values = [ia[i] for i in range(len(init))]
             self.assertEqual(values, new_values)
@@ -38,7 +51,7 @@ class ArrayTestCase(unittest.TestCase):
             self.assertEqual(values, [0] * len(init))
 
             # Too many in itializers should be caught
-            self.assertRaises(IndexError, int_array, *range(alen*2))
+            self.assertRaises(IndexError, int_array, *range(alen * 2))
 
         CharArray = ARRAY(c_char, 3)
 
@@ -59,10 +72,10 @@ class ArrayTestCase(unittest.TestCase):
 
         # cannot delete items
         from operator import delitem
+
         self.assertRaises(TypeError, delitem, ca, 0)
 
     def test_numeric_arrays(self):
-
         alen = 5
 
         numarray = ARRAY(c_int, alen)
@@ -73,7 +86,7 @@ class ArrayTestCase(unittest.TestCase):
 
         na = numarray(*[c_int()] * alen)
         values = [na[i] for i in range(alen)]
-        self.assertEqual(values, [0]*alen)
+        self.assertEqual(values, [0] * alen)
 
         na = numarray(1, 2, 3, 4, 5)
         values = [i for i in na]
@@ -84,7 +97,7 @@ class ArrayTestCase(unittest.TestCase):
         self.assertEqual(values, [1, 2, 3, 4, 5])
 
     def test_classcache(self):
-        self.assertTrue(not ARRAY(c_int, 3) is ARRAY(c_int, 4))
+        self.assertTrue(ARRAY(c_int, 3) is not ARRAY(c_int, 4))
         self.assertTrue(ARRAY(c_int, 3) is ARRAY(c_int, 3))
 
     def test_from_address(self):
@@ -103,6 +116,7 @@ class ArrayTestCase(unittest.TestCase):
     except NameError:
         pass
     else:
+
         def test_from_addressW(self):
             p = create_unicode_buffer("foo")
             sz = (c_wchar * 3).from_address(addressof(p))
@@ -122,10 +136,12 @@ class ArrayTestCase(unittest.TestCase):
         # Create a new type:
         class my_int(c_int):
             pass
+
         # Create a new array type based on it:
         t1 = my_int * 1
         t2 = my_int * 1
         self.assertTrue(t1 is t2)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

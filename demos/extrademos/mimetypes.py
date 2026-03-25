@@ -27,27 +27,32 @@ import os
 import sys
 import posixpath
 import urllib.parse
+
 try:
     import winreg as _winreg
 except ImportError:
     _winreg = None
 
 __all__ = [
-    "guess_type","guess_extension","guess_all_extensions",
-    "add_type","read_mime_types","init"
+    "guess_type",
+    "guess_extension",
+    "guess_all_extensions",
+    "add_type",
+    "read_mime_types",
+    "init",
 ]
 
 knownfiles = [
     "/etc/mime.types",
-    "/etc/httpd/mime.types",                    # Mac OS X
-    "/etc/httpd/conf/mime.types",               # Apache
-    "/etc/apache/mime.types",                   # Apache 1
-    "/etc/apache2/mime.types",                  # Apache 2
+    "/etc/httpd/mime.types",  # Mac OS X
+    "/etc/httpd/conf/mime.types",  # Apache
+    "/etc/apache/mime.types",  # Apache 1
+    "/etc/apache2/mime.types",  # Apache 2
     "/usr/local/etc/httpd/conf/mime.types",
     "/usr/local/lib/netscape/mime.types",
-    "/usr/local/etc/httpd/conf/mime.types",     # Apache 1.2
-    "/usr/local/etc/mime.types",                # Apache 1.3
-    ]
+    "/usr/local/etc/httpd/conf/mime.types",  # Apache 1.2
+    "/usr/local/etc/mime.types",  # Apache 1.3
+]
 
 inited = False
 _db = None
@@ -66,11 +71,11 @@ class MimeTypes:
             init()
         self.encodings_map = encodings_map.copy()
         self.suffix_map = suffix_map.copy()
-        self.types_map = ({}, {}) # dict for (non-strict, strict)
+        self.types_map = ({}, {})  # dict for (non-strict, strict)
         self.types_map_inv = ({}, {})
-        for (ext, type) in types_map.items():
+        for ext, type in types_map.items():
             self.add_type(type, ext, True)
-        for (ext, type) in common_types.items():
+        for ext, type in common_types.items():
             self.add_type(type, ext, False)
         for name in filenames:
             self.read(name, strict)
@@ -112,25 +117,25 @@ class MimeTypes:
         but non-standard types.
         """
         scheme, url = urllib.parse.splittype(url)
-        if scheme == 'data':
+        if scheme == "data":
             # syntax of data URLs:
             # dataurl   := "data:" [ mediatype ] [ ";base64" ] "," data
             # mediatype := [ type "/" subtype ] *( ";" parameter )
             # data      := *urlchar
             # parameter := attribute "=" value
             # type/subtype defaults to "text/plain"
-            comma = url.find(',')
+            comma = url.find(",")
             if comma < 0:
                 # bad data URL
                 return None, None
-            semi = url.find(';', 0, comma)
+            semi = url.find(";", 0, comma)
             if semi >= 0:
                 type = url[:semi]
             else:
                 type = url[:comma]
-            if '=' in type or '/' not in type:
-                type = 'text/plain'
-            return type, None           # never compressed, so encoding is None
+            if "=" in type or "/" not in type:
+                type = "text/plain"
+            return type, None  # never compressed, so encoding is None
         base, ext = posixpath.splitext(url)
         while ext in self.suffix_map:
             base, ext = posixpath.splitext(base + self.suffix_map[ext])
@@ -216,14 +221,14 @@ class MimeTypes:
                 break
             words = line.split()
             for i in range(len(words)):
-                if words[i][0] == '#':
+                if words[i][0] == "#":
                     del words[i:]
                     break
             if not words:
                 continue
             type, suffixes = words[0], words[1:]
             for suff in suffixes:
-                self.add_type(type, '.' + suff, strict)
+                self.add_type(type, "." + suff, strict)
 
     def read_windows_registry(self, strict=True):
         """
@@ -250,13 +255,13 @@ class MimeTypes:
                 i += 1
 
         default_encoding = sys.getdefaultencoding()
-        with _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT,
-                             r'MIME\Database\Content Type') as mimedb:
+        with _winreg.OpenKey(
+            _winreg.HKEY_CLASSES_ROOT, r"MIME\Database\Content Type"
+        ) as mimedb:
             for ctype in enum_types(mimedb):
                 try:
                     with _winreg.OpenKey(mimedb, ctype) as key:
-                        suffix, datatype = _winreg.QueryValueEx(key,
-                                                                'Extension')
+                        suffix, datatype = _winreg.QueryValueEx(key, "Extension")
                 except EnvironmentError:
                     continue
                 if datatype != _winreg.REG_SZ:
@@ -304,6 +309,7 @@ def guess_all_extensions(type, strict=True):
         init()
     return _db.guess_all_extensions(type, strict)
 
+
 def guess_extension(type, strict=True):
     """Guess the extension for a file based on its MIME type.
 
@@ -319,6 +325,7 @@ def guess_extension(type, strict=True):
     if _db is None:
         init()
     return _db.guess_extension(type, strict)
+
 
 def add_type(type, ext, strict=True):
     """Add a mapping between a type and an extension.
@@ -340,7 +347,7 @@ def add_type(type, ext, strict=True):
 def init(files=None):
     global suffix_map, types_map, encodings_map, common_types
     global inited, _db
-    inited = True    # so that MimeTypes.__init__() doesn't call us again
+    inited = True  # so that MimeTypes.__init__() doesn't call us again
     db = MimeTypes()
     if files is None:
         if _winreg:
@@ -374,18 +381,18 @@ def _default_mime_types():
     global common_types
 
     suffix_map = {
-        '.svgz': '.svg.gz',
-        '.tgz': '.tar.gz',
-        '.taz': '.tar.gz',
-        '.tz': '.tar.gz',
-        '.tbz2': '.tar.bz2',
-        }
+        ".svgz": ".svg.gz",
+        ".tgz": ".tar.gz",
+        ".taz": ".tar.gz",
+        ".tz": ".tar.gz",
+        ".tbz2": ".tar.bz2",
+    }
 
     encodings_map = {
-        '.gz': 'gzip',
-        '.Z': 'compress',
-        '.bz2': 'bzip2',
-        }
+        ".gz": "gzip",
+        ".Z": "compress",
+        ".bz2": "bzip2",
+    }
 
     # Before adding new types, make sure they are either registered with IANA,
     # at http://www.iana.org/assignments/media-types
@@ -393,153 +400,153 @@ def _default_mime_types():
 
     # If you add to these, please keep them sorted!
     types_map = {
-        '.a'      : 'application/octet-stream',
-        '.ai'     : 'application/postscript',
-        '.aif'    : 'audio/x-aiff',
-        '.aifc'   : 'audio/x-aiff',
-        '.aiff'   : 'audio/x-aiff',
-        '.au'     : 'audio/basic',
-        '.avi'    : 'video/x-msvideo',
-        '.bat'    : 'text/plain',
-        '.bcpio'  : 'application/x-bcpio',
-        '.bin'    : 'application/octet-stream',
-        '.bmp'    : 'image/x-ms-bmp',
-        '.c'      : 'text/plain',
+        ".a": "application/octet-stream",
+        ".ai": "application/postscript",
+        ".aif": "audio/x-aiff",
+        ".aifc": "audio/x-aiff",
+        ".aiff": "audio/x-aiff",
+        ".au": "audio/basic",
+        ".avi": "video/x-msvideo",
+        ".bat": "text/plain",
+        ".bcpio": "application/x-bcpio",
+        ".bin": "application/octet-stream",
+        ".bmp": "image/x-ms-bmp",
+        ".c": "text/plain",
         # Duplicates :(
-        '.cdf'    : 'application/x-cdf',
-        '.cdf'    : 'application/x-netcdf',
-        '.cpio'   : 'application/x-cpio',
-        '.csh'    : 'application/x-csh',
-        '.css'    : 'text/css',
-        '.dll'    : 'application/octet-stream',
-        '.doc'    : 'application/msword',
-        '.dot'    : 'application/msword',
-        '.dvi'    : 'application/x-dvi',
-        '.eml'    : 'message/rfc822',
-        '.eps'    : 'application/postscript',
-        '.etx'    : 'text/x-setext',
-        '.exe'    : 'application/octet-stream',
-        '.gif'    : 'image/gif',
-        '.gtar'   : 'application/x-gtar',
-        '.h'      : 'text/plain',
-        '.hdf'    : 'application/x-hdf',
-        '.htm'    : 'text/html',
-        '.html'   : 'text/html',
-        '.ief'    : 'image/ief',
-        '.jpe'    : 'image/jpeg',
-        '.jpeg'   : 'image/jpeg',
-        '.jpg'    : 'image/jpeg',
-        '.js'     : 'application/x-javascript',
-        '.ksh'    : 'text/plain',
-        '.latex'  : 'application/x-latex',
-        '.m1v'    : 'video/mpeg',
-        '.man'    : 'application/x-troff-man',
-        '.me'     : 'application/x-troff-me',
-        '.mht'    : 'message/rfc822',
-        '.mhtml'  : 'message/rfc822',
-        '.mif'    : 'application/x-mif',
-        '.mov'    : 'video/quicktime',
-        '.movie'  : 'video/x-sgi-movie',
-        '.mp2'    : 'audio/mpeg',
-        '.mp3'    : 'audio/mpeg',
-        '.mp4'    : 'video/mp4',
-        '.mpa'    : 'video/mpeg',
-        '.mpe'    : 'video/mpeg',
-        '.mpeg'   : 'video/mpeg',
-        '.mpg'    : 'video/mpeg',
-        '.ms'     : 'application/x-troff-ms',
-        '.nc'     : 'application/x-netcdf',
-        '.nws'    : 'message/rfc822',
-        '.o'      : 'application/octet-stream',
-        '.obj'    : 'application/octet-stream',
-        '.oda'    : 'application/oda',
-        '.p12'    : 'application/x-pkcs12',
-        '.p7c'    : 'application/pkcs7-mime',
-        '.pbm'    : 'image/x-portable-bitmap',
-        '.pdf'    : 'application/pdf',
-        '.pfx'    : 'application/x-pkcs12',
-        '.pgm'    : 'image/x-portable-graymap',
-        '.pl'     : 'text/plain',
-        '.png'    : 'image/png',
-        '.pnm'    : 'image/x-portable-anymap',
-        '.pot'    : 'application/vnd.ms-powerpoint',
-        '.ppa'    : 'application/vnd.ms-powerpoint',
-        '.ppm'    : 'image/x-portable-pixmap',
-        '.pps'    : 'application/vnd.ms-powerpoint',
-        '.ppt'    : 'application/vnd.ms-powerpoint',
-        '.ps'     : 'application/postscript',
-        '.pwz'    : 'application/vnd.ms-powerpoint',
-        '.py'     : 'text/x-python',
-        '.pyc'    : 'application/x-python-code',
-        '.pyo'    : 'application/x-python-code',
-        '.qt'     : 'video/quicktime',
-        '.ra'     : 'audio/x-pn-realaudio',
-        '.ram'    : 'application/x-pn-realaudio',
-        '.ras'    : 'image/x-cmu-raster',
-        '.rdf'    : 'application/xml',
-        '.rgb'    : 'image/x-rgb',
-        '.roff'   : 'application/x-troff',
-        '.rtx'    : 'text/richtext',
-        '.sgm'    : 'text/x-sgml',
-        '.sgml'   : 'text/x-sgml',
-        '.sh'     : 'application/x-sh',
-        '.shar'   : 'application/x-shar',
-        '.snd'    : 'audio/basic',
-        '.so'     : 'application/octet-stream',
-        '.src'    : 'application/x-wais-source',
-        '.sv4cpio': 'application/x-sv4cpio',
-        '.sv4crc' : 'application/x-sv4crc',
-        '.svg'    : 'image/svg+xml',
-        '.swf'    : 'application/x-shockwave-flash',
-        '.t'      : 'application/x-troff',
-        '.tar'    : 'application/x-tar',
-        '.tcl'    : 'application/x-tcl',
-        '.tex'    : 'application/x-tex',
-        '.texi'   : 'application/x-texinfo',
-        '.texinfo': 'application/x-texinfo',
-        '.tif'    : 'image/tiff',
-        '.tiff'   : 'image/tiff',
-        '.tr'     : 'application/x-troff',
-        '.tsv'    : 'text/tab-separated-values',
-        '.txt'    : 'text/plain',
-        '.ustar'  : 'application/x-ustar',
-        '.vcf'    : 'text/x-vcard',
-        '.wav'    : 'audio/x-wav',
-        '.wiz'    : 'application/msword',
-        '.wsdl'   : 'application/xml',
-        '.xbm'    : 'image/x-xbitmap',
-        '.xlb'    : 'application/vnd.ms-excel',
+        ".cdf": "application/x-cdf",
+        ".cdf": "application/x-netcdf",
+        ".cpio": "application/x-cpio",
+        ".csh": "application/x-csh",
+        ".css": "text/css",
+        ".dll": "application/octet-stream",
+        ".doc": "application/msword",
+        ".dot": "application/msword",
+        ".dvi": "application/x-dvi",
+        ".eml": "message/rfc822",
+        ".eps": "application/postscript",
+        ".etx": "text/x-setext",
+        ".exe": "application/octet-stream",
+        ".gif": "image/gif",
+        ".gtar": "application/x-gtar",
+        ".h": "text/plain",
+        ".hdf": "application/x-hdf",
+        ".htm": "text/html",
+        ".html": "text/html",
+        ".ief": "image/ief",
+        ".jpe": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".jpg": "image/jpeg",
+        ".js": "application/x-javascript",
+        ".ksh": "text/plain",
+        ".latex": "application/x-latex",
+        ".m1v": "video/mpeg",
+        ".man": "application/x-troff-man",
+        ".me": "application/x-troff-me",
+        ".mht": "message/rfc822",
+        ".mhtml": "message/rfc822",
+        ".mif": "application/x-mif",
+        ".mov": "video/quicktime",
+        ".movie": "video/x-sgi-movie",
+        ".mp2": "audio/mpeg",
+        ".mp3": "audio/mpeg",
+        ".mp4": "video/mp4",
+        ".mpa": "video/mpeg",
+        ".mpe": "video/mpeg",
+        ".mpeg": "video/mpeg",
+        ".mpg": "video/mpeg",
+        ".ms": "application/x-troff-ms",
+        ".nc": "application/x-netcdf",
+        ".nws": "message/rfc822",
+        ".o": "application/octet-stream",
+        ".obj": "application/octet-stream",
+        ".oda": "application/oda",
+        ".p12": "application/x-pkcs12",
+        ".p7c": "application/pkcs7-mime",
+        ".pbm": "image/x-portable-bitmap",
+        ".pdf": "application/pdf",
+        ".pfx": "application/x-pkcs12",
+        ".pgm": "image/x-portable-graymap",
+        ".pl": "text/plain",
+        ".png": "image/png",
+        ".pnm": "image/x-portable-anymap",
+        ".pot": "application/vnd.ms-powerpoint",
+        ".ppa": "application/vnd.ms-powerpoint",
+        ".ppm": "image/x-portable-pixmap",
+        ".pps": "application/vnd.ms-powerpoint",
+        ".ppt": "application/vnd.ms-powerpoint",
+        ".ps": "application/postscript",
+        ".pwz": "application/vnd.ms-powerpoint",
+        ".py": "text/x-python",
+        ".pyc": "application/x-python-code",
+        ".pyo": "application/x-python-code",
+        ".qt": "video/quicktime",
+        ".ra": "audio/x-pn-realaudio",
+        ".ram": "application/x-pn-realaudio",
+        ".ras": "image/x-cmu-raster",
+        ".rdf": "application/xml",
+        ".rgb": "image/x-rgb",
+        ".roff": "application/x-troff",
+        ".rtx": "text/richtext",
+        ".sgm": "text/x-sgml",
+        ".sgml": "text/x-sgml",
+        ".sh": "application/x-sh",
+        ".shar": "application/x-shar",
+        ".snd": "audio/basic",
+        ".so": "application/octet-stream",
+        ".src": "application/x-wais-source",
+        ".sv4cpio": "application/x-sv4cpio",
+        ".sv4crc": "application/x-sv4crc",
+        ".svg": "image/svg+xml",
+        ".swf": "application/x-shockwave-flash",
+        ".t": "application/x-troff",
+        ".tar": "application/x-tar",
+        ".tcl": "application/x-tcl",
+        ".tex": "application/x-tex",
+        ".texi": "application/x-texinfo",
+        ".texinfo": "application/x-texinfo",
+        ".tif": "image/tiff",
+        ".tiff": "image/tiff",
+        ".tr": "application/x-troff",
+        ".tsv": "text/tab-separated-values",
+        ".txt": "text/plain",
+        ".ustar": "application/x-ustar",
+        ".vcf": "text/x-vcard",
+        ".wav": "audio/x-wav",
+        ".wiz": "application/msword",
+        ".wsdl": "application/xml",
+        ".xbm": "image/x-xbitmap",
+        ".xlb": "application/vnd.ms-excel",
         # Duplicates :(
-        '.xls'    : 'application/excel',
-        '.xls'    : 'application/vnd.ms-excel',
-        '.xml'    : 'text/xml',
-        '.xpdl'   : 'application/xml',
-        '.xpm'    : 'image/x-xpixmap',
-        '.xsl'    : 'application/xml',
-        '.xwd'    : 'image/x-xwindowdump',
-        '.zip'    : 'application/zip',
-        }
+        ".xls": "application/excel",
+        ".xls": "application/vnd.ms-excel",
+        ".xml": "text/xml",
+        ".xpdl": "application/xml",
+        ".xpm": "image/x-xpixmap",
+        ".xsl": "application/xml",
+        ".xwd": "image/x-xwindowdump",
+        ".zip": "application/zip",
+    }
 
     # These are non-standard types, commonly found in the wild.  They will
     # only match if strict=0 flag is given to the API methods.
 
     # Please sort these too
     common_types = {
-        '.jpg' : 'image/jpg',
-        '.mid' : 'audio/midi',
-        '.midi': 'audio/midi',
-        '.pct' : 'image/pict',
-        '.pic' : 'image/pict',
-        '.pict': 'image/pict',
-        '.rtf' : 'application/rtf',
-        '.xul' : 'text/xul'
-        }
+        ".jpg": "image/jpg",
+        ".mid": "audio/midi",
+        ".midi": "audio/midi",
+        ".pct": "image/pict",
+        ".pic": "image/pict",
+        ".pict": "image/pict",
+        ".rtf": "application/rtf",
+        ".xul": "text/xul",
+    }
 
 
 _default_mime_types()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import getopt
 
     USAGE = """\
@@ -554,32 +561,38 @@ Options:
 More than one type argument may be given.
 """
 
-    def usage(code, msg=''):
+    def usage(code, msg=""):
         print(USAGE)
-        if msg: print(msg)
+        if msg:
+            print(msg)
         sys.exit(code)
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'hle',
-                                   ['help', 'lenient', 'extension'])
+        opts, args = getopt.getopt(
+            sys.argv[1:], "hle", ["help", "lenient", "extension"]
+        )
     except getopt.error as msg:
         usage(1, msg)
 
     strict = 1
     extension = 0
     for opt, arg in opts:
-        if opt in ('-h', '--help'):
+        if opt in ("-h", "--help"):
             usage(0)
-        elif opt in ('-l', '--lenient'):
+        elif opt in ("-l", "--lenient"):
             strict = 0
-        elif opt in ('-e', '--extension'):
+        elif opt in ("-e", "--extension"):
             extension = 1
     for gtype in args:
         if extension:
             guess = guess_extension(gtype, strict)
-            if not guess: print("I don't know anything about type", gtype)
-            else: print(guess)
+            if not guess:
+                print("I don't know anything about type", gtype)
+            else:
+                print(guess)
         else:
             guess, encoding = guess_type(gtype, strict)
-            if not guess: print("I don't know anything about type", gtype)
-            else: print('type:', guess, 'encoding:', encoding)
+            if not guess:
+                print("I don't know anything about type", gtype)
+            else:
+                print("type:", guess, "encoding:", encoding)

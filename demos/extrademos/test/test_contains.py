@@ -7,13 +7,16 @@ class base_set:
     def __init__(self, el):
         self.el = el
 
+
 class myset(base_set):
     def __contains__(self, el):
         return self.el == el
 
+
 class seq(base_set):
     def __getitem__(self, n):
         return [self.el][n]
+
 
 class TestContains(unittest.TestCase):
     def test_common_tests(self):
@@ -28,13 +31,13 @@ class TestContains(unittest.TestCase):
         self.assertRaises(TypeError, lambda: 1 not in a)
 
         # test char in string
-        self.assertIn('c', 'abc')
-        self.assertNotIn('d', 'abc')
+        self.assertIn("c", "abc")
+        self.assertNotIn("d", "abc")
 
-        self.assertIn('', '')
-        self.assertIn('', 'abc')
+        self.assertIn("", "")
+        self.assertIn("", "abc")
 
-        self.assertRaises(TypeError, lambda: None in 'abc')
+        self.assertRaises(TypeError, lambda: None in "abc")
 
     def test_builtin_sequence_types(self):
         # a collection of tests on builtin sequence types
@@ -56,7 +59,9 @@ class TestContains(unittest.TestCase):
             This class is designed to make sure that the contains code
             works when the list is modified during the check.
             """
+
             aList = list(range(15))
+
             def __eq__(self, other):
                 if other == 12:
                     self.aList.remove(12)
@@ -73,10 +78,11 @@ class TestContains(unittest.TestCase):
         class MyNonReflexive(object):
             def __eq__(self, other):
                 return False
+
             def __hash__(self):
                 return 28
 
-        values = float('nan'), 1, None, 'abc', MyNonReflexive()
+        values = float("nan"), 1, None, "abc", MyNonReflexive()
         constructors = list, tuple, dict.fromkeys, set, frozenset, deque
         for constructor in constructors:
             container = constructor(values)
@@ -89,5 +95,6 @@ class TestContains(unittest.TestCase):
 def test_main():
     run_unittest(TestContains)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test_main()

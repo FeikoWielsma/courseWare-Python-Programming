@@ -46,7 +46,7 @@ class Test_TestResult(unittest.TestCase):
             def test_1(self):
                 pass
 
-        test = Foo('test_1')
+        test = Foo("test_1")
 
         result = unittest.TestResult()
 
@@ -67,7 +67,7 @@ class Test_TestResult(unittest.TestCase):
             def test_1(self):
                 pass
 
-        test = Foo('test_1')
+        test = Foo("test_1")
 
         result = unittest.TestResult()
 
@@ -118,7 +118,7 @@ class Test_TestResult(unittest.TestCase):
             def test_1(self):
                 pass
 
-        test = Foo('test_1')
+        test = Foo("test_1")
 
         result = unittest.TestResult()
 
@@ -157,7 +157,7 @@ class Test_TestResult(unittest.TestCase):
             def test_1(self):
                 pass
 
-        test = Foo('test_1')
+        test = Foo("test_1")
         try:
             test.fail("foo")
         except:
@@ -205,7 +205,7 @@ class Test_TestResult(unittest.TestCase):
             def test_1(self):
                 pass
 
-        test = Foo('test_1')
+        test = Foo("test_1")
         try:
             raise TypeError()
         except:
@@ -230,75 +230,86 @@ class Test_TestResult(unittest.TestCase):
     def testGetDescriptionWithoutDocstring(self):
         result = unittest.TextTestResult(None, True, 1)
         self.assertEqual(
-                result.getDescription(self),
-                'testGetDescriptionWithoutDocstring (' + __name__ +
-                '.Test_TestResult)')
+            result.getDescription(self),
+            "testGetDescriptionWithoutDocstring (" + __name__ + ".Test_TestResult)",
+        )
 
-    @unittest.skipIf(sys.flags.optimize >= 2,
-                     "Docstrings are omitted with -O2 and above")
+    @unittest.skipIf(
+        sys.flags.optimize >= 2, "Docstrings are omitted with -O2 and above"
+    )
     def testGetDescriptionWithOneLineDocstring(self):
         """Tests getDescription() for a method with a docstring."""
         result = unittest.TextTestResult(None, True, 1)
         self.assertEqual(
-                result.getDescription(self),
-               ('testGetDescriptionWithOneLineDocstring '
-                '(' + __name__ + '.Test_TestResult)\n'
-                'Tests getDescription() for a method with a docstring.'))
+            result.getDescription(self),
+            (
+                "testGetDescriptionWithOneLineDocstring "
+                "(" + __name__ + ".Test_TestResult)\n"
+                "Tests getDescription() for a method with a docstring."
+            ),
+        )
 
-    @unittest.skipIf(sys.flags.optimize >= 2,
-                     "Docstrings are omitted with -O2 and above")
+    @unittest.skipIf(
+        sys.flags.optimize >= 2, "Docstrings are omitted with -O2 and above"
+    )
     def testGetDescriptionWithMultiLineDocstring(self):
         """Tests getDescription() for a method with a longer docstring.
         The second line of the docstring.
         """
         result = unittest.TextTestResult(None, True, 1)
         self.assertEqual(
-                result.getDescription(self),
-               ('testGetDescriptionWithMultiLineDocstring '
-                '(' + __name__ + '.Test_TestResult)\n'
-                'Tests getDescription() for a method with a longer '
-                'docstring.'))
+            result.getDescription(self),
+            (
+                "testGetDescriptionWithMultiLineDocstring "
+                "(" + __name__ + ".Test_TestResult)\n"
+                "Tests getDescription() for a method with a longer "
+                "docstring."
+            ),
+        )
 
     def testStackFrameTrimming(self):
         class Frame(object):
             class tb_frame(object):
                 f_globals = {}
+
         result = unittest.TestResult()
         self.assertFalse(result._is_relevant_tb_level(Frame))
 
-        Frame.tb_frame.f_globals['__unittest'] = True
+        Frame.tb_frame.f_globals["__unittest"] = True
         self.assertTrue(result._is_relevant_tb_level(Frame))
 
     def testFailFast(self):
         result = unittest.TestResult()
-        result._exc_info_to_string = lambda *_: ''
+        result._exc_info_to_string = lambda *_: ""
         result.failfast = True
         result.addError(None, None)
         self.assertTrue(result.shouldStop)
 
         result = unittest.TestResult()
-        result._exc_info_to_string = lambda *_: ''
+        result._exc_info_to_string = lambda *_: ""
         result.failfast = True
         result.addFailure(None, None)
         self.assertTrue(result.shouldStop)
 
         result = unittest.TestResult()
-        result._exc_info_to_string = lambda *_: ''
+        result._exc_info_to_string = lambda *_: ""
         result.failfast = True
         result.addUnexpectedSuccess(None)
         self.assertTrue(result.shouldStop)
 
     def testFailFastSetByRunner(self):
         runner = unittest.TextTestRunner(stream=io.StringIO(), failfast=True)
+
         def test(result):
             self.assertTrue(result.failfast)
+
         result = runner.run(test)
 
 
 classDict = dict(unittest.TestResult.__dict__)
-for m in ('addSkip', 'addExpectedFailure', 'addUnexpectedSuccess',
-           '__init__'):
+for m in ("addSkip", "addExpectedFailure", "addUnexpectedSuccess", "__init__"):
     del classDict[m]
+
 
 def __init__(self, stream=None, descriptions=None, verbosity=None):
     self.failures = []
@@ -307,14 +318,16 @@ def __init__(self, stream=None, descriptions=None, verbosity=None):
     self.shouldStop = False
     self.buffer = False
 
-classDict['__init__'] = __init__
-OldResult = type('OldResult', (object,), classDict)
+
+classDict["__init__"] = __init__
+OldResult = type("OldResult", (object,), classDict)
+
 
 class Test_OldTestResult(unittest.TestCase):
-
     def assertOldResultWarning(self, test, failures):
-        with support.check_warnings(("TestResult has no add.+ method,",
-                                     RuntimeWarning)):
+        with support.check_warnings(
+            ("TestResult has no add.+ method,", RuntimeWarning)
+        ):
             result = OldResult()
             test.run(result)
             self.assertEqual(len(result.failures), failures)
@@ -322,57 +335,64 @@ class Test_OldTestResult(unittest.TestCase):
     def testOldTestResult(self):
         class Test(unittest.TestCase):
             def testSkip(self):
-                self.skipTest('foobar')
+                self.skipTest("foobar")
+
             @unittest.expectedFailure
             def testExpectedFail(self):
                 raise TypeError
+
             @unittest.expectedFailure
             def testUnexpectedSuccess(self):
                 pass
 
-        for test_name, should_pass in (('testSkip', True),
-                                       ('testExpectedFail', True),
-                                       ('testUnexpectedSuccess', False)):
+        for test_name, should_pass in (
+            ("testSkip", True),
+            ("testExpectedFail", True),
+            ("testUnexpectedSuccess", False),
+        ):
             test = Test(test_name)
             self.assertOldResultWarning(test, int(not should_pass))
 
     def testOldTestTesultSetup(self):
         class Test(unittest.TestCase):
             def setUp(self):
-                self.skipTest('no reason')
+                self.skipTest("no reason")
+
             def testFoo(self):
                 pass
-        self.assertOldResultWarning(Test('testFoo'), 0)
+
+        self.assertOldResultWarning(Test("testFoo"), 0)
 
     def testOldTestResultClass(self):
-        @unittest.skip('no reason')
+        @unittest.skip("no reason")
         class Test(unittest.TestCase):
             def testFoo(self):
                 pass
-        self.assertOldResultWarning(Test('testFoo'), 0)
+
+        self.assertOldResultWarning(Test("testFoo"), 0)
 
     def testOldResultWithRunner(self):
         class Test(unittest.TestCase):
             def testFoo(self):
                 pass
-        runner = unittest.TextTestRunner(resultclass=OldResult,
-                                          stream=io.StringIO())
+
+        runner = unittest.TextTestRunner(resultclass=OldResult, stream=io.StringIO())
         # This will raise an exception if TextTestRunner can't handle old
         # test result objects
-        runner.run(Test('testFoo'))
+        runner.run(Test("testFoo"))
 
 
 class MockTraceback(object):
     @staticmethod
     def format_exception(*_):
-        return ['A traceback']
+        return ["A traceback"]
+
 
 def restore_traceback():
     unittest.result.traceback = traceback
 
 
 class TestOutputBuffering(unittest.TestCase):
-
     def setUp(self):
         self._real_out = sys.stdout
         self._real_err = sys.stderr
@@ -422,14 +442,14 @@ class TestOutputBuffering(unittest.TestCase):
         result._original_stdout = io.StringIO()
         result._original_stderr = io.StringIO()
 
-        print('foo')
-        print('bar', file=sys.stderr)
+        print("foo")
+        print("bar", file=sys.stderr)
 
-        self.assertEqual(out_stream.getvalue(), 'foo\n')
-        self.assertEqual(err_stream.getvalue(), 'bar\n')
+        self.assertEqual(out_stream.getvalue(), "foo\n")
+        self.assertEqual(err_stream.getvalue(), "bar\n")
 
-        self.assertEqual(result._original_stdout.getvalue(), '')
-        self.assertEqual(result._original_stderr.getvalue(), '')
+        self.assertEqual(result._original_stdout.getvalue(), "")
+        self.assertEqual(result._original_stderr.getvalue(), "")
 
         result.addSuccess(self)
         result.stopTest(self)
@@ -437,12 +457,11 @@ class TestOutputBuffering(unittest.TestCase):
         self.assertIs(sys.stdout, result._original_stdout)
         self.assertIs(sys.stderr, result._original_stderr)
 
-        self.assertEqual(result._original_stdout.getvalue(), '')
-        self.assertEqual(result._original_stderr.getvalue(), '')
+        self.assertEqual(result._original_stdout.getvalue(), "")
+        self.assertEqual(result._original_stderr.getvalue(), "")
 
-        self.assertEqual(out_stream.getvalue(), '')
-        self.assertEqual(err_stream.getvalue(), '')
-
+        self.assertEqual(out_stream.getvalue(), "")
+        self.assertEqual(err_stream.getvalue(), "")
 
     def getStartedResult(self):
         result = unittest.TestResult()
@@ -455,10 +474,10 @@ class TestOutputBuffering(unittest.TestCase):
         self.addCleanup(restore_traceback)
 
         for message_attr, add_attr, include_error in [
-            ('errors', 'addError', True),
-            ('failures', 'addFailure', False),
-            ('errors', 'addError', True),
-            ('failures', 'addFailure', False)
+            ("errors", "addError", True),
+            ("failures", "addFailure", False),
+            ("errors", "addError", True),
+            ("failures", "addFailure", False),
         ]:
             result = self.getStartedResult()
             buffered_out = sys.stdout
@@ -466,10 +485,9 @@ class TestOutputBuffering(unittest.TestCase):
             result._original_stdout = io.StringIO()
             result._original_stderr = io.StringIO()
 
-            print('foo', file=sys.stdout)
+            print("foo", file=sys.stdout)
             if include_error:
-                print('bar', file=sys.stderr)
-
+                print("bar", file=sys.stderr)
 
             addFunction = getattr(result, add_attr)
             addFunction(self, (None, None, None))
@@ -483,19 +501,23 @@ class TestOutputBuffering(unittest.TestCase):
                 Stdout:
                 foo
             """)
-            expectedErrMessage = ''
+            expectedErrMessage = ""
             if include_error:
                 expectedErrMessage = textwrap.dedent("""
                 Stderr:
                 bar
             """)
 
-            expectedFullMessage = 'A traceback%s%s' % (expectedOutMessage, expectedErrMessage)
+            expectedFullMessage = "A traceback%s%s" % (
+                expectedOutMessage,
+                expectedErrMessage,
+            )
 
             self.assertIs(test, self)
             self.assertEqual(result._original_stdout.getvalue(), expectedOutMessage)
             self.assertEqual(result._original_stderr.getvalue(), expectedErrMessage)
             self.assertMultiLineEqual(message, expectedFullMessage)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

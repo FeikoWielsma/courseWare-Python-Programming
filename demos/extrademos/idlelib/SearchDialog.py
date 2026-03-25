@@ -3,6 +3,7 @@ from tkinter import *
 from idlelib import SearchEngine
 from idlelib.SearchDialogBase import SearchDialogBase
 
+
 def _setup(text):
     root = text._root()
     engine = SearchEngine.get(root)
@@ -10,18 +11,21 @@ def _setup(text):
         engine._searchdialog = SearchDialog(root, engine)
     return engine._searchdialog
 
+
 def find(text):
     pat = text.get("sel.first", "sel.last")
-    return _setup(text).open(text,pat)
+    return _setup(text).open(text, pat)
+
 
 def find_again(text):
     return _setup(text).find_again(text)
 
+
 def find_selection(text):
     return _setup(text).find_selection(text)
 
-class SearchDialog(SearchDialogBase):
 
+class SearchDialog(SearchDialogBase):
     def create_widgets(self):
         f = SearchDialogBase.create_widgets(self)
         self.make_button("Find", self.default_command, 1)

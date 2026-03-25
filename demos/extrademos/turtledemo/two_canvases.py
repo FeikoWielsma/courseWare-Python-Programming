@@ -3,6 +3,7 @@
 """turtle example: Using TurtleScreen and RawTurtle
 for drawing on two distinct canvases.
 """
+
 from turtle import TurtleScreen, RawTurtle, TK
 
 root = TK.Tk()
@@ -24,7 +25,7 @@ p.width(3)
 q.color("blue", (0.85, 0.85, 1))
 q.width(3)
 
-for t in p,q:
+for t in p, q:
     t.shape("turtle")
     t.lt(36)
 
@@ -36,7 +37,7 @@ for i in range(5):
     for t in p, q:
         t.fd(50)
         t.lt(72)
-for t in p,q:
+for t in p, q:
     t.end_fill()
     t.lt(54)
     t.pu()
@@ -44,9 +45,9 @@ for t in p,q:
 
 ## Want to get some info?
 
-#print(s1, s2)
-#print(p, q)
-#print(s1.turtles())
-#print(s2.turtles())
+# print(s1, s2)
+# print(p, q)
+# print(s1.turtles())
+# print(s2.turtles())
 
 TK.mainloop()

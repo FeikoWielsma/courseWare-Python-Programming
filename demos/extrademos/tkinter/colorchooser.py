@@ -25,6 +25,7 @@ from tkinter.commondialog import Dialog
 #
 # color chooser class
 
+
 class Chooser(Dialog):
     "Ask for a color"
 
@@ -44,18 +45,19 @@ class Chooser(Dialog):
         # result can be somethings: an empty tuple, an empty string or
         # a Tcl_Obj, so this somewhat weird check handles that
         if not result or not str(result):
-            return None, None # canceled
+            return None, None  # canceled
 
         # to simplify application code, the color chooser returns
         # an RGB tuple together with the Tk color string
         r, g, b = widget.winfo_rgb(result)
-        return (r/256, g/256, b/256), str(result)
+        return (r / 256, g / 256, b / 256), str(result)
 
 
 #
 # convenience stuff
 
-def askcolor(color = None, **options):
+
+def askcolor(color=None, **options):
     "Ask for a color"
 
     if color:

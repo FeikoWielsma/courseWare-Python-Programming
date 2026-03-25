@@ -5,7 +5,7 @@ app = QtGui.QApplication(sys.argv)
 
 win = QtGui.QWidget()
 x, y, w, h = 100, 100, 200, 50
-win.setGeometry(x, y, w, h)
+win.set_geometry(x, y, w, h)
 label = QtGui.QLabel("hello", win)
 label.move(10, 10)
 

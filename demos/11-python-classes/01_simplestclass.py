@@ -1,9 +1,12 @@
 # Filename: simplestclass.py
- 
+
+
 class Person:
-    'Simple Person class'
-    pass # An empty block
- 
+    "Simple Person class"
+
+    pass  # An empty block
+
+
 p1 = Person()
 print(Person.__doc__)
 print(p1)

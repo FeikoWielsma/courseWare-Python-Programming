@@ -5,9 +5,11 @@ import linecache
 from idlelib.TreeWidget import TreeNode, TreeItem, ScrolledCanvas
 from idlelib.ObjectBrowser import ObjectTreeItem, make_objecttreeitem
 
+
 def StackBrowser(root, flist=None, tb=None, top=None):
     if top is None:
         from tkinter import Toplevel
+
         top = Toplevel(root)
     sc = ScrolledCanvas(top, bg="white", highlightthickness=0)
     sc.frame.pack(expand=1, fill="both")
@@ -15,8 +17,8 @@ def StackBrowser(root, flist=None, tb=None, top=None):
     node = TreeNode(sc.canvas, None, item)
     node.expand()
 
-class StackTreeItem(TreeItem):
 
+class StackTreeItem(TreeItem):
     def __init__(self, flist=None, tb=None):
         self.flist = flist
         self.stack = self.get_stack(tb)
@@ -53,8 +55,8 @@ class StackTreeItem(TreeItem):
             sublist.append(item)
         return sublist
 
-class FrameTreeItem(TreeItem):
 
+class FrameTreeItem(TreeItem):
     def __init__(self, info, flist):
         self.info = info
         self.flist = flist
@@ -73,8 +75,7 @@ class FrameTreeItem(TreeItem):
         if funcname in ("?", "", None):
             item = "%s, line %d: %s" % (modname, lineno, sourceline)
         else:
-            item = "%s.%s(...), line %d: %s" % (modname, funcname,
-                                             lineno, sourceline)
+            item = "%s.%s(...), line %d: %s" % (modname, funcname, lineno, sourceline)
         return item
 
     def GetSubList(self):
@@ -94,8 +95,8 @@ class FrameTreeItem(TreeItem):
             if os.path.isfile(filename):
                 self.flist.gotofileline(filename, lineno)
 
-class VariablesTreeItem(ObjectTreeItem):
 
+class VariablesTreeItem(ObjectTreeItem):
     def GetText(self):
         return self.labeltext
 
@@ -115,8 +116,10 @@ class VariablesTreeItem(ObjectTreeItem):
                 value = self.object[key]
             except KeyError:
                 continue
+
             def setfunction(value, key=key, object=self.object):
                 object[key] = value
+
             item = make_objecttreeitem(key + " =", value, setfunction)
             sublist.append(item)
         return sublist

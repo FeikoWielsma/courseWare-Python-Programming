@@ -20,13 +20,13 @@ else:
 
         def test_buffers(self):
             buf = ctypes.create_unicode_buffer("abc")
-            self.assertEqual(len(buf), 3+1)
+            self.assertEqual(len(buf), 3 + 1)
 
             buf = ctypes.create_unicode_buffer("ab\xe4\xf6\xfc")
             self.assertEqual(buf[:], "ab\xe4\xf6\xfc\0")
             self.assertEqual(buf[::], "ab\xe4\xf6\xfc\0")
-            self.assertEqual(buf[::-1], '\x00\xfc\xf6\xe4ba')
-            self.assertEqual(buf[::2], 'a\xe4\xfc')
+            self.assertEqual(buf[::-1], "\x00\xfc\xf6\xe4ba")
+            self.assertEqual(buf[::2], "a\xe4\xfc")
             self.assertEqual(buf[6:5:-1], "")
 
     func = ctypes.CDLL(_ctypes_test.__file__)._testfunc_p_p
@@ -45,15 +45,15 @@ else:
 
         def test_buffers(self):
             buf = ctypes.create_string_buffer(b"abc")
-            self.assertEqual(len(buf), 3+1)
+            self.assertEqual(len(buf), 3 + 1)
 
             buf = ctypes.create_string_buffer(b"ab\xe4\xf6\xfc")
             self.assertEqual(buf[:], b"ab\xe4\xf6\xfc\0")
             self.assertEqual(buf[::], b"ab\xe4\xf6\xfc\0")
-            self.assertEqual(buf[::-1], b'\x00\xfc\xf6\xe4ba')
-            self.assertEqual(buf[::2], b'a\xe4\xfc')
+            self.assertEqual(buf[::-1], b"\x00\xfc\xf6\xe4ba")
+            self.assertEqual(buf[::2], b"a\xe4\xfc")
             self.assertEqual(buf[6:5:-1], b"")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

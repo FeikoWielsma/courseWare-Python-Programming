@@ -1,14 +1,14 @@
 from tkinter import *
 
-class MultiStatusBar(Frame):
 
+class MultiStatusBar(Frame):
     def __init__(self, master=None, **kw):
         if master is None:
             master = Tk()
         Frame.__init__(self, master, **kw)
         self.labels = {}
 
-    def set_label(self, name, text='', side=LEFT):
+    def set_label(self, name, text="", side=LEFT):
         if name not in self.labels:
             label = Label(self, bd=1, relief=SUNKEN, anchor=W)
             label.pack(side=side)
@@ -16,6 +16,7 @@ class MultiStatusBar(Frame):
         else:
             label = self.labels[name]
         label.config(text=text)
+
 
 def _test():
     b = Frame()
@@ -28,5 +29,6 @@ def _test():
     b.pack()
     b.mainloop()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     _test()

@@ -1,15 +1,16 @@
 from selenium import webdriver
 import unittest
 
+
 class GoogleTestCase(unittest.TestCase):
-
-    def setUp(self):
+    def set_up(self):
         self.browser = webdriver.Chrome()
-        self.addCleanup(self.browser.quit)
+        self.add_cleanup(self.browser.quit)
 
-    def testPageTitle(self):
-        self.browser.get('http://www.google.com')
-        self.assertIn('Google', self.browser.title)
+    def test_page_title(self):
+        self.browser.get("http://www.google.com")
+        self.assert_in("Google", self.browser.title)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main(verbosity=2)

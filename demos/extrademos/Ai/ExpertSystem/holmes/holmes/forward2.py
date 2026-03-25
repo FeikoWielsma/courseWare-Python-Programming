@@ -11,34 +11,30 @@
 # to use it in a program, just import forward2;
 ###########################################################################
 
-                              
 
+import forward
 
-import forward; forward1 = forward
+forward1 = forward
 
 from match import *
 from forward import copy_dict, ask_user, asserted
 
 
-
-
 def forward(kbase, facts, *pmode):
     temp = forward1.bindings
-    forward1.bindings = bindings                     # over-ride 1 function
-    res = forward1.forward(kbase, facts, pmode)      # call forward.py version
+    forward1.bindings = bindings  # over-ride 1 function
+    res = forward1.forward(kbase, facts, pmode)  # call forward.py version
     forward1.bindings = temp
     return res
 
 
-
-
 #################################################
-# generate bindings for rule's 'if' conjunction: 
+# generate bindings for rule's 'if' conjunction:
 # find intersected bindings at this 'AND' node,
 # and construct proof subtree lists as the
 # recursion unfolds with valid solutions;
 #
-# note: this function executes with global 
+# note: this function executes with global
 # scope = module forward2.py, but the rest of
 # the system executes with global scope =
 # module forward.py;
@@ -50,33 +46,30 @@ def forward(kbase, facts, *pmode):
 #################################################
 
 
-
-
 def bindings(ifs, facts, dict, why):
     if ifs == []:
-        return [(copy_dict(dict), [])]                # all conjuncts matched
-    
+        return [(copy_dict(dict), [])]  # all conjuncts matched
+
     res = []
     head, tail = ifs[0], ifs[1:]
-    if head[0] == 'ask':
+    if head[0] == "ask":
         ground = substitute(head[1:], dict)
         if ask_user(ground, facts, why):
-            for (dict2, proof2) in bindings(tail, facts, dict, why):
-                res.append((dict2, [(ground, 'told')] + proof2))
+            for dict2, proof2 in bindings(tail, facts, dict, why):
+                res.append((dict2, [(ground, "told")] + proof2))
 
-    elif head[0] == 'not':
+    elif head[0] == "not":
         ground = substitute(head[1:], dict)
-        if not asserted(ground, facts) or asserted(['not']+ground, facts):  
-            for (dict2, proof2) in bindings(tail, facts, dict, why):
-                res.append((dict2, [(ground, 'not')] + proof2))
-         
+        if not asserted(ground, facts) or asserted(["not"] + ground, facts):
+            for dict2, proof2 in bindings(tail, facts, dict, why):
+                res.append((dict2, [(ground, "not")] + proof2))
+
     else:
-        for (fact, proof) in facts: 
+        for fact, proof in facts:
             matched, changes = match(head, fact, dict, {})
             if matched:
-                for (dict2, proof2) in bindings(tail, facts, dict, why):
+                for dict2, proof2 in bindings(tail, facts, dict, why):
                     res.append((dict2, [(fact, proof)] + proof2))
-            for (var, env) in changes:
-                env[var] = '?'                        
+            for var, env in changes:
+                env[var] = "?"
     return res
-

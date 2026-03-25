@@ -1,6 +1,6 @@
 girls = ['alice', 'bernice', 'clarice']
 boys = ['chris', 'arnold', 'bob']
-letterGirls = {}
+letter_girls = {}
 for girl in girls:
-    letterGirls.setdefault(girl[0], []).append(girl)
-print [b+'+'+g for b in boys for g in letterGirls[b[0]]]
+    letter_girls.setdefault(girl[0], []).append(girl)
+print [b+'+'+g for b in boys for g in letter_girls[b[0]]]

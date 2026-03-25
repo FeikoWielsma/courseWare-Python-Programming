@@ -46,16 +46,18 @@ the setsockopt() and getsockopt() methods.
 import _socket
 from _socket import *
 
-import os, sys, io
+import os
+import sys
+import io
 
 try:
     import errno
 except ImportError:
     errno = None
-EBADF = getattr(errno, 'EBADF', 9)
-EINTR = getattr(errno, 'EINTR', 4)
-EAGAIN = getattr(errno, 'EAGAIN', 11)
-EWOULDBLOCK = getattr(errno, 'EWOULDBLOCK', 11)
+EBADF = getattr(errno, "EBADF", 9)
+EINTR = getattr(errno, "EINTR", 4)
+EAGAIN = getattr(errno, "EAGAIN", 11)
+EWOULDBLOCK = getattr(errno, "EWOULDBLOCK", 11)
 
 __all__ = ["getfqdn", "create_connection"]
 __all__.extend(os._get_exports_list(_socket))
@@ -69,7 +71,7 @@ if sys.platform.lower().startswith("win"):
     errorTab[10004] = "The operation was interrupted."
     errorTab[10009] = "A bad file handle was passed."
     errorTab[10013] = "Permission denied."
-    errorTab[10014] = "A fault occurred on the network??" # WSAEFAULT
+    errorTab[10014] = "A fault occurred on the network??"  # WSAEFAULT
     errorTab[10022] = "An invalid operation was attempted."
     errorTab[10035] = "The socket operation would block"
     errorTab[10036] = "A blocking operation is already in progress."
@@ -85,7 +87,6 @@ if sys.platform.lower().startswith("win"):
 
 
 class socket(_socket.socket):
-
     """A subclass of _socket.socket adding the makefile() method."""
 
     __slots__ = ["__weakref__", "_io_refs", "_closed"]
@@ -106,10 +107,12 @@ class socket(_socket.socket):
         """Wrap __repr__() to reveal the real class name."""
         s = _socket.socket.__repr__(self)
         if s.startswith("<socket object"):
-            s = "<%s.%s%s%s" % (self.__class__.__module__,
-                                self.__class__.__name__,
-                                getattr(self, '_closed', False) and " [closed] " or "",
-                                s[7:])
+            s = "<%s.%s%s%s" % (
+                self.__class__.__module__,
+                self.__class__.__name__,
+                getattr(self, "_closed", False) and " [closed] " or "",
+                s[7:],
+            )
         return s
 
     def dup(self):
@@ -138,8 +141,9 @@ class socket(_socket.socket):
             sock.setblocking(True)
         return sock, addr
 
-    def makefile(self, mode="r", buffering=None, *,
-                 encoding=None, errors=None, newline=None):
+    def makefile(
+        self, mode="r", buffering=None, *, encoding=None, errors=None, newline=None
+    ):
         """makefile(...) -> an I/O stream connected to the socket
 
         The arguments are as for io.open() after the filename,
@@ -197,8 +201,9 @@ class socket(_socket.socket):
         if self._io_refs <= 0:
             self._real_close()
 
+
 def fromfd(fd, family, type, proto=0):
-    """ fromfd(fd, family, type[, proto]) -> socket object
+    """fromfd(fd, family, type[, proto]) -> socket object
 
     Create a socket object from a duplicate of the given file
     descriptor.  The remaining arguments are the same as for socket().
@@ -228,10 +233,10 @@ if hasattr(_socket, "socketpair"):
         return a, b
 
 
-_blocking_errnos = { EAGAIN, EWOULDBLOCK }
+_blocking_errnos = {EAGAIN, EWOULDBLOCK}
+
 
 class SocketIO(io.RawIOBase):
-
     """Raw I/O implementation for stream sockets.
 
     This class supports the makefile() method on sockets.  It provides
@@ -296,18 +301,15 @@ class SocketIO(io.RawIOBase):
             raise
 
     def readable(self):
-        """True if the SocketIO is open for reading.
-        """
+        """True if the SocketIO is open for reading."""
         return self._reading and not self.closed
 
     def writable(self):
-        """True if the SocketIO is open for writing.
-        """
+        """True if the SocketIO is open for writing."""
         return self._writing and not self.closed
 
     def fileno(self):
-        """Return the file descriptor of the underlying socket.
-        """
+        """Return the file descriptor of the underlying socket."""
         self._checkClosed()
         return self._sock.fileno()
 
@@ -333,7 +335,7 @@ class SocketIO(io.RawIOBase):
         self._sock = None
 
 
-def getfqdn(name=''):
+def getfqdn(name=""):
     """Get fully qualified domain name from name.
 
     An empty argument is interpreted as meaning the local host.
@@ -343,7 +345,7 @@ def getfqdn(name=''):
     from gethostname() is returned.
     """
     name = name.strip()
-    if not name or name == '0.0.0.0':
+    if not name or name == "0.0.0.0":
         name = gethostname()
     try:
         hostname, aliases, ipaddrs = gethostbyaddr(name)
@@ -352,7 +354,7 @@ def getfqdn(name=''):
     else:
         aliases.insert(0, hostname)
         for name in aliases:
-            if '.' in name:
+            if "." in name:
                 break
         else:
             name = hostname
@@ -361,8 +363,8 @@ def getfqdn(name=''):
 
 _GLOBAL_DEFAULT_TIMEOUT = object()
 
-def create_connection(address, timeout=_GLOBAL_DEFAULT_TIMEOUT,
-                      source_address=None):
+
+def create_connection(address, timeout=_GLOBAL_DEFAULT_TIMEOUT, source_address=None):
     """Connect to *address* and return the socket object.
 
     Convenience function.  Connect to *address* (a 2-tuple ``(host,

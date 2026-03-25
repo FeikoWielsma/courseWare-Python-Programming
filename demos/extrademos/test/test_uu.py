@@ -6,9 +6,9 @@ Nick Mathewson
 import unittest
 from test import support
 
-import sys, os
+import sys
+import os
 import uu
-from io import BytesIO
 import io
 
 plaintext = b"The smooth-scaled python crept over the sleeping dog\n"
@@ -16,6 +16,7 @@ plaintext = b"The smooth-scaled python crept over the sleeping dog\n"
 encodedtext = b"""\
 M5&AE('-M;V]T:\"US8V%L960@<'ET:&]N(&-R97!T(&]V97(@=&AE('-L965P
 (:6YG(&1O9PH """
+
 
 # Stolen from io.py
 class FakeIO(io.TextIOWrapper):
@@ -26,12 +27,12 @@ class FakeIO(io.TextIOWrapper):
 
     # XXX This is really slow, but fully functional
 
-    def __init__(self, initial_value="", encoding="utf-8",
-                 errors="strict", newline="\n"):
-        super(FakeIO, self).__init__(io.BytesIO(),
-                                     encoding=encoding,
-                                     errors=errors,
-                                     newline=newline)
+    def __init__(
+        self, initial_value="", encoding="utf-8", errors="strict", newline="\n"
+    ):
+        super(FakeIO, self).__init__(
+            io.BytesIO(), encoding=encoding, errors=errors, newline=newline
+        )
         self._encoding = encoding
         self._errors = errors
         if initial_value:
@@ -46,11 +47,14 @@ class FakeIO(io.TextIOWrapper):
 
 
 def encodedtextwrapped(mode, filename):
-    return (bytes("begin %03o %s\n" % (mode, filename), "ascii") +
-            encodedtext + b"\n \nend\n")
+    return (
+        bytes("begin %03o %s\n" % (mode, filename), "ascii")
+        + encodedtext
+        + b"\n \nend\n"
+    )
+
 
 class UUTest(unittest.TestCase):
-
     def test_encode(self):
         inp = io.BytesIO(plaintext)
         out = io.BytesIO()
@@ -67,9 +71,9 @@ class UUTest(unittest.TestCase):
         uu.decode(inp, out)
         self.assertEqual(out.getvalue(), plaintext)
         inp = io.BytesIO(
-            b"UUencoded files may contain many lines,\n" +
-            b"even some that have 'begin' in them.\n" +
-            encodedtextwrapped(0o666, "t1")
+            b"UUencoded files may contain many lines,\n"
+            + b"even some that have 'begin' in them.\n"
+            + encodedtextwrapped(0o666, "t1")
         )
         out = io.BytesIO()
         uu.decode(inp, out)
@@ -93,8 +97,8 @@ class UUTest(unittest.TestCase):
         except uu.Error as e:
             self.assertEqual(str(e), "No valid begin line found in input file")
 
-class UUStdIOTest(unittest.TestCase):
 
+class UUStdIOTest(unittest.TestCase):
     def setUp(self):
         self.stdin = sys.stdin
         self.stdout = sys.stdout
@@ -107,8 +111,9 @@ class UUStdIOTest(unittest.TestCase):
         sys.stdin = FakeIO(plaintext.decode("ascii"))
         sys.stdout = FakeIO()
         uu.encode("-", "-", "t1", 0o666)
-        self.assertEqual(sys.stdout.getvalue(),
-                         encodedtextwrapped(0o666, "t1").decode("ascii"))
+        self.assertEqual(
+            sys.stdout.getvalue(), encodedtextwrapped(0o666, "t1").decode("ascii")
+        )
 
     def test_decode(self):
         sys.stdin = FakeIO(encodedtextwrapped(0o666, "t1").decode("ascii"))
@@ -119,8 +124,8 @@ class UUStdIOTest(unittest.TestCase):
         sys.stdin = self.stdin
         self.assertEqual(stdout.getvalue(), plaintext.decode("ascii"))
 
-class UUFileTest(unittest.TestCase):
 
+class UUFileTest(unittest.TestCase):
     def _kill(self, f):
         # close and remove file
         if f is None:
@@ -139,7 +144,7 @@ class UUFileTest(unittest.TestCase):
             pass
 
     def setUp(self):
-        self.tmpin  = support.TESTFN + "i"
+        self.tmpin = support.TESTFN + "i"
         self.tmpout = support.TESTFN + "o"
 
     def tearDown(self):
@@ -150,24 +155,24 @@ class UUFileTest(unittest.TestCase):
         fin = fout = None
         try:
             support.unlink(self.tmpin)
-            fin = open(self.tmpin, 'wb')
+            fin = open(self.tmpin, "wb")
             fin.write(plaintext)
             fin.close()
 
-            fin = open(self.tmpin, 'rb')
-            fout = open(self.tmpout, 'wb')
+            fin = open(self.tmpin, "rb")
+            fout = open(self.tmpout, "wb")
             uu.encode(fin, fout, self.tmpin, mode=0o644)
             fin.close()
             fout.close()
 
-            fout = open(self.tmpout, 'rb')
+            fout = open(self.tmpout, "rb")
             s = fout.read()
             fout.close()
             self.assertEqual(s, encodedtextwrapped(0o644, self.tmpin))
 
             # in_file and out_file as filenames
             uu.encode(self.tmpin, self.tmpout, self.tmpin, mode=0o644)
-            fout = open(self.tmpout, 'rb')
+            fout = open(self.tmpout, "rb")
             s = fout.read()
             fout.close()
             self.assertEqual(s, encodedtextwrapped(0o644, self.tmpin))
@@ -180,15 +185,15 @@ class UUFileTest(unittest.TestCase):
         f = None
         try:
             support.unlink(self.tmpin)
-            f = open(self.tmpin, 'wb')
+            f = open(self.tmpin, "wb")
             f.write(encodedtextwrapped(0o644, self.tmpout))
             f.close()
 
-            f = open(self.tmpin, 'rb')
+            f = open(self.tmpin, "rb")
             uu.decode(f)
             f.close()
 
-            f = open(self.tmpout, 'rb')
+            f = open(self.tmpout, "rb")
             s = f.read()
             f.close()
             self.assertEqual(s, plaintext)
@@ -200,13 +205,13 @@ class UUFileTest(unittest.TestCase):
         f = None
         try:
             support.unlink(self.tmpin)
-            f = open(self.tmpin, 'wb')
+            f = open(self.tmpin, "wb")
             f.write(encodedtextwrapped(0o644, self.tmpout))
             f.close()
 
             uu.decode(self.tmpin)
 
-            f = open(self.tmpout, 'rb')
+            f = open(self.tmpout, "rb")
             s = f.read()
             f.close()
             self.assertEqual(s, plaintext)
@@ -219,21 +224,24 @@ class UUFileTest(unittest.TestCase):
         try:
             f = io.BytesIO(encodedtextwrapped(0o644, self.tmpout))
 
-            f = open(self.tmpin, 'rb')
+            f = open(self.tmpin, "rb")
             uu.decode(f)
             f.close()
 
-            f = open(self.tmpin, 'rb')
+            f = open(self.tmpin, "rb")
             self.assertRaises(uu.Error, uu.decode, f)
             f.close()
         finally:
             self._kill(f)
 
-def test_main():
-    support.run_unittest(UUTest,
-                              UUStdIOTest,
-                              UUFileTest,
-                              )
 
-if __name__=="__main__":
+def test_main():
+    support.run_unittest(
+        UUTest,
+        UUStdIOTest,
+        UUFileTest,
+    )
+
+
+if __name__ == "__main__":
     test_main()

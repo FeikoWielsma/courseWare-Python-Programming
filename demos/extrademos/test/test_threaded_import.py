@@ -12,19 +12,19 @@ import time
 import shutil
 import unittest
 from test.support import verbose, import_module, run_unittest, TESTFN
-thread = import_module('_thread')
-threading = import_module('threading')
+
+thread = import_module("_thread")
+threading = import_module("threading")
+
 
 def task(N, done, done_tasks, errors):
     try:
         # We don't use modulefinder but still import it in order to stress
         # importing of different modules from several threads.
         if len(done_tasks) % 2:
-            import modulefinder
             import random
         else:
             import random
-            import modulefinder
         # This will fail if random is not completely initialized
         x = random.randrange(1, 3)
     except Exception as e:
@@ -35,25 +35,27 @@ def task(N, done, done_tasks, errors):
         if finished:
             done.set()
 
+
 # Create a circular import structure: A -> C -> B -> D -> A
 # NOTE: `time` is already loaded and therefore doesn't threaten to deadlock.
 
 circular_imports_modules = {
-    'A': """if 1:
+    "A": """if 1:
         import time
         time.sleep(%(delay)s)
         x = 'a'
         import C
         """,
-    'B': """if 1:
+    "B": """if 1:
         import time
         time.sleep(%(delay)s)
         x = 'b'
         import D
         """,
-    'C': """import B""",
-    'D': """import A""",
+    "C": """import B""",
+    "D": """import A""",
 }
+
 
 class Finder:
     """A dummy finder to detect concurrent access to its find_module()
@@ -74,6 +76,7 @@ class Finder:
         time.sleep(0.1)
         self.x = x + 1
 
+
 class FlushingFinder:
     """A dummy finder which flushes sys.path_importer_cache when it gets
     called."""
@@ -83,16 +86,15 @@ class FlushingFinder:
 
 
 class ThreadedImportTests(unittest.TestCase):
-
     def setUp(self):
-        self.old_random = sys.modules.pop('random', None)
+        self.old_random = sys.modules.pop("random", None)
 
     def tearDown(self):
         # If the `random` module was already initialized, we restore the
         # old module at the end so that pickling tests don't fail.
         # See http://bugs.python.org/issue3657#msg110461
         if self.old_random is not None:
-            sys.modules['random'] = self.old_random
+            sys.modules["random"] = self.old_random
 
     def check_parallel_module_init(self):
         if imp.lock_held():
@@ -102,9 +104,9 @@ class ThreadedImportTests(unittest.TestCase):
         done = threading.Event()
         for N in (20, 50) * 3:
             if verbose:
-                print("Trying", N, "threads ...", end=' ')
+                print("Trying", N, "threads ...", end=" ")
             # Make sure that random and modulefinder get reimported freshly
-            for modname in ['random', 'modulefinder']:
+            for modname in ["random", "modulefinder"]:
                 try:
                     del sys.modules[modname]
                 except KeyError:
@@ -113,7 +115,15 @@ class ThreadedImportTests(unittest.TestCase):
             done_tasks = []
             done.clear()
             for i in range(N):
-                thread.start_new_thread(task, (N, done, done_tasks, errors,))
+                thread.start_new_thread(
+                    task,
+                    (
+                        N,
+                        done,
+                        done_tasks,
+                        errors,
+                    ),
+                )
             done.wait(60)
             self.assertFalse(errors)
             if verbose:
@@ -140,14 +150,16 @@ class ThreadedImportTests(unittest.TestCase):
         # to flush the path_importer_cache, which we do by registering a
         # dedicated meta_path entry.
         flushing_finder = FlushingFinder()
+
         def path_hook(path):
-            finder.find_module('')
+            finder.find_module("")
             raise ImportError
+
         sys.path_hooks.append(path_hook)
         sys.meta_path.append(flushing_finder)
         try:
             # Flush the cache a first time
-            flushing_finder.find_module('')
+            flushing_finder.find_module("")
             numtests = self.check_parallel_module_init()
             self.assertGreater(finder.numcalls, 0)
             self.assertEqual(finder.x, finder.numcalls)
@@ -159,10 +171,11 @@ class ThreadedImportTests(unittest.TestCase):
         # In case this test is run again, make sure the helper module
         # gets loaded from scratch again.
         try:
-            del sys.modules['test.threaded_import_hangers']
+            del sys.modules["test.threaded_import_hangers"]
         except KeyError:
             pass
         import test.threaded_import_hangers
+
         self.assertFalse(test.threaded_import_hangers.errors)
 
     def test_circular_imports(self):
@@ -182,29 +195,35 @@ class ThreadedImportTests(unittest.TestCase):
         sys.path.insert(0, TESTFN)
         self.addCleanup(sys.path.remove, TESTFN)
         for name, contents in circular_imports_modules.items():
-            contents = contents % {'delay': delay}
+            contents = contents % {"delay": delay}
             with open(os.path.join(TESTFN, name + ".py"), "wb") as f:
-                f.write(contents.encode('utf-8'))
+                f.write(contents.encode("utf-8"))
             self.addCleanup(sys.modules.pop, name, None)
 
         results = []
+
         def import_ab():
             import A
-            results.append(getattr(A, 'x', None))
+
+            results.append(getattr(A, "x", None))
+
         def import_ba():
             import B
-            results.append(getattr(B, 'x', None))
+
+            results.append(getattr(B, "x", None))
+
         t1 = threading.Thread(target=import_ab)
         t2 = threading.Thread(target=import_ba)
         t1.start()
         t2.start()
         t1.join()
         t2.join()
-        self.assertEqual(set(results), {'a', 'b'})
+        self.assertEqual(set(results), {"a", "b"})
 
 
 def test_main():
     run_unittest(ThreadedImportTests)
+
 
 if __name__ == "__main__":
     test_main()

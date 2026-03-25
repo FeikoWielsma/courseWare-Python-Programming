@@ -7,6 +7,7 @@ from test.support import run_unittest
 
 from distutils import log
 
+
 class TestLog(unittest.TestCase):
     def test_non_ascii(self):
         # Issue #8663: test that non-ASCII text is escaped with
@@ -16,8 +17,10 @@ class TestLog(unittest.TestCase):
         old_stderr = sys.stderr
         try:
             log.set_threshold(log.DEBUG)
-            with NamedTemporaryFile(mode="w+", encoding='ascii') as stdout, \
-                 NamedTemporaryFile(mode="w+", encoding='ascii') as stderr:
+            with (
+                NamedTemporaryFile(mode="w+", encoding="ascii") as stdout,
+                NamedTemporaryFile(mode="w+", encoding="ascii") as stderr,
+            ):
                 sys.stdout = stdout
                 sys.stderr = stderr
                 log.debug("debug:\xe9")
@@ -30,8 +33,10 @@ class TestLog(unittest.TestCase):
             sys.stdout = old_stdout
             sys.stderr = old_stderr
 
+
 def test_suite():
     return unittest.makeSuite(TestLog)
+
 
 if __name__ == "__main__":
     run_unittest(test_suite())

@@ -10,13 +10,12 @@ from .support import LoggingResult, ResultWithNoStartTestRunStopTestRun
 
 
 class TestCleanUp(unittest.TestCase):
-
     def testCleanUp(self):
         class TestableTest(unittest.TestCase):
             def testNothing(self):
                 pass
 
-        test = TestableTest('testNothing')
+        test = TestableTest("testNothing")
         self.assertEqual(test._cleanups, [])
 
         cleanups = []
@@ -27,15 +26,21 @@ class TestCleanUp(unittest.TestCase):
         def cleanup2(*args, **kwargs):
             cleanups.append((2, args, kwargs))
 
-        test.addCleanup(cleanup1, 1, 2, 3, four='hello', five='goodbye')
+        test.addCleanup(cleanup1, 1, 2, 3, four="hello", five="goodbye")
         test.addCleanup(cleanup2)
 
-        self.assertEqual(test._cleanups,
-                         [(cleanup1, (1, 2, 3), dict(four='hello', five='goodbye')),
-                          (cleanup2, (), {})])
+        self.assertEqual(
+            test._cleanups,
+            [
+                (cleanup1, (1, 2, 3), dict(four="hello", five="goodbye")),
+                (cleanup2, (), {}),
+            ],
+        )
 
         self.assertTrue(test.doCleanups())
-        self.assertEqual(cleanups, [(2, (), {}), (1, (1, 2, 3), dict(four='hello', five='goodbye'))])
+        self.assertEqual(
+            cleanups, [(2, (), {}), (1, (1, 2, 3), dict(four="hello", five="goodbye"))]
+        )
 
     def testCleanUpWithErrors(self):
         class TestableTest(unittest.TestCase):
@@ -46,11 +51,12 @@ class TestCleanUp(unittest.TestCase):
             success = True
             errors = []
 
-        test = TestableTest('testNothing')
+        test = TestableTest("testNothing")
         test._outcomeForDoCleanups = MockOutcome
 
-        exc1 = Exception('foo')
-        exc2 = Exception('bar')
+        exc1 = Exception("foo")
+        exc2 = Exception("bar")
+
         def cleanup1():
             raise exc1
 
@@ -73,67 +79,73 @@ class TestCleanUp(unittest.TestCase):
 
         class TestableTest(unittest.TestCase):
             def setUp(self):
-                ordering.append('setUp')
+                ordering.append("setUp")
                 if blowUp:
-                    raise Exception('foo')
+                    raise Exception("foo")
 
             def testNothing(self):
-                ordering.append('test')
+                ordering.append("test")
 
             def tearDown(self):
-                ordering.append('tearDown')
+                ordering.append("tearDown")
 
-        test = TestableTest('testNothing')
+        test = TestableTest("testNothing")
 
         def cleanup1():
-            ordering.append('cleanup1')
+            ordering.append("cleanup1")
+
         def cleanup2():
-            ordering.append('cleanup2')
+            ordering.append("cleanup2")
+
         test.addCleanup(cleanup1)
         test.addCleanup(cleanup2)
 
         def success(some_test):
             self.assertEqual(some_test, test)
-            ordering.append('success')
+            ordering.append("success")
 
         result = unittest.TestResult()
         result.addSuccess = success
 
         test.run(result)
-        self.assertEqual(ordering, ['setUp', 'test', 'tearDown',
-                                    'cleanup2', 'cleanup1', 'success'])
+        self.assertEqual(
+            ordering, ["setUp", "test", "tearDown", "cleanup2", "cleanup1", "success"]
+        )
 
         blowUp = True
         ordering = []
-        test = TestableTest('testNothing')
+        test = TestableTest("testNothing")
         test.addCleanup(cleanup1)
         test.run(result)
-        self.assertEqual(ordering, ['setUp', 'cleanup1'])
+        self.assertEqual(ordering, ["setUp", "cleanup1"])
 
     def testTestCaseDebugExecutesCleanups(self):
         ordering = []
 
         class TestableTest(unittest.TestCase):
             def setUp(self):
-                ordering.append('setUp')
+                ordering.append("setUp")
                 self.addCleanup(cleanup1)
 
             def testNothing(self):
-                ordering.append('test')
+                ordering.append("test")
 
             def tearDown(self):
-                ordering.append('tearDown')
+                ordering.append("tearDown")
 
-        test = TestableTest('testNothing')
+        test = TestableTest("testNothing")
 
         def cleanup1():
-            ordering.append('cleanup1')
+            ordering.append("cleanup1")
             test.addCleanup(cleanup2)
+
         def cleanup2():
-            ordering.append('cleanup2')
+            ordering.append("cleanup2")
 
         test.debug()
-        self.assertEqual(ordering, ['setUp', 'test', 'tearDown', 'cleanup1', 'cleanup2'])
+        self.assertEqual(
+            ordering, ["setUp", "test", "tearDown", "cleanup1", "cleanup2"]
+        )
 
 
 class Test_TextTestRunner(unittest.TestCase):
@@ -148,17 +160,18 @@ class Test_TextTestRunner(unittest.TestCase):
         self.assertTrue(runner.descriptions)
         self.assertEqual(runner.resultclass, unittest.TextTestResult)
 
-
     def testBufferAndFailfast(self):
         class Test(unittest.TestCase):
             def testFoo(self):
                 pass
+
         result = unittest.TestResult()
-        runner = unittest.TextTestRunner(stream=io.StringIO(), failfast=True,
-                                           buffer=True)
+        runner = unittest.TextTestRunner(
+            stream=io.StringIO(), failfast=True, buffer=True
+        )
         # Use our result object
         runner._makeResult = lambda: result
-        runner.run(Test('testFoo'))
+        runner.run(Test("testFoo"))
 
         self.assertTrue(result.failfast)
         self.assertTrue(result.buffer)
@@ -167,9 +180,12 @@ class Test_TextTestRunner(unittest.TestCase):
         class Test(unittest.TestCase):
             def testFoo(self):
                 pass
+
         originalRegisterResult = unittest.runner.registerResult
+
         def cleanup():
             unittest.runner.registerResult = originalRegisterResult
+
         self.addCleanup(cleanup)
 
         result = unittest.TestResult()
@@ -178,9 +194,11 @@ class Test_TextTestRunner(unittest.TestCase):
         runner._makeResult = lambda: result
 
         self.wasRegistered = 0
+
         def fakeRegisterResult(thisResult):
             self.wasRegistered += 1
             self.assertEqual(thisResult, result)
+
         unittest.runner.registerResult = fakeRegisterResult
 
         runner.run(unittest.TestSuite())
@@ -188,7 +206,8 @@ class Test_TextTestRunner(unittest.TestCase):
 
     def test_works_with_result_without_startTestRun_stopTestRun(self):
         class OldTextResult(ResultWithNoStartTestRunStopTestRun):
-            separator2 = ''
+            separator2 = ""
+
             def printErrors(self):
                 pass
 
@@ -204,7 +223,8 @@ class Test_TextTestRunner(unittest.TestCase):
 
     def test_startTestRun_stopTestRun_called(self):
         class LoggingTextResult(LoggingResult):
-            separator2 = ''
+            separator2 = ""
+
             def printErrors(self):
                 pass
 
@@ -219,7 +239,7 @@ class Test_TextTestRunner(unittest.TestCase):
         events = []
         runner = LoggingRunner(events)
         runner.run(unittest.TestSuite())
-        expected = ['startTestRun', 'stopTestRun']
+        expected = ["startTestRun", "stopTestRun"]
         self.assertEqual(events, expected)
 
     def test_pickle_unpickle(self):
@@ -236,11 +256,13 @@ class Test_TextTestRunner(unittest.TestCase):
     def test_resultclass(self):
         def MockResultClass(*args):
             return args
+
         STREAM = object()
         DESCRIPTIONS = object()
         VERBOSITY = object()
-        runner = unittest.TextTestRunner(STREAM, DESCRIPTIONS, VERBOSITY,
-                                         resultclass=MockResultClass)
+        runner = unittest.TextTestRunner(
+            STREAM, DESCRIPTIONS, VERBOSITY, resultclass=MockResultClass
+        )
         self.assertEqual(runner.resultclass, MockResultClass)
 
         expectedresult = (runner.stream, DESCRIPTIONS, VERBOSITY)
@@ -255,47 +277,49 @@ class Test_TextTestRunner(unittest.TestCase):
 
         def get_parse_out_err(p):
             return [b.splitlines() for b in p.communicate()]
-        opts = dict(stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                    cwd=os.path.dirname(__file__))
-        ae_msg = b'Please use assertEqual instead.'
-        at_msg = b'Please use assertTrue instead.'
+
+        opts = dict(
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            cwd=os.path.dirname(__file__),
+        )
+        ae_msg = b"Please use assertEqual instead."
+        at_msg = b"Please use assertTrue instead."
 
         # no args -> all the warnings are printed, unittest warnings only once
-        p = subprocess.Popen([sys.executable, '_test_warnings.py'], **opts)
+        p = subprocess.Popen([sys.executable, "_test_warnings.py"], **opts)
         out, err = get_parse_out_err(p)
-        self.assertIn(b'OK', err)
+        self.assertIn(b"OK", err)
         # check that the total number of warnings in the output is correct
         self.assertEqual(len(out), 12)
         # check that the numbers of the different kind of warnings is correct
-        for msg in [b'dw', b'iw', b'uw']:
+        for msg in [b"dw", b"iw", b"uw"]:
             self.assertEqual(out.count(msg), 3)
-        for msg in [ae_msg, at_msg, b'rw']:
+        for msg in [ae_msg, at_msg, b"rw"]:
             self.assertEqual(out.count(msg), 1)
 
         args_list = (
             # passing 'ignore' as warnings arg -> no warnings
-            [sys.executable, '_test_warnings.py', 'ignore'],
+            [sys.executable, "_test_warnings.py", "ignore"],
             # -W doesn't affect the result if the arg is passed
-            [sys.executable, '-Wa', '_test_warnings.py', 'ignore'],
+            [sys.executable, "-Wa", "_test_warnings.py", "ignore"],
             # -W affects the result if the arg is not passed
-            [sys.executable, '-Wi', '_test_warnings.py']
+            [sys.executable, "-Wi", "_test_warnings.py"],
         )
         # in all these cases no warnings are printed
         for args in args_list:
             p = subprocess.Popen(args, **opts)
             out, err = get_parse_out_err(p)
-            self.assertIn(b'OK', err)
+            self.assertIn(b"OK", err)
             self.assertEqual(len(out), 0)
-
 
         # passing 'always' as warnings arg -> all the warnings printed,
         #                                     unittest warnings only once
-        p = subprocess.Popen([sys.executable, '_test_warnings.py', 'always'],
-                             **opts)
+        p = subprocess.Popen([sys.executable, "_test_warnings.py", "always"], **opts)
         out, err = get_parse_out_err(p)
-        self.assertIn(b'OK', err)
+        self.assertIn(b"OK", err)
         self.assertEqual(len(out), 14)
-        for msg in [b'dw', b'iw', b'uw', b'rw']:
+        for msg in [b"dw", b"iw", b"uw", b"rw"]:
             self.assertEqual(out.count(msg), 3)
         for msg in [ae_msg, at_msg]:
             self.assertEqual(out.count(msg), 1)

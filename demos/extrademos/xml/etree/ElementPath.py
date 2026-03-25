@@ -68,7 +68,8 @@ xpath_tokenizer_re = re.compile(
     "[/.*:\[\]\(\)@=])|"
     "((?:\{[^}]+\})?[^/\[\]\(\)@=\s]+)|"
     "\s+"
-    )
+)
+
 
 def xpath_tokenizer(pattern, namespaces=None):
     for token in xpath_tokenizer_re.findall(pattern):
@@ -84,6 +85,7 @@ def xpath_tokenizer(pattern, namespaces=None):
         else:
             yield token
 
+
 def get_parent_map(context):
     parent_map = context.parent_map
     if parent_map is None:
@@ -93,27 +95,35 @@ def get_parent_map(context):
                 parent_map[e] = p
     return parent_map
 
+
 def prepare_child(next, token):
     tag = token[1]
+
     def select(context, result):
         for elem in result:
             for e in elem:
                 if e.tag == tag:
                     yield e
+
     return select
+
 
 def prepare_star(next, token):
     def select(context, result):
         for elem in result:
             for e in elem:
                 yield e
+
     return select
+
 
 def prepare_self(next, token):
     def select(context, result):
         for elem in result:
             yield elem
+
     return select
+
 
 def prepare_descendant(next, token):
     token = next()
@@ -123,12 +133,15 @@ def prepare_descendant(next, token):
         tag = token[1]
     else:
         raise SyntaxError("invalid descendant")
+
     def select(context, result):
         for elem in result:
             for e in elem.iter(tag):
                 if e is not elem:
                     yield e
+
     return select
+
 
 def prepare_parent(next, token):
     def select(context, result):
@@ -141,7 +154,9 @@ def prepare_parent(next, token):
                 if parent not in result_map:
                     result_map[parent] = None
                     yield parent
+
     return select
+
 
 def prepare_predicate(next, token):
     # FIXME: replace with real parser!!! refs:
@@ -162,38 +177,46 @@ def prepare_predicate(next, token):
     if signature == "@-":
         # [@attribute] predicate
         key = predicate[1]
+
         def select(context, result):
             for elem in result:
                 if elem.get(key) is not None:
                     yield elem
+
         return select
     if signature == "@-='":
         # [@attribute='value']
         key = predicate[1]
         value = predicate[-1]
+
         def select(context, result):
             for elem in result:
                 if elem.get(key) == value:
                     yield elem
+
         return select
     if signature == "-" and not re.match("\d+$", predicate[0]):
         # [tag]
         tag = predicate[0]
+
         def select(context, result):
             for elem in result:
                 if elem.find(tag) is not None:
                     yield elem
+
         return select
     if signature == "-='" and not re.match("\d+$", predicate[0]):
         # [tag='value']
         tag = predicate[0]
         value = predicate[-1]
+
         def select(context, result):
             for elem in result:
                 for e in elem.findall(tag):
                     if "".join(e.itertext()) == value:
                         yield elem
                         break
+
         return select
     if signature == "-" or signature == "-()" or signature == "-()-":
         # [index] or [last()] or [last()-index]
@@ -209,6 +232,7 @@ def prepare_predicate(next, token):
                     raise SyntaxError("unsupported expression")
             else:
                 index = -1
+
         def select(context, result):
             parent_map = get_parent_map(context)
             for elem in result:
@@ -220,8 +244,10 @@ def prepare_predicate(next, token):
                         yield elem
                 except (IndexError, KeyError):
                     pass
+
         return select
     raise SyntaxError("invalid predicate")
+
 
 ops = {
     "": prepare_child,
@@ -230,24 +256,28 @@ ops = {
     "..": prepare_parent,
     "//": prepare_descendant,
     "[": prepare_predicate,
-    }
+}
 
 _cache = {}
 
+
 class _SelectorContext:
     parent_map = None
+
     def __init__(self, root):
         self.root = root
+
 
 # --------------------------------------------------------------------
 
 ##
 # Generate all matching objects.
 
+
 def iterfind(elem, path, namespaces=None):
     # compile selector pattern
     if path[-1:] == "/":
-        path = path + "*" # implicit all (FIXME: keep this?)
+        path = path + "*"  # implicit all (FIXME: keep this?)
     try:
         selector = _cache[path]
     except KeyError:
@@ -277,8 +307,10 @@ def iterfind(elem, path, namespaces=None):
         result = select(context, result)
     return result
 
+
 ##
 # Find first matching object.
+
 
 def find(elem, path, namespaces=None):
     try:
@@ -286,14 +318,18 @@ def find(elem, path, namespaces=None):
     except StopIteration:
         return None
 
+
 ##
 # Find all matching objects.
+
 
 def findall(elem, path, namespaces=None):
     return list(iterfind(elem, path, namespaces))
 
+
 ##
 # Find text for first matching object.
+
 
 def findtext(elem, path, default=None, namespaces=None):
     try:

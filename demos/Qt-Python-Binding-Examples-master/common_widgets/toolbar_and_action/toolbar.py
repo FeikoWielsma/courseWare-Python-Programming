@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
 QToolBar and QAction demo
 
@@ -13,52 +13,51 @@ http://www.pyside.org/docs/pyside/PySide/QtGui/QAction.html
 http://www.devbean.info/2011/08/native-style-qt-8/
 
 """
+
 import sys
 
 try:
     from PySide import QtCore
     from PySide import QtGui
 except ImportError:
-    from PyQt4 import QtCore
     from PyQt4 import QtGui
+
 
 def config_theme_path():
     if sys.platform != "darwin":
         return
 
-    theme_name = str(QtGui.QIcon.themeName())
+    theme_name = str(QtGui.QIcon.theme_name())
 
     if theme_name != "Oxygen":
-        QtGui.QIcon.setThemeName("Oxygen")
+        QtGui.QIcon.set_theme_name("Oxygen")
 
-
-    search_paths = list(QtGui.QIcon.themeSearchPaths())
+    search_paths = list(QtGui.QIcon.theme_search_paths())
 
     custom_path = "/opt/local/share/icons"
     if custom_path not in search_paths:
         search_paths.append(custom_path)
 
-    QtGui.QIcon.setThemeSearchPaths(search_paths)
+    QtGui.QIcon.set_theme_search_paths(search_paths)
 
 
 class Demo(QtGui.QMainWindow):
     def __init__(self):
         super(Demo, self).__init__()
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
-        self.setUnifiedTitleAndToolBarOnMac(True)
+        self.set_geometry(x, y, w, h)
+        self.set_unified_title_and_tool_bar_on_mac(True)
 
         config_theme_path()
-        icon = QtGui.QIcon.fromTheme('application-exit')
+        icon = QtGui.QIcon.from_theme("application-exit")
 
-        exit_a = QtGui.QAction(icon, 'Exit', self)
-        exit_a.setShortcut('Ctrl+Q')
-#        self.connect(exit_a, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
+        exit_a = QtGui.QAction(icon, "Exit", self)
+        exit_a.set_shortcut("Ctrl+Q")
+        #        self.connect(exit_a, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
         exit_a.triggered.connect(self.close)
 
-
-        toolbar = self.addToolBar('Exit')
-        toolbar.addAction(exit_a)
+        toolbar = self.add_tool_bar("Exit")
+        toolbar.add_action(exit_a)
 
         self._toolbar = toolbar
 

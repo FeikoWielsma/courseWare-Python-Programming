@@ -14,6 +14,7 @@ from distutils.spawn import spawn
 from distutils.dir_util import mkpath
 from distutils import log
 
+
 def make_tarball(base_name, base_dir, compress="gzip", verbose=0, dry_run=0):
     """Create a (possibly compressed) tar file from all the files under
     'base_dir'.
@@ -25,45 +26,46 @@ def make_tarball(base_name, base_dir, compress="gzip", verbose=0, dry_run=0):
     the appropriate compression extension (".gz", ".bz2" or ".Z").
     Returns the output filename.
     """
-    tar_compression = {'gzip': 'gz', 'bzip2': 'bz2', None: '', 'compress': ''}
-    compress_ext = {'gzip': '.gz', 'bzip2': '.bz2', 'compress': '.Z'}
+    tar_compression = {"gzip": "gz", "bzip2": "bz2", None: "", "compress": ""}
+    compress_ext = {"gzip": ".gz", "bzip2": ".bz2", "compress": ".Z"}
 
     # flags for compression program, each element of list will be an argument
     if compress is not None and compress not in compress_ext.keys():
         raise ValueError(
-              "bad value for 'compress': must be None, 'gzip', 'bzip2' "
-              "or 'compress'")
+            "bad value for 'compress': must be None, 'gzip', 'bzip2' or 'compress'"
+        )
 
-    archive_name = base_name + '.tar'
-    if compress != 'compress':
-        archive_name += compress_ext.get(compress, '')
+    archive_name = base_name + ".tar"
+    if compress != "compress":
+        archive_name += compress_ext.get(compress, "")
 
     mkpath(os.path.dirname(archive_name), dry_run=dry_run)
 
     # creating the tarball
     import tarfile  # late import so Python build itself doesn't break
 
-    log.info('Creating tar archive')
+    log.info("Creating tar archive")
     if not dry_run:
-        tar = tarfile.open(archive_name, 'w|%s' % tar_compression[compress])
+        tar = tarfile.open(archive_name, "w|%s" % tar_compression[compress])
         try:
             tar.add(base_dir)
         finally:
             tar.close()
 
     # compression using `compress`
-    if compress == 'compress':
+    if compress == "compress":
         warn("'compress' will be deprecated.", PendingDeprecationWarning)
         # the option varies depending on the platform
         compressed_name = archive_name + compress_ext[compress]
-        if sys.platform == 'win32':
+        if sys.platform == "win32":
             cmd = [compress, archive_name, compressed_name]
         else:
-            cmd = [compress, '-f', archive_name]
+            cmd = [compress, "-f", archive_name]
         spawn(cmd, dry_run=dry_run)
         return compressed_name
 
     return archive_name
+
 
 def make_zipfile(base_name, base_dir, verbose=0, dry_run=0):
     """Create a zip file from all the files under 'base_dir'.
@@ -91,22 +93,24 @@ def make_zipfile(base_name, base_dir, verbose=0, dry_run=0):
             zipoptions = "-rq"
 
         try:
-            spawn(["zip", zipoptions, zip_filename, base_dir],
-                  dry_run=dry_run)
+            spawn(["zip", zipoptions, zip_filename, base_dir], dry_run=dry_run)
         except DistutilsExecError:
             # XXX really should distinguish between "couldn't find
             # external 'zip' command" and "zip failed".
-            raise DistutilsExecError(("unable to create zip file '%s': "
-                   "could neither import the 'zipfile' module nor "
-                   "find a standalone zip utility") % zip_filename)
+            raise DistutilsExecError(
+                (
+                    "unable to create zip file '%s': "
+                    "could neither import the 'zipfile' module nor "
+                    "find a standalone zip utility"
+                )
+                % zip_filename
+            )
 
     else:
-        log.info("creating '%s' and adding '%s' to it",
-                 zip_filename, base_dir)
+        log.info("creating '%s' and adding '%s' to it", zip_filename, base_dir)
 
         if not dry_run:
-            zip = zipfile.ZipFile(zip_filename, "w",
-                                  compression=zipfile.ZIP_DEFLATED)
+            zip = zipfile.ZipFile(zip_filename, "w", compression=zipfile.ZIP_DEFLATED)
 
             for dirpath, dirnames, filenames in os.walk(base_dir):
                 for name in filenames:
@@ -118,13 +122,15 @@ def make_zipfile(base_name, base_dir, verbose=0, dry_run=0):
 
     return zip_filename
 
+
 ARCHIVE_FORMATS = {
-    'gztar': (make_tarball, [('compress', 'gzip')], "gzip'ed tar-file"),
-    'bztar': (make_tarball, [('compress', 'bzip2')], "bzip2'ed tar-file"),
-    'ztar':  (make_tarball, [('compress', 'compress')], "compressed tar file"),
-    'tar':   (make_tarball, [('compress', None)], "uncompressed tar file"),
-    'zip':   (make_zipfile, [],"ZIP file")
-    }
+    "gztar": (make_tarball, [("compress", "gzip")], "gzip'ed tar-file"),
+    "bztar": (make_tarball, [("compress", "bzip2")], "bzip2'ed tar-file"),
+    "ztar": (make_tarball, [("compress", "compress")], "compressed tar file"),
+    "tar": (make_tarball, [("compress", None)], "uncompressed tar file"),
+    "zip": (make_zipfile, [], "ZIP file"),
+}
+
 
 def check_archive_formats(formats):
     """Returns the first format from the 'format' list that is unknown.
@@ -136,8 +142,8 @@ def check_archive_formats(formats):
             return format
     return None
 
-def make_archive(base_name, format, root_dir=None, base_dir=None, verbose=0,
-                 dry_run=0):
+
+def make_archive(base_name, format, root_dir=None, base_dir=None, verbose=0, dry_run=0):
     """Create an archive file (eg. zip or tar).
 
     'base_name' is the name of the file to create, minus any format-specific
@@ -161,7 +167,7 @@ def make_archive(base_name, format, root_dir=None, base_dir=None, verbose=0,
     if base_dir is None:
         base_dir = os.curdir
 
-    kwargs = {'dry_run': dry_run}
+    kwargs = {"dry_run": dry_run}
 
     try:
         format_info = ARCHIVE_FORMATS[format]

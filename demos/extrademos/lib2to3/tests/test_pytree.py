@@ -22,16 +22,17 @@ from lib2to3 import pytree
 try:
     sorted
 except NameError:
+
     def sorted(lst):
         l = list(lst)
         l.sort()
         return l
 
-class TestNodes(support.TestCase):
 
+class TestNodes(support.TestCase):
     """Unit tests for nodes (Base, Leaf, Node)."""
 
-    if sys.version_info >= (2,6):
+    if sys.version_info >= (2, 6):
         # warnings.catch_warnings is new in 2.6.
         def test_deprecated_prefix_methods(self):
             l = pytree.Leaf(100, "foo")
@@ -43,10 +44,12 @@ class TestNodes(support.TestCase):
             self.assertEqual(len(w), 2)
             for warning in w:
                 self.assertTrue(warning.category is DeprecationWarning)
-            self.assertEqual(str(w[0].message), "get_prefix() is deprecated; " \
-                                 "use the prefix property")
-            self.assertEqual(str(w[1].message), "set_prefix() is deprecated; " \
-                                 "use the prefix property")
+            self.assertEqual(
+                str(w[0].message), "get_prefix() is deprecated; use the prefix property"
+            )
+            self.assertEqual(
+                str(w[1].message), "set_prefix() is deprecated; use the prefix property"
+            )
 
     def test_instantiate_base(self):
         if __debug__:
@@ -103,8 +106,7 @@ class TestNodes(support.TestCase):
         l1 = pytree.Leaf(100, "foo")
         l2 = pytree.Leaf(100, "bar", context=(" ", (1, 0)))
         n1 = pytree.Node(1000, [l1, l2])
-        self.assertEqual(repr(n1),
-                         "Node(1000, [%s, %s])" % (repr(l1), repr(l2)))
+        self.assertEqual(repr(n1), "Node(1000, [%s, %s])" % (repr(l1), repr(l2)))
 
     def test_node_str(self):
         l1 = pytree.Leaf(100, "foo")
@@ -380,7 +382,6 @@ class TestNodes(support.TestCase):
 
 
 class TestPatterns(support.TestCase):
-
     """Unit tests for tree matching patterns."""
 
     def test_basic_patterns(self):
@@ -465,11 +466,13 @@ class TestPatterns(support.TestCase):
         pd = pytree.LeafPattern(1, "d", "pd")
         pe = pytree.LeafPattern(1, "e", "pe")
         pf = pytree.LeafPattern(1, "f", "pf")
-        pw = pytree.WildcardPattern([[pa, pb, pc], [pd, pe],
-                                     [pa, pb], [pc, pd], [pe, pf]],
-                                    min=1, max=4, name="pw")
-        self.assertEqual([x[0] for x in pw.generate_matches(leaves)],
-                         [3, 5, 2, 4, 6])
+        pw = pytree.WildcardPattern(
+            [[pa, pb, pc], [pd, pe], [pa, pb], [pc, pd], [pe, pf]],
+            min=1,
+            max=4,
+            name="pw",
+        )
+        self.assertEqual([x[0] for x in pw.generate_matches(leaves)], [3, 5, 2, 4, 6])
         pr = pytree.NodePattern(type=1000, content=[pw], name="pr")
         matches = list(pytree.generate_matches([pr], [root]))
         self.assertEqual(len(matches), 1)
@@ -481,10 +484,14 @@ class TestPatterns(support.TestCase):
             self.assertEqual(r["p" + c], pytree.Leaf(1, c))
 
     def test_has_key_example(self):
-        pattern = pytree.NodePattern(331,
-                                     (pytree.LeafPattern(7),
-                                      pytree.WildcardPattern(name="args"),
-                                      pytree.LeafPattern(8)))
+        pattern = pytree.NodePattern(
+            331,
+            (
+                pytree.LeafPattern(7),
+                pytree.WildcardPattern(name="args"),
+                pytree.LeafPattern(8),
+            ),
+        )
         l1 = pytree.Leaf(7, "(")
         l2 = pytree.Leaf(3, "x")
         l3 = pytree.Leaf(8, ")")

@@ -14,9 +14,9 @@ except ImportError:
 def left_click(func, parent):
     @wraps(func)
     def wrapper(evt):
-        QtGui.QLabel.mousePressEvent(parent, evt)
+        QtGui.QLabel.mouse_press_event(parent, evt)
         if evt.button() == QtCore.Qt.LeftButton:
-            parent.emit(QtCore.SIGNAL('leftClicked()'))
+            parent.emit(QtCore.SIGNAL('left_clicked()'))
         func(evt)
     return wrapper
 
@@ -30,10 +30,10 @@ class Demo(QtGui.QWidget):
 
         label = QtGui.QLabel()
         label.move(10, 10)
-        label.setPixmap(pix)
-        label.mousePressEvent = left_click(label.mousePressEvent, label)
+        label.set_pixmap(pix)
+        label.mouse_press_event = left_click(label.mouse_press_event, label)
 
-        self.connect(label, QtCore.SIGNAL('leftClicked()'), self.on_left_clicked)
+        self.connect(label, QtCore.SIGNAL('left_clicked()'), self.on_left_clicked)
 
     def show_and_raise(self):
         self.show()

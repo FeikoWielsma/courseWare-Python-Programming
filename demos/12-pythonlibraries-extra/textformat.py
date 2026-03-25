@@ -9,7 +9,7 @@
 stockdata = []
 for line in open("stocks.csv"):
     fields = line.split(",")
-    record = (fields[0].strip('"'),float(fields[1]),float(fields[2]),int(fields[3]))
+    record = (fields[0].strip('"'), float(fields[1]), float(fields[2]), int(fields[3]))
     stockdata.append(record)
 
 # Traditional string formatting
@@ -19,24 +19,27 @@ for s in stockdata:
     print("%10s %10.2f %10.2f %10d" % s)
 
 # Some new-style formatting examples
-print("\nNew-style formatting:")
+print("\n_new-style formatting:")
 for s in stockdata:
     print("{0:10s} {1:10.2f} {2:10.2f} {3:10d}".format(*s))
 
-print("\nNew-style formatting with omitted fields")
+print("\n_new-style formatting with omitted fields")
 for s in stockdata:
     print("{:10s} {:10.2f} {:10.2f} {:10d}".format(*s))
 
-print("\nNew-style formatting with alignment:")
+print("\n_new-style formatting with alignment:")
 for s in stockdata:
     print("{0:>10s} {1:10.2f} {2:10.2f} {3:10d}".format(*s))
 
-print("\nNew-style formatting with indexing")
+print("\n_new-style formatting with indexing")
 for s in stockdata:
     print("{0[0]:>10s} {0[1]:10.2f} {0[2]:10.2f} {0[3]:10d}".format(s))
 
 WIDTH = 18
-print("\nNew-style formatting with customizable width")
+print("\n_new-style formatting with customizable width")
 for s in stockdata:
-    print("{0:{width}s} {1:{width}.2f} {2:{width}.2f} {3:{width}d}".format(*s,width=WIDTH))
-
+    print(
+        "{0:{width}s} {1:{width}.2f} {2:{width}.2f} {3:{width}d}".format(
+            *s, width=WIDTH
+        )
+    )

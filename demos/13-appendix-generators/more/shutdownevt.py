@@ -7,7 +7,7 @@ import time
 def follow(thefile,shutdown=None):
     thefile.seek(0,2)
     while True:
-        if shutdown and shutdown.isSet(): break
+        if shutdown and shutdown.is_set(): break
         line = thefile.readline()
         if not line:
            time.sleep(0.1)

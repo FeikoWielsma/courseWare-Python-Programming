@@ -1,6 +1,5 @@
 """Test result object"""
 
-import os
 import io
 import sys
 import traceback
@@ -10,16 +9,19 @@ from functools import wraps
 
 __unittest = True
 
+
 def failfast(method):
     @wraps(method)
     def inner(self, *args, **kw):
-        if getattr(self, 'failfast', False):
+        if getattr(self, "failfast", False):
             self.stop()
         return method(self, *args, **kw)
+
     return inner
 
-STDOUT_LINE = '\nStdout:\n%s'
-STDERR_LINE = '\nStderr:\n%s'
+
+STDOUT_LINE = "\nStdout:\n%s"
+STDERR_LINE = "\nStderr:\n%s"
 
 
 class TestResult(object):
@@ -33,9 +35,11 @@ class TestResult(object):
     contain tuples of (testcase, exceptioninfo), where exceptioninfo is the
     formatted traceback of the error that occurred.
     """
+
     _previousTestClass = None
     _testRunEntered = False
     _moduleSetUpFailed = False
+
     def __init__(self, stream=None, descriptions=None, verbosity=None):
         self.failfast = False
         self.failures = []
@@ -79,12 +83,12 @@ class TestResult(object):
                 output = sys.stdout.getvalue()
                 error = sys.stderr.getvalue()
                 if output:
-                    if not output.endswith('\n'):
-                        output += '\n'
+                    if not output.endswith("\n"):
+                        output += "\n"
                     self._original_stdout.write(STDOUT_LINE % output)
                 if error:
-                    if not error.endswith('\n'):
-                        error += '\n'
+                    if not error.endswith("\n"):
+                        error += "\n"
                     self._original_stderr.write(STDERR_LINE % error)
 
             sys.stdout = self._original_stdout
@@ -126,8 +130,7 @@ class TestResult(object):
 
     def addExpectedFailure(self, test, err):
         """Called when an expected failure/error occured."""
-        self.expectedFailures.append(
-            (test, self._exc_info_to_string(err, test)))
+        self.expectedFailures.append((test, self._exc_info_to_string(err, test)))
 
     @failfast
     def addUnexpectedSuccess(self, test):
@@ -160,18 +163,17 @@ class TestResult(object):
             output = sys.stdout.getvalue()
             error = sys.stderr.getvalue()
             if output:
-                if not output.endswith('\n'):
-                    output += '\n'
+                if not output.endswith("\n"):
+                    output += "\n"
                 msgLines.append(STDOUT_LINE % output)
             if error:
-                if not error.endswith('\n'):
-                    error += '\n'
+                if not error.endswith("\n"):
+                    error += "\n"
                 msgLines.append(STDERR_LINE % error)
-        return ''.join(msgLines)
-
+        return "".join(msgLines)
 
     def _is_relevant_tb_level(self, tb):
-        return '__unittest' in tb.tb_frame.f_globals
+        return "__unittest" in tb.tb_frame.f_globals
 
     def _count_relevant_tb_levels(self, tb):
         length = 0
@@ -181,6 +183,9 @@ class TestResult(object):
         return length
 
     def __repr__(self):
-        return ("<%s run=%i errors=%i failures=%i>" %
-               (util.strclass(self.__class__), self.testsRun, len(self.errors),
-                len(self.failures)))
+        return "<%s run=%i errors=%i failures=%i>" % (
+            util.strclass(self.__class__),
+            self.testsRun,
+            len(self.errors),
+            len(self.failures),
+        )

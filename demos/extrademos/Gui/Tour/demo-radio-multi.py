@@ -1,6 +1,7 @@
 # see what happens when some buttons have same value
-     
-from Tkinter import *      
+
+from Tkinter import *
+
 root = Tk()
 var = StringVar()
 for i in range(10):

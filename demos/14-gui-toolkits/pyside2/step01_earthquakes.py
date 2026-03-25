@@ -1,8 +1,10 @@
 import argparse
 import pandas as pd
 
+
 def read_data(fname):
     return pd.read_csv(fname)
+
 
 if __name__ == "__main__":
     options = argparse.ArgumentParser()

@@ -3,7 +3,7 @@
 import sys
 import gadfly.dbapi20
 
-connection = gadfly.dbapi20.connect('pydb', 'db')
+connection = gadfly.dbapi20.connect("pydb", "db")
 
 cursor = connection.cursor()
 
@@ -15,9 +15,9 @@ select e.empid
 from user u, employee e 
 where username=? and u.employeeid = e.empid
 """
-cursor.execute(query,(employee,));
-for row in cursor.fetchone(): 
-    if (row != None):
+cursor.execute(query, (employee,))
+for row in cursor.fetchone():
+    if row != None:
         empid = row
 
 # Now, modify the employee.

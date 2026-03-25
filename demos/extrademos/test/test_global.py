@@ -6,7 +6,6 @@ import warnings
 
 
 class GlobalTests(unittest.TestCase):
-
     def setUp(self):
         self._warnings_manager = check_warnings()
         self._warnings_manager.__enter__()
@@ -14,7 +13,6 @@ class GlobalTests(unittest.TestCase):
 
     def tearDown(self):
         self._warnings_manager.__exit__(None, None, None)
-
 
     def test1(self):
         prog_text_1 = """\
@@ -56,6 +54,7 @@ def test_main():
     with warnings.catch_warnings():
         warnings.filterwarnings("error", module="<test string>")
         run_unittest(GlobalTests)
+
 
 if __name__ == "__main__":
     test_main()

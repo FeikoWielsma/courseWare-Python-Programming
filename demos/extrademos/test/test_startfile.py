@@ -12,7 +12,7 @@ from test import support
 import os
 from os import path
 
-startfile = support.get_attribute(os, 'startfile')
+startfile = support.get_attribute(os, "startfile")
 
 
 class TestCase(unittest.TestCase):
@@ -24,8 +24,10 @@ class TestCase(unittest.TestCase):
         startfile(empty)
         startfile(empty, "open")
 
+
 def test_main():
     support.run_unittest(TestCase)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     test_main()

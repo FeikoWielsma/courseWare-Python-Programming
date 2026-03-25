@@ -4,13 +4,16 @@
 ###############################################################################
 
 import sys
-database, query = 'peopledb', 'select * from people'
-if len(sys.argv) > 1: database = sys.argv[1]
-if len(sys.argv) > 2: query = sys.argv[2] 
+
+database, query = "peopledb", "select * from people"
+if len(sys.argv) > 1:
+    database = sys.argv[1]
+if len(sys.argv) > 2:
+    query = sys.argv[2]
 
 from makedicts import makedicts
-from dumpdb    import showformat
-from loaddb    import login
+from dumpdb import showformat
+from loaddb import login
 
 conn, curs = login(db=database)
 rows = makedicts(curs, query)

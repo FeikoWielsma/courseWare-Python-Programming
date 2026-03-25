@@ -1,6 +1,7 @@
 import sys
 from test import support, list_tests
 
+
 class ListTest(list_tests.CommonTest):
     type2test = list
 
@@ -12,10 +13,10 @@ class ListTest(list_tests.CommonTest):
         self.assertTrue(l0_3 is not l0_3_bis)
         self.assertEqual(list(()), [])
         self.assertEqual(list((0, 1, 2, 3)), [0, 1, 2, 3])
-        self.assertEqual(list(''), [])
-        self.assertEqual(list('spam'), ['s', 'p', 'a', 'm'])
+        self.assertEqual(list(""), [])
+        self.assertEqual(list("spam"), ["s", "p", "a", "m"])
 
-        if sys.maxsize == 0x7fffffff:
+        if sys.maxsize == 0x7FFFFFFF:
             # This test can currently only work on 32-bit machines.
             # XXX If/when PySequence_Length() returns a ssize_t, it should be
             # XXX re-enabled.
@@ -43,7 +44,7 @@ class ListTest(list_tests.CommonTest):
         self.assertTrue([42])
 
     def test_identity(self):
-        self.assertTrue([] is not [])
+        self.assertTrue([] != [])
 
     def test_len(self):
         super().test_len()
@@ -53,19 +54,27 @@ class ListTest(list_tests.CommonTest):
 
     def test_overflow(self):
         lst = [4, 5, 6, 7]
-        n = int((sys.maxsize*2+2) // len(lst))
-        def mul(a, b): return a * b
-        def imul(a, b): a *= b
+        n = int((sys.maxsize * 2 + 2) // len(lst))
+
+        def mul(a, b):
+            return a * b
+
+        def imul(a, b):
+            a *= b
+
         self.assertRaises((MemoryError, OverflowError), mul, lst, n)
         self.assertRaises((MemoryError, OverflowError), imul, lst, n)
+
 
 def test_main(verbose=None):
     support.run_unittest(ListTest)
 
     # verify reference counting
     import sys
+
     if verbose and hasattr(sys, "gettotalrefcount"):
         import gc
+
         counts = [None] * 5
         for i in range(len(counts)):
             support.run_unittest(ListTest)

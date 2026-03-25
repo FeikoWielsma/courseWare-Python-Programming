@@ -116,16 +116,25 @@ def consts(t):
         else:
             yield r
 
+
 def dump(co):
     """Print out a text representation of a code object."""
-    for attr in ["name", "argcount", "kwonlyargcount", "names", "varnames",
-                 "cellvars", "freevars", "nlocals", "flags"]:
+    for attr in [
+        "name",
+        "argcount",
+        "kwonlyargcount",
+        "names",
+        "varnames",
+        "cellvars",
+        "freevars",
+        "nlocals",
+        "flags",
+    ]:
         print("%s: %s" % (attr, getattr(co, "co_" + attr)))
     print("consts:", tuple(consts(co.co_consts)))
 
 
 class CodeTest(unittest.TestCase):
-
     def test_newempty(self):
         co = _testcapi.code_newempty("filename", "funcname", 15)
         self.assertEqual(co.co_filename, "filename")
@@ -134,7 +143,6 @@ class CodeTest(unittest.TestCase):
 
 
 class CodeWeakRefTest(unittest.TestCase):
-
     def test_basic(self):
         # Create a code object in a clean environment so that we know we have
         # the only reference to it left.
@@ -144,6 +152,7 @@ class CodeWeakRefTest(unittest.TestCase):
         del namespace
 
         self.called = False
+
         def callback(code):
             self.called = True
 
@@ -161,6 +170,7 @@ class CodeWeakRefTest(unittest.TestCase):
 def test_main(verbose=None):
     from test.support import run_doctest, run_unittest
     from test import test_code
+
     run_doctest(test_code, verbose)
     run_unittest(CodeTest, CodeWeakRefTest)
 

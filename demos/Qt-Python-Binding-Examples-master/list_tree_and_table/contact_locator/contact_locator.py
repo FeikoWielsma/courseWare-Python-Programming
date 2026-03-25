@@ -76,11 +76,11 @@ class ListModel(QtCore.QAbstractListModel):
         super(ListModel, self).__init__()
         self.magic_box = magic_box
 
-    def rowCount(self, parent):
+    def row_count(self, parent):
         return len(self.magic_box.magics)
 
     def data(self, index, role = QtCore.Qt.DisplayRole):
-        if not index.isValid():
+        if not index.is_valid():
             return None
 
         magic = self.magic_box.magics[index.row()]
@@ -102,7 +102,7 @@ class Demo(QtGui.QWidget):
     def __init__(self):
         super(Demo, self).__init__()
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
 
         self.magic_box = MagicBox()
@@ -112,15 +112,15 @@ class Demo(QtGui.QWidget):
         self.lineedit.resize(200, 30)
         self.lineedit.move(10, 10)
 
-        self.lineedit.returnPressed.connect(self._lineedit_returnPressed)
-        self.lineedit.textChanged.connect(self._lineedit_textChanged)
+        self.lineedit.return_pressed.connect(self._lineedit_returnPressed)
+        self.lineedit.text_changed.connect(self._lineedit_textChanged)
 
             
         self.list_view = QtGui.QListView(self)
-        self.list_view.setGeometry(10, 50, 280, 300)
+        self.list_view.set_geometry(10, 50, 280, 300)
         
         self.list_model = ListModel(self.magic_box)
-        self.list_view.setModel(self.list_model)
+        self.list_view.set_model(self.list_model)
 
     def _lineedit_textChanged(self, text):
         print "text changed:", text

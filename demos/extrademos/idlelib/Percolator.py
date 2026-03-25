@@ -1,8 +1,8 @@
 from idlelib.WidgetRedirector import WidgetRedirector
 from idlelib.Delegator import Delegator
 
-class Percolator:
 
+class Percolator:
     def __init__(self, text):
         # XXX would be nice to inherit from Delegator
         self.text = text
@@ -16,8 +16,10 @@ class Percolator:
         while self.top is not self.bottom:
             self.removefilter(self.top)
         self.top = None
-        self.bottom.setdelegate(None); self.bottom = None
-        self.redir.close(); self.redir = None
+        self.bottom.setdelegate(None)
+        self.bottom = None
+        self.redir.close()
+        self.redir = None
         self.text = None
 
     def insert(self, index, chars, tags=None):
@@ -51,18 +53,23 @@ class Percolator:
             f.setdelegate(filter.delegate)
             filter.setdelegate(None)
 
+
 def main():
     import tkinter as Tk
+
     class Tracer(Delegator):
         def __init__(self, name):
             self.name = name
             Delegator.__init__(self, None)
+
         def insert(self, *args):
             print(self.name, ": insert", args)
             self.delegate.insert(*args)
+
         def delete(self, *args):
             print(self.name, ": delete", args)
             self.delegate.delete(*args)
+
     root = Tk.Tk()
     root.wm_protocol("WM_DELETE_WINDOW", root.quit)
     text = Tk.Text()
@@ -73,12 +80,13 @@ def main():
     t2 = Tracer("t2")
     p.insertfilter(t1)
     p.insertfilter(t2)
-    root.mainloop() # click close widget to continue...
+    root.mainloop()  # click close widget to continue...
     p.removefilter(t2)
     root.mainloop()
     p.insertfilter(t2)
     p.removefilter(t1)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()

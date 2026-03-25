@@ -5,8 +5,9 @@ from test.support import verbose, strip_python_stderr
 import random
 import re
 import sys
-_thread = test.support.import_module('_thread')
-threading = test.support.import_module('threading')
+
+_thread = test.support.import_module("_thread")
+threading = test.support.import_module("threading")
 import time
 import unittest
 import weakref
@@ -15,16 +16,21 @@ import subprocess
 
 from test import lock_tests
 
+
 # A trivial mutable counter.
 class Counter(object):
     def __init__(self):
         self.value = 0
+
     def inc(self):
         self.value += 1
+
     def dec(self):
         self.value -= 1
+
     def get(self):
         return self.value
+
 
 class TestThread(threading.Thread):
     def __init__(self, name, testcase, sema, mutex, nrunning):
@@ -37,26 +43,27 @@ class TestThread(threading.Thread):
     def run(self):
         delay = random.random() / 10000.0
         if verbose:
-            print('task %s will run for %.1f usec' %
-                  (self.name, delay * 1e6))
+            print("task %s will run for %.1f usec" % (self.name, delay * 1e6))
 
         with self.sema:
             with self.mutex:
                 self.nrunning.inc()
                 if verbose:
-                    print(self.nrunning.get(), 'tasks are running')
+                    print(self.nrunning.get(), "tasks are running")
                 self.testcase.assertTrue(self.nrunning.get() <= 3)
 
             time.sleep(delay)
             if verbose:
-                print('task', self.name, 'done')
+                print("task", self.name, "done")
 
             with self.mutex:
                 self.nrunning.dec()
                 self.testcase.assertTrue(self.nrunning.get() >= 0)
                 if verbose:
-                    print('%s is finished. %d tasks are running' %
-                          (self.name, self.nrunning.get()))
+                    print(
+                        "%s is finished. %d tasks are running"
+                        % (self.name, self.nrunning.get())
+                    )
 
 
 class BaseTestCase(unittest.TestCase):
@@ -69,7 +76,6 @@ class BaseTestCase(unittest.TestCase):
 
 
 class ThreadTests(BaseTestCase):
-
     # Create a bunch of threads, let each do some work, wait until all are
     # done.
     def test_various_ops(self):
@@ -85,31 +91,32 @@ class ThreadTests(BaseTestCase):
         threads = []
 
         for i in range(NUMTASKS):
-            t = TestThread("<thread %d>"%i, self, sema, mutex, numrunning)
+            t = TestThread("<thread %d>" % i, self, sema, mutex, numrunning)
             threads.append(t)
             self.assertEqual(t.ident, None)
-            self.assertTrue(re.match('<TestThread\(.*, initial\)>', repr(t)))
+            self.assertTrue(re.match("<TestThread\(.*, initial\)>", repr(t)))
             t.start()
 
         if verbose:
-            print('waiting for all tasks to complete')
+            print("waiting for all tasks to complete")
         for t in threads:
             t.join(NUMTASKS)
             self.assertTrue(not t.is_alive())
             self.assertNotEqual(t.ident, 0)
             self.assertFalse(t.ident is None)
-            self.assertTrue(re.match('<TestThread\(.*, stopped -?\d+\)>',
-                                     repr(t)))
+            self.assertTrue(re.match("<TestThread\(.*, stopped -?\d+\)>", repr(t)))
         if verbose:
-            print('all tasks done')
+            print("all tasks done")
         self.assertEqual(numrunning.get(), 0)
 
     def test_ident_of_no_threading_threads(self):
         # The ident still must work for the main thread and dummy threads.
         self.assertFalse(threading.currentThread().ident is None)
+
         def f():
             ident.append(threading.currentThread().ident)
             done.set()
+
         done = threading.Event()
         ident = []
         _thread.start_new_thread(f, ())
@@ -121,24 +128,26 @@ class ThreadTests(BaseTestCase):
     # run with a small(ish) thread stack size (256kB)
     def test_various_ops_small_stack(self):
         if verbose:
-            print('with 256kB thread stack size...')
+            print("with 256kB thread stack size...")
         try:
             threading.stack_size(262144)
         except _thread.error:
             raise unittest.SkipTest(
-                'platform does not support changing thread stack size')
+                "platform does not support changing thread stack size"
+            )
         self.test_various_ops()
         threading.stack_size(0)
 
     # run with a large thread stack size (1MB)
     def test_various_ops_large_stack(self):
         if verbose:
-            print('with 1MB thread stack size...')
+            print("with 1MB thread stack size...")
         try:
             threading.stack_size(0x100000)
         except _thread.error:
             raise unittest.SkipTest(
-                'platform does not support changing thread stack size')
+                "platform does not support changing thread stack size"
+            )
         self.test_various_ops()
         threading.stack_size(0)
 
@@ -190,7 +199,7 @@ class ThreadTests(BaseTestCase):
             # to be smarter the above loop wouldn't be infinite.
             self.fail("AsyncExc not raised")
         try:
-            self.assertEqual(result, 1) # one thread state modified
+            self.assertEqual(result, 1)  # one thread state modified
         except UnboundLocalError:
             # The exception was raised too quickly for us to get the result.
             pass
@@ -216,7 +225,7 @@ class ThreadTests(BaseTestCase):
                     worker_saw_exception.set()
 
         t = Worker()
-        t.daemon = True # so if this fails, we don't hang Python at shutdown
+        t.daemon = True  # so if this fails, we don't hang Python at shutdown
         t.start()
         if verbose:
             print("    started worker thread")
@@ -238,7 +247,7 @@ class ThreadTests(BaseTestCase):
         if verbose:
             print("    attempting to raise asynch exception in worker")
         result = set_async_exc(ctypes.c_long(t.id), exception)
-        self.assertEqual(result, 1) # one thread state modified
+        self.assertEqual(result, 1)  # one thread state modified
         if verbose:
             print("    waiting for worker to say it caught the exception")
         worker_saw_exception.wait(timeout=10)
@@ -253,6 +262,7 @@ class ThreadTests(BaseTestCase):
         # Issue 7481: Failure to start thread should cleanup the limbo map.
         def fail_new_thread(*args):
             raise threading.ThreadError()
+
         _start_new_thread = threading._start_new_thread
         threading._start_new_thread = fail_new_thread
         try:
@@ -260,7 +270,8 @@ class ThreadTests(BaseTestCase):
             self.assertRaises(threading.ThreadError, t.start)
             self.assertFalse(
                 t in threading._limbo,
-                "Failed to cleanup _limbo map on failure of Thread.start().")
+                "Failed to cleanup _limbo map on failure of Thread.start().",
+            )
         finally:
             threading._start_new_thread = _start_new_thread
 
@@ -273,7 +284,11 @@ class ThreadTests(BaseTestCase):
         except ImportError:
             raise unittest.SkipTest("cannot import ctypes")
 
-        rc = subprocess.call([sys.executable, "-c", """if 1:
+        rc = subprocess.call(
+            [
+                sys.executable,
+                "-c",
+                """if 1:
             import ctypes, sys, time, _thread
 
             # This lock is used as a simple event variable.
@@ -297,13 +312,19 @@ class ThreadTests(BaseTestCase):
             _thread.start_new_thread(waitingThread, ())
             ready.acquire()  # Be sure the other thread is waiting.
             sys.exit(42)
-            """])
+            """,
+            ]
+        )
         self.assertEqual(rc, 42)
 
     def test_finalize_with_trace(self):
         # Issue1733757
         # Avoid a deadlock when sys.settrace steps into threading._shutdown
-        p = subprocess.Popen([sys.executable, "-c", """if 1:
+        p = subprocess.Popen(
+            [
+                sys.executable,
+                "-c",
+                """if 1:
             import sys, threading
 
             # A deadlock-killer, to prevent the
@@ -323,21 +344,26 @@ class ThreadTests(BaseTestCase):
                 return func
 
             sys.settrace(func)
-            """],
+            """,
+            ],
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
+            stderr=subprocess.PIPE,
+        )
         self.addCleanup(p.stdout.close)
         self.addCleanup(p.stderr.close)
         stdout, stderr = p.communicate()
         rc = p.returncode
         self.assertFalse(rc == 2, "interpreted was blocked")
-        self.assertTrue(rc == 0,
-                        "Unexpected error: " + ascii(stderr))
+        self.assertTrue(rc == 0, "Unexpected error: " + ascii(stderr))
 
     def test_join_nondaemon_on_shutdown(self):
         # Issue 1722344
         # Raising SystemExit skipped threading._shutdown
-        p = subprocess.Popen([sys.executable, "-c", """if 1:
+        p = subprocess.Popen(
+            [
+                sys.executable,
+                "-c",
+                """if 1:
                 import threading
                 from time import sleep
 
@@ -349,14 +375,17 @@ class ThreadTests(BaseTestCase):
 
                 threading.Thread(target=child).start()
                 raise SystemExit
-            """],
+            """,
+            ],
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
+            stderr=subprocess.PIPE,
+        )
         self.addCleanup(p.stdout.close)
         self.addCleanup(p.stderr.close)
         stdout, stderr = p.communicate()
-        self.assertEqual(stdout.strip(),
-            b"Woke up, sleep function is: <built-in function sleep>")
+        self.assertEqual(
+            stdout.strip(), b"Woke up, sleep function is: <built-in function sleep>"
+        )
         stderr = strip_python_stderr(stderr)
         self.assertEqual(stderr, b"")
 
@@ -372,8 +401,9 @@ class ThreadTests(BaseTestCase):
                 t.start()
                 t.join()
                 l = enum()
-                self.assertNotIn(t, l,
-                    "#1703448 triggered after %d trials: %s" % (i, l))
+                self.assertNotIn(
+                    t, l, "#1703448 triggered after %d trials: %s" % (i, l)
+                )
         finally:
             sys.setswitchinterval(old_interval)
 
@@ -383,9 +413,9 @@ class ThreadTests(BaseTestCase):
                 # The links in this refcycle from Thread back to self
                 # should be cleaned up when the thread completes.
                 self.should_raise = should_raise
-                self.thread = threading.Thread(target=self._run,
-                                               args=(self,),
-                                               kwargs={'yet_another':self})
+                self.thread = threading.Thread(
+                    target=self._run, args=(self,), kwargs={"yet_another": self}
+                )
                 self.thread.start()
 
             def _run(self, other_ref, yet_another):
@@ -396,17 +426,22 @@ class ThreadTests(BaseTestCase):
         weak_cyclic_object = weakref.ref(cyclic_object)
         cyclic_object.thread.join()
         del cyclic_object
-        self.assertIsNone(weak_cyclic_object(),
-                         msg=('%d references still around' %
-                              sys.getrefcount(weak_cyclic_object())))
+        self.assertIsNone(
+            weak_cyclic_object(),
+            msg=("%d references still around" % sys.getrefcount(weak_cyclic_object())),
+        )
 
         raising_cyclic_object = RunSelfFunction(should_raise=True)
         weak_raising_cyclic_object = weakref.ref(raising_cyclic_object)
         raising_cyclic_object.thread.join()
         del raising_cyclic_object
-        self.assertIsNone(weak_raising_cyclic_object(),
-                         msg=('%d references still around' %
-                              sys.getrefcount(weak_raising_cyclic_object())))
+        self.assertIsNone(
+            weak_raising_cyclic_object(),
+            msg=(
+                "%d references still around"
+                % sys.getrefcount(weak_raising_cyclic_object())
+            ),
+        )
 
     def test_old_threading_api(self):
         # Just a quick sanity check to make sure the old method names are
@@ -423,15 +458,15 @@ class ThreadTests(BaseTestCase):
 
     def test_repr_daemon(self):
         t = threading.Thread()
-        self.assertFalse('daemon' in repr(t))
+        self.assertFalse("daemon" in repr(t))
         t.daemon = True
-        self.assertTrue('daemon' in repr(t))
+        self.assertTrue("daemon" in repr(t))
 
 
 class ThreadJoinOnShutdown(BaseTestCase):
-
     def _run_and_join(self, script):
-        script = """if 1:
+        script = (
+            """if 1:
             import sys, os, time, threading
 
             # a thread, which waits for the main program to terminate
@@ -441,11 +476,13 @@ class ThreadJoinOnShutdown(BaseTestCase):
                 # stdout is fully buffered because not a tty, we have to flush
                 # before exit.
                 sys.stdout.flush()
-        \n""" + script
+        \n"""
+            + script
+        )
 
         p = subprocess.Popen([sys.executable, "-c", script], stdout=subprocess.PIPE)
         rc = p.wait()
-        data = p.stdout.read().decode().replace('\r', '')
+        data = p.stdout.read().decode().replace("\r", "")
         p.stdout.close()
         self.assertEqual(data, "end of main\nend of thread\n")
         self.assertFalse(rc == 2, "interpreter was blocked")
@@ -463,8 +500,7 @@ class ThreadJoinOnShutdown(BaseTestCase):
             """
         self._run_and_join(script)
 
-
-    @unittest.skipUnless(hasattr(os, 'fork'), "needs os.fork()")
+    @unittest.skipUnless(hasattr(os, "fork"), "needs os.fork()")
     def test_2_join_in_forked_process(self):
         # Like the test above, but from a forked interpreter
         script = """if 1:
@@ -480,16 +516,15 @@ class ThreadJoinOnShutdown(BaseTestCase):
             """
         self._run_and_join(script)
 
-    @unittest.skipUnless(hasattr(os, 'fork'), "needs os.fork()")
+    @unittest.skipUnless(hasattr(os, "fork"), "needs os.fork()")
     def test_3_join_in_forked_from_thread(self):
         # Like the test above, but fork() was called from a worker thread
         # In the forked process, the main Thread object must be marked as stopped.
 
         # Skip platforms with known problems forking from a worker thread.
         # See http://bugs.python.org/issue3863.
-        if sys.platform in ('freebsd4', 'freebsd5', 'freebsd6', 'netbsd5',
-                           'os2emx'):
-            raise unittest.SkipTest('due to known OS bugs on ' + sys.platform)
+        if sys.platform in ("freebsd4", "freebsd5", "freebsd6", "netbsd5", "os2emx"):
+            raise unittest.SkipTest("due to known OS bugs on " + sys.platform)
         script = """if 1:
             main_thread = threading.current_thread()
             def worker():
@@ -510,22 +545,21 @@ class ThreadJoinOnShutdown(BaseTestCase):
         self._run_and_join(script)
 
     def assertScriptHasOutput(self, script, expected_output):
-        p = subprocess.Popen([sys.executable, "-c", script],
-                             stdout=subprocess.PIPE)
+        p = subprocess.Popen([sys.executable, "-c", script], stdout=subprocess.PIPE)
         stdout, stderr = p.communicate()
-        data = stdout.decode().replace('\r', '')
+        data = stdout.decode().replace("\r", "")
         self.assertEqual(p.returncode, 0, "Unexpected error")
         self.assertEqual(data, expected_output)
 
-    @unittest.skipUnless(hasattr(os, 'fork'), "needs os.fork()")
+    @unittest.skipUnless(hasattr(os, "fork"), "needs os.fork()")
     def test_4_joining_across_fork_in_worker_thread(self):
         # There used to be a possible deadlock when forking from a child
         # thread.  See http://bugs.python.org/issue6643.
 
         # Skip platforms with known problems forking from a worker thread.
         # See http://bugs.python.org/issue3863.
-        if sys.platform in ('freebsd4', 'freebsd5', 'freebsd6', 'os2emx'):
-            raise unittest.SkipTest('due to known OS bugs on ' + sys.platform)
+        if sys.platform in ("freebsd4", "freebsd5", "freebsd6", "os2emx"):
+            raise unittest.SkipTest("due to known OS bugs on " + sys.platform)
 
         # The script takes the following steps:
         # - The main thread in the parent process starts a new thread and then
@@ -594,7 +628,7 @@ class ThreadJoinOnShutdown(BaseTestCase):
             """
         self.assertScriptHasOutput(script, "end of main\n")
 
-    @unittest.skipUnless(hasattr(os, 'fork'), "needs os.fork()")
+    @unittest.skipUnless(hasattr(os, "fork"), "needs os.fork()")
     def test_5_clear_waiter_locks_to_avoid_crash(self):
         # Check that a spawned thread that forks doesn't segfault on certain
         # platforms, namely OS X.  This used to happen if there was a waiter
@@ -609,8 +643,8 @@ class ThreadJoinOnShutdown(BaseTestCase):
 
         # Skip platforms with known problems forking from a worker thread.
         # See http://bugs.python.org/issue3863.
-        if sys.platform in ('freebsd4', 'freebsd5', 'freebsd6', 'os2emx'):
-            raise unittest.SkipTest('due to known OS bugs on ' + sys.platform)
+        if sys.platform in ("freebsd4", "freebsd5", "freebsd6", "os2emx"):
+            raise unittest.SkipTest("due to known OS bugs on " + sys.platform)
         script = """if True:
             import os, time, threading
 
@@ -666,7 +700,7 @@ class ThreadingExceptionTests(BaseTestCase):
 
     def test_joining_current_thread(self):
         current_thread = threading.current_thread()
-        self.assertRaises(RuntimeError, current_thread.join);
+        self.assertRaises(RuntimeError, current_thread.join)
 
     def test_joining_inactive_thread(self):
         thread = threading.Thread()
@@ -681,40 +715,56 @@ class ThreadingExceptionTests(BaseTestCase):
 class LockTests(lock_tests.LockTests):
     locktype = staticmethod(threading.Lock)
 
+
 class PyRLockTests(lock_tests.RLockTests):
     locktype = staticmethod(threading._PyRLock)
+
 
 class CRLockTests(lock_tests.RLockTests):
     locktype = staticmethod(threading._CRLock)
 
+
 class EventTests(lock_tests.EventTests):
     eventtype = staticmethod(threading.Event)
+
 
 class ConditionAsRLockTests(lock_tests.RLockTests):
     # An Condition uses an RLock by default and exports its API.
     locktype = staticmethod(threading.Condition)
 
+
 class ConditionTests(lock_tests.ConditionTests):
     condtype = staticmethod(threading.Condition)
+
 
 class SemaphoreTests(lock_tests.SemaphoreTests):
     semtype = staticmethod(threading.Semaphore)
 
+
 class BoundedSemaphoreTests(lock_tests.BoundedSemaphoreTests):
     semtype = staticmethod(threading.BoundedSemaphore)
+
 
 class BarrierTests(lock_tests.BarrierTests):
     barriertype = staticmethod(threading.Barrier)
 
+
 def test_main():
-    test.support.run_unittest(LockTests, PyRLockTests, CRLockTests, EventTests,
-                              ConditionAsRLockTests, ConditionTests,
-                              SemaphoreTests, BoundedSemaphoreTests,
-                              ThreadTests,
-                              ThreadJoinOnShutdown,
-                              ThreadingExceptionTests,
-                              BarrierTests
-                              )
+    test.support.run_unittest(
+        LockTests,
+        PyRLockTests,
+        CRLockTests,
+        EventTests,
+        ConditionAsRLockTests,
+        ConditionTests,
+        SemaphoreTests,
+        BoundedSemaphoreTests,
+        ThreadTests,
+        ThreadJoinOnShutdown,
+        ThreadingExceptionTests,
+        BarrierTests,
+    )
+
 
 if __name__ == "__main__":
     test_main()

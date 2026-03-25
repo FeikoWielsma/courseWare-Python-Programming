@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
 DND file into application
 
@@ -8,12 +8,12 @@ Tested environment:
 
 This script copy from official PySide/PyQt examples.
 """
-import os
+
 import sys
 
-#PWD = os.path.dirname(os.path.realpath(__file__))
-#parent_path = os.path.dirname(PWD)
-#if parent_path not in sys.path:
+# PWD = os.path.dirname(os.path.realpath(__file__))
+# parent_path = os.path.dirname(PWD)
+# if parent_path not in sys.path:
 #    sys.path.insert(0, parent_path)
 
 
@@ -25,37 +25,36 @@ class DropArea(QtGui.QLabel):
     def __init__(self, parent):
         super(DropArea, self).__init__(parent)
 
-        self.setMinimumSize(200, 200)
-#        self.setFrameStyle(QtGui.QFrame.Sunken | QtGui.QFrame.StyledPanel)
-#        self.setAlignment(QtCore.Qt.AlignCenter)
-        self.setAcceptDrops(True)
-        self.setAutoFillBackground(True)
+        self.set_minimum_size(200, 200)
+        #        self.set_frame_style(QtGui.QFrame.Sunken | QtGui.QFrame.StyledPanel)
+        #        self.set_alignment(QtCore.Qt.AlignCenter)
+        self.set_accept_drops(True)
+        self.set_auto_fill_background(True)
         self.clear()
 
-    def dragEnterEvent(self, evt):
+    def drag_enter_event(self, evt):
+        self.set_text("<drop content>")
+        self.set_background_role(QtGui.QPalette.Highlight)
 
-        self.setText("<drop content>")
-        self.setBackgroundRole(QtGui.QPalette.Highlight)
+        evt.accept_proposed_action()
+        #        self.emit changed(evt.mime_data())
+        self.emit(QtCore.SIGNAL("changed( QString )"), evt.mime_data())
 
-        evt.acceptProposedAction()
-#        self.emit changed(evt.mimeData())
-        self.emit(QtCore.SIGNAL("changed( QString )"), evt.mimeData())
+    def drag_move_event(self, evt):
+        evt.accept_proposed_action()
 
-    def dragMoveEvent(self, evt):
-        evt.acceptProposedAction()
+    def drop_event(self, evt):
+        mime_data = evt.mime_data()
 
-    def dropEvent(self, evt):
-        mime_data = evt.mimeData()
-
-        if mime_data.hasImage():
-            self.setPixmap(mime_data.imageData())
-        elif mime_data.hasHtml():
-            self.setText(mime_data.html())
-            self.setTextFormat(QtCore.Qt.RichText)
-        elif mime_data.hasText():
-            self.setText(mime_data.text())
-            self.setTextFormat(QtCore.Qt.PlainText)
-        elif mime_data.hasUrls():
+        if mime_data.has_image():
+            self.set_pixmap(mime_data.image_data())
+        elif mime_data.has_html():
+            self.set_text(mime_data.html())
+            self.set_text_format(QtCore.Qt.RichText)
+        elif mime_data.has_text():
+            self.set_text(mime_data.text())
+            self.set_text_format(QtCore.Qt.PlainText)
+        elif mime_data.has_urls():
             urls = mime_data.urls()
 
             text = ""
@@ -63,21 +62,21 @@ class DropArea(QtGui.QLabel):
             for url in urls:
                 text += url + " "
 
-            self.setText(text)
+            self.set_text(text)
 
         else:
-            self.setText("Cannot display data")
+            self.set_text("Cannot display data")
 
-        self.setBackgroundRole(QtGui.QPalette.Dark)
-        evt.acceptProposedAction()
+        self.set_background_role(QtGui.QPalette.Dark)
+        evt.accept_proposed_action()
 
-    def dragLeaveEvent(self, evt):
+    def drag_leave_event(self, evt):
         self.clear()
         evt.accept()
 
     def clear(self):
-        self.setText("<drop content>")
-        self.setBackgroundRole(QtGui.QPalette.Dark)
+        self.set_text("<drop content>")
+        self.set_background_role(QtGui.QPalette.Dark)
         self.emit(QtCore.SIGNAL("changed()"))
 
 
@@ -86,74 +85,78 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
-        buf = "This example accepts drags from other applications " + \
-            "and displays the MIME types provided by the drag object."
+        buf = (
+            "This example accepts drags from other applications "
+            + "and displays the MIME types provided by the drag object."
+        )
         lab = QtGui.QLabel(buf, self)
-        lab.setWordWrap(True)
-        lab.adjustSize()
+        lab.set_word_wrap(True)
+        lab.adjust_size()
 
-        dropArea = DropArea(self)
-        self.connect(dropArea, QtCore.SIGNAL('changed(mime_data)'), self.updateFormatsTable)
+        drop_area = DropArea(self)
+        self.connect(
+            drop_area, QtCore.SIGNAL("changed(mime_data)"), self.update_formats_table
+        )
 
-        self.formatsTable = QtGui.QTableWidget(self)
-        self.formatsTable.setColumnCount(2)
-        self.formatsTable.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
-        labels = ('Format', 'Content')
-        self.formatsTable.setHorizontalHeaderLabels(labels)
-        self.formatsTable.horizontalHeader().setStretchLastSection(True)
-        
-            
-        clearButton = QtGui.QPushButton("Clear")
-        quitButton = QtGui.QPushButton("Quit")
-    
-        buttonBox = QtGui.QDialogButtonBox()
-        buttonBox.addButton(clearButton, QtGui.QDialogButtonBox.ActionRole)
-        buttonBox.addButton(quitButton, QtGui.QDialogButtonBox.RejectRole)
+        self.formats_table = QtGui.QTableWidget(self)
+        self.formats_table.set_column_count(2)
+        self.formats_table.set_edit_triggers(QtGui.QAbstractItemView.NoEditTriggers)
+        labels = ("Format", "Content")
+        self.formats_table.set_horizontal_header_labels(labels)
+        self.formats_table.horizontal_header().set_stretch_last_section(True)
 
-        quitButton.pressed.connect(self.close)
-        self.connect(clearButton, QtCore.SIGNAL('pressed()'), dropArea, QtCore.SLOT('clear()'))
+        clear_button = QtGui.QPushButton("Clear")
+        quit_button = QtGui.QPushButton("Quit")
 
-        mainLayout = QtGui.QVBoxLayout(self)
-        mainLayout.addWidget(lab)
-        mainLayout.addWidget(dropArea)
-        mainLayout.addWidget(self.formatsTable)
-        mainLayout.addWidget(buttonBox)
-        self.setLayout(mainLayout)
-    
-        self.setWindowTitle("Drop Site")
-        self.setMinimumSize(350, 500)
+        button_box = QtGui.QDialogButtonBox()
+        button_box.add_button(clear_button, QtGui.QDialogButtonBox.ActionRole)
+        button_box.add_button(quit_button, QtGui.QDialogButtonBox.RejectRole)
 
-    def updateFormatsTable(self, mime_data):
-        self.formatsTable.setRowCount(0)
+        quit_button.pressed.connect(self.close)
+        self.connect(
+            clear_button, QtCore.SIGNAL("pressed()"), drop_area, QtCore.SLOT("clear()")
+        )
+
+        main_layout = QtGui.QVBoxLayout(self)
+        main_layout.add_widget(lab)
+        main_layout.add_widget(drop_area)
+        main_layout.add_widget(self.formats_table)
+        main_layout.add_widget(button_box)
+        self.set_layout(main_layout)
+
+        self.set_window_title("Drop Site")
+        self.set_minimum_size(350, 500)
+
+    def update_formats_table(self, mime_data):
+        self.formats_table.set_row_count(0)
 
         if not mime_data:
             return
 
         for format in mime_data.formats():
             format_item = QtGui.QTableWidgetItem(format)
-            format_item.setFlags(QtCore.Qt.ItemIsEnabled)
-            format_item.setTextAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
+            format_item.set_flags(QtCore.Qt.ItemIsEnabled)
+            format_item.set_text_alignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft)
 
-            if format == 'text/plain':
+            if format == "text/plain":
                 text = mime_data.text().simplified()
-            elif format == 'text/html':
+            elif format == "text/html":
                 text = mime_data.html().simplified()
-            elif format == 'text/uri-list':
+            elif format == "text/uri-list":
                 text = ""
                 for i in mime_data.urls():
-                    text += ' ' + i
+                    text += " " + i
             else:
-                text = 'binary data'
+                text = "binary data"
 
-            row = self.formatsTable.rowCount()
-            self.formatsTable.insertRow(row)
-            self.formatsTable.setItem(row, 0, QtGui.QTableWidgetItem(format))
-            self.formatsTable.setItem(row, 1, QtGui.QTableWidgetItem(text))
+            row = self.formats_table.row_count()
+            self.formats_table.insert_row(row)
+            self.formats_table.set_item(row, 0, QtGui.QTableWidgetItem(format))
+            self.formats_table.set_item(row, 1, QtGui.QTableWidgetItem(text))
 
-        self.formatsTable.resizeColumnsToContents(0)
-
+        self.formats_table.resize_columns_to_contents(0)
 
     def show_and_raise(self):
         self.show()

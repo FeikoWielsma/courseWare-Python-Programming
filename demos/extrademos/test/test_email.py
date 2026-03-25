@@ -5,8 +5,10 @@
 from email.test.test_email import suite
 from test import support
 
+
 def test_main():
     support.run_unittest(suite())
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test_main()

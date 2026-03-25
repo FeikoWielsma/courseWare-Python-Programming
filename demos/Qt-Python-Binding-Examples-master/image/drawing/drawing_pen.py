@@ -8,49 +8,46 @@ from PySide import QtGui, QtCore
 
 
 class Example(QtGui.QWidget):
-  
     def __init__(self):
         super(Example, self).__init__()
 
-        self.setGeometry(300, 300, 280, 270)
-        self.setWindowTitle('penstyles')
+        self.set_geometry(300, 300, 280, 270)
+        self.set_window_title("penstyles")
 
-    def paintEvent(self, e):
-      
+    def paint_event(self, e):
         qp = QtGui.QPainter()
 
-        qp.begin(self)        
-        self.doDrawing(qp)        
+        qp.begin(self)
+        self.do_drawing(qp)
         qp.end()
-        
-    def doDrawing(self, qp):
 
+    def do_drawing(self, qp):
         pen = QtGui.QPen(QtCore.Qt.black, 2, QtCore.Qt.SolidLine)
 
-        qp.setPen(pen)
-        qp.drawLine(20, 40, 250, 40)
+        qp.set_pen(pen)
+        qp.draw_line(20, 40, 250, 40)
 
-        pen.setStyle(QtCore.Qt.DashLine)
-        qp.setPen(pen)
-        qp.drawLine(20, 80, 250, 80)
+        pen.set_style(QtCore.Qt.DashLine)
+        qp.set_pen(pen)
+        qp.draw_line(20, 80, 250, 80)
 
-        pen.setStyle(QtCore.Qt.DashDotLine)
-        qp.setPen(pen)
-        qp.drawLine(20, 120, 250, 120)
+        pen.set_style(QtCore.Qt.DashDotLine)
+        qp.set_pen(pen)
+        qp.draw_line(20, 120, 250, 120)
 
-        pen.setStyle(QtCore.Qt.DotLine)
-        qp.setPen(pen)
-        qp.drawLine(20, 160, 250, 160)
+        pen.set_style(QtCore.Qt.DotLine)
+        qp.set_pen(pen)
+        qp.draw_line(20, 160, 250, 160)
 
-        pen.setStyle(QtCore.Qt.DashDotDotLine)
-        qp.setPen(pen)
-        qp.drawLine(20, 200, 250, 200)
+        pen.set_style(QtCore.Qt.DashDotDotLine)
+        qp.set_pen(pen)
+        qp.draw_line(20, 200, 250, 200)
 
-        pen.setStyle(QtCore.Qt.CustomDashLine)
-        pen.setDashPattern([1, 4, 5, 4])
-        qp.setPen(pen)
-        qp.drawLine(20, 240, 250, 240)
-        
+        pen.set_style(QtCore.Qt.CustomDashLine)
+        pen.set_dash_pattern([1, 4, 5, 4])
+        qp.set_pen(pen)
+        qp.draw_line(20, 240, 250, 240)
+
 
 app = QtGui.QApplication(sys.argv)
 ex = Example()

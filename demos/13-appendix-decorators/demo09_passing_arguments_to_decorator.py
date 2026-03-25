@@ -1,16 +1,19 @@
-def helloSolarSystem(old_function):
+def hello_solar_system(old_function):
     def wrapper_function(planet=None):
-        print ("Hello Solar System")
+        print("Hello Solar System")
         old_function(planet)
-        print ("Leaving Solar System")
+        print("Leaving Solar System")
+
     return wrapper_function
 
-@helloSolarSystem
+
+@hello_solar_system
 def hello(planet=None):
     if planet:
-        print ("Hello "+planet)
+        print("Hello " + planet)
     else:
-        print ("Hello World")
+        print("Hello World")
+
 
 hello("Mars")
 hello()

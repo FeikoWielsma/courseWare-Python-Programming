@@ -1,13 +1,13 @@
 import test.support
 
 # Skip tests if _multiprocessing wasn't built.
-test.support.import_module('_multiprocessing')
+test.support.import_module("_multiprocessing")
 # Skip tests if sem_open implementation is broken.
-test.support.import_module('multiprocessing.synchronize')
+test.support.import_module("multiprocessing.synchronize")
 # import threading after _multiprocessing to raise a more revelant error
 # message: "No module named _multiprocessing". _multiprocessing is not compiled
 # without thread support.
-test.support.import_module('threading')
+test.support.import_module("threading")
 
 import threading
 import time
@@ -15,8 +15,13 @@ import unittest
 
 from concurrent import futures
 from concurrent.futures._base import (
-    PENDING, RUNNING, CANCELLED, CANCELLED_AND_NOTIFIED, FINISHED, Future)
-import concurrent.futures.process
+    PENDING,
+    RUNNING,
+    CANCELLED,
+    CANCELLED_AND_NOTIFIED,
+    FINISHED,
+    Future,
+)
 
 
 def create_future(state=PENDING, exception=None, result=None):
@@ -41,16 +46,18 @@ def mul(x, y):
 
 def sleep_and_raise(t):
     time.sleep(t)
-    raise Exception('this is an exception')
+    raise Exception("this is an exception")
 
 
 class ExecutorMixin:
     worker_count = 5
+
     def _prime_executor(self):
         # Make sure that the executor is ready to do work before running the
         # tests. This should reduce the probability of timeouts in the tests.
-        futures = [self.executor.submit(time.sleep, 0.1)
-                   for _ in range(self.worker_count)]
+        futures = [
+            self.executor.submit(time.sleep, 0.1) for _ in range(self.worker_count)
+        ]
 
         for f in futures:
             f.result()
@@ -80,9 +87,7 @@ class ProcessPoolMixin(ExecutorMixin):
 class ExecutorShutdownTest(unittest.TestCase):
     def test_run_after_shutdown(self):
         self.executor.shutdown()
-        self.assertRaises(RuntimeError,
-                          self.executor.submit,
-                          pow, 2, 5)
+        self.assertRaises(RuntimeError, self.executor.submit, pow, 2, 5)
 
 
 class ThreadPoolShutdownTest(ThreadPoolMixin, ExecutorShutdownTest):
@@ -101,8 +106,9 @@ class ThreadPoolShutdownTest(ThreadPoolMixin, ExecutorShutdownTest):
     def test_context_manager_shutdown(self):
         with futures.ThreadPoolExecutor(max_workers=5) as e:
             executor = e
-            self.assertEqual(list(e.map(abs, range(-5, 5))),
-                             [5, 4, 3, 2, 1, 0, 1, 2, 3, 4])
+            self.assertEqual(
+                list(e.map(abs, range(-5, 5))), [5, 4, 3, 2, 1, 0, 1, 2, 3, 4]
+            )
 
         for t in executor._threads:
             t.join()
@@ -135,8 +141,9 @@ class ProcessPoolShutdownTest(ProcessPoolMixin, ExecutorShutdownTest):
     def test_context_manager_shutdown(self):
         with futures.ProcessPoolExecutor(max_workers=5) as e:
             processes = e._processes
-            self.assertEqual(list(e.map(abs, range(-5, 5))),
-                             [5, 4, 3, 2, 1, 0, 1, 2, 3, 4])
+            self.assertEqual(
+                list(e.map(abs, range(-5, 5))), [5, 4, 3, 2, 1, 0, 1, 2, 3, 4]
+            )
 
         for p in processes:
             p.join()
@@ -152,14 +159,15 @@ class ProcessPoolShutdownTest(ProcessPoolMixin, ExecutorShutdownTest):
         for p in processes:
             p.join()
 
+
 class WaitTests(unittest.TestCase):
     def test_first_completed(self):
         future1 = self.executor.submit(mul, 21, 2)
         future2 = self.executor.submit(time.sleep, 5)
 
         done, not_done = futures.wait(
-                [CANCELLED_FUTURE, future1, future2],
-                 return_when=futures.FIRST_COMPLETED)
+            [CANCELLED_FUTURE, future1, future2], return_when=futures.FIRST_COMPLETED
+        )
 
         self.assertEqual(set([future1]), done)
         self.assertEqual(set([CANCELLED_FUTURE, future2]), not_done)
@@ -168,12 +176,13 @@ class WaitTests(unittest.TestCase):
         future1 = self.executor.submit(time.sleep, 2)
 
         finished, pending = futures.wait(
-                 [CANCELLED_AND_NOTIFIED_FUTURE, SUCCESSFUL_FUTURE, future1],
-                 return_when=futures.FIRST_COMPLETED)
+            [CANCELLED_AND_NOTIFIED_FUTURE, SUCCESSFUL_FUTURE, future1],
+            return_when=futures.FIRST_COMPLETED,
+        )
 
         self.assertEqual(
-                set([CANCELLED_AND_NOTIFIED_FUTURE, SUCCESSFUL_FUTURE]),
-                finished)
+            set([CANCELLED_AND_NOTIFIED_FUTURE, SUCCESSFUL_FUTURE]), finished
+        )
         self.assertEqual(set([future1]), pending)
 
     def test_first_exception(self):
@@ -182,8 +191,8 @@ class WaitTests(unittest.TestCase):
         future3 = self.executor.submit(time.sleep, 10)
 
         finished, pending = futures.wait(
-                [future1, future2, future3],
-                return_when=futures.FIRST_EXCEPTION)
+            [future1, future2, future3], return_when=futures.FIRST_EXCEPTION
+        )
 
         self.assertEqual(set([future1, future2]), finished)
         self.assertEqual(set([future3]), pending)
@@ -193,23 +202,27 @@ class WaitTests(unittest.TestCase):
         future2 = self.executor.submit(time.sleep, 5)
 
         finished, pending = futures.wait(
-                [SUCCESSFUL_FUTURE,
-                 CANCELLED_FUTURE,
-                 CANCELLED_AND_NOTIFIED_FUTURE,
-                 future1, future2],
-                return_when=futures.FIRST_EXCEPTION)
+            [
+                SUCCESSFUL_FUTURE,
+                CANCELLED_FUTURE,
+                CANCELLED_AND_NOTIFIED_FUTURE,
+                future1,
+                future2,
+            ],
+            return_when=futures.FIRST_EXCEPTION,
+        )
 
-        self.assertEqual(set([SUCCESSFUL_FUTURE,
-                              CANCELLED_AND_NOTIFIED_FUTURE,
-                              future1]), finished)
+        self.assertEqual(
+            set([SUCCESSFUL_FUTURE, CANCELLED_AND_NOTIFIED_FUTURE, future1]), finished
+        )
         self.assertEqual(set([CANCELLED_FUTURE, future2]), pending)
 
     def test_first_exception_one_already_failed(self):
         future1 = self.executor.submit(time.sleep, 2)
 
         finished, pending = futures.wait(
-                 [EXCEPTION_FUTURE, future1],
-                 return_when=futures.FIRST_EXCEPTION)
+            [EXCEPTION_FUTURE, future1], return_when=futures.FIRST_EXCEPTION
+        )
 
         self.assertEqual(set([EXCEPTION_FUTURE]), finished)
         self.assertEqual(set([future1]), pending)
@@ -219,18 +232,28 @@ class WaitTests(unittest.TestCase):
         future2 = self.executor.submit(mul, 2, 21)
 
         finished, pending = futures.wait(
-                [SUCCESSFUL_FUTURE,
-                 CANCELLED_AND_NOTIFIED_FUTURE,
-                 EXCEPTION_FUTURE,
-                 future1,
-                 future2],
-                return_when=futures.ALL_COMPLETED)
+            [
+                SUCCESSFUL_FUTURE,
+                CANCELLED_AND_NOTIFIED_FUTURE,
+                EXCEPTION_FUTURE,
+                future1,
+                future2,
+            ],
+            return_when=futures.ALL_COMPLETED,
+        )
 
-        self.assertEqual(set([SUCCESSFUL_FUTURE,
-                              CANCELLED_AND_NOTIFIED_FUTURE,
-                              EXCEPTION_FUTURE,
-                              future1,
-                              future2]), finished)
+        self.assertEqual(
+            set(
+                [
+                    SUCCESSFUL_FUTURE,
+                    CANCELLED_AND_NOTIFIED_FUTURE,
+                    EXCEPTION_FUTURE,
+                    future1,
+                    future2,
+                ]
+            ),
+            finished,
+        )
         self.assertEqual(set(), pending)
 
     def test_timeout(self):
@@ -238,17 +261,28 @@ class WaitTests(unittest.TestCase):
         future2 = self.executor.submit(time.sleep, 10)
 
         finished, pending = futures.wait(
-                [CANCELLED_AND_NOTIFIED_FUTURE,
-                 EXCEPTION_FUTURE,
-                 SUCCESSFUL_FUTURE,
-                 future1, future2],
-                timeout=5,
-                return_when=futures.ALL_COMPLETED)
+            [
+                CANCELLED_AND_NOTIFIED_FUTURE,
+                EXCEPTION_FUTURE,
+                SUCCESSFUL_FUTURE,
+                future1,
+                future2,
+            ],
+            timeout=5,
+            return_when=futures.ALL_COMPLETED,
+        )
 
-        self.assertEqual(set([CANCELLED_AND_NOTIFIED_FUTURE,
-                              EXCEPTION_FUTURE,
-                              SUCCESSFUL_FUTURE,
-                              future1]), finished)
+        self.assertEqual(
+            set(
+                [
+                    CANCELLED_AND_NOTIFIED_FUTURE,
+                    EXCEPTION_FUTURE,
+                    SUCCESSFUL_FUTURE,
+                    future1,
+                ]
+            ),
+            finished,
+        )
         self.assertEqual(set([future2]), pending)
 
 
@@ -266,36 +300,51 @@ class AsCompletedTests(unittest.TestCase):
         future1 = self.executor.submit(mul, 2, 21)
         future2 = self.executor.submit(mul, 7, 6)
 
-        completed = set(futures.as_completed(
-                [CANCELLED_AND_NOTIFIED_FUTURE,
-                 EXCEPTION_FUTURE,
-                 SUCCESSFUL_FUTURE,
-                 future1, future2]))
-        self.assertEqual(set(
-                [CANCELLED_AND_NOTIFIED_FUTURE,
-                 EXCEPTION_FUTURE,
-                 SUCCESSFUL_FUTURE,
-                 future1, future2]),
-                completed)
+        completed = set(
+            futures.as_completed(
+                [
+                    CANCELLED_AND_NOTIFIED_FUTURE,
+                    EXCEPTION_FUTURE,
+                    SUCCESSFUL_FUTURE,
+                    future1,
+                    future2,
+                ]
+            )
+        )
+        self.assertEqual(
+            set(
+                [
+                    CANCELLED_AND_NOTIFIED_FUTURE,
+                    EXCEPTION_FUTURE,
+                    SUCCESSFUL_FUTURE,
+                    future1,
+                    future2,
+                ]
+            ),
+            completed,
+        )
 
     def test_zero_timeout(self):
         future1 = self.executor.submit(time.sleep, 2)
         completed_futures = set()
         try:
             for future in futures.as_completed(
-                    [CANCELLED_AND_NOTIFIED_FUTURE,
-                     EXCEPTION_FUTURE,
-                     SUCCESSFUL_FUTURE,
-                     future1],
-                    timeout=0):
+                [
+                    CANCELLED_AND_NOTIFIED_FUTURE,
+                    EXCEPTION_FUTURE,
+                    SUCCESSFUL_FUTURE,
+                    future1,
+                ],
+                timeout=0,
+            ):
                 completed_futures.add(future)
         except futures.TimeoutError:
             pass
 
-        self.assertEqual(set([CANCELLED_AND_NOTIFIED_FUTURE,
-                              EXCEPTION_FUTURE,
-                              SUCCESSFUL_FUTURE]),
-                         completed_futures)
+        self.assertEqual(
+            set([CANCELLED_AND_NOTIFIED_FUTURE, EXCEPTION_FUTURE, SUCCESSFUL_FUTURE]),
+            completed_futures,
+        )
 
 
 class ThreadPoolAsCompletedTests(ThreadPoolMixin, AsCompletedTests):
@@ -319,8 +368,9 @@ class ExecutorTest(unittest.TestCase):
 
     def test_map(self):
         self.assertEqual(
-                list(self.executor.map(pow, range(10), range(10))),
-                list(map(pow, range(10), range(10))))
+            list(self.executor.map(pow, range(10), range(10))),
+            list(map(pow, range(10), range(10))),
+        )
 
     def test_map_exception(self):
         i = self.executor.map(divmod, [1, 1, 1, 1], [2, 3, 0, 5])
@@ -331,14 +381,12 @@ class ExecutorTest(unittest.TestCase):
     def test_map_timeout(self):
         results = []
         try:
-            for i in self.executor.map(time.sleep,
-                                       [0, 0, 10],
-                                       timeout=5):
+            for i in self.executor.map(time.sleep, [0, 0, 10], timeout=5):
                 results.append(i)
         except futures.TimeoutError:
             pass
         else:
-            self.fail('expected TimeoutError')
+            self.fail("expected TimeoutError")
 
         self.assertEqual([None, None], results)
 
@@ -354,6 +402,7 @@ class ProcessPoolExecutorTest(ProcessPoolMixin, ExecutorTest):
 class FutureTests(unittest.TestCase):
     def test_done_callback_with_result(self):
         callback_result = None
+
         def fn(callback_future):
             nonlocal callback_result
             callback_result = callback_future.result()
@@ -365,17 +414,19 @@ class FutureTests(unittest.TestCase):
 
     def test_done_callback_with_exception(self):
         callback_exception = None
+
         def fn(callback_future):
             nonlocal callback_exception
             callback_exception = callback_future.exception()
 
         f = Future()
         f.add_done_callback(fn)
-        f.set_exception(Exception('test'))
-        self.assertEqual(('test',), callback_exception.args)
+        f.set_exception(Exception("test"))
+        self.assertEqual(("test",), callback_exception.args)
 
     def test_done_callback_with_cancel(self):
         was_cancelled = None
+
         def fn(callback_future):
             nonlocal was_cancelled
             was_cancelled = callback_future.cancelled()
@@ -393,7 +444,7 @@ class FutureTests(unittest.TestCase):
             def raising_fn(callback_future):
                 nonlocal raising_was_called
                 raising_was_called = True
-                raise Exception('doh!')
+                raise Exception("doh!")
 
             def fn(callback_future):
                 nonlocal fn_was_called
@@ -405,10 +456,11 @@ class FutureTests(unittest.TestCase):
             f.set_result(5)
             self.assertTrue(raising_was_called)
             self.assertTrue(fn_was_called)
-            self.assertIn('Exception: doh!', stderr.getvalue())
+            self.assertIn("Exception: doh!", stderr.getvalue())
 
     def test_done_callback_already_successful(self):
         callback_result = None
+
         def fn(callback_future):
             nonlocal callback_result
             callback_result = callback_future.result()
@@ -420,17 +472,19 @@ class FutureTests(unittest.TestCase):
 
     def test_done_callback_already_failed(self):
         callback_exception = None
+
         def fn(callback_future):
             nonlocal callback_exception
             callback_exception = callback_future.exception()
 
         f = Future()
-        f.set_exception(Exception('test'))
+        f.set_exception(Exception("test"))
         f.add_done_callback(fn)
-        self.assertEqual(('test',), callback_exception.args)
+        self.assertEqual(("test",), callback_exception.args)
 
     def test_done_callback_already_cancelled(self):
         was_cancelled = None
+
         def fn(callback_future):
             nonlocal was_cancelled
             was_cancelled = callback_future.cancelled()
@@ -441,21 +495,23 @@ class FutureTests(unittest.TestCase):
         self.assertTrue(was_cancelled)
 
     def test_repr(self):
-        self.assertRegex(repr(PENDING_FUTURE),
-                         '<Future at 0x[0-9a-f]+ state=pending>')
-        self.assertRegex(repr(RUNNING_FUTURE),
-                         '<Future at 0x[0-9a-f]+ state=running>')
-        self.assertRegex(repr(CANCELLED_FUTURE),
-                         '<Future at 0x[0-9a-f]+ state=cancelled>')
-        self.assertRegex(repr(CANCELLED_AND_NOTIFIED_FUTURE),
-                         '<Future at 0x[0-9a-f]+ state=cancelled>')
+        self.assertRegex(repr(PENDING_FUTURE), "<Future at 0x[0-9a-f]+ state=pending>")
+        self.assertRegex(repr(RUNNING_FUTURE), "<Future at 0x[0-9a-f]+ state=running>")
         self.assertRegex(
-                repr(EXCEPTION_FUTURE),
-                '<Future at 0x[0-9a-f]+ state=finished raised IOError>')
+            repr(CANCELLED_FUTURE), "<Future at 0x[0-9a-f]+ state=cancelled>"
+        )
         self.assertRegex(
-                repr(SUCCESSFUL_FUTURE),
-                '<Future at 0x[0-9a-f]+ state=finished returned int>')
-
+            repr(CANCELLED_AND_NOTIFIED_FUTURE),
+            "<Future at 0x[0-9a-f]+ state=cancelled>",
+        )
+        self.assertRegex(
+            repr(EXCEPTION_FUTURE),
+            "<Future at 0x[0-9a-f]+ state=finished raised IOError>",
+        )
+        self.assertRegex(
+            repr(SUCCESSFUL_FUTURE),
+            "<Future at 0x[0-9a-f]+ state=finished returned int>",
+        )
 
     def test_cancel(self):
         f1 = create_future(state=PENDING)
@@ -508,14 +564,12 @@ class FutureTests(unittest.TestCase):
         self.assertFalse(SUCCESSFUL_FUTURE.running())
 
     def test_result_with_timeout(self):
-        self.assertRaises(futures.TimeoutError,
-                          PENDING_FUTURE.result, timeout=0)
-        self.assertRaises(futures.TimeoutError,
-                          RUNNING_FUTURE.result, timeout=0)
-        self.assertRaises(futures.CancelledError,
-                          CANCELLED_FUTURE.result, timeout=0)
-        self.assertRaises(futures.CancelledError,
-                          CANCELLED_AND_NOTIFIED_FUTURE.result, timeout=0)
+        self.assertRaises(futures.TimeoutError, PENDING_FUTURE.result, timeout=0)
+        self.assertRaises(futures.TimeoutError, RUNNING_FUTURE.result, timeout=0)
+        self.assertRaises(futures.CancelledError, CANCELLED_FUTURE.result, timeout=0)
+        self.assertRaises(
+            futures.CancelledError, CANCELLED_AND_NOTIFIED_FUTURE.result, timeout=0
+        )
         self.assertRaises(IOError, EXCEPTION_FUTURE.result, timeout=0)
         self.assertEqual(SUCCESSFUL_FUTURE.result(timeout=0), 42)
 
@@ -546,16 +600,13 @@ class FutureTests(unittest.TestCase):
         self.assertRaises(futures.CancelledError, f1.result, timeout=5)
 
     def test_exception_with_timeout(self):
-        self.assertRaises(futures.TimeoutError,
-                          PENDING_FUTURE.exception, timeout=0)
-        self.assertRaises(futures.TimeoutError,
-                          RUNNING_FUTURE.exception, timeout=0)
-        self.assertRaises(futures.CancelledError,
-                          CANCELLED_FUTURE.exception, timeout=0)
-        self.assertRaises(futures.CancelledError,
-                          CANCELLED_AND_NOTIFIED_FUTURE.exception, timeout=0)
-        self.assertTrue(isinstance(EXCEPTION_FUTURE.exception(timeout=0),
-                                   IOError))
+        self.assertRaises(futures.TimeoutError, PENDING_FUTURE.exception, timeout=0)
+        self.assertRaises(futures.TimeoutError, RUNNING_FUTURE.exception, timeout=0)
+        self.assertRaises(futures.CancelledError, CANCELLED_FUTURE.exception, timeout=0)
+        self.assertRaises(
+            futures.CancelledError, CANCELLED_AND_NOTIFIED_FUTURE.exception, timeout=0
+        )
+        self.assertTrue(isinstance(EXCEPTION_FUTURE.exception(timeout=0), IOError))
         self.assertEqual(SUCCESSFUL_FUTURE.exception(timeout=0), None)
 
     def test_exception_with_success(self):
@@ -573,16 +624,20 @@ class FutureTests(unittest.TestCase):
 
         self.assertTrue(isinstance(f1.exception(timeout=5), IOError))
 
+
 def test_main():
-    test.support.run_unittest(ProcessPoolExecutorTest,
-                              ThreadPoolExecutorTest,
-                              ProcessPoolWaitTests,
-                              ThreadPoolWaitTests,
-                              ProcessPoolAsCompletedTests,
-                              ThreadPoolAsCompletedTests,
-                              FutureTests,
-                              ProcessPoolShutdownTest,
-                              ThreadPoolShutdownTest)
+    test.support.run_unittest(
+        ProcessPoolExecutorTest,
+        ThreadPoolExecutorTest,
+        ProcessPoolWaitTests,
+        ThreadPoolWaitTests,
+        ProcessPoolAsCompletedTests,
+        ThreadPoolAsCompletedTests,
+        FutureTests,
+        ProcessPoolShutdownTest,
+        ThreadPoolShutdownTest,
+    )
+
 
 if __name__ == "__main__":
     test_main()

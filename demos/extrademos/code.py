@@ -1,16 +1,18 @@
-"""Utilities needed to emulate Python's interactive interpreter.
-
-"""
+"""Utilities needed to emulate Python's interactive interpreter."""
 
 # Inspired by similar code by Jeff Epler and Fredrik Lundh.
-
 
 import sys
 import traceback
 from codeop import CommandCompiler, compile_command
 
-__all__ = ["InteractiveInterpreter", "InteractiveConsole", "interact",
-           "compile_command"]
+__all__ = [
+    "InteractiveInterpreter",
+    "InteractiveConsole",
+    "interact",
+    "compile_command",
+]
+
 
 class InteractiveInterpreter:
     """Base class for InteractiveConsole.
@@ -120,7 +122,7 @@ class InteractiveInterpreter:
                 value = SyntaxError(msg, (filename, lineno, offset, line))
                 sys.last_value = value
         lines = traceback.format_exception_only(type, value)
-        self.write(''.join(lines))
+        self.write("".join(lines))
 
     def showtraceback(self):
         """Display the exception that just occurred.
@@ -143,7 +145,7 @@ class InteractiveInterpreter:
             lines.extend(traceback.format_exception_only(type, value))
         finally:
             tblist = tb = None
-        self.write(''.join(lines))
+        self.write("".join(lines))
 
     def write(self, data):
         """Write a string.
@@ -202,9 +204,10 @@ class InteractiveConsole(InteractiveInterpreter):
             sys.ps2 = "... "
         cprt = 'Type "help", "copyright", "credits" or "license" for more information.'
         if banner is None:
-            self.write("Python %s on %s\n%s\n(%s)\n" %
-                       (sys.version, sys.platform, cprt,
-                        self.__class__.__name__))
+            self.write(
+                "Python %s on %s\n%s\n(%s)\n"
+                % (sys.version, sys.platform, cprt, self.__class__.__name__)
+            )
         else:
             self.write("%s\n" % str(banner))
         more = 0
@@ -259,7 +262,6 @@ class InteractiveConsole(InteractiveInterpreter):
 
         """
         return input(prompt)
-
 
 
 def interact(banner=None, readfunc=None, local=None):

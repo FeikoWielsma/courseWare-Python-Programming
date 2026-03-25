@@ -32,51 +32,59 @@
 # SUCH DAMAGE.
 #
 
-import sys
 import ctypes
 import weakref
 
 from multiprocessing import heap, RLock
 from multiprocessing.forking import assert_spawning, ForkingPickler
 
-__all__ = ['RawValue', 'RawArray', 'Value', 'Array', 'copy', 'synchronized']
+__all__ = ["RawValue", "RawArray", "Value", "Array", "copy", "synchronized"]
 
 #
 #
 #
 
 typecode_to_type = {
-    'c': ctypes.c_char,  'u': ctypes.c_wchar,
-    'b': ctypes.c_byte,  'B': ctypes.c_ubyte,
-    'h': ctypes.c_short, 'H': ctypes.c_ushort,
-    'i': ctypes.c_int,   'I': ctypes.c_uint,
-    'l': ctypes.c_long,  'L': ctypes.c_ulong,
-    'f': ctypes.c_float, 'd': ctypes.c_double
-    }
+    "c": ctypes.c_char,
+    "u": ctypes.c_wchar,
+    "b": ctypes.c_byte,
+    "B": ctypes.c_ubyte,
+    "h": ctypes.c_short,
+    "H": ctypes.c_ushort,
+    "i": ctypes.c_int,
+    "I": ctypes.c_uint,
+    "l": ctypes.c_long,
+    "L": ctypes.c_ulong,
+    "f": ctypes.c_float,
+    "d": ctypes.c_double,
+}
 
 #
 #
 #
+
 
 def _new_value(type_):
     size = ctypes.sizeof(type_)
     wrapper = heap.BufferWrapper(size)
     return rebuild_ctype(type_, wrapper, None)
 
+
 def RawValue(typecode_or_type, *args):
-    '''
+    """
     Returns a ctypes object allocated from shared memory
-    '''
+    """
     type_ = typecode_to_type.get(typecode_or_type, typecode_or_type)
     obj = _new_value(type_)
     ctypes.memset(ctypes.addressof(obj), 0, ctypes.sizeof(obj))
     obj.__init__(*args)
     return obj
 
+
 def RawArray(typecode_or_type, size_or_initializer):
-    '''
+    """
     Returns a ctypes array allocated from shared memory
-    '''
+    """
     type_ = typecode_to_type.get(typecode_or_type, typecode_or_type)
     if isinstance(size_or_initializer, int):
         type_ = type_ * size_or_initializer
@@ -87,42 +95,46 @@ def RawArray(typecode_or_type, size_or_initializer):
         result.__init__(*size_or_initializer)
         return result
 
+
 def Value(typecode_or_type, *args, lock=None):
-    '''
+    """
     Return a synchronization wrapper for a Value
-    '''
+    """
     obj = RawValue(typecode_or_type, *args)
     if lock is False:
         return obj
     if lock in (True, None):
         lock = RLock()
-    if not hasattr(lock, 'acquire'):
+    if not hasattr(lock, "acquire"):
         raise AttributeError("'%r' has no method 'acquire'" % lock)
     return synchronized(obj, lock)
 
+
 def Array(typecode_or_type, size_or_initializer, **kwds):
-    '''
+    """
     Return a synchronization wrapper for a RawArray
-    '''
-    lock = kwds.pop('lock', None)
+    """
+    lock = kwds.pop("lock", None)
     if kwds:
-        raise ValueError('unrecognized keyword argument(s): %s' % list(kwds.keys()))
+        raise ValueError("unrecognized keyword argument(s): %s" % list(kwds.keys()))
     obj = RawArray(typecode_or_type, size_or_initializer)
     if lock is False:
         return obj
     if lock in (True, None):
         lock = RLock()
-    if not hasattr(lock, 'acquire'):
+    if not hasattr(lock, "acquire"):
         raise AttributeError("'%r' has no method 'acquire'" % lock)
     return synchronized(obj, lock)
+
 
 def copy(obj):
     new_obj = _new_value(type(obj))
     ctypes.pointer(new_obj)[0] = obj
     return new_obj
 
+
 def synchronized(obj, lock=None):
-    assert not isinstance(obj, SynchronizedBase), 'object already synchronized'
+    assert not isinstance(obj, SynchronizedBase), "object already synchronized"
 
     if isinstance(obj, ctypes._SimpleCData):
         return Synchronized(obj, lock)
@@ -137,13 +149,15 @@ def synchronized(obj, lock=None):
         except KeyError:
             names = [field[0] for field in cls._fields_]
             d = dict((name, make_property(name)) for name in names)
-            classname = 'Synchronized' + cls.__name__
+            classname = "Synchronized" + cls.__name__
             scls = class_cache[cls] = type(classname, (SynchronizedBase,), d)
         return scls(obj, lock)
+
 
 #
 # Functions for pickling/unpickling
 #
+
 
 def reduce_ctype(obj):
     assert_spawning(obj)
@@ -151,6 +165,7 @@ def reduce_ctype(obj):
         return rebuild_ctype, (obj._type_, obj._wrapper, obj._length_)
     else:
         return rebuild_ctype, (type(obj), obj._wrapper, None)
+
 
 def rebuild_ctype(type_, wrapper, length):
     if length is not None:
@@ -160,20 +175,23 @@ def rebuild_ctype(type_, wrapper, length):
     obj._wrapper = wrapper
     return obj
 
+
 #
 # Function to create properties
 #
+
 
 def make_property(name):
     try:
         return prop_cache[name]
     except KeyError:
         d = {}
-        exec(template % ((name,)*7), d)
+        exec(template % ((name,) * 7), d)
         prop_cache[name] = d[name]
         return d[name]
 
-template = '''
+
+template = """
 def get%s(self):
     self.acquire()
     try:
@@ -187,7 +205,7 @@ def set%s(self, value):
     finally:
         self.release()
 %s = property(get%s, set%s)
-'''
+"""
 
 prop_cache = {}
 class_cache = weakref.WeakKeyDictionary()
@@ -196,8 +214,8 @@ class_cache = weakref.WeakKeyDictionary()
 # Synchronized wrappers
 #
 
-class SynchronizedBase(object):
 
+class SynchronizedBase(object):
     def __init__(self, obj, lock=None):
         self._obj = obj
         self._lock = lock or RLock()
@@ -215,15 +233,14 @@ class SynchronizedBase(object):
         return self._lock
 
     def __repr__(self):
-        return '<%s wrapper for %s>' % (type(self).__name__, self._obj)
+        return "<%s wrapper for %s>" % (type(self).__name__, self._obj)
 
 
 class Synchronized(SynchronizedBase):
-    value = make_property('value')
+    value = make_property("value")
 
 
 class SynchronizedArray(SynchronizedBase):
-
     def __len__(self):
         return len(self._obj)
 
@@ -257,5 +274,5 @@ class SynchronizedArray(SynchronizedBase):
 
 
 class SynchronizedString(SynchronizedArray):
-    value = make_property('value')
-    raw = make_property('raw')
+    value = make_property("value")
+    raw = make_property("raw")

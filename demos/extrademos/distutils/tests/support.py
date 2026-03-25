@@ -1,4 +1,5 @@
 """Support code for distutils test cases."""
+
 import os
 import shutil
 import tempfile
@@ -8,8 +9,8 @@ from distutils import log
 from distutils.log import DEBUG, INFO, WARN, ERROR, FATAL
 from distutils.core import Distribution
 
-class LoggingSilencer(object):
 
+class LoggingSilencer(object):
     def setUp(self):
         super().setUp()
         self.threshold = log.set_threshold(log.FATAL)
@@ -27,7 +28,7 @@ class LoggingSilencer(object):
 
     def _log(self, level, msg, args):
         if level not in (DEBUG, INFO, WARN, ERROR, FATAL):
-            raise ValueError('%s wrong log level' % str(level))
+            raise ValueError("%s wrong log level" % str(level))
         self.logs.append((level, msg, args))
 
     def get_logs(self, *levels):
@@ -35,11 +36,12 @@ class LoggingSilencer(object):
             if len(args) == 0:
                 return msg
             return msg % args
-        return [_format(msg, args) for level, msg, args
-                in self.logs if level in levels]
+
+        return [_format(msg, args) for level, msg, args in self.logs if level in levels]
 
     def clear_logs(self):
         self.logs = []
+
 
 class TempdirManager(object):
     """Mix-in class that handles temporary directories for test cases.
@@ -55,7 +57,7 @@ class TempdirManager(object):
         super().tearDown()
         while self.tempdirs:
             d = self.tempdirs.pop()
-            shutil.rmtree(d, os.name in ('nt', 'cygwin'))
+            shutil.rmtree(d, os.name in ("nt", "cygwin"))
 
     def mkdtemp(self):
         """Create a temporary directory that will be cleaned up.
@@ -66,7 +68,7 @@ class TempdirManager(object):
         self.tempdirs.append(d)
         return d
 
-    def write_file(self, path, content='xxx'):
+    def write_file(self, path, content="xxx"):
         """Writes a file in the given path.
 
 
@@ -74,13 +76,13 @@ class TempdirManager(object):
         """
         if isinstance(path, (list, tuple)):
             path = os.path.join(*path)
-        f = open(path, 'w')
+        f = open(path, "w")
         try:
             f.write(content)
         finally:
             f.close()
 
-    def create_dist(self, pkg_name='foo', **kw):
+    def create_dist(self, pkg_name="foo", **kw):
         """Will generate a test environment.
 
         This function creates:
@@ -97,6 +99,7 @@ class TempdirManager(object):
 
         return pkg_dir, dist
 
+
 class DummyCommand:
     """Class to store options for retrieval via set_undefined_options()."""
 
@@ -107,8 +110,8 @@ class DummyCommand:
     def ensure_finalized(self):
         pass
 
-class EnvironGuard(object):
 
+class EnvironGuard(object):
     def setUp(self):
         super(EnvironGuard, self).setUp()
         self.old_environ = deepcopy(os.environ)

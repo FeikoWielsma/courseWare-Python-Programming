@@ -1,37 +1,41 @@
 import os
 import sys
-from test.support import (run_unittest, TESTFN, rmtree, unlink,
-                               captured_stdout)
+from test.support import run_unittest, TESTFN, rmtree, unlink, captured_stdout
 import unittest
 
 import trace
-from trace import CoverageResults, Trace
+from trace import Trace
 
 from test.tracedmodules import testmod
 
 
-#------------------------------- Utilities -----------------------------------#
+# ------------------------------- Utilities -----------------------------------#
+
 
 def fix_ext_py(filename):
     """Given a .pyc/.pyo filename converts it to the appropriate .py"""
-    if filename.endswith(('.pyc', '.pyo')):
+    if filename.endswith((".pyc", ".pyo")):
         filename = filename[:-1]
     return filename
+
 
 def my_file_and_modname():
     """The .py file and module name of this file (__file__)"""
     modname = os.path.splitext(os.path.basename(__file__))[0]
     return fix_ext_py(__file__), modname
 
+
 def get_firstlineno(func):
     return func.__code__.co_firstlineno
 
-#-------------------- Target functions for tracing ---------------------------#
+
+# -------------------- Target functions for tracing ---------------------------#
 #
 # The relative line numbers of lines in these functions matter for verifying
 # tracing. Please modify the appropriate tests if you change one of the
 # functions. Absolute line numbers don't matter.
 #
+
 
 def traced_func_linear(x, y):
     a = x
@@ -39,36 +43,44 @@ def traced_func_linear(x, y):
     c = a + b
     return c
 
+
 def traced_func_loop(x, y):
     c = x
     for i in range(5):
         c += y
     return c
 
+
 def traced_func_importing(x, y):
     return x + y + testmod.func(1)
+
 
 def traced_func_simple_caller(x):
     c = traced_func_linear(x, x)
     return c + x
+
 
 def traced_func_importing_caller(x):
     k = traced_func_simple_caller(x)
     k += traced_func_importing(k, x)
     return k
 
+
 def traced_func_generator(num):
-    c = 5       # executed once
+    c = 5  # executed once
     for i in range(num):
         yield i + c
+
 
 def traced_func_calling_generator():
     k = 0
     for i in traced_func_generator(10):
         k += i
 
+
 def traced_doubler(num):
     return num * 2
+
 
 def traced_caller_list_comprehension():
     k = 10
@@ -96,11 +108,12 @@ class TracedClass(object):
         return y * 2
 
 
-#------------------------------ Test cases -----------------------------------#
+# ------------------------------ Test cases -----------------------------------#
 
 
 class TestLineCounts(unittest.TestCase):
     """White-box testing of line-counting, via runfunc"""
+
     def setUp(self):
         self.tracer = Trace(count=1, trace=0, countfuncs=0, countcallers=0)
         self.my_py_filename = fix_ext_py(__file__)
@@ -113,7 +126,7 @@ class TestLineCounts(unittest.TestCase):
         expected = {}
         firstlineno = get_firstlineno(traced_func_linear)
         for i in range(1, 5):
-            expected[(self.my_py_filename, firstlineno +  i)] = 1
+            expected[(self.my_py_filename, firstlineno + i)] = 1
 
         self.assertEqual(self.tracer.results().counts, expected)
 
@@ -171,12 +184,13 @@ class TestLineCounts(unittest.TestCase):
         }
         self.assertEqual(self.tracer.results().counts, expected)
 
-
     def test_linear_methods(self):
         # XXX todo: later add 'static_method_linear' and 'class_method_linear'
         # here, once issue1764286 is resolved
         #
-        for methname in ['inst_method_linear',]:
+        for methname in [
+            "inst_method_linear",
+        ]:
             tracer = Trace(count=1, trace=0, countfuncs=0, countcallers=0)
             traced_obj = TracedClass(25)
             method = getattr(traced_obj, methname)
@@ -188,15 +202,17 @@ class TestLineCounts(unittest.TestCase):
             }
             self.assertEqual(tracer.results().counts, expected)
 
+
 class TestRunExecCounts(unittest.TestCase):
     """A simple sanity test of line-counting, via runctx (exec)"""
+
     def setUp(self):
         self.my_py_filename = fix_ext_py(__file__)
 
     def test_exec_counts(self):
         self.tracer = Trace(count=1, trace=0, countfuncs=0, countcallers=0)
-        code = r'''traced_func_loop(2, 5)'''
-        code = compile(code, __file__, 'exec')
+        code = r"""traced_func_loop(2, 5)"""
+        code = compile(code, __file__, "exec")
         self.tracer.runctx(code, globals(), vars())
 
         firstlineno = get_firstlineno(traced_func_loop)
@@ -217,6 +233,7 @@ class TestRunExecCounts(unittest.TestCase):
 
 class TestFuncs(unittest.TestCase):
     """White-box testing of funcs tracing"""
+
     def setUp(self):
         self.tracer = Trace(count=0, trace=0, countfuncs=1)
         self.filemod = my_file_and_modname()
@@ -225,8 +242,8 @@ class TestFuncs(unittest.TestCase):
         self.tracer.runfunc(traced_func_simple_caller, 1)
 
         expected = {
-            self.filemod + ('traced_func_simple_caller',): 1,
-            self.filemod + ('traced_func_linear',): 1,
+            self.filemod + ("traced_func_simple_caller",): 1,
+            self.filemod + ("traced_func_linear",): 1,
         }
         self.assertEqual(self.tracer.results().calledfuncs, expected)
 
@@ -234,11 +251,11 @@ class TestFuncs(unittest.TestCase):
         self.tracer.runfunc(traced_func_importing_caller, 1)
 
         expected = {
-            self.filemod + ('traced_func_simple_caller',): 1,
-            self.filemod + ('traced_func_linear',): 1,
-            self.filemod + ('traced_func_importing_caller',): 1,
-            self.filemod + ('traced_func_importing',): 1,
-            (fix_ext_py(testmod.__file__), 'testmod', 'func'): 1,
+            self.filemod + ("traced_func_simple_caller",): 1,
+            self.filemod + ("traced_func_linear",): 1,
+            self.filemod + ("traced_func_importing_caller",): 1,
+            self.filemod + ("traced_func_importing",): 1,
+            (fix_ext_py(testmod.__file__), "testmod", "func"): 1,
         }
         self.assertEqual(self.tracer.results().calledfuncs, expected)
 
@@ -247,15 +264,16 @@ class TestFuncs(unittest.TestCase):
         self.tracer.runfunc(obj.inst_method_calling, 1)
 
         expected = {
-            self.filemod + ('TracedClass.inst_method_calling',): 1,
-            self.filemod + ('TracedClass.inst_method_linear',): 1,
-            self.filemod + ('traced_func_linear',): 1,
+            self.filemod + ("TracedClass.inst_method_calling",): 1,
+            self.filemod + ("TracedClass.inst_method_linear",): 1,
+            self.filemod + ("traced_func_linear",): 1,
         }
         self.assertEqual(self.tracer.results().calledfuncs, expected)
 
 
 class TestCallers(unittest.TestCase):
     """White-box testing of callers tracing"""
+
     def setUp(self):
         self.tracer = Trace(count=0, trace=0, countcallers=1)
         self.filemod = my_file_and_modname()
@@ -264,16 +282,26 @@ class TestCallers(unittest.TestCase):
         self.tracer.runfunc(traced_func_importing_caller, 1)
 
         expected = {
-            ((os.path.splitext(trace.__file__)[0] + '.py', 'trace', 'Trace.runfunc'),
-                (self.filemod + ('traced_func_importing_caller',))): 1,
-            ((self.filemod + ('traced_func_simple_caller',)),
-                (self.filemod + ('traced_func_linear',))): 1,
-            ((self.filemod + ('traced_func_importing_caller',)),
-                (self.filemod + ('traced_func_simple_caller',))): 1,
-            ((self.filemod + ('traced_func_importing_caller',)),
-                (self.filemod + ('traced_func_importing',))): 1,
-            ((self.filemod + ('traced_func_importing',)),
-                (fix_ext_py(testmod.__file__), 'testmod', 'func')): 1,
+            (
+                (os.path.splitext(trace.__file__)[0] + ".py", "trace", "Trace.runfunc"),
+                (self.filemod + ("traced_func_importing_caller",)),
+            ): 1,
+            (
+                (self.filemod + ("traced_func_simple_caller",)),
+                (self.filemod + ("traced_func_linear",)),
+            ): 1,
+            (
+                (self.filemod + ("traced_func_importing_caller",)),
+                (self.filemod + ("traced_func_simple_caller",)),
+            ): 1,
+            (
+                (self.filemod + ("traced_func_importing_caller",)),
+                (self.filemod + ("traced_func_importing",)),
+            ): 1,
+            (
+                (self.filemod + ("traced_func_importing",)),
+                (fix_ext_py(testmod.__file__), "testmod", "func"),
+            ): 1,
         }
         self.assertEqual(self.tracer.results().callers, expected)
 
@@ -284,8 +312,9 @@ class TestCoverage(unittest.TestCase):
         rmtree(TESTFN)
         unlink(TESTFN)
 
-    def _coverage(self, tracer,
-                  cmd='from test import test_pprint; test_pprint.test_main()'):
+    def _coverage(
+        self, tracer, cmd="from test import test_pprint; test_pprint.test_main()"
+    ):
         tracer.run(cmd)
         r = tracer.results()
         r.write_results(show_missing=True, summary=True, coverdir=TESTFN)
@@ -296,7 +325,7 @@ class TestCoverage(unittest.TestCase):
             self._coverage(tracer)
         stdout = stdout.getvalue()
         self.assertTrue("pprint.py" in stdout)
-        self.assertTrue("case.py" in stdout)   # from unittest
+        self.assertTrue("case.py" in stdout)  # from unittest
         files = os.listdir(TESTFN)
         self.assertTrue("pprint.cover" in files)
         self.assertTrue("unittest.case.cover" in files)
@@ -305,8 +334,9 @@ class TestCoverage(unittest.TestCase):
         # Ignore all files, nothing should be traced nor printed
         libpath = os.path.normpath(os.path.dirname(os.__file__))
         # sys.prefix does not work when running from a checkout
-        tracer = trace.Trace(ignoredirs=[sys.prefix, sys.exec_prefix, libpath],
-                             trace=0, count=1)
+        tracer = trace.Trace(
+            ignoredirs=[sys.prefix, sys.exec_prefix, libpath], trace=0, count=1
+        )
         with captured_stdout() as stdout:
             self._coverage(tracer)
         if os.path.exists(TESTFN):
@@ -315,12 +345,11 @@ class TestCoverage(unittest.TestCase):
 
     def test_issue9936(self):
         tracer = trace.Trace(trace=0, count=1)
-        modname = 'test.tracedmodules.testmod'
+        modname = "test.tracedmodules.testmod"
         # Ensure that the module is executed in import
         if modname in sys.modules:
             del sys.modules[modname]
-        cmd = ("import test.tracedmodules.testmod as t;"
-               "t.func(0); t.func2();")
+        cmd = "import test.tracedmodules.testmod as t;t.func(0); t.func2();"
         with captured_stdout() as stdout:
             self._coverage(tracer, cmd)
         stdout.seek(0)
@@ -334,25 +363,26 @@ class TestCoverage(unittest.TestCase):
         self.assertIn(modname, coverage)
         self.assertEqual(coverage[modname], (5, 100))
 
+
 ### Tests that don't mess with sys.settrace and can be traced
 ### themselves TODO: Skip tests that do mess with sys.settrace when
 ### regrtest is invoked with -T option.
 class Test_Ignore(unittest.TestCase):
     def test_ignored(self):
         jn = os.path.join
-        ignore = trace._Ignore(['x', 'y.z'], [jn('foo', 'bar')])
-        self.assertTrue(ignore.names('x.py', 'x'))
-        self.assertFalse(ignore.names('xy.py', 'xy'))
-        self.assertFalse(ignore.names('y.py', 'y'))
-        self.assertTrue(ignore.names(jn('foo', 'bar', 'baz.py'), 'baz'))
-        self.assertFalse(ignore.names(jn('bar', 'z.py'), 'z'))
+        ignore = trace._Ignore(["x", "y.z"], [jn("foo", "bar")])
+        self.assertTrue(ignore.names("x.py", "x"))
+        self.assertFalse(ignore.names("xy.py", "xy"))
+        self.assertFalse(ignore.names("y.py", "y"))
+        self.assertTrue(ignore.names(jn("foo", "bar", "baz.py"), "baz"))
+        self.assertFalse(ignore.names(jn("bar", "z.py"), "z"))
         # Matched before.
-        self.assertTrue(ignore.names(jn('bar', 'baz.py'), 'baz'))
+        self.assertTrue(ignore.names(jn("bar", "baz.py"), "baz"))
 
 
 def test_main():
     run_unittest(__name__)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_main()

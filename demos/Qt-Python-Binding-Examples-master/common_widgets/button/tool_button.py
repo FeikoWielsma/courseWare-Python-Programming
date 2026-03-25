@@ -26,17 +26,17 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
         qcommons.config_theme_path()
 
         tool_btn = QtGui.QToolButton(self)
-        icon = QtGui.QIcon.fromTheme("edit-find")
-        tool_btn.setIcon(icon)
+        icon = QtGui.QIcon.from_theme("edit-find")
+        tool_btn.set_icon(icon)
         # the right size for tool button
-        # "Choosing the Right Size and Format for Icons: Standard icon sizes for Windows Vista, Windows 7, Mac OS X, Linux GNOME and iPhone"
+        # "Choosing the Right Size and Format for Icons: Standard icon sizes for Windows Vista, Windows 7, Mac OS X, Linux GNOME and i_phone"
         # http://www.visualpharm.com/articles/icon_sizes.html
-        tool_btn.setIconSize(32, 32)
+        tool_btn.set_icon_size(32, 32)
         tool_btn.move(100, 100)
         tool_btn.clicked.connect(self._tool_btn_cb)
 

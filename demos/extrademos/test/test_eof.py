@@ -4,6 +4,7 @@
 import unittest
 from test import support
 
+
 class EOFTestCase(unittest.TestCase):
     def test_EOFC(self):
         expect = "EOL while scanning string literal (<string>, line 1)"
@@ -16,8 +17,7 @@ class EOFTestCase(unittest.TestCase):
             raise support.TestFailed
 
     def test_EOFS(self):
-        expect = ("EOF while scanning triple-quoted string literal "
-                  "(<string>, line 1)")
+        expect = "EOF while scanning triple-quoted string literal (<string>, line 1)"
         try:
             eval("""'''this is a test""")
         except SyntaxError as msg:
@@ -25,8 +25,10 @@ class EOFTestCase(unittest.TestCase):
         else:
             raise support.TestFailed
 
+
 def test_main():
     support.run_unittest(EOFTestCase)
+
 
 if __name__ == "__main__":
     test_main()

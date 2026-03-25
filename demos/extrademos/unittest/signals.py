@@ -24,14 +24,21 @@ class _InterruptHandler(object):
         for result in _results.keys():
             result.stop()
 
+
 _results = weakref.WeakKeyDictionary()
+
+
 def registerResult(result):
     _results[result] = 1
+
 
 def removeResult(result):
     return bool(_results.pop(result, None))
 
+
 _interrupt_handler = None
+
+
 def installHandler():
     global _interrupt_handler
     if _interrupt_handler is None:
@@ -42,6 +49,7 @@ def installHandler():
 
 def removeHandler(method=None):
     if method is not None:
+
         @wraps(method)
         def inner(*args, **kwargs):
             initial = signal.getsignal(signal.SIGINT)
@@ -50,6 +58,7 @@ def removeHandler(method=None):
                 return method(*args, **kwargs)
             finally:
                 signal.signal(signal.SIGINT, initial)
+
         return inner
 
     global _interrupt_handler

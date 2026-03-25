@@ -18,9 +18,10 @@ class HMAC:
 
     This supports the API for Cryptographic Hash Functions (PEP 247).
     """
+
     blocksize = 64  # 512-bit HMAC; can be changed in subclasses.
 
-    def __init__(self, key, msg = None, digestmod = None):
+    def __init__(self, key, msg=None, digestmod=None):
         """Create a new HMAC object.
 
         key:       key for the keyed hash object.
@@ -37,28 +38,35 @@ class HMAC:
 
         if digestmod is None:
             import hashlib
+
             digestmod = hashlib.md5
 
-        if hasattr(digestmod, '__call__'):
+        if hasattr(digestmod, "__call__"):
             self.digest_cons = digestmod
         else:
-            self.digest_cons = lambda d=b'': digestmod.new(d)
+            self.digest_cons = lambda d=b"": digestmod.new(d)
 
         self.outer = self.digest_cons()
         self.inner = self.digest_cons()
         self.digest_size = self.inner.digest_size
 
-        if hasattr(self.inner, 'block_size'):
+        if hasattr(self.inner, "block_size"):
             blocksize = self.inner.block_size
             if blocksize < 16:
-                _warnings.warn('block_size of %d seems too small; using our '
-                               'default of %d.' % (blocksize, self.blocksize),
-                               RuntimeWarning, 2)
+                _warnings.warn(
+                    "block_size of %d seems too small; using our "
+                    "default of %d." % (blocksize, self.blocksize),
+                    RuntimeWarning,
+                    2,
+                )
                 blocksize = self.blocksize
         else:
-            _warnings.warn('No block_size attribute on given digest object; '
-                           'Assuming %d.' % (self.blocksize),
-                           RuntimeWarning, 2)
+            _warnings.warn(
+                "No block_size attribute on given digest object; "
+                "Assuming %d." % (self.blocksize),
+                RuntimeWarning,
+                2,
+            )
             blocksize = self.blocksize
 
         if len(key) > blocksize:
@@ -71,8 +79,7 @@ class HMAC:
             self.update(msg)
 
     def update(self, msg):
-        """Update this hashing object with the string msg.
-        """
+        """Update this hashing object with the string msg."""
         if not isinstance(msg, bytes):
             raise TypeError("expected bytes, but got %r" % type(msg).__name__)
         self.inner.update(msg)
@@ -110,12 +117,12 @@ class HMAC:
         return h.digest()
 
     def hexdigest(self):
-        """Like digest(), but returns a string of hexadecimal digits instead.
-        """
+        """Like digest(), but returns a string of hexadecimal digits instead."""
         h = self._current()
         return h.hexdigest()
 
-def new(key, msg = None, digestmod = None):
+
+def new(key, msg=None, digestmod=None):
     """Create a new hashing object and return it.
 
     key: The starting key for the hash.

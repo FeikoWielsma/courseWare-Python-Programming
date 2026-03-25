@@ -7,12 +7,16 @@ This module works as follows:
 'spamspamspamspam!!!'
 """
 
+
 def spams(N):
-    return 'spam' * N
+    return "spam" * N
+
 
 def shrubbery():
-    return spams(4) + '!!!'
+    return spams(4) + "!!!"
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

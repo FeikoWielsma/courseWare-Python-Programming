@@ -32,14 +32,13 @@
 # SUCH DAMAGE.
 #
 
-__all__ = ['Queue', 'SimpleQueue', 'JoinableQueue']
+__all__ = ["Queue", "SimpleQueue", "JoinableQueue"]
 
 import sys
 import os
 import threading
 import collections
 import time
-import atexit
 import weakref
 
 from queue import Empty, Full
@@ -53,8 +52,8 @@ from multiprocessing.forking import assert_spawning
 # Queue type using a pipe, buffer and thread
 #
 
-class Queue(object):
 
+class Queue(object):
     def __init__(self, maxsize=0):
         if maxsize <= 0:
             maxsize = _multiprocessing.SemLock.SEM_VALUE_MAX
@@ -62,7 +61,7 @@ class Queue(object):
         self._reader, self._writer = Pipe(duplex=False)
         self._rlock = Lock()
         self._opid = os.getpid()
-        if sys.platform == 'win32':
+        if sys.platform == "win32":
             self._wlock = None
         else:
             self._wlock = Lock()
@@ -70,21 +69,35 @@ class Queue(object):
 
         self._after_fork()
 
-        if sys.platform != 'win32':
+        if sys.platform != "win32":
             register_after_fork(self, Queue._after_fork)
 
     def __getstate__(self):
         assert_spawning(self)
-        return (self._maxsize, self._reader, self._writer,
-                self._rlock, self._wlock, self._sem, self._opid)
+        return (
+            self._maxsize,
+            self._reader,
+            self._writer,
+            self._rlock,
+            self._wlock,
+            self._sem,
+            self._opid,
+        )
 
     def __setstate__(self, state):
-        (self._maxsize, self._reader, self._writer,
-         self._rlock, self._wlock, self._sem, self._opid) = state
+        (
+            self._maxsize,
+            self._reader,
+            self._writer,
+            self._rlock,
+            self._wlock,
+            self._sem,
+            self._opid,
+        ) = state
         self._after_fork()
 
     def _after_fork(self):
-        debug('Queue._after_fork()')
+        debug("Queue._after_fork()")
         self._notempty = threading.Condition(threading.Lock())
         self._buffer = collections.deque()
         self._thread = None
@@ -126,7 +139,7 @@ class Queue(object):
             if not self._rlock.acquire(block, timeout):
                 raise Empty
             try:
-                if not self._poll(block and (deadline-time.time()) or 0.0):
+                if not self._poll(block and (deadline - time.time()) or 0.0):
                     raise Empty
                 res = self._recv()
                 self._sem.release()
@@ -157,13 +170,13 @@ class Queue(object):
             self._close()
 
     def join_thread(self):
-        debug('Queue.join_thread()')
+        debug("Queue.join_thread()")
         assert self._closed
         if self._jointhread:
             self._jointhread()
 
     def cancel_join_thread(self):
-        debug('Queue.cancel_join_thread()')
+        debug("Queue.cancel_join_thread()")
         self._joincancelled = True
         try:
             self._jointhread.cancel()
@@ -171,21 +184,26 @@ class Queue(object):
             pass
 
     def _start_thread(self):
-        debug('Queue._start_thread()')
+        debug("Queue._start_thread()")
 
         # Start thread which transfers data from buffer to pipe
         self._buffer.clear()
         self._thread = threading.Thread(
             target=Queue._feed,
-            args=(self._buffer, self._notempty, self._send,
-                  self._wlock, self._writer.close),
-            name='QueueFeederThread'
-            )
+            args=(
+                self._buffer,
+                self._notempty,
+                self._send,
+                self._wlock,
+                self._writer.close,
+            ),
+            name="QueueFeederThread",
+        )
         self._thread.daemon = True
 
-        debug('doing self._thread.start()')
+        debug("doing self._thread.start()")
         self._thread.start()
-        debug('... done self._thread.start()')
+        debug("... done self._thread.start()")
 
         # On process exit we will wait for data to be flushed to pipe.
         #
@@ -193,34 +211,33 @@ class Queue(object):
         # processes which use the queue will be descendants of this
         # process.  Therefore waiting for the queue to be flushed
         # is pointless once all the child processes have been joined.
-        created_by_this_process = (self._opid == os.getpid())
+        created_by_this_process = self._opid == os.getpid()
         if not self._joincancelled and not created_by_this_process:
             self._jointhread = Finalize(
-                self._thread, Queue._finalize_join,
+                self._thread,
+                Queue._finalize_join,
                 [weakref.ref(self._thread)],
-                exitpriority=-5
-                )
+                exitpriority=-5,
+            )
 
         # Send sentinel to the thread queue object when garbage collected
         self._close = Finalize(
-            self, Queue._finalize_close,
-            [self._buffer, self._notempty],
-            exitpriority=10
-            )
+            self, Queue._finalize_close, [self._buffer, self._notempty], exitpriority=10
+        )
 
     @staticmethod
     def _finalize_join(twr):
-        debug('joining queue thread')
+        debug("joining queue thread")
         thread = twr()
         if thread is not None:
             thread.join()
-            debug('... queue thread joined')
+            debug("... queue thread joined")
         else:
-            debug('... queue thread already dead')
+            debug("... queue thread already dead")
 
     @staticmethod
     def _finalize_close(buffer, notempty):
-        debug('telling queue thread to quit')
+        debug("telling queue thread to quit")
         notempty.acquire()
         try:
             buffer.append(_sentinel)
@@ -230,7 +247,7 @@ class Queue(object):
 
     @staticmethod
     def _feed(buffer, notempty, send, writelock, close):
-        debug('starting thread to feed data to pipe')
+        debug("starting thread to feed data to pipe")
         from .util import is_exiting
 
         nacquire = notempty.acquire
@@ -238,7 +255,7 @@ class Queue(object):
         nwait = notempty.wait
         bpopleft = buffer.popleft
         sentinel = _sentinel
-        if sys.platform != 'win32':
+        if sys.platform != "win32":
             wacquire = writelock.acquire
             wrelease = writelock.release
         else:
@@ -256,7 +273,7 @@ class Queue(object):
                     while 1:
                         obj = bpopleft()
                         if obj is sentinel:
-                            debug('feeder thread got sentinel -- exiting')
+                            debug("feeder thread got sentinel -- exiting")
                             close()
                             return
 
@@ -277,12 +294,14 @@ class Queue(object):
             # started to cleanup.
             try:
                 if is_exiting():
-                    info('error in queue thread: %s', e)
+                    info("error in queue thread: %s", e)
                 else:
                     import traceback
+
                     traceback.print_exc()
             except Exception:
                 pass
+
 
 _sentinel = object()
 
@@ -294,8 +313,8 @@ _sentinel = object()
 # to happen.
 #
 
-class JoinableQueue(Queue):
 
+class JoinableQueue(Queue):
     def __init__(self, maxsize=0):
         Queue.__init__(self, maxsize)
         self._unfinished_tasks = Semaphore(0)
@@ -329,7 +348,7 @@ class JoinableQueue(Queue):
         self._cond.acquire()
         try:
             if not self._unfinished_tasks.acquire(False):
-                raise ValueError('task_done() called too many times')
+                raise ValueError("task_done() called too many times")
             if self._unfinished_tasks._semlock._is_zero():
                 self._cond.notify_all()
         finally:
@@ -343,16 +362,17 @@ class JoinableQueue(Queue):
         finally:
             self._cond.release()
 
+
 #
 # Simplified Queue type -- really just a locked pipe
 #
 
-class SimpleQueue(object):
 
+class SimpleQueue(object):
     def __init__(self):
         self._reader, self._writer = Pipe(duplex=False)
         self._rlock = Lock()
-        if sys.platform == 'win32':
+        if sys.platform == "win32":
             self._wlock = None
         else:
             self._wlock = Lock()
@@ -372,12 +392,14 @@ class SimpleQueue(object):
     def _make_methods(self):
         recv = self._reader.recv
         racquire, rrelease = self._rlock.acquire, self._rlock.release
+
         def get():
             racquire()
             try:
                 return recv()
             finally:
                 rrelease()
+
         self.get = get
 
         if self._wlock is None:
@@ -386,10 +408,12 @@ class SimpleQueue(object):
         else:
             send = self._writer.send
             wacquire, wrelease = self._wlock.acquire, self._wlock.release
+
             def put(obj):
                 wacquire()
                 try:
                     return send(obj)
                 finally:
                     wrelease()
+
             self.put = put

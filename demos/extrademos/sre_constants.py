@@ -22,8 +22,10 @@ MAXREPEAT = 65535
 # SRE standard exception (access as sre.error)
 # should this really be here?
 
+
 class error(Exception):
     pass
+
 
 # operators
 
@@ -98,51 +100,77 @@ CATEGORY_UNI_LINEBREAK = "category_uni_linebreak"
 CATEGORY_UNI_NOT_LINEBREAK = "category_uni_not_linebreak"
 
 OPCODES = [
-
     # failure=0 success=1 (just because it looks better that way :-)
-    FAILURE, SUCCESS,
-
-    ANY, ANY_ALL,
-    ASSERT, ASSERT_NOT,
+    FAILURE,
+    SUCCESS,
+    ANY,
+    ANY_ALL,
+    ASSERT,
+    ASSERT_NOT,
     AT,
     BRANCH,
     CALL,
     CATEGORY,
-    CHARSET, BIGCHARSET,
-    GROUPREF, GROUPREF_EXISTS, GROUPREF_IGNORE,
-    IN, IN_IGNORE,
+    CHARSET,
+    BIGCHARSET,
+    GROUPREF,
+    GROUPREF_EXISTS,
+    GROUPREF_IGNORE,
+    IN,
+    IN_IGNORE,
     INFO,
     JUMP,
-    LITERAL, LITERAL_IGNORE,
+    LITERAL,
+    LITERAL_IGNORE,
     MARK,
     MAX_UNTIL,
     MIN_UNTIL,
-    NOT_LITERAL, NOT_LITERAL_IGNORE,
+    NOT_LITERAL,
+    NOT_LITERAL_IGNORE,
     NEGATE,
     RANGE,
     REPEAT,
     REPEAT_ONE,
     SUBPATTERN,
-    MIN_REPEAT_ONE
-
+    MIN_REPEAT_ONE,
 ]
 
 ATCODES = [
-    AT_BEGINNING, AT_BEGINNING_LINE, AT_BEGINNING_STRING, AT_BOUNDARY,
-    AT_NON_BOUNDARY, AT_END, AT_END_LINE, AT_END_STRING,
-    AT_LOC_BOUNDARY, AT_LOC_NON_BOUNDARY, AT_UNI_BOUNDARY,
-    AT_UNI_NON_BOUNDARY
+    AT_BEGINNING,
+    AT_BEGINNING_LINE,
+    AT_BEGINNING_STRING,
+    AT_BOUNDARY,
+    AT_NON_BOUNDARY,
+    AT_END,
+    AT_END_LINE,
+    AT_END_STRING,
+    AT_LOC_BOUNDARY,
+    AT_LOC_NON_BOUNDARY,
+    AT_UNI_BOUNDARY,
+    AT_UNI_NON_BOUNDARY,
 ]
 
 CHCODES = [
-    CATEGORY_DIGIT, CATEGORY_NOT_DIGIT, CATEGORY_SPACE,
-    CATEGORY_NOT_SPACE, CATEGORY_WORD, CATEGORY_NOT_WORD,
-    CATEGORY_LINEBREAK, CATEGORY_NOT_LINEBREAK, CATEGORY_LOC_WORD,
-    CATEGORY_LOC_NOT_WORD, CATEGORY_UNI_DIGIT, CATEGORY_UNI_NOT_DIGIT,
-    CATEGORY_UNI_SPACE, CATEGORY_UNI_NOT_SPACE, CATEGORY_UNI_WORD,
-    CATEGORY_UNI_NOT_WORD, CATEGORY_UNI_LINEBREAK,
-    CATEGORY_UNI_NOT_LINEBREAK
+    CATEGORY_DIGIT,
+    CATEGORY_NOT_DIGIT,
+    CATEGORY_SPACE,
+    CATEGORY_NOT_SPACE,
+    CATEGORY_WORD,
+    CATEGORY_NOT_WORD,
+    CATEGORY_LINEBREAK,
+    CATEGORY_NOT_LINEBREAK,
+    CATEGORY_LOC_WORD,
+    CATEGORY_LOC_NOT_WORD,
+    CATEGORY_UNI_DIGIT,
+    CATEGORY_UNI_NOT_DIGIT,
+    CATEGORY_UNI_SPACE,
+    CATEGORY_UNI_NOT_SPACE,
+    CATEGORY_UNI_WORD,
+    CATEGORY_UNI_NOT_WORD,
+    CATEGORY_UNI_LINEBREAK,
+    CATEGORY_UNI_NOT_LINEBREAK,
 ]
+
 
 def makedict(list):
     d = {}
@@ -151,6 +179,7 @@ def makedict(list):
         d[item] = i
         i = i + 1
     return d
+
 
 OPCODES = makedict(OPCODES)
 ATCODES = makedict(ATCODES)
@@ -161,23 +190,14 @@ OP_IGNORE = {
     GROUPREF: GROUPREF_IGNORE,
     IN: IN_IGNORE,
     LITERAL: LITERAL_IGNORE,
-    NOT_LITERAL: NOT_LITERAL_IGNORE
+    NOT_LITERAL: NOT_LITERAL_IGNORE,
 }
 
-AT_MULTILINE = {
-    AT_BEGINNING: AT_BEGINNING_LINE,
-    AT_END: AT_END_LINE
-}
+AT_MULTILINE = {AT_BEGINNING: AT_BEGINNING_LINE, AT_END: AT_END_LINE}
 
-AT_LOCALE = {
-    AT_BOUNDARY: AT_LOC_BOUNDARY,
-    AT_NON_BOUNDARY: AT_LOC_NON_BOUNDARY
-}
+AT_LOCALE = {AT_BOUNDARY: AT_LOC_BOUNDARY, AT_NON_BOUNDARY: AT_LOC_NON_BOUNDARY}
 
-AT_UNICODE = {
-    AT_BOUNDARY: AT_UNI_BOUNDARY,
-    AT_NON_BOUNDARY: AT_UNI_NON_BOUNDARY
-}
+AT_UNICODE = {AT_BOUNDARY: AT_UNI_BOUNDARY, AT_NON_BOUNDARY: AT_UNI_NON_BOUNDARY}
 
 CH_LOCALE = {
     CATEGORY_DIGIT: CATEGORY_DIGIT,
@@ -187,7 +207,7 @@ CH_LOCALE = {
     CATEGORY_WORD: CATEGORY_LOC_WORD,
     CATEGORY_NOT_WORD: CATEGORY_LOC_NOT_WORD,
     CATEGORY_LINEBREAK: CATEGORY_LINEBREAK,
-    CATEGORY_NOT_LINEBREAK: CATEGORY_NOT_LINEBREAK
+    CATEGORY_NOT_LINEBREAK: CATEGORY_NOT_LINEBREAK,
 }
 
 CH_UNICODE = {
@@ -198,31 +218,33 @@ CH_UNICODE = {
     CATEGORY_WORD: CATEGORY_UNI_WORD,
     CATEGORY_NOT_WORD: CATEGORY_UNI_NOT_WORD,
     CATEGORY_LINEBREAK: CATEGORY_UNI_LINEBREAK,
-    CATEGORY_NOT_LINEBREAK: CATEGORY_UNI_NOT_LINEBREAK
+    CATEGORY_NOT_LINEBREAK: CATEGORY_UNI_NOT_LINEBREAK,
 }
 
 # flags
-SRE_FLAG_TEMPLATE = 1 # template mode (disable backtracking)
-SRE_FLAG_IGNORECASE = 2 # case insensitive
-SRE_FLAG_LOCALE = 4 # honour system locale
-SRE_FLAG_MULTILINE = 8 # treat target as multiline string
-SRE_FLAG_DOTALL = 16 # treat target as a single string
-SRE_FLAG_UNICODE = 32 # use unicode "locale"
-SRE_FLAG_VERBOSE = 64 # ignore whitespace and comments
-SRE_FLAG_DEBUG = 128 # debugging
-SRE_FLAG_ASCII = 256 # use ascii "locale"
+SRE_FLAG_TEMPLATE = 1  # template mode (disable backtracking)
+SRE_FLAG_IGNORECASE = 2  # case insensitive
+SRE_FLAG_LOCALE = 4  # honour system locale
+SRE_FLAG_MULTILINE = 8  # treat target as multiline string
+SRE_FLAG_DOTALL = 16  # treat target as a single string
+SRE_FLAG_UNICODE = 32  # use unicode "locale"
+SRE_FLAG_VERBOSE = 64  # ignore whitespace and comments
+SRE_FLAG_DEBUG = 128  # debugging
+SRE_FLAG_ASCII = 256  # use ascii "locale"
 
 # flags for INFO primitive
-SRE_INFO_PREFIX = 1 # has prefix
-SRE_INFO_LITERAL = 2 # entire pattern is literal (given by prefix)
-SRE_INFO_CHARSET = 4 # pattern starts with character from given set
+SRE_INFO_PREFIX = 1  # has prefix
+SRE_INFO_LITERAL = 2  # entire pattern is literal (given by prefix)
+SRE_INFO_CHARSET = 4  # pattern starts with character from given set
 
 if __name__ == "__main__":
+
     def dump(f, d, prefix):
         items = d.items()
         items.sort(key=lambda a: a[1])
         for k, v in items:
             f.write("#define %s_%s %s\n" % (prefix, k.upper(), v))
+
     f = open("sre_constants.h", "w")
     f.write("""\
 /*

@@ -1,7 +1,7 @@
 """
 System tray icon and Prompt on PyQt/PySide application exit
 
-NOTE: We do catch closeEvent cause by command-q on Mac,
+NOTE: We do catch close_event cause by command-q on Mac,
     this feature bring a bug here, it could listen user clicks application icon/dock icon.
 
 Tested environment:
@@ -10,6 +10,7 @@ Tested environment:
 See also:
  - http://lists.trolltech.com/qt-interest/2007-06/msg00820.html
 """
+
 import json
 import os
 import sys
@@ -25,7 +26,7 @@ except ImportError:
 
 class PeriodicExecutorOnce(threading.Thread):
     def __init__(self, interval, func, *args, **kwargs):
-        threading.Thread.__init__(self, name = "PeriodicExecutor")
+        threading.Thread.__init__(self, name="PeriodicExecutor")
         self._interval = interval
         self._func = func
         self._args = args
@@ -42,17 +43,18 @@ class PeriodicExecutorOnce(threading.Thread):
 
 
 default_settings = {
-    "confirm" : True,
-    "x_action_is_quit" : 0,
+    "confirm": True,
+    "x_action_is_quit": 0,
 }
 
-default_settings_path = 'settings.json'
+default_settings_path = "settings.json"
 
 
 def save_settings(settings, path=default_settings_path):
-    with open(path, 'w') as f:
+    with open(path, "w") as f:
         buf = json.dumps(settings)
         f.write(buf)
+
 
 def load_settings(path=default_settings_path):
     if os.path.exists(path):
@@ -68,7 +70,7 @@ def load_settings(path=default_settings_path):
 
 def confirm_quit(main_win, close_evt=None):
     if main_win.settings["confirm"]:
-        if main_win.settings['x_action_is_quit']:
+        if main_win.settings["x_action_is_quit"]:
             save_settings(main_win.settings)
 
             if close_evt:
@@ -89,8 +91,7 @@ class Demo(QtGui.QMainWindow):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
-
+        self.set_geometry(x, y, w, h)
 
         self.settings = load_settings(default_settings_path)
 
@@ -100,17 +101,16 @@ class Demo(QtGui.QMainWindow):
 
         self._confirm_quit_t = None
 
-
     def _confirm_quit(self):
         if confirm_quit(self):
             save_settings(self.settings)
 
             QtCore.QCoreApplication.instance().quit()
 
-    def keyReleaseEvent(self, evt):
+    def key_release_event(self, evt):
         key = evt.key()
 
-        if hasattr(QtCore.Qt.Key_Control, 'real'):
+        if hasattr(QtCore.Qt.Key_Control, "real"):
             # compitable with PyQt
             if key == QtCore.Qt.Key_Control.real:
                 self._last_modifiers = QtCore.Qt.ControlModifier
@@ -125,19 +125,21 @@ class Demo(QtGui.QMainWindow):
             if key == QtCore.Qt.Key_Q:
                 self._last_key = QtCore.Qt.Key_Q
 
-        press_cmd_q = (self._last_modifiers == QtCore.Qt.ControlModifier) and (self._last_key == QtCore.Qt.Key_Q)
+        press_cmd_q = (self._last_modifiers == QtCore.Qt.ControlModifier) and (
+            self._last_key == QtCore.Qt.Key_Q
+        )
 
         if press_cmd_q:
             if confirm_quit(self, evt):
                 QtCore.QCoreApplication.instance().quit()
-                
+
             self._press_cmd_q = True
             self._last_key = None
             self._last_modifiers = None
 
             self._confirm_quit_t.cancel()
 
-        super(Demo, self).keyReleaseEvent(evt)
+        super(Demo, self).key_release_event(evt)
 
     def event(self, evt):
         e_type = evt.type()

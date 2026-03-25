@@ -1,18 +1,23 @@
-def helloSolarSystem(old_function):
+def hello_solar_system(old_function):
     def wrapper_function():
-        print ("Hello Solar System")
+        print("Hello Solar System")
         old_function()
+
     return wrapper_function
 
-def helloGalaxy(old_function):
+
+def hello_galaxy(old_function):
     def wrapper_function():
-        print ("Hello Galaxy")
+        print("Hello Galaxy")
         old_function()
+
     return wrapper_function
 
-@helloGalaxy
-@helloSolarSystem
+
+@hello_galaxy
+@hello_solar_system
 def hello():
-    print ("Hello World")
+    print("Hello World")
+
 
 hello()

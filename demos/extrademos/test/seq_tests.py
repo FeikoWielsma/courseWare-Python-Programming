@@ -5,84 +5,115 @@ Tests common to tuple, list and UserList.UserList
 import unittest
 import sys
 
+
 # Various iterables
 # This is used for checking the constructor (here and in test_deque.py)
 def iterfunc(seqn):
-    'Regular generator'
+    "Regular generator"
     for i in seqn:
         yield i
 
+
 class Sequence:
-    'Sequence using __getitem__'
+    "Sequence using __getitem__"
+
     def __init__(self, seqn):
         self.seqn = seqn
+
     def __getitem__(self, i):
         return self.seqn[i]
 
+
 class IterFunc:
-    'Sequence using iterator protocol'
+    "Sequence using iterator protocol"
+
     def __init__(self, seqn):
         self.seqn = seqn
         self.i = 0
+
     def __iter__(self):
         return self
+
     def __next__(self):
-        if self.i >= len(self.seqn): raise StopIteration
+        if self.i >= len(self.seqn):
+            raise StopIteration
         v = self.seqn[self.i]
         self.i += 1
         return v
 
+
 class IterGen:
-    'Sequence using iterator protocol defined with a generator'
+    "Sequence using iterator protocol defined with a generator"
+
     def __init__(self, seqn):
         self.seqn = seqn
         self.i = 0
+
     def __iter__(self):
         for val in self.seqn:
             yield val
 
+
 class IterNextOnly:
-    'Missing __getitem__ and __iter__'
+    "Missing __getitem__ and __iter__"
+
     def __init__(self, seqn):
         self.seqn = seqn
         self.i = 0
+
     def __next__(self):
-        if self.i >= len(self.seqn): raise StopIteration
+        if self.i >= len(self.seqn):
+            raise StopIteration
         v = self.seqn[self.i]
         self.i += 1
         return v
 
+
 class IterNoNext:
-    'Iterator missing __next__()'
+    "Iterator missing __next__()"
+
     def __init__(self, seqn):
         self.seqn = seqn
         self.i = 0
+
     def __iter__(self):
         return self
 
+
 class IterGenExc:
-    'Test propagation of exceptions'
+    "Test propagation of exceptions"
+
     def __init__(self, seqn):
         self.seqn = seqn
         self.i = 0
+
     def __iter__(self):
         return self
+
     def __next__(self):
         3 // 0
 
+
 class IterFuncStop:
-    'Test immediate stop'
+    "Test immediate stop"
+
     def __init__(self, seqn):
         pass
+
     def __iter__(self):
         return self
+
     def __next__(self):
         raise StopIteration
 
+
 from itertools import chain
+
+
 def itermulti(seqn):
-    'Test multiple tiers of iterators'
-    return chain(map(lambda x:x, iterfunc(IterGen(Sequence(seqn)))))
+    "Test multiple tiers of iterators"
+    return chain(map(lambda x: x, iterfunc(IterGen(Sequence(seqn)))))
+
 
 class CommonTest(unittest.TestCase):
     # The type to be tested
@@ -104,13 +135,17 @@ class CommonTest(unittest.TestCase):
         uu2 = self.type2test(u2)
 
         v = self.type2test(tuple(u))
+
         class OtherSeq:
             def __init__(self, initseq):
                 self.__data = initseq
+
             def __len__(self):
                 return len(self.__data)
+
             def __getitem__(self, i):
                 return self.__data[i]
+
         s = OtherSeq(u0)
         v0 = self.type2test(s)
         self.assertEqual(len(v0), len(s))
@@ -120,9 +155,8 @@ class CommonTest(unittest.TestCase):
         self.assertEqual(len(vv), len(s))
 
         # Create from various iteratables
-        for s in ("123", "", range(1000), ('do', 1.2), range(2000,2200,5)):
-            for g in (Sequence, IterFunc, IterGen,
-                      itermulti, iterfunc):
+        for s in ("123", "", range(1000), ("do", 1.2), range(2000, 2200, 5)):
+            for g in (Sequence, IterFunc, IterGen, itermulti, iterfunc):
                 self.assertEqual(self.type2test(g(s)), self.type2test(s))
             self.assertEqual(self.type2test(IterFuncStop(s)), self.type2test())
             self.assertEqual(self.type2test(c for c in "123"), self.type2test("123"))
@@ -140,11 +174,11 @@ class CommonTest(unittest.TestCase):
             self.assertEqual(u[i], i)
             self.assertEqual(u[int(i)], i)
         for i in range(-len(u), -1):
-            self.assertEqual(u[i], len(u)+i)
-            self.assertEqual(u[int(i)], len(u)+i)
-        self.assertRaises(IndexError, u.__getitem__, -len(u)-1)
+            self.assertEqual(u[i], len(u) + i)
+            self.assertEqual(u[int(i)], len(u) + i)
+        self.assertRaises(IndexError, u.__getitem__, -len(u) - 1)
         self.assertRaises(IndexError, u.__getitem__, len(u))
-        self.assertRaises(ValueError, u.__getitem__, slice(0,10,0))
+        self.assertRaises(ValueError, u.__getitem__, slice(0, 10, 0))
 
         u = self.type2test()
         self.assertRaises(IndexError, u.__getitem__, 0)
@@ -192,15 +226,15 @@ class CommonTest(unittest.TestCase):
         self.assertEqual(u[-100:100:2], self.type2test([0, 2, 4]))
 
         # Test extreme cases with long ints
-        a = self.type2test([0,1,2,3,4])
-        self.assertEqual(a[ -pow(2,128): 3 ], self.type2test([0,1,2]))
-        self.assertEqual(a[ 3: pow(2,145) ], self.type2test([3,4]))
+        a = self.type2test([0, 1, 2, 3, 4])
+        self.assertEqual(a[-pow(2, 128) : 3], self.type2test([0, 1, 2]))
+        self.assertEqual(a[3 : pow(2, 145)], self.type2test([3, 4]))
 
     def test_contains(self):
         u = self.type2test([0, 1, 2])
         for i in u:
             self.assertIn(i, u)
-        for i in min(u)-1, max(u)+1:
+        for i in min(u) - 1, max(u) + 1:
             self.assertNotIn(i, u)
 
         self.assertRaises(TypeError, u.__contains__)
@@ -212,7 +246,9 @@ class CommonTest(unittest.TestCase):
             # So instances of AllEq must be found in all non-empty sequences.
             def __eq__(self, other):
                 return True
-            __hash__ = None # Can't meet hash invariant requirements
+
+            __hash__ = None  # Can't meet hash invariant requirements
+
         self.assertNotIn(AllEq(), self.type2test([]))
         self.assertIn(AllEq(), self.type2test([1]))
 
@@ -222,6 +258,7 @@ class CommonTest(unittest.TestCase):
         # In this test, the "side effect" is a short-circuiting raise.
         class DoNotTestEq(Exception):
             pass
+
         class StopCompares:
             def __eq__(self, other):
                 raise DoNotTestEq
@@ -249,26 +286,27 @@ class CommonTest(unittest.TestCase):
         self.assertEqual(u1, self.type2test() + u1)
         self.assertEqual(u1 + self.type2test([1]), u2)
         self.assertEqual(self.type2test([-1]) + u1, self.type2test([-1, 0]))
-        self.assertEqual(self.type2test(), u2*0)
-        self.assertEqual(self.type2test(), 0*u2)
-        self.assertEqual(self.type2test(), u2*0)
-        self.assertEqual(self.type2test(), 0*u2)
-        self.assertEqual(u2, u2*1)
-        self.assertEqual(u2, 1*u2)
-        self.assertEqual(u2, u2*1)
-        self.assertEqual(u2, 1*u2)
-        self.assertEqual(u2+u2, u2*2)
-        self.assertEqual(u2+u2, 2*u2)
-        self.assertEqual(u2+u2, u2*2)
-        self.assertEqual(u2+u2, 2*u2)
-        self.assertEqual(u2+u2+u2, u2*3)
-        self.assertEqual(u2+u2+u2, 3*u2)
+        self.assertEqual(self.type2test(), u2 * 0)
+        self.assertEqual(self.type2test(), 0 * u2)
+        self.assertEqual(self.type2test(), u2 * 0)
+        self.assertEqual(self.type2test(), 0 * u2)
+        self.assertEqual(u2, u2 * 1)
+        self.assertEqual(u2, 1 * u2)
+        self.assertEqual(u2, u2 * 1)
+        self.assertEqual(u2, 1 * u2)
+        self.assertEqual(u2 + u2, u2 * 2)
+        self.assertEqual(u2 + u2, 2 * u2)
+        self.assertEqual(u2 + u2, u2 * 2)
+        self.assertEqual(u2 + u2, 2 * u2)
+        self.assertEqual(u2 + u2 + u2, u2 * 3)
+        self.assertEqual(u2 + u2 + u2, 3 * u2)
 
         class subclass(self.type2test):
             pass
+
         u3 = subclass([0, 1])
-        self.assertEqual(u3, u3*1)
-        self.assertIsNot(u3, u3*1)
+        self.assertEqual(u3, u3 * 1)
+        self.assertIsNot(u3, u3 * 1)
 
     def test_iadd(self):
         u = self.type2test([0, 1])
@@ -292,24 +330,26 @@ class CommonTest(unittest.TestCase):
         # Verify that __getitem__ overrides are not recognized by __iter__
         class T(self.type2test):
             def __getitem__(self, key):
-                return str(key) + '!!!'
-        self.assertEqual(next(iter(T((1,2)))), 1)
+                return str(key) + "!!!"
+
+        self.assertEqual(next(iter(T((1, 2)))), 1)
 
     def test_repeat(self):
         for m in range(4):
             s = tuple(range(m))
             for n in range(-3, 5):
-                self.assertEqual(self.type2test(s*n), self.type2test(s)*n)
-            self.assertEqual(self.type2test(s)*(-4), self.type2test([]))
-            self.assertEqual(id(s), id(s*1))
+                self.assertEqual(self.type2test(s * n), self.type2test(s) * n)
+            self.assertEqual(self.type2test(s) * (-4), self.type2test([]))
+            self.assertEqual(id(s), id(s * 1))
 
     def test_bigrepeat(self):
         import sys
+
         if sys.maxsize <= 2147483647:
             x = self.type2test([0])
             x *= 2**16
             self.assertRaises(MemoryError, x.__mul__, 2**16)
-            if hasattr(x, '__imul__'):
+            if hasattr(x, "__imul__"):
                 self.assertRaises(MemoryError, x.__imul__, 2**16)
 
     def test_subscript(self):
@@ -320,16 +360,16 @@ class CommonTest(unittest.TestCase):
         self.assertEqual(a.__getitem__(-1), 11)
         self.assertRaises(IndexError, a.__getitem__, -3)
         self.assertRaises(IndexError, a.__getitem__, 3)
-        self.assertEqual(a.__getitem__(slice(0,1)), self.type2test([10]))
-        self.assertEqual(a.__getitem__(slice(1,2)), self.type2test([11]))
-        self.assertEqual(a.__getitem__(slice(0,2)), self.type2test([10, 11]))
-        self.assertEqual(a.__getitem__(slice(0,3)), self.type2test([10, 11]))
-        self.assertEqual(a.__getitem__(slice(3,5)), self.type2test([]))
+        self.assertEqual(a.__getitem__(slice(0, 1)), self.type2test([10]))
+        self.assertEqual(a.__getitem__(slice(1, 2)), self.type2test([11]))
+        self.assertEqual(a.__getitem__(slice(0, 2)), self.type2test([10, 11]))
+        self.assertEqual(a.__getitem__(slice(0, 3)), self.type2test([10, 11]))
+        self.assertEqual(a.__getitem__(slice(3, 5)), self.type2test([]))
         self.assertRaises(ValueError, a.__getitem__, slice(0, 10, 0))
-        self.assertRaises(TypeError, a.__getitem__, 'x')
+        self.assertRaises(TypeError, a.__getitem__, "x")
 
     def test_count(self):
-        a = self.type2test([0, 1, 2])*3
+        a = self.type2test([0, 1, 2]) * 3
         self.assertEqual(a.count(0), 3)
         self.assertEqual(a.count(1), 3)
         self.assertEqual(a.count(3), 0)
@@ -385,6 +425,6 @@ class CommonTest(unittest.TestCase):
         self.assertEqual(a.index(0, -3), 3)
         self.assertEqual(a.index(0, 3, 4), 3)
         self.assertEqual(a.index(0, -3, -2), 3)
-        self.assertEqual(a.index(0, -4*sys.maxsize, 4*sys.maxsize), 2)
-        self.assertRaises(ValueError, a.index, 0, 4*sys.maxsize,-4*sys.maxsize)
+        self.assertEqual(a.index(0, -4 * sys.maxsize, 4 * sys.maxsize), 2)
+        self.assertRaises(ValueError, a.index, 0, 4 * sys.maxsize, -4 * sys.maxsize)
         self.assertRaises(ValueError, a.index, 2, 0, -10)

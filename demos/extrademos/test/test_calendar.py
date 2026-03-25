@@ -185,21 +185,20 @@ class OutputTestCase(unittest.TestCase):
     def test_output(self):
         self.assertEqual(
             self.normalize_calendar(calendar.calendar(2004)),
-            self.normalize_calendar(result_2004_text)
+            self.normalize_calendar(result_2004_text),
         )
 
     def test_output_textcalendar(self):
         self.assertEqual(
-            calendar.TextCalendar().formatyear(2004).strip(),
-            result_2004_text.strip()
+            calendar.TextCalendar().formatyear(2004).strip(), result_2004_text.strip()
         )
 
     def test_output_htmlcalendar(self):
-        encoding = 'ascii'
+        encoding = "ascii"
         cal = calendar.HTMLCalendar()
         self.assertEqual(
-            cal.formatyearpage(2004, encoding=encoding).strip(b' \t\n'),
-            result_2004_html.strip(' \t\n').encode(encoding)
+            cal.formatyearpage(2004, encoding=encoding).strip(b" \t\n"),
+            result_2004_html.strip(" \t\n").encode(encoding),
         )
 
 
@@ -215,7 +214,7 @@ class CalendarTestCase(unittest.TestCase):
         self.assertEqual(calendar.isleap(2003), 0)
 
     def test_setfirstweekday(self):
-        self.assertRaises(TypeError, calendar.setfirstweekday, 'flabber')
+        self.assertRaises(TypeError, calendar.setfirstweekday, "flabber")
         self.assertRaises(ValueError, calendar.setfirstweekday, -1)
         self.assertRaises(ValueError, calendar.setfirstweekday, 200)
         orig = calendar.firstweekday()
@@ -256,11 +255,11 @@ class CalendarTestCase(unittest.TestCase):
         # (it is still not thread-safe though)
         old_october = calendar.TextCalendar().formatmonthname(2010, 10, 10)
         try:
-            calendar.LocaleTextCalendar(locale='').formatmonthname(2010, 10, 10)
+            calendar.LocaleTextCalendar(locale="").formatmonthname(2010, 10, 10)
         except locale.Error:
             # cannot set the system default locale -- skip rest of test
             return
-        calendar.LocaleHTMLCalendar(locale='').formatmonthname(2010, 10)
+        calendar.LocaleHTMLCalendar(locale="").formatmonthname(2010, 10)
         new_october = calendar.TextCalendar().formatmonthname(2010, 10, 10)
         self.assertEqual(old_october, new_october)
 
@@ -395,30 +394,43 @@ class SundayTestCase(MonthCalendarTestCase):
         # A 31-day december starting on friday (2+7+7+7+7+1 days)
         self.check_weeks(1995, 12, (2, 7, 7, 7, 7, 1))
 
+
 class TimegmTestCase(unittest.TestCase):
-    TIMESTAMPS = [0, 10, 100, 1000, 10000, 100000, 1000000,
-                  1234567890, 1262304000, 1275785153,]
+    TIMESTAMPS = [
+        0,
+        10,
+        100,
+        1000,
+        10000,
+        100000,
+        1000000,
+        1234567890,
+        1262304000,
+        1275785153,
+    ]
+
     def test_timegm(self):
         for secs in self.TIMESTAMPS:
             tuple = time.gmtime(secs)
             self.assertEqual(secs, calendar.timegm(tuple))
 
+
 class MonthRangeTestCase(unittest.TestCase):
     def test_january(self):
         # Tests valid lower boundary case.
-        self.assertEqual(calendar.monthrange(2004,1), (3,31))
+        self.assertEqual(calendar.monthrange(2004, 1), (3, 31))
 
     def test_february_leap(self):
         # Tests February during leap year.
-        self.assertEqual(calendar.monthrange(2004,2), (6,29))
+        self.assertEqual(calendar.monthrange(2004, 2), (6, 29))
 
     def test_february_nonleap(self):
         # Tests February in non-leap year.
-        self.assertEqual(calendar.monthrange(2010,2), (0,28))
+        self.assertEqual(calendar.monthrange(2010, 2), (0, 28))
 
     def test_december(self):
         # Tests valid upper boundary case.
-        self.assertEqual(calendar.monthrange(2004,12), (2,31))
+        self.assertEqual(calendar.monthrange(2004, 12), (2, 31))
 
     def test_zeroth_month(self):
         # Tests low invalid boundary case.
@@ -430,25 +442,26 @@ class MonthRangeTestCase(unittest.TestCase):
         with self.assertRaises(calendar.IllegalMonthError):
             calendar.monthrange(2004, 13)
 
+
 class LeapdaysTestCase(unittest.TestCase):
     def test_no_range(self):
         # test when no range i.e. two identical years as args
-        self.assertEqual(calendar.leapdays(2010,2010), 0)
+        self.assertEqual(calendar.leapdays(2010, 2010), 0)
 
     def test_no_leapdays(self):
         # test when no leap years in range
-        self.assertEqual(calendar.leapdays(2010,2011), 0)
+        self.assertEqual(calendar.leapdays(2010, 2011), 0)
 
     def test_no_leapdays_upper_boundary(self):
         # test no leap years in range, when upper boundary is a leap year
-        self.assertEqual(calendar.leapdays(2010,2012), 0)
+        self.assertEqual(calendar.leapdays(2010, 2012), 0)
 
     def test_one_leapday_lower_boundary(self):
         # test when one leap year in range, lower boundary is leap year
-        self.assertEqual(calendar.leapdays(2012,2013), 1)
+        self.assertEqual(calendar.leapdays(2012, 2013), 1)
 
     def test_several_leapyears_in_range(self):
-        self.assertEqual(calendar.leapdays(1997,2020), 5)
+        self.assertEqual(calendar.leapdays(1997, 2020), 5)
 
 
 def test_main():

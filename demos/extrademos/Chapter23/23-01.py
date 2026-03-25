@@ -1,10 +1,11 @@
 # weights.py
-import sys, pygame
+import sys
+import pygame
 from pygame.locals import *
 from random import randrange
 
-class Weight(pygame.sprite.Sprite):
 
+class Weight(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         # image and rect used when drawing sprite:
@@ -27,6 +28,7 @@ class Weight(pygame.sprite.Sprite):
         if self.rect.top > screen_size[1]:
             self.reset()
 
+
 # Initialize things
 pygame.init()
 screen_size = 800, 600
@@ -34,8 +36,8 @@ pygame.display.set_mode(screen_size, FULLSCREEN)
 pygame.mouse.set_visible(0)
 
 # Load the weight image
-weight_image = pygame.image.load('weight.png')
-weight_image = weight_image.convert() # ... to match the display
+weight_image = pygame.image.load("weight.png")
+weight_image = weight_image.convert()  # ... to match the display
 
 # Create a sprite group and add a Weight
 sprites = pygame.sprite.RenderUpdates()

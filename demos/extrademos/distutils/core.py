@@ -8,7 +8,8 @@ really defined in distutils.dist and distutils.cmd.
 
 __revision__ = "$Id: core.py 86223 2010-11-05 23:51:56Z eric.araujo $"
 
-import sys, os
+import sys
+import os
 
 from distutils.debug import DEBUG
 from distutils.errors import *
@@ -16,9 +17,6 @@ from distutils.util import grok_environment_error
 
 # Mainly import these so setup scripts can "from distutils.core import" them.
 from distutils.dist import Distribution
-from distutils.cmd import Command
-from distutils.config import PyPIRCCommand
-from distutils.extension import Extension
 
 # This is a barebones help message generated displayed when the user
 # runs the setup script with no arguments at all.  More useful help
@@ -31,7 +29,8 @@ usage: %(script)s [global_opts] cmd1 [cmd1_opts] [cmd2 [cmd2_opts] ...]
    or: %(script)s cmd --help
 """
 
-def gen_usage (script_name):
+
+def gen_usage(script_name):
     script = os.path.basename(script_name)
     return USAGE % vars()
 
@@ -41,22 +40,51 @@ _setup_stop_after = None
 _setup_distribution = None
 
 # Legal keyword arguments for the setup() function
-setup_keywords = ('distclass', 'script_name', 'script_args', 'options',
-                  'name', 'version', 'author', 'author_email',
-                  'maintainer', 'maintainer_email', 'url', 'license',
-                  'description', 'long_description', 'keywords',
-                  'platforms', 'classifiers', 'download_url',
-                  'requires', 'provides', 'obsoletes',
-                  )
+setup_keywords = (
+    "distclass",
+    "script_name",
+    "script_args",
+    "options",
+    "name",
+    "version",
+    "author",
+    "author_email",
+    "maintainer",
+    "maintainer_email",
+    "url",
+    "license",
+    "description",
+    "long_description",
+    "keywords",
+    "platforms",
+    "classifiers",
+    "download_url",
+    "requires",
+    "provides",
+    "obsoletes",
+)
 
 # Legal keyword arguments for the Extension constructor
-extension_keywords = ('name', 'sources', 'include_dirs',
-                      'define_macros', 'undef_macros',
-                      'library_dirs', 'libraries', 'runtime_library_dirs',
-                      'extra_objects', 'extra_compile_args', 'extra_link_args',
-                      'swig_opts', 'export_symbols', 'depends', 'language')
+extension_keywords = (
+    "name",
+    "sources",
+    "include_dirs",
+    "define_macros",
+    "undef_macros",
+    "library_dirs",
+    "libraries",
+    "runtime_library_dirs",
+    "extra_objects",
+    "extra_compile_args",
+    "extra_link_args",
+    "swig_opts",
+    "export_symbols",
+    "depends",
+    "language",
+)
 
-def setup (**attrs):
+
+def setup(**attrs):
     """The gateway to the Distutils: do everything your setup script needs
     to do, in a highly flexible and user-driven way.  Briefly: create a
     Distribution instance; find and parse config files; parse the command
@@ -93,27 +121,26 @@ def setup (**attrs):
 
     # Determine the distribution class -- either caller-supplied or
     # our Distribution (see below).
-    klass = attrs.get('distclass')
+    klass = attrs.get("distclass")
     if klass:
-        del attrs['distclass']
+        del attrs["distclass"]
     else:
         klass = Distribution
 
-    if 'script_name' not in attrs:
-        attrs['script_name'] = os.path.basename(sys.argv[0])
-    if 'script_args'  not in attrs:
-        attrs['script_args'] = sys.argv[1:]
+    if "script_name" not in attrs:
+        attrs["script_name"] = os.path.basename(sys.argv[0])
+    if "script_args" not in attrs:
+        attrs["script_args"] = sys.argv[1:]
 
     # Create the Distribution instance, using the remaining arguments
     # (ie. everything except distclass) to initialize it
     try:
         _setup_distribution = dist = klass(attrs)
     except DistutilsSetupError as msg:
-        if 'name' not in attrs:
+        if "name" not in attrs:
             raise SystemExit("error in setup command: %s" % msg)
         else:
-            raise SystemExit("error in %s setup command: %s" % \
-                  (attrs['name'], msg))
+            raise SystemExit("error in %s setup command: %s" % (attrs["name"], msg))
 
     if _setup_stop_after == "init":
         return dist
@@ -158,8 +185,7 @@ def setup (**attrs):
             else:
                 raise SystemExit(error)
 
-        except (DistutilsError,
-                CCompilerError) as msg:
+        except (DistutilsError, CCompilerError) as msg:
             if DEBUG:
                 raise
             else:
@@ -167,10 +193,11 @@ def setup (**attrs):
 
     return dist
 
+
 # setup ()
 
 
-def run_setup (script_name, script_args=None, stop_after="run"):
+def run_setup(script_name, script_args=None, stop_after="run"):
     """Run a setup script in a somewhat controlled environment, and
     return the Distribution instance that drives things.  This is useful
     if you need to find out the distribution meta-data (passed as
@@ -201,14 +228,14 @@ def run_setup (script_name, script_args=None, stop_after="run"):
     Returns the Distribution instance, which provides all information
     used to drive the Distutils.
     """
-    if stop_after not in ('init', 'config', 'commandline', 'run'):
+    if stop_after not in ("init", "config", "commandline", "run"):
         raise ValueError("invalid value for 'stop_after': %r" % (stop_after,))
 
     global _setup_stop_after, _setup_distribution
     _setup_stop_after = stop_after
 
     save_argv = sys.argv
-    g = {'__file__': script_name}
+    g = {"__file__": script_name}
     l = {}
     try:
         try:
@@ -231,13 +258,18 @@ def run_setup (script_name, script_args=None, stop_after="run"):
         raise
 
     if _setup_distribution is None:
-        raise RuntimeError(("'distutils.core.setup()' was never called -- "
-               "perhaps '%s' is not a Distutils setup script?") % \
-              script_name)
+        raise RuntimeError(
+            (
+                "'distutils.core.setup()' was never called -- "
+                "perhaps '%s' is not a Distutils setup script?"
+            )
+            % script_name
+        )
 
     # I wonder if the setup script's namespace -- g and l -- would be of
     # any interest to callers?
-    #print "_setup_distribution:", _setup_distribution
+    # print "_setup_distribution:", _setup_distribution
     return _setup_distribution
+
 
 # run_setup ()

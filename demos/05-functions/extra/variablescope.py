@@ -1,19 +1,20 @@
-total = 0; # This is a global variable
-#Function definition :
+total = 0  # This is a global variable
+# Function definition :
 
-def sum( arg1, arg2 ):
+
+def sum(arg1, arg2):
     # Add both the parameters and return them."
-    total = arg1 + arg2; # Here total is local variable.
-    print ("Inside the function local total : ", total)
-    return total;
+    total = arg1 + arg2  # Here total is local variable.
+    print("Inside the function local total : ", total)
+    return total
 
-#Function call :
 
-sum( 10, 20 );
-print ("Outside the function global total : ", total) 
+# Function call :
 
-#Result :
+sum(10, 20)
+print("Outside the function global total : ", total)
 
-#Inside the function local total :  30
-#Outside the function global total :  0
+# Result :
 
+# Inside the function local total :  30
+# Outside the function global total :  0

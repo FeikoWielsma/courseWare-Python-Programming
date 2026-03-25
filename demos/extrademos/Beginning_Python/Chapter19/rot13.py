@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
+
 def rot13_character(character):
     # Look up codes for ends of the alphabet.
-    a = ord('a')
-    z = ord('z')
-    A = ord('A')
-    Z = ord('Z')
+    a = ord("a")
+    z = ord("z")
+    A = ord("A")
+    Z = ord("Z")
 
     code = ord(character)
     # Rotate lower-case characters.

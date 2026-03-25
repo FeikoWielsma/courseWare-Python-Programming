@@ -2,20 +2,25 @@ import sys
 import argparse
 import pandas as pd
 
-from PySide2.QtCore import (QAbstractTableModel, QDateTime, QModelIndex,
-                            QRect, Qt, QTimeZone, Slot)
-from PySide2.QtGui import QColor, QPainter
-from PySide2.QtWidgets import (QAction, QApplication, QHBoxLayout, QHeaderView,
-                               QMainWindow, QSizePolicy, QTableView, QWidget)
-from PySide2.QtCharts import QtCharts
+from PySide2.QtCore import (
+    QDateTime,
+    QTimeZone,
+    Slot,
+)
+from PySide2.QtWidgets import (
+    QAction,
+    QApplication,
+    QMainWindow,
+)
 
 
 def transform_date(utc, timezone=None):
-    utc_fmt = "yyyy-MM-ddTHH:mm:ss.zzzZ"
-    new_date = QDateTime().fromString(utc, utc_fmt)
+    utc_fmt = "yyyy-MM-dd_thh:mm:ss.zzz_z"
+    new_date = QDateTime().from_string(utc, utc_fmt)
     if timezone:
-        new_date.setTimeZone(timezone)
+        new_date.set_time_zone(timezone)
     return new_date
+
 
 def read_data(fname):
     # Read the CSV content
@@ -33,29 +38,30 @@ def read_data(fname):
 
     return times, magnitudes
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
-        self.setWindowTitle("Eartquakes information")
+        self.set_window_title("Eartquakes information")
 
         # Menu
-        self.menu = self.menuBar()
-        self.file_menu = self.menu.addMenu("File")
+        self.menu = self.menu_bar()
+        self.file_menu = self.menu.add_menu("File")
 
         ## Exit QAction
         exit_action = QAction("Exit", self)
-        exit_action.setShortcut("Ctrl+Q")
+        exit_action.set_shortcut("Ctrl+Q")
         exit_action.triggered.connect(self.exit_app)
 
-        self.file_menu.addAction(exit_action)
+        self.file_menu.add_action(exit_action)
 
         # Status Bar
-        self.status = self.statusBar()
-        self.status.showMessage("Data loaded and plotted")
+        self.status = self.status_bar()
+        self.status.show_message("Data loaded and plotted")
 
         # Window dimensions
-        geometry = app.desktop().availableGeometry(self)
-        self.setFixedSize(geometry.width() * 0.8, geometry.height() * 0.7)
+        geometry = app.desktop().available_geometry(self)
+        self.set_fixed_size(geometry.width() * 0.8, geometry.height() * 0.7)
 
     @Slot()
     def exit_app(self, checked):

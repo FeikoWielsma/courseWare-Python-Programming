@@ -1,8 +1,7 @@
 """Tests for distutils.pypirc.pypirc."""
-import sys
+
 import os
 import unittest
-import tempfile
 
 from distutils.core import PyPIRCCommand
 from distutils.core import Distribution
@@ -47,24 +46,27 @@ password:xxx
 """
 
 
-class PyPIRCCommandTestCase(support.TempdirManager,
-                            support.LoggingSilencer,
-                            support.EnvironGuard,
-                            unittest.TestCase):
-
+class PyPIRCCommandTestCase(
+    support.TempdirManager,
+    support.LoggingSilencer,
+    support.EnvironGuard,
+    unittest.TestCase,
+):
     def setUp(self):
         """Patches the environment."""
         super(PyPIRCCommandTestCase, self).setUp()
         self.tmp_dir = self.mkdtemp()
-        os.environ['HOME'] = self.tmp_dir
-        self.rc = os.path.join(self.tmp_dir, '.pypirc')
+        os.environ["HOME"] = self.tmp_dir
+        self.rc = os.path.join(self.tmp_dir, ".pypirc")
         self.dist = Distribution()
 
         class command(PyPIRCCommand):
             def __init__(self, dist):
                 PyPIRCCommand.__init__(self, dist)
+
             def initialize_options(self):
                 pass
+
             finalize_options = initialize_options
 
         self._cmd = command
@@ -86,25 +88,33 @@ class PyPIRCCommandTestCase(support.TempdirManager,
         config = cmd._read_pypirc()
 
         config = list(sorted(config.items()))
-        waited = [('password', 'secret'), ('realm', 'pypi'),
-                  ('repository', 'http://pypi.python.org/pypi'),
-                  ('server', 'server1'), ('username', 'me')]
+        waited = [
+            ("password", "secret"),
+            ("realm", "pypi"),
+            ("repository", "http://pypi.python.org/pypi"),
+            ("server", "server1"),
+            ("username", "me"),
+        ]
         self.assertEqual(config, waited)
 
         # old format
         self.write_file(self.rc, PYPIRC_OLD)
         config = cmd._read_pypirc()
         config = list(sorted(config.items()))
-        waited = [('password', 'secret'), ('realm', 'pypi'),
-                  ('repository', 'http://pypi.python.org/pypi'),
-                  ('server', 'server-login'), ('username', 'tarek')]
+        waited = [
+            ("password", "secret"),
+            ("realm", "pypi"),
+            ("repository", "http://pypi.python.org/pypi"),
+            ("server", "server-login"),
+            ("username", "tarek"),
+        ]
         self.assertEqual(config, waited)
 
     def test_server_empty_registration(self):
         cmd = self._cmd(self.dist)
         rc = cmd._get_rc_file()
         self.assertTrue(not os.path.exists(rc))
-        cmd._store_pypirc('tarek', 'xxx')
+        cmd._store_pypirc("tarek", "xxx")
         self.assertTrue(os.path.exists(rc))
         f = open(rc)
         try:
@@ -113,8 +123,10 @@ class PyPIRCCommandTestCase(support.TempdirManager,
         finally:
             f.close()
 
+
 def test_suite():
     return unittest.makeSuite(PyPIRCCommandTestCase)
+
 
 if __name__ == "__main__":
     run_unittest(test_suite())

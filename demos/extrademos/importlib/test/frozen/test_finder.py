@@ -1,11 +1,8 @@
 from ... import machinery
 from .. import abc
 
-import unittest
-
 
 class FinderTests(abc.FinderTests):
-
     """Test finding frozen modules."""
 
     def find(self, name, path=None):
@@ -13,17 +10,17 @@ class FinderTests(abc.FinderTests):
         return finder.find_module(name, path)
 
     def test_module(self):
-        name = '__hello__'
+        name = "__hello__"
         loader = self.find(name)
-        self.assertTrue(hasattr(loader, 'load_module'))
+        self.assertTrue(hasattr(loader, "load_module"))
 
     def test_package(self):
-        loader = self.find('__phello__')
-        self.assertTrue(hasattr(loader, 'load_module'))
+        loader = self.find("__phello__")
+        self.assertTrue(hasattr(loader, "load_module"))
 
     def test_module_in_package(self):
-        loader = self.find('__phello__.spam', ['__phello__'])
-        self.assertTrue(hasattr(loader, 'load_module'))
+        loader = self.find("__phello__.spam", ["__phello__"])
+        self.assertTrue(hasattr(loader, "load_module"))
 
     def test_package_in_package(self):
         # No frozen package within another package to test with.
@@ -34,14 +31,15 @@ class FinderTests(abc.FinderTests):
         pass
 
     def test_failure(self):
-        loader = self.find('<not real>')
+        loader = self.find("<not real>")
         self.assertTrue(loader is None)
 
 
 def test_main():
     from test.support import run_unittest
+
     run_unittest(FinderTests)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_main()

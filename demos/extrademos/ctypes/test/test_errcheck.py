@@ -1,4 +1,3 @@
-import sys
 from ctypes import *
 
 ##class HMODULE(Structure):

@@ -1,6 +1,7 @@
 """
 Test the API of the symtable module.
 """
+
 import symtable
 import unittest
 
@@ -41,7 +42,6 @@ def find_block(block, name):
 
 
 class SymtableTest(unittest.TestCase):
-
     top = symtable.symtable(TEST_CODE, "?", "exec")
     # These correspond to scopes in TEST_CODE
     Mine = find_block(top, "Mine")
@@ -81,8 +81,7 @@ class SymtableTest(unittest.TestCase):
     def test_function_info(self):
         func = self.spam
         self.assertEqual(func.get_parameters(), ("a", "b", "kw", "var"))
-        self.assertEqual(func.get_locals(),
-                         ("a", "b", "internal", "kw", "var", "x"))
+        self.assertEqual(func.get_locals(), ("a", "b", "internal", "kw", "var", "x"))
         self.assertEqual(func.get_globals(), ("bar", "glob"))
         self.assertEqual(self.internal.get_frees(), ("x",))
 
@@ -109,8 +108,7 @@ class SymtableTest(unittest.TestCase):
         self.assertFalse(self.spam.lookup("x").is_parameter())
 
     def test_symbol_lookup(self):
-        self.assertEqual(len(self.top.get_identifiers()),
-                         len(self.top.get_symbols()))
+        self.assertEqual(len(self.top.get_identifiers()), len(self.top.get_symbols()))
 
         self.assertRaises(KeyError, self.top.lookup, "not_here")
 
@@ -144,7 +142,7 @@ class SymtableTest(unittest.TestCase):
         self.assertEqual(self.Mine.get_name(), "Mine")
 
     def test_class_info(self):
-        self.assertEqual(self.Mine.get_methods(), ('a_method',))
+        self.assertEqual(self.Mine.get_methods(), ("a_method",))
 
     def test_filename_correct(self):
         ### Bug tickler: SyntaxError file name correct whether error raised
@@ -156,6 +154,7 @@ class SymtableTest(unittest.TestCase):
                 self.assertEqual(e.filename, "spam")
             else:
                 self.fail("no SyntaxError for %r" % (brokencode,))
+
         checkfilename("def f(x): foo)(")  # parse-time
         checkfilename("def f(x): global x")  # symtable-build-time
 
@@ -172,5 +171,6 @@ class SymtableTest(unittest.TestCase):
 def test_main():
     support.run_unittest(SymtableTest)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test_main()

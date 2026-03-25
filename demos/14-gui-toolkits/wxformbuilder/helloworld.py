@@ -1,4 +1,4 @@
-# First things, first. Import the wxPython package.
+# First things, first. Import the wx_python package.
 import wx
 
 # Next, create an application object.

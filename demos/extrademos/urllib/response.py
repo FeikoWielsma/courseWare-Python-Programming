@@ -6,6 +6,7 @@ addinfourl instance, which defines an info() method that returns
 headers and a geturl() method that returns the url.
 """
 
+
 class addbase(object):
     """Base class for addinfo and addclosehook."""
 
@@ -29,15 +30,15 @@ class addbase(object):
                 self.__next__ = self.fp.__next__
 
     def __repr__(self):
-        return '<%s at %r whose fp = %r>' % (self.__class__.__name__,
-                                             id(self), self.fp)
+        return "<%s at %r whose fp = %r>" % (self.__class__.__name__, id(self), self.fp)
 
     def close(self):
         self.read = None
         self.readline = None
         self.readlines = None
         self.fileno = None
-        if self.fp: self.fp.close()
+        if self.fp:
+            self.fp.close()
         self.fp = None
 
     def __enter__(self):
@@ -47,6 +48,7 @@ class addbase(object):
 
     def __exit__(self, type, value, traceback):
         self.close()
+
 
 class addclosehook(addbase):
     """Class to add a close hook to an open file."""
@@ -63,6 +65,7 @@ class addclosehook(addbase):
             self.closehook = None
             self.hookargs = None
 
+
 class addinfo(addbase):
     """class to add an info() method to an open file."""
 
@@ -72,6 +75,7 @@ class addinfo(addbase):
 
     def info(self):
         return self.headers
+
 
 class addinfourl(addbase):
     """class to add info() and geturl() methods to an open file."""

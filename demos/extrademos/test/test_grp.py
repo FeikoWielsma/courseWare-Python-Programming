@@ -3,10 +3,10 @@
 import unittest
 from test import support
 
-grp = support.import_module('grp')
+grp = support.import_module("grp")
+
 
 class GroupDatabaseTestCase(unittest.TestCase):
-
     def check_value(self, value):
         # check that a grp tuple has the entries and
         # attributes promised by the docs
@@ -34,7 +34,7 @@ class GroupDatabaseTestCase(unittest.TestCase):
             self.check_value(e2)
             self.assertEqual(e2.gr_gid, e.gr_gid)
             name = e.gr_name
-            if name.startswith('+') or name.startswith('-'):
+            if name.startswith("+") or name.startswith("-"):
                 # NIS-related entry
                 continue
             e2 = grp.getgrnam(name)
@@ -52,9 +52,9 @@ class GroupDatabaseTestCase(unittest.TestCase):
         # try to get some errors
         bynames = {}
         bygids = {}
-        for (n, p, g, mem) in grp.getgrall():
-            if not n or n == '+':
-                continue # skip NIS entries etc.
+        for n, p, g, mem in grp.getgrall():
+            if not n or n == "+":
+                continue  # skip NIS entries etc.
             bynames[n] = g
             bygids[g] = n
 
@@ -64,10 +64,10 @@ class GroupDatabaseTestCase(unittest.TestCase):
         while fakename in bynames:
             chars = list(fakename)
             for i in range(len(chars)):
-                if chars[i] == 'z':
-                    chars[i] = 'A'
+                if chars[i] == "z":
+                    chars[i] = "A"
                     break
-                elif chars[i] == 'Z':
+                elif chars[i] == "Z":
                     continue
                 else:
                     chars[i] = chr(ord(chars[i]) + 1)
@@ -79,7 +79,7 @@ class GroupDatabaseTestCase(unittest.TestCase):
                 except IndexError:
                     # should never happen... if so, just forget it
                     break
-            fakename = ''.join(chars)
+            fakename = "".join(chars)
 
         self.assertRaises(KeyError, grp.getgrnam, fakename)
 
@@ -90,8 +90,10 @@ class GroupDatabaseTestCase(unittest.TestCase):
 
         self.assertRaises(KeyError, grp.getgrgid, fakegid)
 
+
 def test_main():
     support.run_unittest(GroupDatabaseTestCase)
+
 
 if __name__ == "__main__":
     test_main()

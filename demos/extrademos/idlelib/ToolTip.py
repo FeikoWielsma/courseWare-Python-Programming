@@ -5,8 +5,8 @@
 
 from tkinter import *
 
-class ToolTipBase:
 
+class ToolTipBase:
     def __init__(self, button):
         self.button = button
         self.tipwindow = None
@@ -49,8 +49,14 @@ class ToolTipBase:
 
     def showcontents(self, text="Your text here"):
         # Override this in derived class
-        label = Label(self.tipwindow, text=text, justify=LEFT,
-                      background="#ffffe0", relief=SOLID, borderwidth=1)
+        label = Label(
+            self.tipwindow,
+            text=text,
+            justify=LEFT,
+            background="#ffffe0",
+            relief=SOLID,
+            borderwidth=1,
+        )
         label.pack()
 
     def hidetip(self):
@@ -59,22 +65,27 @@ class ToolTipBase:
         if tw:
             tw.destroy()
 
+
 class ToolTip(ToolTipBase):
     def __init__(self, button, text):
         ToolTipBase.__init__(self, button)
         self.text = text
+
     def showcontents(self):
         ToolTipBase.showcontents(self, self.text)
+
 
 class ListboxToolTip(ToolTipBase):
     def __init__(self, button, items):
         ToolTipBase.__init__(self, button)
         self.items = items
+
     def showcontents(self):
         listbox = Listbox(self.tipwindow, background="#ffffe0")
         listbox.pack()
         for item in self.items:
             listbox.insert(END, item)
+
 
 def main():
     # Test code
@@ -85,5 +96,6 @@ def main():
     tip = ListboxToolTip(b, ["Hello", "world"])
     root.mainloop()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
 get input dialog demo
 
@@ -8,6 +8,7 @@ Tested environment:
 
 http://www.pyside.org/docs/pyside/PySide/QtGui/QInputDialog.html
 """
+
 import sys
 import web
 
@@ -22,26 +23,24 @@ except ImportError:
 class Demo(QtGui.QWidget):
     def __init__(self):
         super(Demo, self).__init__()
-        self.setGeometry(300, 300, 350, 80)
+        self.set_geometry(300, 300, 350, 80)
 
-        self.button = QtGui.QPushButton('Popup', self)
-        self.button.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.button = QtGui.QPushButton("Popup", self)
+        self.button.set_focus_policy(QtCore.Qt.NoFocus)
 
         self.button.move(20, 20)
-        self.connect(self.button, QtCore.SIGNAL('clicked()'), 
-            self._get_input)
-        self.setFocus()
-        
+        self.connect(self.button, QtCore.SIGNAL("clicked()"), self._get_input)
+        self.set_focus()
+
         self.label = QtGui.QLineEdit(self)
         self.label.move(130, 22)
-            
-    
+
     def _get_input(self):
-        title, msg = 'Get Input Dialog', 'Enter your name:'
-        text, resp = QtGui.QInputDialog.getText(self, title, msg)
-        
+        title, msg = "Get Input Dialog", "Enter your name:"
+        text, resp = QtGui.QInputDialog.get_text(self, title, msg)
+
         if resp:
-            self.label.setText(web.safeunicode(text))
+            self.label.set_text(web.safeunicode(text))
 
     def show_and_raise(self):
         self.show()

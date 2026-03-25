@@ -21,8 +21,7 @@ from . import pytree
 from . import pygram
 
 # The pattern grammar file
-_PATTERN_GRAMMAR_FILE = os.path.join(os.path.dirname(__file__),
-                                     "PatternGrammar.txt")
+_PATTERN_GRAMMAR_FILE = os.path.join(os.path.dirname(__file__), "PatternGrammar.txt")
 
 
 class PatternSyntaxError(Exception):
@@ -40,7 +39,6 @@ def tokenize_wrapper(input):
 
 
 class PatternCompiler(object):
-
     def __init__(self, grammar_file=_PATTERN_GRAMMAR_FILE):
         """Initializer.
 
@@ -72,7 +70,7 @@ class PatternCompiler(object):
         # XXX Optimize certain Wildcard-containing-Wildcard patterns
         # that can be merged
         if node.type == self.syms.Matcher:
-            node = node.children[0] # Avoid unneeded recursion
+            node = node.children[0]  # Avoid unneeded recursion
 
         if node.type == self.syms.Alternatives:
             # Skip the odd children since they are just '|' tokens
@@ -121,7 +119,7 @@ class PatternCompiler(object):
                 max = pytree.HUGE
             elif child.type == token.LBRACE:
                 assert children[-1].type == token.RBRACE
-                assert  len(children) in (3, 5)
+                assert len(children) in (3, 5)
                 min = max = self.get_int(children[1])
                 if len(children) == 5:
                     max = self.get_int(children[3])
@@ -157,7 +155,7 @@ class PatternCompiler(object):
                     type = getattr(self.pysyms, value, None)
                     if type is None:
                         raise PatternSyntaxError("Invalid symbol: %r" % value)
-                if nodes[1:]: # Details present
+                if nodes[1:]:  # Details present
                     content = [self.compile_node(nodes[1].children[1])]
                 else:
                     content = None
@@ -176,10 +174,12 @@ class PatternCompiler(object):
 
 
 # Map named tokens to the type value for a LeafPattern
-TOKEN_MAP = {"NAME": token.NAME,
-             "STRING": token.STRING,
-             "NUMBER": token.NUMBER,
-             "TOKEN": None}
+TOKEN_MAP = {
+    "NAME": token.NAME,
+    "STRING": token.STRING,
+    "NUMBER": token.NUMBER,
+    "TOKEN": None,
+}
 
 
 def _type_of_literal(value):

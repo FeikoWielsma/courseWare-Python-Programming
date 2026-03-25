@@ -22,10 +22,10 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
         self.btn = QtGui.QPushButton("Flat button", self)
-        self.btn.setFlat(True)
+        self.btn.set_flat(True)
         self.btn.clicked.connect(self._btn_cb)
 
     def _btn_cb(self):

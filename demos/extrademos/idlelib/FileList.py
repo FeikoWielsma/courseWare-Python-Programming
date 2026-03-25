@@ -4,7 +4,6 @@ import tkinter.messagebox as tkMessageBox
 
 
 class FileList:
-
     # N.B. this import overridden in PyShellFileList.
     from idlelib.EditorWindow import EditorWindow
 
@@ -12,7 +11,7 @@ class FileList:
         self.root = root
         self.dict = {}
         self.inversedict = {}
-        self.vars = {} # For EditorWindow.getrawvar (shared Tcl variables)
+        self.vars = {}  # For EditorWindow.getrawvar (shared Tcl variables)
 
     def open(self, filename, action=None):
         assert filename
@@ -20,9 +19,8 @@ class FileList:
         if os.path.isdir(filename):
             # This can happen when bad filename is passed on command line:
             tkMessageBox.showerror(
-                "File Error",
-                "%r is a directory." % (filename,),
-                master=self.root)
+                "File Error", "%r is a directory." % (filename,), master=self.root
+            )
             return None
         key = os.path.normcase(filename)
         if key in self.dict:
@@ -90,7 +88,8 @@ class FileList:
             tkMessageBox.showerror(
                 "Name Conflict",
                 "You now have multiple edit windows open for %r" % (filename,),
-                master=self.root)
+                master=self.root,
+            )
         self.dict[newkey] = edit
         self.inversedict[edit] = newkey
         if key:
@@ -113,6 +112,7 @@ class FileList:
 def _test():
     from idlelib.EditorWindow import fixwordbreaks
     import sys
+
     root = Tk()
     fixwordbreaks(root)
     root.withdraw()
@@ -125,5 +125,6 @@ def _test():
     if flist.inversedict:
         root.mainloop()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     _test()

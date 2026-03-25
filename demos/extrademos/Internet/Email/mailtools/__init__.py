@@ -14,11 +14,11 @@
 
 # collect modules here, when package dir imported directly
 from mailFetcher import *
-from mailSender  import *
-from mailParser  import *
+from mailSender import *
+from mailParser import *
 
 # export nested modules here, when from mailtools import *
-__all__ = 'mailFetcher', 'mailSender', 'mailParser'
+__all__ = "mailFetcher", "mailSender", "mailParser"
 
 # test case moved to selftest.py to allow mailconfig's
 # path to be set before importing nested modules above

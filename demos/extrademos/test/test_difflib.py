@@ -7,53 +7,71 @@ import sys
 
 class TestWithAscii(unittest.TestCase):
     def test_one_insert(self):
-        sm = difflib.SequenceMatcher(None, 'b' * 100, 'a' + 'b' * 100)
+        sm = difflib.SequenceMatcher(None, "b" * 100, "a" + "b" * 100)
         self.assertAlmostEqual(sm.ratio(), 0.995, places=3)
-        self.assertEqual(list(sm.get_opcodes()),
-            [   ('insert', 0, 0, 0, 1),
-                ('equal', 0, 100, 1, 101)])
+        self.assertEqual(
+            list(sm.get_opcodes()), [("insert", 0, 0, 0, 1), ("equal", 0, 100, 1, 101)]
+        )
         self.assertEqual(sm.bpopular, set())
-        sm = difflib.SequenceMatcher(None, 'b' * 100, 'b' * 50 + 'a' + 'b' * 50)
+        sm = difflib.SequenceMatcher(None, "b" * 100, "b" * 50 + "a" + "b" * 50)
         self.assertAlmostEqual(sm.ratio(), 0.995, places=3)
-        self.assertEqual(list(sm.get_opcodes()),
-            [   ('equal', 0, 50, 0, 50),
-                ('insert', 50, 50, 50, 51),
-                ('equal', 50, 100, 51, 101)])
+        self.assertEqual(
+            list(sm.get_opcodes()),
+            [
+                ("equal", 0, 50, 0, 50),
+                ("insert", 50, 50, 50, 51),
+                ("equal", 50, 100, 51, 101),
+            ],
+        )
         self.assertEqual(sm.bpopular, set())
 
     def test_one_delete(self):
-        sm = difflib.SequenceMatcher(None, 'a' * 40 + 'c' + 'b' * 40, 'a' * 40 + 'b' * 40)
+        sm = difflib.SequenceMatcher(
+            None, "a" * 40 + "c" + "b" * 40, "a" * 40 + "b" * 40
+        )
         self.assertAlmostEqual(sm.ratio(), 0.994, places=3)
-        self.assertEqual(list(sm.get_opcodes()),
-            [   ('equal', 0, 40, 0, 40),
-                ('delete', 40, 41, 40, 40),
-                ('equal', 41, 81, 40, 80)])
+        self.assertEqual(
+            list(sm.get_opcodes()),
+            [
+                ("equal", 0, 40, 0, 40),
+                ("delete", 40, 41, 40, 40),
+                ("equal", 41, 81, 40, 80),
+            ],
+        )
 
     def test_bjunk(self):
-        sm = difflib.SequenceMatcher(isjunk=lambda x: x == ' ',
-                a='a' * 40 + 'b' * 40, b='a' * 44 + 'b' * 40)
+        sm = difflib.SequenceMatcher(
+            isjunk=lambda x: x == " ", a="a" * 40 + "b" * 40, b="a" * 44 + "b" * 40
+        )
         self.assertEqual(sm.bjunk, set())
 
-        sm = difflib.SequenceMatcher(isjunk=lambda x: x == ' ',
-                a='a' * 40 + 'b' * 40, b='a' * 44 + 'b' * 40 + ' ' * 20)
-        self.assertEqual(sm.bjunk, {' '})
+        sm = difflib.SequenceMatcher(
+            isjunk=lambda x: x == " ",
+            a="a" * 40 + "b" * 40,
+            b="a" * 44 + "b" * 40 + " " * 20,
+        )
+        self.assertEqual(sm.bjunk, {" "})
 
-        sm = difflib.SequenceMatcher(isjunk=lambda x: x in [' ', 'b'],
-                a='a' * 40 + 'b' * 40, b='a' * 44 + 'b' * 40 + ' ' * 20)
-        self.assertEqual(sm.bjunk, {' ', 'b'})
+        sm = difflib.SequenceMatcher(
+            isjunk=lambda x: x in [" ", "b"],
+            a="a" * 40 + "b" * 40,
+            b="a" * 44 + "b" * 40 + " " * 20,
+        )
+        self.assertEqual(sm.bjunk, {" ", "b"})
 
 
 class TestAutojunk(unittest.TestCase):
     """Tests for the autojunk parameter added in 2.7"""
+
     def test_one_insert_homogenous_sequence(self):
         # By default autojunk=True and the heuristic kicks in for a sequence
         # of length 200+
-        seq1 = 'b' * 200
-        seq2 = 'a' + 'b' * 200
+        seq1 = "b" * 200
+        seq2 = "a" + "b" * 200
 
         sm = difflib.SequenceMatcher(None, seq1, seq2)
         self.assertAlmostEqual(sm.ratio(), 0, places=3)
-        self.assertEqual(sm.bpopular, {'b'})
+        self.assertEqual(sm.bpopular, {"b"})
 
         # Now turn the heuristic off
         sm = difflib.SequenceMatcher(None, seq1, seq2, autojunk=False)
@@ -78,11 +96,12 @@ class TestSFbugs(unittest.TestCase):
 
     def test_added_tab_hint(self):
         # Check fix for bug #1488943
-        diff = list(difflib.Differ().compare(["\tI am a buggy"],["\t\tI am a bug"]))
+        diff = list(difflib.Differ().compare(["\tI am a buggy"], ["\t\tI am a bug"]))
         self.assertEqual("- \tI am a buggy", diff[0])
         self.assertEqual("?            --\n", diff[1])
         self.assertEqual("+ \t\tI am a bug", diff[2])
         self.assertEqual("? +\n", diff[3])
+
 
 patch914575_from1 = """
    1. Beautiful is beTTer than ugly.
@@ -148,14 +167,14 @@ just fitS in!!
 just fits in two lineS yup!!
 the end"""
 
-class TestSFpatches(unittest.TestCase):
 
+class TestSFpatches(unittest.TestCase):
     def test_html_diff(self):
         # Check SF patch 914575 for generating HTML differences
-        f1a = ((patch914575_from1 + '123\n'*10)*3)
-        t1a = (patch914575_to1 + '123\n'*10)*3
-        f1b = '456\n'*10 + f1a
-        t1b = '456\n'*10 + t1a
+        f1a = (patch914575_from1 + "123\n" * 10) * 3
+        t1a = (patch914575_to1 + "123\n" * 10) * 3
+        f1b = "456\n" * 10 + f1a
+        t1b = "456\n" * 10 + t1a
         f1a = f1a.splitlines()
         t1a = t1a.splitlines()
         f1b = f1b.splitlines()
@@ -168,72 +187,83 @@ class TestSFpatches(unittest.TestCase):
         j = difflib.HtmlDiff(tabsize=2)
         k = difflib.HtmlDiff(wrapcolumn=14)
 
-        full = i.make_file(f1a,t1a,'from','to',context=False,numlines=5)
-        tables = '\n'.join(
+        full = i.make_file(f1a, t1a, "from", "to", context=False, numlines=5)
+        tables = "\n".join(
             [
-             '<h2>Context (first diff within numlines=5(default))</h2>',
-             i.make_table(f1a,t1a,'from','to',context=True),
-             '<h2>Context (first diff after numlines=5(default))</h2>',
-             i.make_table(f1b,t1b,'from','to',context=True),
-             '<h2>Context (numlines=6)</h2>',
-             i.make_table(f1a,t1a,'from','to',context=True,numlines=6),
-             '<h2>Context (numlines=0)</h2>',
-             i.make_table(f1a,t1a,'from','to',context=True,numlines=0),
-             '<h2>Same Context</h2>',
-             i.make_table(f1a,f1a,'from','to',context=True),
-             '<h2>Same Full</h2>',
-             i.make_table(f1a,f1a,'from','to',context=False),
-             '<h2>Empty Context</h2>',
-             i.make_table([],[],'from','to',context=True),
-             '<h2>Empty Full</h2>',
-             i.make_table([],[],'from','to',context=False),
-             '<h2>tabsize=2</h2>',
-             j.make_table(f2,t2),
-             '<h2>tabsize=default</h2>',
-             i.make_table(f2,t2),
-             '<h2>Context (wrapcolumn=14,numlines=0)</h2>',
-             k.make_table(f3.splitlines(),t3.splitlines(),context=True,numlines=0),
-             '<h2>wrapcolumn=14,splitlines()</h2>',
-             k.make_table(f3.splitlines(),t3.splitlines()),
-             '<h2>wrapcolumn=14,splitlines(True)</h2>',
-             k.make_table(f3.splitlines(True),t3.splitlines(True)),
-             ])
-        actual = full.replace('</body>','\n%s\n</body>' % tables)
+                "<h2>Context (first diff within numlines=5(default))</h2>",
+                i.make_table(f1a, t1a, "from", "to", context=True),
+                "<h2>Context (first diff after numlines=5(default))</h2>",
+                i.make_table(f1b, t1b, "from", "to", context=True),
+                "<h2>Context (numlines=6)</h2>",
+                i.make_table(f1a, t1a, "from", "to", context=True, numlines=6),
+                "<h2>Context (numlines=0)</h2>",
+                i.make_table(f1a, t1a, "from", "to", context=True, numlines=0),
+                "<h2>Same Context</h2>",
+                i.make_table(f1a, f1a, "from", "to", context=True),
+                "<h2>Same Full</h2>",
+                i.make_table(f1a, f1a, "from", "to", context=False),
+                "<h2>Empty Context</h2>",
+                i.make_table([], [], "from", "to", context=True),
+                "<h2>Empty Full</h2>",
+                i.make_table([], [], "from", "to", context=False),
+                "<h2>tabsize=2</h2>",
+                j.make_table(f2, t2),
+                "<h2>tabsize=default</h2>",
+                i.make_table(f2, t2),
+                "<h2>Context (wrapcolumn=14,numlines=0)</h2>",
+                k.make_table(
+                    f3.splitlines(), t3.splitlines(), context=True, numlines=0
+                ),
+                "<h2>wrapcolumn=14,splitlines()</h2>",
+                k.make_table(f3.splitlines(), t3.splitlines()),
+                "<h2>wrapcolumn=14,splitlines(True)</h2>",
+                k.make_table(f3.splitlines(True), t3.splitlines(True)),
+            ]
+        )
+        actual = full.replace("</body>", "\n%s\n</body>" % tables)
 
         # temporarily uncomment next two lines to baseline this test
-        #with open('test_difflib_expect.html','w') as fp:
+        # with open('test_difflib_expect.html','w') as fp:
         #    fp.write(actual)
 
-        with open(findfile('test_difflib_expect.html')) as fp:
+        with open(findfile("test_difflib_expect.html")) as fp:
             self.assertEqual(actual, fp.read())
 
     def test_recursion_limit(self):
         # Check if the problem described in patch #1413711 exists.
         limit = sys.getrecursionlimit()
-        old = [(i%2 and "K:%d" or "V:A:%d") % i for i in range(limit*2)]
-        new = [(i%2 and "K:%d" or "V:B:%d") % i for i in range(limit*2)]
+        old = [(i % 2 and "K:%d" or "V:A:%d") % i for i in range(limit * 2)]
+        new = [(i % 2 and "K:%d" or "V:B:%d") % i for i in range(limit * 2)]
         difflib.SequenceMatcher(None, old, new).get_opcodes()
 
 
 class TestOutputFormat(unittest.TestCase):
     def test_tab_delimiter(self):
-        args = ['one', 'two', 'Original', 'Current',
-            '2005-01-26 23:30:50', '2010-04-02 10:20:52']
-        ud = difflib.unified_diff(*args, lineterm='')
-        self.assertEqual(list(ud)[0:2], [
-                           "--- Original\t2005-01-26 23:30:50",
-                           "+++ Current\t2010-04-02 10:20:52"])
-        cd = difflib.context_diff(*args, lineterm='')
-        self.assertEqual(list(cd)[0:2], [
-                           "*** Original\t2005-01-26 23:30:50",
-                           "--- Current\t2010-04-02 10:20:52"])
+        args = [
+            "one",
+            "two",
+            "Original",
+            "Current",
+            "2005-01-26 23:30:50",
+            "2010-04-02 10:20:52",
+        ]
+        ud = difflib.unified_diff(*args, lineterm="")
+        self.assertEqual(
+            list(ud)[0:2],
+            ["--- Original\t2005-01-26 23:30:50", "+++ Current\t2010-04-02 10:20:52"],
+        )
+        cd = difflib.context_diff(*args, lineterm="")
+        self.assertEqual(
+            list(cd)[0:2],
+            ["*** Original\t2005-01-26 23:30:50", "--- Current\t2010-04-02 10:20:52"],
+        )
 
     def test_no_trailing_tab_on_empty_filedate(self):
-        args = ['one', 'two', 'Original', 'Current']
-        ud = difflib.unified_diff(*args, lineterm='')
+        args = ["one", "two", "Original", "Current"]
+        ud = difflib.unified_diff(*args, lineterm="")
         self.assertEqual(list(ud)[0:2], ["--- Original", "+++ Current"])
 
-        cd = difflib.context_diff(*args, lineterm='')
+        cd = difflib.context_diff(*args, lineterm="")
         self.assertEqual(list(cd)[0:2], ["*** Original", "--- Current"])
 
 
@@ -241,8 +271,14 @@ def test_main():
     difflib.HtmlDiff._default_prefix = 0
     Doctests = doctest.DocTestSuite(difflib)
     run_unittest(
-        TestWithAscii, TestAutojunk, TestSFpatches, TestSFbugs,
-        TestOutputFormat, Doctests)
+        TestWithAscii,
+        TestAutojunk,
+        TestSFpatches,
+        TestSFbugs,
+        TestOutputFormat,
+        Doctests,
+    )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test_main()

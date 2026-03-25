@@ -43,7 +43,7 @@ Process #1..n:
   _ResultItems in "Request Q"
 """
 
-__author__ = 'Brian Quinlan (brian@sweetapp.com)'
+__author__ = "Brian Quinlan (brian@sweetapp.com)"
 
 import atexit
 from concurrent.futures import _base
@@ -69,6 +69,7 @@ import weakref
 _thread_references = set()
 _shutdown = False
 
+
 def _python_exit():
     global _shutdown
     _shutdown = True
@@ -76,6 +77,7 @@ def _python_exit():
         thread = thread_reference()
         if thread is not None:
             thread.join()
+
 
 def _remove_dead_thread_references():
     """Remove inactive threads from _thread_references.
@@ -89,11 +91,13 @@ def _remove_dead_thread_references():
         if thread_reference() is None:
             _thread_references.discard(thread_reference)
 
+
 # Controls how many more calls than processes will be queued in the call queue.
 # A smaller number will mean that processes spend more time idle waiting for
 # work while a larger number will make Future.cancel() succeed less frequently
 # (Futures in the call queue cannot be cancelled).
 EXTRA_QUEUED_CALLS = 1
+
 
 class _WorkItem(object):
     def __init__(self, future, fn, args, kwargs):
@@ -102,11 +106,13 @@ class _WorkItem(object):
         self.args = args
         self.kwargs = kwargs
 
+
 class _ResultItem(object):
     def __init__(self, work_id, exception=None, result=None):
         self.work_id = work_id
         self.exception = exception
         self.result = result
+
 
 class _CallItem(object):
     def __init__(self, work_id, fn, args, kwargs):
@@ -114,6 +120,7 @@ class _CallItem(object):
         self.fn = fn
         self.args = args
         self.kwargs = kwargs
+
 
 def _process_worker(call_queue, result_queue, shutdown):
     """Evaluates calls from call_queue and places the results in result_queue.
@@ -138,15 +145,12 @@ def _process_worker(call_queue, result_queue, shutdown):
             try:
                 r = call_item.fn(*call_item.args, **call_item.kwargs)
             except BaseException as e:
-                result_queue.put(_ResultItem(call_item.work_id,
-                                             exception=e))
+                result_queue.put(_ResultItem(call_item.work_id, exception=e))
             else:
-                result_queue.put(_ResultItem(call_item.work_id,
-                                             result=r))
+                result_queue.put(_ResultItem(call_item.work_id, result=r))
 
-def _add_call_item_to_queue(pending_work_items,
-                            work_ids,
-                            call_queue):
+
+def _add_call_item_to_queue(pending_work_items, work_ids, call_queue):
     """Fills call_queue with _WorkItems from pending_work_items.
 
     This function never blocks.
@@ -172,22 +176,24 @@ def _add_call_item_to_queue(pending_work_items,
             work_item = pending_work_items[work_id]
 
             if work_item.future.set_running_or_notify_cancel():
-                call_queue.put(_CallItem(work_id,
-                                         work_item.fn,
-                                         work_item.args,
-                                         work_item.kwargs),
-                               block=True)
+                call_queue.put(
+                    _CallItem(work_id, work_item.fn, work_item.args, work_item.kwargs),
+                    block=True,
+                )
             else:
                 del pending_work_items[work_id]
                 continue
 
-def _queue_manangement_worker(executor_reference,
-                              processes,
-                              pending_work_items,
-                              work_ids_queue,
-                              call_queue,
-                              result_queue,
-                              shutdown_process_event):
+
+def _queue_manangement_worker(
+    executor_reference,
+    processes,
+    pending_work_items,
+    work_ids_queue,
+    call_queue,
+    result_queue,
+    shutdown_process_event,
+):
     """Manages the communication between this process and the worker processes.
 
     This function is run in a local thread.
@@ -210,9 +216,7 @@ def _queue_manangement_worker(executor_reference,
             empty.
     """
     while True:
-        _add_call_item_to_queue(pending_work_items,
-                                work_ids_queue,
-                                call_queue)
+        _add_call_item_to_queue(pending_work_items, work_ids_queue, call_queue)
 
         try:
             result_item = result_queue.get(block=True, timeout=0.1)
@@ -244,8 +248,11 @@ def _queue_manangement_worker(executor_reference,
             else:
                 work_item.future.set_result(result_item.result)
 
+
 _system_limits_checked = False
 _system_limited = None
+
+
 def _check_system_limits():
     global _system_limits_checked, _system_limited
     if _system_limits_checked:
@@ -254,6 +261,7 @@ def _check_system_limits():
     _system_limits_checked = True
     try:
         import os
+
         nsems_max = os.sysconf("SC_SEM_NSEMS_MAX")
     except (AttributeError, ValueError):
         # sysconf not available or setting not available
@@ -266,8 +274,11 @@ def _check_system_limits():
         # minimum number of semaphores available
         # according to POSIX
         return
-    _system_limited = "system provides too few semaphores (%d available, 256 necessary)" % nsems_max
+    _system_limited = (
+        "system provides too few semaphores (%d available, 256 necessary)" % nsems_max
+    )
     raise NotImplementedError(_system_limited)
+
 
 class ProcessPoolExecutor(_base.Executor):
     def __init__(self, max_workers=None):
@@ -289,8 +300,7 @@ class ProcessPoolExecutor(_base.Executor):
         # Make the call queue slightly larger than the number of processes to
         # prevent the worker processes from idling. But don't make it too big
         # because futures in the call queue cannot be cancelled.
-        self._call_queue = multiprocessing.Queue(self._max_workers +
-                                                 EXTRA_QUEUED_CALLS)
+        self._call_queue = multiprocessing.Queue(self._max_workers + EXTRA_QUEUED_CALLS)
         self._result_queue = multiprocessing.Queue()
         self._work_ids = queue.Queue()
         self._queue_management_thread = None
@@ -306,14 +316,17 @@ class ProcessPoolExecutor(_base.Executor):
     def _start_queue_management_thread(self):
         if self._queue_management_thread is None:
             self._queue_management_thread = threading.Thread(
-                    target=_queue_manangement_worker,
-                    args=(weakref.ref(self),
-                          self._processes,
-                          self._pending_work_items,
-                          self._work_ids,
-                          self._call_queue,
-                          self._result_queue,
-                          self._shutdown_process_event))
+                target=_queue_manangement_worker,
+                args=(
+                    weakref.ref(self),
+                    self._processes,
+                    self._pending_work_items,
+                    self._work_ids,
+                    self._call_queue,
+                    self._result_queue,
+                    self._shutdown_process_event,
+                ),
+            )
             self._queue_management_thread.daemon = True
             self._queue_management_thread.start()
             _thread_references.add(weakref.ref(self._queue_management_thread))
@@ -321,17 +334,20 @@ class ProcessPoolExecutor(_base.Executor):
     def _adjust_process_count(self):
         for _ in range(len(self._processes), self._max_workers):
             p = multiprocessing.Process(
-                    target=_process_worker,
-                    args=(self._call_queue,
-                          self._result_queue,
-                          self._shutdown_process_event))
+                target=_process_worker,
+                args=(
+                    self._call_queue,
+                    self._result_queue,
+                    self._shutdown_process_event,
+                ),
+            )
             p.start()
             self._processes.add(p)
 
     def submit(self, fn, *args, **kwargs):
         with self._shutdown_lock:
             if self._shutdown_thread:
-                raise RuntimeError('cannot schedule new futures after shutdown')
+                raise RuntimeError("cannot schedule new futures after shutdown")
 
             f = _base.Future()
             w = _WorkItem(f, fn, args, kwargs)
@@ -343,6 +359,7 @@ class ProcessPoolExecutor(_base.Executor):
             self._start_queue_management_thread()
             self._adjust_process_count()
             return f
+
     submit.__doc__ = _base.Executor.submit.__doc__
 
     def shutdown(self, wait=True):
@@ -358,6 +375,8 @@ class ProcessPoolExecutor(_base.Executor):
         self._result_queue = None
         self._shutdown_process_event = None
         self._processes = None
+
     shutdown.__doc__ = _base.Executor.shutdown.__doc__
+
 
 atexit.register(_python_exit)

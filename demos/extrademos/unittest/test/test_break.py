@@ -8,12 +8,13 @@ import weakref
 import unittest
 
 
-@unittest.skipUnless(hasattr(os, 'kill'), "Test requires os.kill")
-@unittest.skipIf(sys.platform =="win32", "Test cannot run on Windows")
-@unittest.skipIf(sys.platform == 'freebsd6', "Test kills regrtest on freebsd6 "
-    "if threads have been used")
+@unittest.skipUnless(hasattr(os, "kill"), "Test requires os.kill")
+@unittest.skipIf(sys.platform == "win32", "Test cannot run on Windows")
+@unittest.skipIf(
+    sys.platform == "freebsd6",
+    "Test kills regrtest on freebsd6 if threads have been used",
+)
 class TestBreak(unittest.TestCase):
-
     def setUp(self):
         self._default_handler = signal.getsignal(signal.SIGINT)
 
@@ -21,7 +22,6 @@ class TestBreak(unittest.TestCase):
         signal.signal(signal.SIGINT, self._default_handler)
         unittest.signals._results = weakref.WeakKeyDictionary()
         unittest.signals._interrupt_handler = None
-
 
     def testInstallHandler(self):
         default_handler = signal.getsignal(signal.SIGINT)
@@ -48,7 +48,6 @@ class TestBreak(unittest.TestCase):
         else:
             self.fail("result not found")
 
-
     def testInterruptCaught(self):
         default_handler = signal.getsignal(signal.SIGINT)
 
@@ -70,7 +69,6 @@ class TestBreak(unittest.TestCase):
             self.fail("KeyboardInterrupt not handled")
         self.assertTrue(result.breakCaught)
 
-
     def testSecondInterrupt(self):
         result = unittest.TestResult()
         unittest.installHandler()
@@ -91,7 +89,6 @@ class TestBreak(unittest.TestCase):
         else:
             self.fail("Second KeyboardInterrupt not raised")
         self.assertTrue(result.breakCaught)
-
 
     def testTwoResults(self):
         unittest.installHandler()
@@ -119,7 +116,6 @@ class TestBreak(unittest.TestCase):
         self.assertTrue(result2.shouldStop)
         self.assertFalse(result3.shouldStop)
 
-
     def testHandlerReplacedButCalled(self):
         # If our handler has been replaced (is no longer installed) but is
         # called by the *new* handler, then it isn't safe to delay the
@@ -127,8 +123,10 @@ class TestBreak(unittest.TestCase):
         unittest.installHandler()
 
         handler = signal.getsignal(signal.SIGINT)
+
         def new_handler(frame, signum):
             handler(frame, signum)
+
         signal.signal(signal.SIGINT, new_handler)
 
         try:
@@ -156,9 +154,9 @@ class TestBreak(unittest.TestCase):
         del result
 
         # For non-reference counting implementations
-        gc.collect();gc.collect()
+        gc.collect()
+        gc.collect()
         self.assertIsNone(ref())
-
 
     def testRemoveResult(self):
         result = unittest.TestResult()
@@ -188,8 +186,10 @@ class TestBreak(unittest.TestCase):
         class FakeRunner(object):
             initArgs = []
             runArgs = []
+
             def __init__(self, *args, **kwargs):
                 self.initArgs.append((args, kwargs))
+
             def run(self, test):
                 self.runArgs.append(test)
                 return result
@@ -207,10 +207,20 @@ class TestBreak(unittest.TestCase):
         p = Program(False)
         p.runTests()
 
-        self.assertEqual(FakeRunner.initArgs, [((), {'buffer': None,
-                                                     'verbosity': verbosity,
-                                                     'failfast': failfast,
-                                                     'warnings': None})])
+        self.assertEqual(
+            FakeRunner.initArgs,
+            [
+                (
+                    (),
+                    {
+                        "buffer": None,
+                        "verbosity": verbosity,
+                        "failfast": failfast,
+                        "warnings": None,
+                    },
+                )
+            ],
+        )
         self.assertEqual(FakeRunner.runArgs, [test])
         self.assertEqual(p.result, result)
 
@@ -221,10 +231,20 @@ class TestBreak(unittest.TestCase):
         p = Program(True)
         p.runTests()
 
-        self.assertEqual(FakeRunner.initArgs, [((), {'buffer': None,
-                                                     'verbosity': verbosity,
-                                                     'failfast': failfast,
-                                                     'warnings': None})])
+        self.assertEqual(
+            FakeRunner.initArgs,
+            [
+                (
+                    (),
+                    {
+                        "buffer": None,
+                        "verbosity": verbosity,
+                        "failfast": failfast,
+                        "warnings": None,
+                    },
+                )
+            ],
+        )
         self.assertEqual(FakeRunner.runArgs, [test])
         self.assertEqual(p.result, result)
 

@@ -1,5 +1,6 @@
 import json
 from unittest.mock import Mock
+
 mock = Mock()
 print(mock)
 
@@ -17,7 +18,7 @@ mock = mock.do_something()
 print(mock)
 
 json3 = Mock()
-json3.loads('{"k": "v"}').get('k')
+json3.loads('{"k": "v"}').get("k")
 
 print(json3)
 print(json3.loads)

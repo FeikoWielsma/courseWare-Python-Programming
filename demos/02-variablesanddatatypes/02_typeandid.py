@@ -17,5 +17,3 @@ print(type(var1))
 var2 = var1
 print(id(var2))
 print(type(var2))
-
-

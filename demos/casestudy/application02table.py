@@ -6,11 +6,11 @@ import tkinter as tk
 import sqlite3
 import csv
 
-mainWindow = Tk()
-mainWindow.columnconfigure(0, minsize=250)
-mainWindow.rowconfigure([0, 0], minsize=200)
+main_window = Tk()
+main_window.columnconfigure(0, minsize=250)
+main_window.rowconfigure([0, 0], minsize=200)
 
-tree = ttk.Treeview(mainWindow, column=("c1", "c2", "c3", "c4"), show='headings')
+tree = ttk.Treeview(main_window, column=("c1", "c2", "c3", "c4"), show="headings")
 tree.column("#1", anchor=tk.CENTER)
 tree.heading("#1", text="NAME")
 tree.column("#2", anchor=tk.CENTER)
@@ -22,50 +22,59 @@ tree.heading("#4", text="PRICE")
 # tree.pack()
 tree.grid(row=0, column=0)
 
-mainWindow.title("Training Application")
-mainWindow.geometry('900x500')
+main_window.title("Training Application")
+main_window.geometry("900x500")
 
-menu = Menu(mainWindow)
+menu = Menu(main_window)
 
 new_item = Menu(menu)
 
+
 def OpenFile():
-    file = filedialog.askopenfilename(initialdir=".", title="Select file",
-                               filetypes=(("all files", "*.*"), ("jpeg files", "*.jpg")))
+    file = filedialog.askopenfilename(
+        initialdir=".",
+        title="Select file",
+        filetypes=(("all files", "*.*"), ("jpeg files", "*.jpg")),
+    )
     # tkinter.messagebox.showinfo("Opening File" + file)
     print(file)
 
+
 def ReadCourses():
     # courses = []
-    with open('courses.csv') as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
+    with open("courses.csv") as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=",")
         line_count = 0
 
         for course in csv_reader:
             print(type(course))
             if line_count == 0:
-                print(f'{course[0]:10}{course[1]:10}{course[2]:15}{course[3]}')
+                print(f"{course[0]:10}{course[1]:10}{course[2]:15}{course[3]}")
                 line_count += 1
             else:
                 tree.insert("", tk.END, values=course)
-                print(f'{course[0]:10}{course[1]:10}{course[2]:15}{course[3]}')
+                print(f"{course[0]:10}{course[1]:10}{course[2]:15}{course[3]}")
                 line_count += 1
                 # courses.append(course)
         print()
-        print(f'Processed {line_count} courses.')
+        print(f"Processed {line_count} courses.")
         LoadCourses()
+
 
 def AddCourse():
     print("Adding a new course")
 
+
 def EditCourse():
     print("Editing a new course")
     treerow = tree.item(tree.focus())
-    print(treerow['values'])
+    print(treerow["values"])
+
 
 def ExitApplication():
     print("Exit application")
-    mainWindow.destroy()
+    main_window.destroy()
+
 
 def LoadCourses():
     con1 = sqlite3.connect("courses.db")
@@ -79,6 +88,7 @@ def LoadCourses():
         tree.insert("", tk.END, values=row)
     con1.close()
 
+
 def Clicked(event):
     print("Table Clicked")
     treerow = tree.item(tree.focus())
@@ -87,7 +97,7 @@ def Clicked(event):
     # duration = treerow.values[1]
     # location = treerow.values[2]
     # price = treerow.values[3]
-    print(treerow['values'])
+    print(treerow["values"])
     print(treerow.keys())
     print(treerow.values())
     print(type(treerow.values()))
@@ -96,17 +106,18 @@ def Clicked(event):
     # clicks = (rclicked, cclicked)
     # print('clicks:', clicks)
 
-new_item.add_command(label='Open', command=OpenFile)
-new_item.add_command(label='LoadDB', command=LoadCourses)
-new_item.add_command(label='New', command=AddCourse)
-new_item.add_command(label='Edit', command=EditCourse)
-new_item.add_command(label='ReadCSV', command=ReadCourses)
+
+new_item.add_command(label="Open", command=OpenFile)
+new_item.add_command(label="LoadDB", command=LoadCourses)
+new_item.add_command(label="New", command=AddCourse)
+new_item.add_command(label="Edit", command=EditCourse)
+new_item.add_command(label="ReadCSV", command=ReadCourses)
 new_item.add_separator()
-new_item.add_command(label='Exit', command=ExitApplication)
+new_item.add_command(label="Exit", command=ExitApplication)
 
-menu.add_cascade(label='File', menu=new_item)
+menu.add_cascade(label="File", menu=new_item)
 
-mainWindow.bind('<Button-1>', Clicked)
-mainWindow.config(menu=menu)
+main_window.bind("<Button-1>", Clicked)
+main_window.config(menu=menu)
 
-mainWindow.mainloop()
+main_window.mainloop()

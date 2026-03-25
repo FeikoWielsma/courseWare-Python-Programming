@@ -3,8 +3,10 @@ import threading
 from functools import wraps
 from queue import Queue
 
+
 class Actor(threading.Thread):
-    _registry = { }
+    _registry = {}
+
     def __init__(self, name, gen):
         super().__init__()
         self.daemon = True
@@ -21,8 +23,10 @@ class Actor(threading.Thread):
             msg = self.mailbox.get()
             self.gen.send(msg)
 
+
 def send(name, msg):
     Actor._registry[name].send(msg)
+
 
 def actor(func):
     @wraps(func)
@@ -30,27 +34,29 @@ def actor(func):
         gen = func(*args, **kwargs)
         next(gen)
         return Actor(id, gen)
+
     return wrapper
+
 
 @actor
 def ping():
     while True:
         n = yield
-        print('ping %d' % n)
-        send('pong', n + 1)
+        print("ping %d" % n)
+        send("pong", n + 1)
+
 
 @actor
 def pong():
     while True:
         n = yield
-        print('pong %d' % n)
-        send('ping', n + 1)
+        print("pong %d" % n)
+        send("ping", n + 1)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     ping()
     pong()
-    send('ping', 0)
+    send("ping", 0)
     while True:
         time.sleep(1)
-
-

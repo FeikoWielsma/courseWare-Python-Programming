@@ -3,11 +3,14 @@ import array
 import gc
 import unittest
 
+
 class X(Structure):
     _fields_ = [("c_int", c_int)]
     init_called = False
+
     def __init__(self):
         self._init_called = True
+
 
 class Test(unittest.TestCase):
     def test_fom_buffer(self):
@@ -25,23 +28,28 @@ class Test(unittest.TestCase):
 
         self.assertTrue(a in x._objects.values())
 
-        self.assertRaises(ValueError,
-                          c_int.from_buffer, a, -1)
+        self.assertRaises(ValueError, c_int.from_buffer, a, -1)
 
         expected = x[:]
-        del a; gc.collect(); gc.collect(); gc.collect()
+        del a
+        gc.collect()
+        gc.collect()
+        gc.collect()
         self.assertEqual(x[:], expected)
 
-        self.assertRaises(TypeError,
-                          (c_char * 16).from_buffer, "a" * 16)
+        self.assertRaises(TypeError, (c_char * 16).from_buffer, "a" * 16)
 
     def test_fom_buffer_with_offset(self):
         a = array.array("i", range(16))
         x = (c_int * 15).from_buffer(a, sizeof(c_int))
 
         self.assertEqual(x[:], a.tolist()[1:])
-        self.assertRaises(ValueError, lambda: (c_int * 16).from_buffer(a, sizeof(c_int)))
-        self.assertRaises(ValueError, lambda: (c_int * 1).from_buffer(a, 16 * sizeof(c_int)))
+        self.assertRaises(
+            ValueError, lambda: (c_int * 16).from_buffer(a, sizeof(c_int))
+        )
+        self.assertRaises(
+            ValueError, lambda: (c_int * 1).from_buffer(a, 16 * sizeof(c_int))
+        )
 
     def test_from_buffer_copy(self):
         a = array.array("i", range(16))
@@ -58,10 +66,12 @@ class Test(unittest.TestCase):
 
         self.assertEqual(x._objects, None)
 
-        self.assertRaises(ValueError,
-                          c_int.from_buffer, a, -1)
+        self.assertRaises(ValueError, c_int.from_buffer, a, -1)
 
-        del a; gc.collect(); gc.collect(); gc.collect()
+        del a
+        gc.collect()
+        gc.collect()
+        gc.collect()
         self.assertEqual(x[:], list(range(16)))
 
         x = (c_char * 16).from_buffer_copy(b"a" * 16)
@@ -72,10 +82,11 @@ class Test(unittest.TestCase):
         x = (c_int * 15).from_buffer_copy(a, sizeof(c_int))
 
         self.assertEqual(x[:], a.tolist()[1:])
-        self.assertRaises(ValueError,
-                          (c_int * 16).from_buffer_copy, a, sizeof(c_int))
-        self.assertRaises(ValueError,
-                          (c_int * 1).from_buffer_copy, a, 16 * sizeof(c_int))
+        self.assertRaises(ValueError, (c_int * 16).from_buffer_copy, a, sizeof(c_int))
+        self.assertRaises(
+            ValueError, (c_int * 1).from_buffer_copy, a, 16 * sizeof(c_int)
+        )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

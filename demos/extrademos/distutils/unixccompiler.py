@@ -15,14 +15,14 @@ the "typical" Unix-style command-line C compiler:
 
 __revision__ = "$Id: unixccompiler.py 83053 2010-07-22 12:50:05Z tarek.ziade $"
 
-import os, sys, re
+import os
+import sys
+import re
 
 from distutils import sysconfig
 from distutils.dep_util import newer
-from distutils.ccompiler import \
-     CCompiler, gen_preprocess_options, gen_lib_options
-from distutils.errors import \
-     DistutilsExecError, CompileError, LibError, LinkError
+from distutils.ccompiler import CCompiler, gen_preprocess_options, gen_lib_options
+from distutils.errors import DistutilsExecError, CompileError, LibError, LinkError
 from distutils import log
 
 # XXX Things not currently handled:
@@ -40,6 +40,7 @@ from distutils import log
 #     should just happily stuff them into the preprocessor/compiler/linker
 #     options and carry on.
 
+
 def _darwin_compiler_fixup(compiler_so, cc_args):
     """
     This function will strip '-isysroot PATH' and '-arch ARCH' from the
@@ -52,36 +53,36 @@ def _darwin_compiler_fixup(compiler_so, cc_args):
     stripArch = stripSysroot = False
 
     compiler_so = list(compiler_so)
-    kernel_version = os.uname()[2] # 8.4.3
-    major_version = int(kernel_version.split('.')[0])
+    kernel_version = os.uname()[2]  # 8.4.3
+    major_version = int(kernel_version.split(".")[0])
 
     if major_version < 8:
         # OSX before 10.4.0, these don't support -arch and -isysroot at
         # all.
         stripArch = stripSysroot = True
     else:
-        stripArch = '-arch' in cc_args
-        stripSysroot = '-isysroot' in cc_args
+        stripArch = "-arch" in cc_args
+        stripSysroot = "-isysroot" in cc_args
 
-    if stripArch or 'ARCHFLAGS' in os.environ:
+    if stripArch or "ARCHFLAGS" in os.environ:
         while True:
             try:
-                index = compiler_so.index('-arch')
+                index = compiler_so.index("-arch")
                 # Strip this argument and the next one:
-                del compiler_so[index:index+2]
+                del compiler_so[index : index + 2]
             except ValueError:
                 break
 
-    if 'ARCHFLAGS' in os.environ and not stripArch:
+    if "ARCHFLAGS" in os.environ and not stripArch:
         # User specified different -arch flags in the environ,
         # see also distutils.sysconfig
-        compiler_so = compiler_so + os.environ['ARCHFLAGS'].split()
+        compiler_so = compiler_so + os.environ["ARCHFLAGS"].split()
 
     if stripSysroot:
         try:
-            index = compiler_so.index('-isysroot')
+            index = compiler_so.index("-isysroot")
             # Strip this argument and the next one:
-            del compiler_so[index:index+2]
+            del compiler_so[index : index + 2]
         except ValueError:
             pass
 
@@ -89,23 +90,22 @@ def _darwin_compiler_fixup(compiler_so, cc_args):
     # the universal build requires the usage of a universal SDK and not all
     # users have that installed by default.
     sysroot = None
-    if '-isysroot' in cc_args:
-        idx = cc_args.index('-isysroot')
-        sysroot = cc_args[idx+1]
-    elif '-isysroot' in compiler_so:
-        idx = compiler_so.index('-isysroot')
-        sysroot = compiler_so[idx+1]
+    if "-isysroot" in cc_args:
+        idx = cc_args.index("-isysroot")
+        sysroot = cc_args[idx + 1]
+    elif "-isysroot" in compiler_so:
+        idx = compiler_so.index("-isysroot")
+        sysroot = compiler_so[idx + 1]
 
     if sysroot and not os.path.isdir(sysroot):
-        log.warn("Compiling with an SDK that doesn't seem to exist: %s",
-                sysroot)
+        log.warn("Compiling with an SDK that doesn't seem to exist: %s", sysroot)
         log.warn("Please check your Xcode installation")
 
     return compiler_so
 
-class UnixCCompiler(CCompiler):
 
-    compiler_type = 'unix'
+class UnixCCompiler(CCompiler):
+    compiler_type = "unix"
 
     # These are used by CCompiler in two places: the constructor sets
     # instance attributes 'preprocessor', 'compiler', etc. from them, and
@@ -113,18 +113,19 @@ class UnixCCompiler(CCompiler):
     # are pretty generic; they will probably have to be set by an outsider
     # (eg. using information discovered by the sysconfig about building
     # Python extensions).
-    executables = {'preprocessor' : None,
-                   'compiler'     : ["cc"],
-                   'compiler_so'  : ["cc"],
-                   'compiler_cxx' : ["cc"],
-                   'linker_so'    : ["cc", "-shared"],
-                   'linker_exe'   : ["cc"],
-                   'archiver'     : ["ar", "-cr"],
-                   'ranlib'       : None,
-                  }
+    executables = {
+        "preprocessor": None,
+        "compiler": ["cc"],
+        "compiler_so": ["cc"],
+        "compiler_cxx": ["cc"],
+        "linker_so": ["cc", "-shared"],
+        "linker_exe": ["cc"],
+        "archiver": ["ar", "-cr"],
+        "ranlib": None,
+    }
 
     if sys.platform[:6] == "darwin":
-        executables['ranlib'] = ["ranlib"]
+        executables["ranlib"] = ["ranlib"]
 
     # Needed for the filename generation methods provided by the base
     # class, CCompiler.  NB. whoever instantiates/uses a particular
@@ -132,7 +133,7 @@ class UnixCCompiler(CCompiler):
     # reasonable common default here, but it's not necessarily used on all
     # Unices!
 
-    src_extensions = [".c",".C",".cc",".cxx",".cpp",".m"]
+    src_extensions = [".c", ".C", ".cc", ".cxx", ".cpp", ".m"]
     obj_extension = ".o"
     static_lib_extension = ".a"
     shared_lib_extension = ".so"
@@ -141,14 +142,21 @@ class UnixCCompiler(CCompiler):
     if sys.platform == "cygwin":
         exe_extension = ".exe"
 
-    def preprocess(self, source, output_file=None, macros=None,
-                   include_dirs=None, extra_preargs=None, extra_postargs=None):
+    def preprocess(
+        self,
+        source,
+        output_file=None,
+        macros=None,
+        include_dirs=None,
+        extra_preargs=None,
+        extra_postargs=None,
+    ):
         fixed_args = self._fix_compile_args(None, macros, include_dirs)
         ignore, macros, include_dirs = fixed_args
         pp_opts = gen_preprocess_options(macros, include_dirs)
         pp_args = self.preprocessor + pp_opts
         if output_file:
-            pp_args.extend(['-o', output_file])
+            pp_args.extend(["-o", output_file])
         if extra_preargs:
             pp_args[:0] = extra_preargs
         if extra_postargs:
@@ -169,26 +177,23 @@ class UnixCCompiler(CCompiler):
 
     def _compile(self, obj, src, ext, cc_args, extra_postargs, pp_opts):
         compiler_so = self.compiler_so
-        if sys.platform == 'darwin':
+        if sys.platform == "darwin":
             compiler_so = _darwin_compiler_fixup(compiler_so, cc_args + extra_postargs)
         try:
-            self.spawn(compiler_so + cc_args + [src, '-o', obj] +
-                       extra_postargs)
+            self.spawn(compiler_so + cc_args + [src, "-o", obj] + extra_postargs)
         except DistutilsExecError as msg:
             raise CompileError(msg)
 
-    def create_static_lib(self, objects, output_libname,
-                          output_dir=None, debug=0, target_lang=None):
+    def create_static_lib(
+        self, objects, output_libname, output_dir=None, debug=0, target_lang=None
+    ):
         objects, output_dir = self._fix_object_args(objects, output_dir)
 
-        output_filename = \
-            self.library_filename(output_libname, output_dir=output_dir)
+        output_filename = self.library_filename(output_libname, output_dir=output_dir)
 
         if self._need_link(objects, output_filename):
             self.mkpath(os.path.dirname(output_filename))
-            self.spawn(self.archiver +
-                       [output_filename] +
-                       objects + self.objects)
+            self.spawn(self.archiver + [output_filename] + objects + self.objects)
 
             # Not many Unices required ranlib anymore -- SunOS 4.x is, I
             # think the only major Unix that does.  Maybe we need some
@@ -203,28 +208,36 @@ class UnixCCompiler(CCompiler):
         else:
             log.debug("skipping %s (up-to-date)", output_filename)
 
-    def link(self, target_desc, objects,
-             output_filename, output_dir=None, libraries=None,
-             library_dirs=None, runtime_library_dirs=None,
-             export_symbols=None, debug=0, extra_preargs=None,
-             extra_postargs=None, build_temp=None, target_lang=None):
+    def link(
+        self,
+        target_desc,
+        objects,
+        output_filename,
+        output_dir=None,
+        libraries=None,
+        library_dirs=None,
+        runtime_library_dirs=None,
+        export_symbols=None,
+        debug=0,
+        extra_preargs=None,
+        extra_postargs=None,
+        build_temp=None,
+        target_lang=None,
+    ):
         objects, output_dir = self._fix_object_args(objects, output_dir)
-        fixed_args = self._fix_lib_args(libraries, library_dirs,
-                                        runtime_library_dirs)
+        fixed_args = self._fix_lib_args(libraries, library_dirs, runtime_library_dirs)
         libraries, library_dirs, runtime_library_dirs = fixed_args
 
-        lib_opts = gen_lib_options(self, library_dirs, runtime_library_dirs,
-                                   libraries)
+        lib_opts = gen_lib_options(self, library_dirs, runtime_library_dirs, libraries)
         if not isinstance(output_dir, (str, type(None))):
             raise TypeError("'output_dir' must be a string or None")
         if output_dir is not None:
             output_filename = os.path.join(output_dir, output_filename)
 
         if self._need_link(objects, output_filename):
-            ld_args = (objects + self.objects +
-                       lib_opts + ['-o', output_filename])
+            ld_args = objects + self.objects + lib_opts + ["-o", output_filename]
             if debug:
-                ld_args[:0] = ['-g']
+                ld_args[:0] = ["-g"]
             if extra_preargs:
                 ld_args[:0] = extra_preargs
             if extra_postargs:
@@ -244,11 +257,11 @@ class UnixCCompiler(CCompiler):
                     i = 0
                     if os.path.basename(linker[0]) == "env":
                         i = 1
-                        while '=' in linker[i]:
+                        while "=" in linker[i]:
                             i += 1
                     linker[i] = self.compiler_cxx[i]
 
-                if sys.platform == 'darwin':
+                if sys.platform == "darwin":
                     linker = _darwin_compiler_fixup(linker, ld_args)
 
                 self.spawn(linker + ld_args)
@@ -313,32 +326,30 @@ class UnixCCompiler(CCompiler):
         return "-l" + lib
 
     def find_library_file(self, dirs, lib, debug=0):
-        shared_f = self.library_filename(lib, lib_type='shared')
-        dylib_f = self.library_filename(lib, lib_type='dylib')
-        static_f = self.library_filename(lib, lib_type='static')
+        shared_f = self.library_filename(lib, lib_type="shared")
+        dylib_f = self.library_filename(lib, lib_type="dylib")
+        static_f = self.library_filename(lib, lib_type="static")
 
-        if sys.platform == 'darwin':
+        if sys.platform == "darwin":
             # On OSX users can specify an alternate SDK using
             # '-isysroot', calculate the SDK root if it is specified
             # (and use it further on)
-            cflags = sysconfig.get_config_var('CFLAGS')
-            m = re.search(r'-isysroot\s+(\S+)', cflags)
+            cflags = sysconfig.get_config_var("CFLAGS")
+            m = re.search(r"-isysroot\s+(\S+)", cflags)
             if m is None:
-                sysroot = '/'
+                sysroot = "/"
             else:
                 sysroot = m.group(1)
-
-
 
         for dir in dirs:
             shared = os.path.join(dir, shared_f)
             dylib = os.path.join(dir, dylib_f)
             static = os.path.join(dir, static_f)
 
-            if sys.platform == 'darwin' and (
-                dir.startswith('/System/') or (
-                dir.startswith('/usr/') and not dir.startswith('/usr/local/'))):
-
+            if sys.platform == "darwin" and (
+                dir.startswith("/System/")
+                or (dir.startswith("/usr/") and not dir.startswith("/usr/local/"))
+            ):
                 shared = os.path.join(sysroot, dir[1:], shared_f)
                 dylib = os.path.join(sysroot, dir[1:], dylib_f)
                 static = os.path.join(sysroot, dir[1:], static_f)

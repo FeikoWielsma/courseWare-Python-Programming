@@ -4,13 +4,14 @@
 # there is no simple way to run all report calls here,
 # and some launch schemes drop child program stdout;
 #######################################################
-     
+
 from Tkinter import *
-demoModules = ['demoDlg', 'demoRadio', 'demoCheck', 'demoScale']
+
+demoModules = ["demoDlg", "demoRadio", "demoCheck", "demoScale"]
 from PP3E.launchmodes import PortableLauncher
-     
-for demo in demoModules:                        # see Parallel System Tools
-    PortableLauncher(demo, demo+'.py')()        # start as top-level programs
-     
-Label(text='Multiple program demo', bg='white').pack()
+
+for demo in demoModules:  # see Parallel System Tools
+    PortableLauncher(demo, demo + ".py")()  # start as top-level programs
+
+Label(text="Multiple program demo", bg="white").pack()
 mainloop()

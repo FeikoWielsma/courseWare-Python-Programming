@@ -21,10 +21,10 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
         btn = QtGui.QToolButton(self)
-        btn.setGeometry(10, 10, 100, 100)
+        btn.set_geometry(10, 10, 100, 100)
         btn.clicked.connect(self._act_cb)
 
         del_contact = "Ctrl+Shift+h"
@@ -33,7 +33,7 @@ class Demo(QtGui.QWidget):
 #        del_contact = "Ctrl+Shift+Delete"
 
         key_seq = QtGui.QKeySequence(del_contact)
-        btn.setShortcut(key_seq)
+        btn.set_shortcut(key_seq)
 
     def _act_cb(self):
         print "_act_cb"

@@ -5,6 +5,7 @@ parameter and docstring information when you type an opening parenthesis, and
 which disappear when you type a closing parenthesis.
 
 """
+
 import re
 import sys
 import types
@@ -15,12 +16,15 @@ from idlelib.HyperParser import HyperParser
 
 import __main__
 
-class CallTips:
 
+class CallTips:
     menudefs = [
-        ('edit', [
-            ("Show call tip", "<<force-open-calltip>>"),
-        ])
+        (
+            "edit",
+            [
+                ("Show call tip", "<<force-open-calltip>>"),
+            ],
+        )
     ]
 
     def __init__(self, editwin=None):
@@ -63,14 +67,14 @@ class CallTips:
         self._remove_calltip_window()
 
         hp = HyperParser(self.editwin, "insert")
-        sur_paren = hp.get_surrounding_brackets('(')
+        sur_paren = hp.get_surrounding_brackets("(")
         if not sur_paren:
             return
         hp.set_index(sur_paren[0])
         name = hp.get_expression()
         if not name:
             return
-        if not evalfuncs and (name.find('(') != -1):
+        if not evalfuncs and (name.find("(") != -1):
             return
         argspec = self.fetch_tip(name)
         if not argspec:
@@ -97,8 +101,7 @@ class CallTips:
         except:
             rpcclt = None
         if rpcclt:
-            return rpcclt.remotecall("exec", "get_the_calltip",
-                                     (name,), {})
+            return rpcclt.remotecall("exec", "get_the_calltip", (name,), {})
         else:
             entity = self.get_entity(name)
             return get_argspec(entity)
@@ -113,6 +116,7 @@ class CallTips:
             except (NameError, AttributeError):
                 return None
 
+
 def _find_constructor(class_ob):
     "Find the nearest __init__() in the class tree."
     try:
@@ -123,6 +127,7 @@ def _find_constructor(class_ob):
             if init:
                 return init
         return None
+
 
 def get_argspec(ob):
     """Get a string describing the arguments for the given object."""
@@ -138,7 +143,7 @@ def get_argspec(ob):
             fob = ob
         if isinstance(fob, (types.FunctionType, types.LambdaType)):
             argspec = inspect.formatargspec(*inspect.getfullargspec(fob))
-            pat = re.compile('self\,?\s*')
+            pat = re.compile("self\,?\s*")
             argspec = pat.sub("", argspec)
         doc = getattr(ob, "__doc__", "")
         if doc:
@@ -151,33 +156,59 @@ def get_argspec(ob):
             argspec += doc[:pos]
     return argspec
 
+
 #################################################
 #
 # Test code
 #
 def main():
-    def t1(): "()"
-    def t2(a, b=None): "(a, b=None)"
-    def t3(a, *args): "(a, *args)"
-    def t4(*args): "(*args)"
-    def t5(a, *args): "(a, *args)"
-    def t6(a, b=None, *args, **kw): "(a, b=None, *args, **kw)"
+    def t1():
+        "()"
+
+    def t2(a, b=None):
+        "(a, b=None)"
+
+    def t3(a, *args):
+        "(a, *args)"
+
+    def t4(*args):
+        "(*args)"
+
+    def t5(a, *args):
+        "(a, *args)"
+
+    def t6(a, b=None, *args, **kw):
+        "(a, b=None, *args, **kw)"
 
     class TC(object):
         "(ai=None, *b)"
-        def __init__(self, ai=None, *b): "(ai=None, *b)"
-        def t1(self): "()"
-        def t2(self, ai, b=None): "(ai, b=None)"
-        def t3(self, ai, *args): "(ai, *args)"
-        def t4(self, *args): "(*args)"
-        def t5(self, ai, *args): "(ai, *args)"
-        def t6(self, ai, b=None, *args, **kw): "(ai, b=None, *args, **kw)"
+
+        def __init__(self, ai=None, *b):
+            "(ai=None, *b)"
+
+        def t1(self):
+            "()"
+
+        def t2(self, ai, b=None):
+            "(ai, b=None)"
+
+        def t3(self, ai, *args):
+            "(ai, *args)"
+
+        def t4(self, *args):
+            "(*args)"
+
+        def t5(self, ai, *args):
+            "(ai, *args)"
+
+        def t6(self, ai, b=None, *args, **kw):
+            "(ai, b=None, *args, **kw)"
 
     __main__.__dict__.update(locals())
 
     def test(tests):
         ct = CallTips()
-        failed=[]
+        failed = []
         for t in tests:
             expected = t.__doc__ + "\n" + t.__doc__
             name = t.__name__
@@ -194,10 +225,10 @@ def main():
         print("%d of %d tests failed" % (len(failed), len(tests)))
 
     tc = TC()
-    tests = (t1, t2, t3, t4, t5, t6,
-             TC, tc.t1, tc.t2, tc.t3, tc.t4, tc.t5, tc.t6)
+    tests = (t1, t2, t3, t4, t5, t6, TC, tc.t1, tc.t2, tc.t3, tc.t4, tc.t5, tc.t6)
 
     test(tests)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

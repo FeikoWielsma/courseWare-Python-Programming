@@ -31,28 +31,28 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
 
         # NOTICE: the difference
-        print "themeName:", QtGui.QIcon.themeName()
-        print "hasThemeIcon:", QtGui.QIcon.hasThemeIcon("edit-undo")
+        print "theme_name:", QtGui.QIcon.theme_name()
+        print "has_theme_icon:", QtGui.QIcon.has_theme_icon("edit-undo")
 
         qutils.config_theme_path()
 
-        print "themeName:", QtGui.QIcon.themeName()
-        print "hasThemeIcon:", QtGui.QIcon.hasThemeIcon("edit-undo")
+        print "theme_name:", QtGui.QIcon.theme_name()
+        print "has_theme_icon:", QtGui.QIcon.has_theme_icon("edit-undo")
         print
 
         my_online = QtGui.QIcon("/path/to/my_online.png")
         
-        icon = QtGui.QIcon.fromTheme("user-online", my_online)
-        print "icon not found:", icon.isNull()
-        print "availableSizes:", icon.availableSizes()
+        icon = QtGui.QIcon.from_theme("user-online", my_online)
+        print "icon not found:", icon.is_null()
+        print "available_sizes:", icon.available_sizes()
 
         lab = QtGui.QLabel('foo', self)
         pixmap = icon.pixmap(QtCore.QSize(32, 32), QtGui.QIcon.Normal, QtGui.QIcon.On)
-        lab.setPixmap(pixmap)
+        lab.set_pixmap(pixmap)
         lab.move(10, 10)
 
 

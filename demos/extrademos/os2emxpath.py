@@ -6,43 +6,76 @@ module as os.path.
 """
 
 import os
-import stat
 from genericpath import *
-from ntpath import (expanduser, expandvars, isabs, islink, splitdrive,
-                    splitext, split)
+from ntpath import expanduser, expandvars, isabs, islink, splitdrive, splitext, split
 
-__all__ = ["normcase","isabs","join","splitdrive","split","splitext",
-           "basename","dirname","commonprefix","getsize","getmtime",
-           "getatime","getctime", "islink","exists","lexists","isdir","isfile",
-           "ismount","expanduser","expandvars","normpath","abspath",
-           "splitunc","curdir","pardir","sep","pathsep","defpath","altsep",
-           "extsep","devnull","realpath","supports_unicode_filenames"]
+__all__ = [
+    "normcase",
+    "isabs",
+    "join",
+    "splitdrive",
+    "split",
+    "splitext",
+    "basename",
+    "dirname",
+    "commonprefix",
+    "getsize",
+    "getmtime",
+    "getatime",
+    "getctime",
+    "islink",
+    "exists",
+    "lexists",
+    "isdir",
+    "isfile",
+    "ismount",
+    "expanduser",
+    "expandvars",
+    "normpath",
+    "abspath",
+    "splitunc",
+    "curdir",
+    "pardir",
+    "sep",
+    "pathsep",
+    "defpath",
+    "altsep",
+    "extsep",
+    "devnull",
+    "realpath",
+    "supports_unicode_filenames",
+]
 
 # strings representing various path-related bits and pieces
-curdir = '.'
-pardir = '..'
-extsep = '.'
-sep = '/'
-altsep = '\\'
-pathsep = ';'
-defpath = '.;C:\\bin'
-devnull = 'nul'
+curdir = "."
+pardir = ".."
+extsep = "."
+sep = "/"
+altsep = "\\"
+pathsep = ";"
+defpath = ".;C:\\bin"
+devnull = "nul"
 
 # Normalize the case of a pathname and map slashes to backslashes.
 # Other normalizations (such as optimizing '../' away) are not done
 # (this is done by normpath).
+
 
 def normcase(s):
     """Normalize case of pathname.
 
     Makes all characters lowercase and all altseps into seps."""
     if not isinstance(s, (bytes, str)):
-        raise TypeError("normcase() argument must be str or bytes, "
-                        "not '{}'".format(s.__class__.__name__))
-    return s.replace('\\', '/').lower()
+        raise TypeError(
+            "normcase() argument must be str or bytes, not '{}'".format(
+                s.__class__.__name__
+            )
+        )
+    return s.replace("\\", "/").lower()
 
 
 # Join two (or more) paths.
+
 
 def join(a, *p):
     """Join two or more pathname components, inserting sep as needed"""
@@ -50,10 +83,10 @@ def join(a, *p):
     for b in p:
         if isabs(b):
             path = b
-        elif path == '' or path[-1:] in '/\\:':
+        elif path == "" or path[-1:] in "/\\:":
             path = path + b
         else:
-            path = path + '/' + b
+            path = path + "/" + b
     return path
 
 
@@ -66,27 +99,28 @@ def splitunc(p):
     using backslashes).  unc+rest is always the input path.
     Paths containing drive letters never have an UNC part.
     """
-    if p[1:2] == ':':
-        return '', p # Drive letter present
+    if p[1:2] == ":":
+        return "", p  # Drive letter present
     firstTwo = p[0:2]
-    if firstTwo == '/' * 2 or firstTwo == '\\' * 2:
+    if firstTwo == "/" * 2 or firstTwo == "\\" * 2:
         # is a UNC path:
         # vvvvvvvvvvvvvvvvvvvv equivalent to drive letter
         # \\machine\mountpoint\directories...
         #           directory ^^^^^^^^^^^^^^^
         normp = normcase(p)
-        index = normp.find('/', 2)
+        index = normp.find("/", 2)
         if index == -1:
             ##raise RuntimeError, 'illegal UNC path: "' + p + '"'
             return ("", p)
-        index = normp.find('/', index + 1)
+        index = normp.find("/", index + 1)
         if index == -1:
             index = len(p)
         return p[:index], p[index:]
-    return '', p
+    return "", p
 
 
 # Return the tail (basename) part of a path.
+
 
 def basename(p):
     """Returns the final component of a pathname"""
@@ -94,6 +128,7 @@ def basename(p):
 
 
 # Return the head (dirname) part of a path.
+
 
 def dirname(p):
     """Returns the directory component of a pathname"""
@@ -109,40 +144,42 @@ lexists = exists
 # Is a path a mount point?  Either a root (with or without drive letter)
 # or an UNC path with at most a / or \ after the mount point.
 
+
 def ismount(path):
     """Test whether a path is a mount point (defined as root of drive)"""
     unc, rest = splitunc(path)
     if unc:
         return rest in ("", "/", "\\")
     p = splitdrive(path)[1]
-    return len(p) == 1 and p[0] in '/\\'
+    return len(p) == 1 and p[0] in "/\\"
 
 
 # Normalize a path, e.g. A//B, A/./B and A/foo/../B all become A/B.
 
+
 def normpath(path):
     """Normalize path, eliminating double slashes, etc."""
-    path = path.replace('\\', '/')
+    path = path.replace("\\", "/")
     prefix, path = splitdrive(path)
-    while path[:1] == '/':
-        prefix = prefix + '/'
+    while path[:1] == "/":
+        prefix = prefix + "/"
         path = path[1:]
-    comps = path.split('/')
+    comps = path.split("/")
     i = 0
     while i < len(comps):
-        if comps[i] == '.':
+        if comps[i] == ".":
             del comps[i]
-        elif comps[i] == '..' and i > 0 and comps[i-1] not in ('', '..'):
-            del comps[i-1:i+1]
+        elif comps[i] == ".." and i > 0 and comps[i - 1] not in ("", ".."):
+            del comps[i - 1 : i + 1]
             i = i - 1
-        elif comps[i] == '' and i > 0 and comps[i-1] != '':
+        elif comps[i] == "" and i > 0 and comps[i - 1] != "":
             del comps[i]
         else:
             i = i + 1
     # If the path is now empty, substitute '.'
     if not prefix and not comps:
-        comps.append('.')
-    return prefix + '/'.join(comps)
+        comps.append(".")
+    return prefix + "/".join(comps)
 
 
 # Return an absolute path.
@@ -151,6 +188,7 @@ def abspath(path):
     if not isabs(path):
         path = join(os.getcwd(), path)
     return normpath(path)
+
 
 # realpath is a no-op on systems without islink support
 realpath = abspath

@@ -20,9 +20,7 @@ else:
 if is_resource_enabled("printing"):
     if lib_gl or lib_glu or lib_gle:
         print("OpenGL libraries:")
-        for item in (("GL", lib_gl),
-                     ("GLU", lib_glu),
-                     ("gle", lib_gle)):
+        for item in (("GL", lib_gl), ("GLU", lib_glu), ("gle", lib_gle)):
             print("\t", item)
 
 
@@ -41,19 +39,23 @@ class Test_OpenGL_libs(unittest.TestCase):
                 pass
 
     if lib_gl:
+
         def test_gl(self):
             if self.gl:
                 self.gl.glClearIndex
 
     if lib_glu:
+
         def test_glu(self):
             if self.glu:
                 self.glu.gluBeginCurve
 
     if lib_gle:
+
         def test_gle(self):
             if self.gle:
                 self.gle.gleGetJoinStyle
+
 
 ##if os.name == "posix" and sys.platform != "darwin":
 

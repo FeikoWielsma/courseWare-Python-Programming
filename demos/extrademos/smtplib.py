@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-'''SMTP/ESMTP client class.
+"""SMTP/ESMTP client class.
 
 This should follow RFC 821 (SMTP), RFC 1869 (ESMTP), RFC 2554 (SMTP
 Authentication) and RFC 2487 (Secure SMTP over TLS).
@@ -30,7 +30,7 @@ Example:
   >>> s.getreply()
   (250, "Somebody OverHere <somebody@here.my.org>")
   >>> s.quit()
-'''
+"""
 
 # Author: The Dragon De Monsyne <dragondm@integral.org>
 # ESMTP support, test code and doc fixes added by
@@ -52,21 +52,33 @@ import hmac
 from email.base64mime import body_encode as encode_base64
 from sys import stderr
 
-__all__ = ["SMTPException","SMTPServerDisconnected","SMTPResponseException",
-           "SMTPSenderRefused","SMTPRecipientsRefused","SMTPDataError",
-           "SMTPConnectError","SMTPHeloError","SMTPAuthenticationError",
-           "quoteaddr","quotedata","SMTP"]
+__all__ = [
+    "SMTPException",
+    "SMTPServerDisconnected",
+    "SMTPResponseException",
+    "SMTPSenderRefused",
+    "SMTPRecipientsRefused",
+    "SMTPDataError",
+    "SMTPConnectError",
+    "SMTPHeloError",
+    "SMTPAuthenticationError",
+    "quoteaddr",
+    "quotedata",
+    "SMTP",
+]
 
 SMTP_PORT = 25
 SMTP_SSL_PORT = 465
-CRLF="\r\n"
-bCRLF=b"\r\n"
+CRLF = "\r\n"
+bCRLF = b"\r\n"
 
 OLDSTYLE_AUTH = re.compile(r"auth=(.*)", re.I)
+
 
 # Exception classes used by this module.
 class SMTPException(Exception):
     """Base class for all exceptions raised by this module."""
+
 
 class SMTPServerDisconnected(SMTPException):
     """Not connected to any SMTP server.
@@ -75,6 +87,7 @@ class SMTPServerDisconnected(SMTPException):
     or when an attempt is made to use the SMTP instance before
     connecting it to a server.
     """
+
 
 class SMTPResponseException(SMTPException):
     """Base class for all exceptions that include an SMTP error code.
@@ -90,6 +103,7 @@ class SMTPResponseException(SMTPException):
         self.smtp_error = msg
         self.args = (code, msg)
 
+
 class SMTPSenderRefused(SMTPResponseException):
     """Sender address refused.
 
@@ -103,6 +117,7 @@ class SMTPSenderRefused(SMTPResponseException):
         self.sender = sender
         self.args = (code, msg, sender)
 
+
 class SMTPRecipientsRefused(SMTPException):
     """All recipient addresses refused.
 
@@ -113,17 +128,20 @@ class SMTPRecipientsRefused(SMTPException):
 
     def __init__(self, recipients):
         self.recipients = recipients
-        self.args = ( recipients,)
+        self.args = (recipients,)
 
 
 class SMTPDataError(SMTPResponseException):
     """The SMTP server didn't accept the data."""
 
+
 class SMTPConnectError(SMTPResponseException):
     """Error during connection establishment."""
 
+
 class SMTPHeloError(SMTPResponseException):
     """The server refused our HELO reply."""
+
 
 class SMTPAuthenticationError(SMTPResponseException):
     """Authentication error.
@@ -131,6 +149,7 @@ class SMTPAuthenticationError(SMTPResponseException):
     Most probably the server didn't accept the username/password
     combination provided.
     """
+
 
 def quoteaddr(addr):
     """Quote a subset of the email addresses defined by RFC 821.
@@ -142,7 +161,7 @@ def quoteaddr(addr):
         m = email.utils.parseaddr(addr)[1]
     except AttributeError:
         pass
-    if m == (None, None): # Indicates parse failure or AttributeError
+    if m == (None, None):  # Indicates parse failure or AttributeError
         # something weird here.. punt -ddm
         return "<%s>" % addr
     elif m is None:
@@ -151,6 +170,7 @@ def quoteaddr(addr):
     else:
         return "<%s>" % m
 
+
 # Legacy method kept for backward compatibility.
 def quotedata(data):
     """Quote data for email.
@@ -158,25 +178,29 @@ def quotedata(data):
     Double leading '.', and change Unix newline '\\n', or Mac '\\r' into
     Internet CRLF end-of-line.
     """
-    return re.sub(r'(?m)^\.', '..',
-        re.sub(r'(?:\r\n|\n|\r(?!\n))', CRLF, data))
+    return re.sub(r"(?m)^\.", "..", re.sub(r"(?:\r\n|\n|\r(?!\n))", CRLF, data))
+
 
 def _quote_periods(bindata):
-    return re.sub(br'(?m)^\.', '..', bindata)
+    return re.sub(rb"(?m)^\.", "..", bindata)
+
 
 def _fix_eols(data):
-    return  re.sub(r'(?:\r\n|\n|\r(?!\n))', CRLF, data)
+    return re.sub(r"(?:\r\n|\n|\r(?!\n))", CRLF, data)
+
 
 try:
     import ssl
 except ImportError:
     _have_ssl = False
 else:
+
     class SSLFakeFile:
         """A fake file like object that really wraps a SSLObject.
 
         It only supports what is needed in smtplib.
         """
+
         def __init__(self, sslobj):
             self.sslobj = sslobj
 
@@ -185,7 +209,8 @@ else:
             chr = None
             while chr != b"\n":
                 chr = self.sslobj.read(1)
-                if not chr: break
+                if not chr:
+                    break
                 str += chr
             return str
 
@@ -223,7 +248,8 @@ class SMTP:
         See each method's docstrings for details.  In general, there is a
         method of the same name to perform each SMTP command.  There is also a
         method called 'sendmail' that will do an entire mail transaction.
-        """
+    """
+
     debuglevel = 0
     file = None
     helo_resp = None
@@ -231,8 +257,13 @@ class SMTP:
     ehlo_resp = None
     does_esmtp = 0
 
-    def __init__(self, host='', port=0, local_hostname=None,
-                 timeout=socket._GLOBAL_DEFAULT_TIMEOUT):
+    def __init__(
+        self,
+        host="",
+        port=0,
+        local_hostname=None,
+        timeout=socket._GLOBAL_DEFAULT_TIMEOUT,
+    ):
         """Initialize a new instance.
 
         If specified, `host' is the name of the remote host to which to
@@ -257,16 +288,16 @@ class SMTP:
             # if that can't be calculated, that we should use a domain literal
             # instead (essentially an encoded IP address like [A.B.C.D]).
             fqdn = socket.getfqdn()
-            if '.' in fqdn:
+            if "." in fqdn:
                 self.local_hostname = fqdn
             else:
                 # We can't find an fqdn hostname, so use a domain literal
-                addr = '127.0.0.1'
+                addr = "127.0.0.1"
                 try:
                     addr = socket.gethostbyname(socket.gethostname())
                 except socket.gaierror:
                     pass
-                self.local_hostname = '[%s]' % addr
+                self.local_hostname = "[%s]" % addr
 
     def set_debuglevel(self, debuglevel):
         """Set the debug output level.
@@ -280,10 +311,11 @@ class SMTP:
     def _get_socket(self, host, port, timeout):
         # This makes it simpler for SMTP_SSL to use the SMTP connect code
         # and just alter the socket connection bit.
-        if self.debuglevel > 0: print('connect:', (host, port), file=stderr)
+        if self.debuglevel > 0:
+            print("connect:", (host, port), file=stderr)
         return socket.create_connection((host, port), timeout)
 
-    def connect(self, host='localhost', port = 0):
+    def connect(self, host="localhost", port=0):
         """Connect to a host on a given port.
 
         If the hostname ends with a colon (`:') followed by a number, and
@@ -294,40 +326,45 @@ class SMTP:
         specified during instantiation.
 
         """
-        if not port and (host.find(':') == host.rfind(':')):
-            i = host.rfind(':')
+        if not port and (host.find(":") == host.rfind(":")):
+            i = host.rfind(":")
             if i >= 0:
-                host, port = host[:i], host[i+1:]
-                try: port = int(port)
+                host, port = host[:i], host[i + 1 :]
+                try:
+                    port = int(port)
                 except ValueError:
                     raise socket.error("nonnumeric port")
-        if not port: port = self.default_port
-        if self.debuglevel > 0: print('connect:', (host, port), file=stderr)
+        if not port:
+            port = self.default_port
+        if self.debuglevel > 0:
+            print("connect:", (host, port), file=stderr)
         self.sock = self._get_socket(host, port, self.timeout)
         (code, msg) = self.getreply()
-        if self.debuglevel > 0: print("connect:", msg, file=stderr)
+        if self.debuglevel > 0:
+            print("connect:", msg, file=stderr)
         return (code, msg)
 
     def send(self, s):
         """Send `s' to the server."""
-        if self.debuglevel > 0: print('send:', repr(s), file=stderr)
-        if hasattr(self, 'sock') and self.sock:
+        if self.debuglevel > 0:
+            print("send:", repr(s), file=stderr)
+        if hasattr(self, "sock") and self.sock:
             if isinstance(s, str):
                 s = s.encode("ascii")
             try:
                 self.sock.sendall(s)
             except socket.error:
                 self.close()
-                raise SMTPServerDisconnected('Server not connected')
+                raise SMTPServerDisconnected("Server not connected")
         else:
-            raise SMTPServerDisconnected('please run connect() first')
+            raise SMTPServerDisconnected("please run connect() first")
 
     def putcmd(self, cmd, args=""):
         """Send a command to the server."""
         if args == "":
-            str = '%s%s' % (cmd, CRLF)
+            str = "%s%s" % (cmd, CRLF)
         else:
-            str = '%s %s%s' % (cmd, args, CRLF)
+            str = "%s %s%s" % (cmd, args, CRLF)
         self.send(str)
 
     def getreply(self):
@@ -343,20 +380,21 @@ class SMTP:
 
         Raises SMTPServerDisconnected if end-of-file is reached.
         """
-        resp=[]
+        resp = []
         if self.file is None:
-            self.file = self.sock.makefile('rb')
+            self.file = self.sock.makefile("rb")
         while 1:
             try:
                 line = self.file.readline()
             except socket.error:
-                line = ''
+                line = ""
             if not line:
                 self.close()
                 raise SMTPServerDisconnected("Connection unexpectedly closed")
-            if self.debuglevel > 0: print('reply:', repr(line), file=stderr)
-            resp.append(line[4:].strip(b' \t\r\n'))
-            code=line[:3]
+            if self.debuglevel > 0:
+                print("reply:", repr(line), file=stderr)
+            resp.append(line[4:].strip(b" \t\r\n"))
+            code = line[:3]
             # Check that the error code is syntactically correct.
             # Don't attempt to read a continuation line if it is broken.
             try:
@@ -370,46 +408,46 @@ class SMTP:
 
         errmsg = b"\n".join(resp)
         if self.debuglevel > 0:
-            print('reply: retcode (%s); Msg: %s' % (errcode,errmsg), file=stderr)
+            print("reply: retcode (%s); Msg: %s" % (errcode, errmsg), file=stderr)
         return errcode, errmsg
 
     def docmd(self, cmd, args=""):
         """Send a command, and return its response code."""
-        self.putcmd(cmd,args)
+        self.putcmd(cmd, args)
         return self.getreply()
 
     # std smtp commands
-    def helo(self, name=''):
+    def helo(self, name=""):
         """SMTP 'helo' command.
         Hostname to send for this command defaults to the FQDN of the local
         host.
         """
         self.putcmd("helo", name or self.local_hostname)
-        (code,msg)=self.getreply()
-        self.helo_resp=msg
-        return (code,msg)
+        (code, msg) = self.getreply()
+        self.helo_resp = msg
+        return (code, msg)
 
-    def ehlo(self, name=''):
-        """ SMTP 'ehlo' command.
+    def ehlo(self, name=""):
+        """SMTP 'ehlo' command.
         Hostname to send for this command defaults to the FQDN of the local
         host.
         """
         self.esmtp_features = {}
         self.putcmd(self.ehlo_msg, name or self.local_hostname)
-        (code,msg)=self.getreply()
+        (code, msg) = self.getreply()
         # According to RFC1869 some (badly written)
         # MTA's will disconnect on an ehlo. Toss an exception if
         # that happens -ddm
         if code == -1 and len(msg) == 0:
             self.close()
             raise SMTPServerDisconnected("Server not connected")
-        self.ehlo_resp=msg
+        self.ehlo_resp = msg
         if code != 250:
-            return (code,msg)
-        self.does_esmtp=1
-        #parse the ehlo response -ddm
+            return (code, msg)
+        self.does_esmtp = 1
+        # parse the ehlo response -ddm
         assert isinstance(self.ehlo_resp, bytes), repr(self.ehlo_resp)
-        resp=self.ehlo_resp.decode("latin-1").split('\n')
+        resp = self.ehlo_resp.decode("latin-1").split("\n")
         del resp[0]
         for each in resp:
             # To be able to communicate with as many SMTP servers as possible,
@@ -421,30 +459,32 @@ class SMTP:
             auth_match = OLDSTYLE_AUTH.match(each)
             if auth_match:
                 # This doesn't remove duplicates, but that's no problem
-                self.esmtp_features["auth"] = self.esmtp_features.get("auth", "") \
-                        + " " + auth_match.groups(0)[0]
+                self.esmtp_features["auth"] = (
+                    self.esmtp_features.get("auth", "") + " " + auth_match.groups(0)[0]
+                )
                 continue
 
             # RFC 1869 requires a space between ehlo keyword and parameters.
             # It's actually stricter, in that only spaces are allowed between
             # parameters, but were not going to check for that here.  Note
             # that the space isn't present if there are no parameters.
-            m=re.match(r'(?P<feature>[A-Za-z0-9][A-Za-z0-9\-]*) ?',each)
+            m = re.match(r"(?P<feature>[A-Za-z0-9][A-Za-z0-9\-]*) ?", each)
             if m:
-                feature=m.group("feature").lower()
-                params=m.string[m.end("feature"):].strip()
+                feature = m.group("feature").lower()
+                params = m.string[m.end("feature") :].strip()
                 if feature == "auth":
-                    self.esmtp_features[feature] = self.esmtp_features.get(feature, "") \
-                            + " " + params
+                    self.esmtp_features[feature] = (
+                        self.esmtp_features.get(feature, "") + " " + params
+                    )
                 else:
-                    self.esmtp_features[feature]=params
-        return (code,msg)
+                    self.esmtp_features[feature] = params
+        return (code, msg)
 
     def has_extn(self, opt):
         """Does the server support a given SMTP service extension?"""
         return opt.lower() in self.esmtp_features
 
-    def help(self, args=''):
+    def help(self, args=""):
         """SMTP 'help' command.
         Returns help text from server."""
         self.putcmd("help", args)
@@ -458,23 +498,23 @@ class SMTP:
         """SMTP 'noop' command -- doesn't do anything :>"""
         return self.docmd("noop")
 
-    def mail(self,sender,options=[]):
+    def mail(self, sender, options=[]):
         """SMTP 'mail' command -- begins mail xfer session."""
-        optionlist = ''
+        optionlist = ""
         if options and self.does_esmtp:
-            optionlist = ' ' + ' '.join(options)
-        self.putcmd("mail", "FROM:%s%s" % (quoteaddr(sender) ,optionlist))
+            optionlist = " " + " ".join(options)
+        self.putcmd("mail", "FROM:%s%s" % (quoteaddr(sender), optionlist))
         return self.getreply()
 
-    def rcpt(self,recip,options=[]):
+    def rcpt(self, recip, options=[]):
         """SMTP 'rcpt' command -- indicates 1 recipient for this mail."""
-        optionlist = ''
+        optionlist = ""
         if options and self.does_esmtp:
-            optionlist = ' ' + ' '.join(options)
-        self.putcmd("rcpt","TO:%s%s" % (quoteaddr(recip),optionlist))
+            optionlist = " " + " ".join(options)
+        self.putcmd("rcpt", "TO:%s%s" % (quoteaddr(recip), optionlist))
         return self.getreply()
 
-    def data(self,msg):
+    def data(self, msg):
         """SMTP 'DATA' command -- sends message data to server.
 
         Automatically quotes lines beginning with a period per rfc821.
@@ -485,28 +525,31 @@ class SMTP:
         '\r\n' characters.  If msg is bytes, it is transmitted as is.
         """
         self.putcmd("data")
-        (code,repl)=self.getreply()
-        if self.debuglevel >0 : print("data:", (code,repl), file=stderr)
+        (code, repl) = self.getreply()
+        if self.debuglevel > 0:
+            print("data:", (code, repl), file=stderr)
         if code != 354:
-            raise SMTPDataError(code,repl)
+            raise SMTPDataError(code, repl)
         else:
             if isinstance(msg, str):
-                msg = _fix_eols(msg).encode('ascii')
+                msg = _fix_eols(msg).encode("ascii")
             q = _quote_periods(msg)
             if q[-2:] != bCRLF:
                 q = q + bCRLF
             q = q + b"." + bCRLF
             self.send(q)
-            (code,msg)=self.getreply()
-            if self.debuglevel >0 : print("data:", (code,msg), file=stderr)
-            return (code,msg)
+            (code, msg) = self.getreply()
+            if self.debuglevel > 0:
+                print("data:", (code, msg), file=stderr)
+            return (code, msg)
 
     def verify(self, address):
         """SMTP 'verify' command -- checks for address validity."""
         self.putcmd("vrfy", quoteaddr(address))
         return self.getreply()
+
     # a.k.a.
-    vrfy=verify
+    vrfy = verify
 
     def expn(self, address):
         """SMTP 'expn' command -- expands a mailing list."""
@@ -556,14 +599,14 @@ class SMTP:
 
         def encode_cram_md5(challenge, user, password):
             challenge = base64.decodebytes(challenge)
-            response = user + " " + hmac.HMAC(password.encode('ascii'),
-                                              challenge).hexdigest()
-            return encode_base64(response.encode('ascii'), eol='')
+            response = (
+                user + " " + hmac.HMAC(password.encode("ascii"), challenge).hexdigest()
+            )
+            return encode_base64(response.encode("ascii"), eol="")
 
         def encode_plain(user, password):
             s = "\0%s\0%s" % (user, password)
-            return encode_base64(s.encode('ascii'), eol='')
-
+            return encode_base64(s.encode("ascii"), eol="")
 
         AUTH_PLAIN = "PLAIN"
         AUTH_CRAM_MD5 = "CRAM-MD5"
@@ -597,13 +640,18 @@ class SMTP:
                 if code == 334:
                     (code, resp) = self.docmd(encode_cram_md5(resp, user, password))
             elif authmethod == AUTH_PLAIN:
-                (code, resp) = self.docmd("AUTH",
-                    AUTH_PLAIN + " " + encode_plain(user, password))
+                (code, resp) = self.docmd(
+                    "AUTH", AUTH_PLAIN + " " + encode_plain(user, password)
+                )
             elif authmethod == AUTH_LOGIN:
-                (code, resp) = self.docmd("AUTH",
-                    "%s %s" % (AUTH_LOGIN, encode_base64(user.encode('ascii'), eol='')))
+                (code, resp) = self.docmd(
+                    "AUTH",
+                    "%s %s" % (AUTH_LOGIN, encode_base64(user.encode("ascii"), eol="")),
+                )
                 if code == 334:
-                    (code, resp) = self.docmd(encode_base64(password.encode('ascii'), eol=''))
+                    (code, resp) = self.docmd(
+                        encode_base64(password.encode("ascii"), eol="")
+                    )
 
             # 235 == 'Authentication successful'
             # 503 == 'Error: already authenticated'
@@ -613,7 +661,7 @@ class SMTP:
         # We could not login sucessfully. Return result of last attempt.
         raise SMTPAuthenticationError(code, resp)
 
-    def starttls(self, keyfile = None, certfile = None):
+    def starttls(self, keyfile=None, certfile=None):
         """Puts the connection to the SMTP server into TLS mode.
 
         If there has been no previous EHLO or HELO command this session, this
@@ -649,8 +697,7 @@ class SMTP:
             self.does_esmtp = 0
         return (resp, reply)
 
-    def sendmail(self, from_addr, to_addrs, msg, mail_options=[],
-                 rcpt_options=[]):
+    def sendmail(self, from_addr, to_addrs, msg, mail_options=[], rcpt_options=[]):
         """This command performs an entire mail transaction.
 
         The arguments are:
@@ -713,38 +760,39 @@ class SMTP:
         self.ehlo_or_helo_if_needed()
         esmtp_opts = []
         if isinstance(msg, str):
-            msg = _fix_eols(msg).encode('ascii')
+            msg = _fix_eols(msg).encode("ascii")
         if self.does_esmtp:
             # Hmmm? what's this? -ddm
             # self.esmtp_features['7bit']=""
-            if self.has_extn('size'):
+            if self.has_extn("size"):
                 esmtp_opts.append("size=%d" % len(msg))
             for option in mail_options:
                 esmtp_opts.append(option)
-        (code,resp) = self.mail(from_addr, esmtp_opts)
+        (code, resp) = self.mail(from_addr, esmtp_opts)
         if code != 250:
             self.rset()
             raise SMTPSenderRefused(code, resp, from_addr)
-        senderrs={}
+        senderrs = {}
         if isinstance(to_addrs, str):
             to_addrs = [to_addrs]
         for each in to_addrs:
-            (code,resp)=self.rcpt(each, rcpt_options)
+            (code, resp) = self.rcpt(each, rcpt_options)
             if (code != 250) and (code != 251):
-                senderrs[each]=(code,resp)
-        if len(senderrs)==len(to_addrs):
+                senderrs[each] = (code, resp)
+        if len(senderrs) == len(to_addrs):
             # the server refused all our recipients
             self.rset()
             raise SMTPRecipientsRefused(senderrs)
-        (code,resp) = self.data(msg)
+        (code, resp) = self.data(msg)
         if code != 250:
             self.rset()
             raise SMTPDataError(code, resp)
-        #if we got here then somebody got our mail
+        # if we got here then somebody got our mail
         return senderrs
 
-    def send_message(self, msg, from_addr=None, to_addrs=None,
-                mail_options=[], rcpt_options={}):
+    def send_message(
+        self, msg, from_addr=None, to_addrs=None, mail_options=[], rcpt_options={}
+    ):
         """Converts message to a bytestring and passes it to sendmail.
 
         The arguments are as for sendmail, except that msg is an
@@ -757,19 +805,18 @@ class SMTP:
         to transmit the message.
         """
         if from_addr is None:
-            from_addr = msg['From']
+            from_addr = msg["From"]
         if to_addrs is None:
-            addr_fields = [f for f in (msg['To'], msg['Bcc'], msg['CC'])
-                            if f is not None]
+            addr_fields = [
+                f for f in (msg["To"], msg["Bcc"], msg["CC"]) if f is not None
+            ]
             to_addrs = [a[1] for a in email.utils.getaddresses(addr_fields)]
-        del msg['Bcc']
+        del msg["Bcc"]
         with io.BytesIO() as bytesmsg:
             g = email.generator.BytesGenerator(bytesmsg)
-            g.flatten(msg, linesep='\r\n')
+            g.flatten(msg, linesep="\r\n")
             flatmsg = bytesmsg.getvalue()
-        return self.sendmail(from_addr, to_addrs, flatmsg, mail_options,
-                             rcpt_options)
-
+        return self.sendmail(from_addr, to_addrs, flatmsg, mail_options, rcpt_options)
 
     def close(self):
         """Close the connection to the SMTP server."""
@@ -780,33 +827,41 @@ class SMTP:
             self.sock.close()
         self.sock = None
 
-
     def quit(self):
         """Terminate the SMTP session."""
         res = self.docmd("quit")
         self.close()
         return res
 
+
 if _have_ssl:
 
     class SMTP_SSL(SMTP):
-        """ This is a subclass derived from SMTP that connects over an SSL encrypted
+        """This is a subclass derived from SMTP that connects over an SSL encrypted
         socket (to use this class you need a socket module that was compiled with SSL
         support). If host is not specified, '' (the local host) is used. If port is
         omitted, the standard SMTP-over-SSL port (465) is used. keyfile and certfile
         are also optional - they can contain a PEM formatted private key and
         certificate chain file for the SSL connection.
         """
-        def __init__(self, host='', port=0, local_hostname=None,
-                     keyfile=None, certfile=None,
-                     timeout=socket._GLOBAL_DEFAULT_TIMEOUT):
+
+        def __init__(
+            self,
+            host="",
+            port=0,
+            local_hostname=None,
+            keyfile=None,
+            certfile=None,
+            timeout=socket._GLOBAL_DEFAULT_TIMEOUT,
+        ):
             self.keyfile = keyfile
             self.certfile = certfile
             SMTP.__init__(self, host, port, local_hostname, timeout)
             self.default_port = SMTP_SSL_PORT
 
         def _get_socket(self, host, port, timeout):
-            if self.debuglevel > 0: print('connect:', (host, port), file=stderr)
+            if self.debuglevel > 0:
+                print("connect:", (host, port), file=stderr)
             new_socket = socket.create_connection((host, port), timeout)
             new_socket = ssl.wrap_socket(new_socket, self.keyfile, self.certfile)
             self.file = SSLFakeFile(new_socket)
@@ -818,6 +873,7 @@ if _have_ssl:
 # LMTP extension
 #
 LMTP_PORT = 2003
+
 
 class LMTP(SMTP):
     """LMTP - Local Mail Transfer Protocol
@@ -834,13 +890,13 @@ class LMTP(SMTP):
 
     ehlo_msg = "lhlo"
 
-    def __init__(self, host = '', port = LMTP_PORT, local_hostname = None):
+    def __init__(self, host="", port=LMTP_PORT, local_hostname=None):
         """Initialize a new instance."""
         SMTP.__init__(self, host, port, local_hostname)
 
-    def connect(self, host = 'localhost', port = 0):
+    def connect(self, host="localhost", port=0):
         """Connect to the LMTP daemon, on either a Unix or a TCP socket."""
-        if host[0] != '/':
+        if host[0] != "/":
             return SMTP.connect(self, host, port)
 
         # Handle Unix-domain sockets.
@@ -848,19 +904,21 @@ class LMTP(SMTP):
             self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
             self.sock.connect(host)
         except socket.error as msg:
-            if self.debuglevel > 0: print('connect fail:', host, file=stderr)
+            if self.debuglevel > 0:
+                print("connect fail:", host, file=stderr)
             if self.sock:
                 self.sock.close()
             self.sock = None
             raise socket.error(msg)
         (code, msg) = self.getreply()
-        if self.debuglevel > 0: print('connect:', msg, file=stderr)
+        if self.debuglevel > 0:
+            print("connect:", msg, file=stderr)
         return (code, msg)
 
 
 # Test the sendmail method, which tests most of the others.
 # Note: This always sends to localhost.
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     def prompt(prompt):
@@ -868,9 +926,9 @@ if __name__ == '__main__':
         return sys.stdin.readline().strip()
 
     fromaddr = prompt("From")
-    toaddrs  = prompt("To").split(',')
+    toaddrs = prompt("To").split(",")
     print("Enter message, end with ^D:")
-    msg = ''
+    msg = ""
     while 1:
         line = sys.stdin.readline()
         if not line:
@@ -878,7 +936,7 @@ if __name__ == '__main__':
         msg = msg + line
     print("Message length is %d" % len(msg))
 
-    server = SMTP('localhost')
+    server = SMTP("localhost")
     server.set_debuglevel(1)
     server.sendmail(fromaddr, toaddrs, msg)
     server.quit()

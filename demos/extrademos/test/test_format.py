@@ -10,75 +10,94 @@ maxsize = support.MAX_Py_ssize_t
 # they crash python)
 # test on unicode strings as well
 
+
 def testformat(formatstr, args, output=None, limit=None, overflowok=False):
     if verbose:
         if output:
-            print("%r %% %r =? %r ..." %\
-                (formatstr, args, output), end=' ')
+            print("%r %% %r =? %r ..." % (formatstr, args, output), end=" ")
         else:
-            print("%r %% %r works? ..." % (formatstr, args), end=' ')
+            print("%r %% %r works? ..." % (formatstr, args), end=" ")
     try:
         result = formatstr % args
     except OverflowError:
         if not overflowok:
             raise
         if verbose:
-            print('overflow (this is fine)')
+            print("overflow (this is fine)")
     else:
         if output and limit is None and result != output:
             if verbose:
-                print('no')
-            raise AssertionError("%r %% %r == %r != %r" %
-                                (formatstr, args, result, output))
+                print("no")
+            raise AssertionError(
+                "%r %% %r == %r != %r" % (formatstr, args, result, output)
+            )
         # when 'limit' is specified, it determines how many characters
         # must match exactly; lengths must always match.
         # ex: limit=5, '12345678' matches '12345___'
         # (mainly for floating point format tests for which an exact match
         # can't be guaranteed due to rounding and representation errors)
-        elif output and limit is not None and (
-                len(result)!=len(output) or result[:limit]!=output[:limit]):
+        elif (
+            output
+            and limit is not None
+            and (len(result) != len(output) or result[:limit] != output[:limit])
+        ):
             if verbose:
-                print('no')
-            print("%s %% %s == %s != %s" % \
-                  (repr(formatstr), repr(args), repr(result), repr(output)))
+                print("no")
+            print(
+                "%s %% %s == %s != %s"
+                % (repr(formatstr), repr(args), repr(result), repr(output))
+            )
         else:
             if verbose:
-                print('yes')
+                print("yes")
 
 
 class FormatTest(unittest.TestCase):
     def test_format(self):
         testformat("%.1d", (1,), "1")
-        testformat("%.*d", (sys.maxsize,1), overflowok=True)  # expect overflow
-        testformat("%.100d", (1,), '00000000000000000000000000000000000000'
-                 '000000000000000000000000000000000000000000000000000000'
-                 '00000001', overflowok=True)
-        testformat("%#.117x", (1,), '0x00000000000000000000000000000000000'
-                 '000000000000000000000000000000000000000000000000000000'
-                 '0000000000000000000000000001',
-                 overflowok=True)
-        testformat("%#.118x", (1,), '0x00000000000000000000000000000000000'
-                 '000000000000000000000000000000000000000000000000000000'
-                 '00000000000000000000000000001',
-                 overflowok=True)
+        testformat("%.*d", (sys.maxsize, 1), overflowok=True)  # expect overflow
+        testformat(
+            "%.100d",
+            (1,),
+            "00000000000000000000000000000000000000"
+            "000000000000000000000000000000000000000000000000000000"
+            "00000001",
+            overflowok=True,
+        )
+        testformat(
+            "%#.117x",
+            (1,),
+            "0x00000000000000000000000000000000000"
+            "000000000000000000000000000000000000000000000000000000"
+            "0000000000000000000000000001",
+            overflowok=True,
+        )
+        testformat(
+            "%#.118x",
+            (1,),
+            "0x00000000000000000000000000000000000"
+            "000000000000000000000000000000000000000000000000000000"
+            "00000000000000000000000000001",
+            overflowok=True,
+        )
 
         testformat("%f", (1.0,), "1.000000")
         # these are trying to test the limits of the internal magic-number-length
         # formatting buffer, if that number changes then these tests are less
         # effective
-        testformat("%#.*g", (109, -1.e+49/3.))
-        testformat("%#.*g", (110, -1.e+49/3.))
-        testformat("%#.*g", (110, -1.e+100/3.))
+        testformat("%#.*g", (109, -1.0e49 / 3.0))
+        testformat("%#.*g", (110, -1.0e49 / 3.0))
+        testformat("%#.*g", (110, -1.0e100 / 3.0))
         # test some ridiculously large precision, expect overflow
-        testformat('%12.*f', (123456, 1.0))
+        testformat("%12.*f", (123456, 1.0))
 
         # check for internal overflow validation on length of precision
         # these tests should no longer cause overflow in Python
         # 2.7/3.1 and later.
-        testformat("%#.*g", (110, -1.e+100/3.))
-        testformat("%#.*G", (110, -1.e+100/3.))
-        testformat("%#.*f", (110, -1.e+100/3.))
-        testformat("%#.*F", (110, -1.e+100/3.))
+        testformat("%#.*g", (110, -1.0e100 / 3.0))
+        testformat("%#.*G", (110, -1.0e100 / 3.0))
+        testformat("%#.*f", (110, -1.0e100 / 3.0))
+        testformat("%#.*F", (110, -1.0e100 / 3.0))
         # Formatting of integers. Overflow is not ok
         testformat("%x", 10, "a")
         testformat("%x", 100000000000, "174876e800")
@@ -105,7 +124,7 @@ class FormatTest(unittest.TestCase):
         testformat("%.31d", big, "0123456789012345678901234567890")
         testformat("%32.31d", big, " 0123456789012345678901234567890")
         testformat("%d", float(big), "123456________________________", 6)
-        big = 0x1234567890abcdef12345  # 21 hex digits
+        big = 0x1234567890ABCDEF12345  # 21 hex digits
         testformat("%x", big, "1234567890abcdef12345")
         testformat("%x", -big, "-1234567890abcdef12345")
         testformat("%5x", -big, "-1234567890abcdef12345")
@@ -217,16 +236,17 @@ class FormatTest(unittest.TestCase):
         testformat("%o", float(0o42), "42")
         testformat("%r", "\u0378", "'\\u0378'")  # non printable
         testformat("%a", "\u0378", "'\\u0378'")  # non printable
-        testformat("%r", "\u0374", "'\u0374'")   # printable
+        testformat("%r", "\u0374", "'\u0374'")  # printable
         testformat("%a", "\u0374", "'\\u0374'")  # printable
 
         # alternate float formatting
-        testformat('%g', 1.1, '1.1')
-        testformat('%#g', 1.1, '1.10000')
+        testformat("%g", 1.1, "1.1")
+        testformat("%#g", 1.1, "1.10000")
 
         # Test exception for unknown format characters
         if verbose:
-            print('Testing exceptions')
+            print("Testing exceptions")
+
         def test_exc(formatstr, args, exception, excmsg):
             try:
                 testformat(formatstr, args)
@@ -235,33 +255,49 @@ class FormatTest(unittest.TestCase):
                     if verbose:
                         print("yes")
                 else:
-                    if verbose: print('no')
-                    print('Unexpected ', exception, ':', repr(str(exc)))
+                    if verbose:
+                        print("no")
+                    print("Unexpected ", exception, ":", repr(str(exc)))
             except:
-                if verbose: print('no')
-                print('Unexpected exception')
+                if verbose:
+                    print("no")
+                print("Unexpected exception")
                 raise
             else:
-                raise TestFailed('did not get expected exception: %s' % excmsg)
-        test_exc('abc %b', 1, ValueError,
-                 "unsupported format character 'b' (0x62) at index 5")
-        #test_exc(unicode('abc %\u3000','raw-unicode-escape'), 1, ValueError,
-        #         "unsupported format character '?' (0x3000) at index 5")
-        test_exc('%d', '1', TypeError, "%d format: a number is required, not str")
-        test_exc('%g', '1', TypeError, "a float is required")
-        test_exc('no format', '1', TypeError,
-                 "not all arguments converted during string formatting")
-        test_exc('no format', '1', TypeError,
-                 "not all arguments converted during string formatting")
+                raise TestFailed("did not get expected exception: %s" % excmsg)
 
-        if maxsize == 2**31-1:
+        test_exc(
+            "abc %b",
+            1,
+            ValueError,
+            "unsupported format character 'b' (0x62) at index 5",
+        )
+        # test_exc(unicode('abc %\u3000','raw-unicode-escape'), 1, ValueError,
+        #         "unsupported format character '?' (0x3000) at index 5")
+        test_exc("%d", "1", TypeError, "%d format: a number is required, not str")
+        test_exc("%g", "1", TypeError, "a float is required")
+        test_exc(
+            "no format",
+            "1",
+            TypeError,
+            "not all arguments converted during string formatting",
+        )
+        test_exc(
+            "no format",
+            "1",
+            TypeError,
+            "not all arguments converted during string formatting",
+        )
+
+        if maxsize == 2**31 - 1:
             # crashes 2.2.1 and earlier:
             try:
-                "%*d"%(maxsize, -127)
+                "%*d" % (maxsize, -127)
             except MemoryError:
                 pass
             else:
                 raise TestFailed('"%*d"%(maxsize, -127) should fail')
+
 
 def test_main():
     support.run_unittest(FormatTest)

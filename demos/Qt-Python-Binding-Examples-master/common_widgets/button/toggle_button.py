@@ -21,16 +21,16 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
         self.toggle_btn = QtGui.QPushButton("Toggle button", self)
-        self.toggle_btn.setCheckable(True)
-        self.toggle_btn.setChecked(True)
+        self.toggle_btn.set_checkable(True)
+        self.toggle_btn.set_checked(True)
         self.toggle_btn.move(100, 100)
         self.toggle_btn.clicked.connect(self._toggle_btn_cb)
 
     def _toggle_btn_cb(self):
-        print "is checked:", self.toggle_btn.isChecked()
+        print "is checked:", self.toggle_btn.is_checked()
 
     def show_and_raise(self):
         self.show()

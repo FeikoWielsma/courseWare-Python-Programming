@@ -183,9 +183,9 @@ import logging
 # Therefore it is necessary to absolutize manually the __file__ and __path__ of
 # the packages to prevent later imports to fail when the CWD is different.
 for module in sys.modules.values():
-    if hasattr(module, '__path__'):
+    if hasattr(module, "__path__"):
         module.__path__ = [os.path.abspath(path) for path in module.__path__]
-    if hasattr(module, '__file__'):
+    if hasattr(module, "__file__"):
         module.__file__ = os.path.abspath(module.__file__)
 
 
@@ -195,14 +195,14 @@ for module in sys.modules.values():
 # fix is to set the stack limit to 2048.
 # This approach may also be useful for other Unixy platforms that
 # suffer from small default stack limits.
-if sys.platform == 'darwin':
+if sys.platform == "darwin":
     try:
         import resource
     except ImportError:
         pass
     else:
         soft, hard = resource.getrlimit(resource.RLIMIT_STACK)
-        newsoft = min(hard, max(soft, 1024*2048))
+        newsoft = min(hard, max(soft, 1024 * 2048))
         resource.setrlimit(resource.RLIMIT_STACK, (newsoft, hard))
 
 # Test result constants.
@@ -215,10 +215,20 @@ INTERRUPTED = -4
 
 from test import support
 
-RESOURCE_NAMES = ('audio', 'curses', 'largefile', 'network',
-                  'decimal', 'cpu', 'subprocess', 'urlfetch', 'gui')
+RESOURCE_NAMES = (
+    "audio",
+    "curses",
+    "largefile",
+    "network",
+    "decimal",
+    "cpu",
+    "subprocess",
+    "urlfetch",
+    "gui",
+)
 
 TEMPDIR = os.path.abspath(tempfile.gettempdir())
+
 
 def usage(msg):
     print(msg, file=sys.stderr)
@@ -226,12 +236,29 @@ def usage(msg):
     sys.exit(2)
 
 
-def main(tests=None, testdir=None, verbose=0, quiet=False,
-         exclude=False, single=False, randomize=False, fromfile=None,
-         findleaks=False, use_resources=None, trace=False, coverdir='coverage',
-         runleaks=False, huntrleaks=False, verbose2=False, print_slow=False,
-         random_seed=None, use_mp=None, verbose3=False, forever=False,
-         header=False):
+def main(
+    tests=None,
+    testdir=None,
+    verbose=0,
+    quiet=False,
+    exclude=False,
+    single=False,
+    randomize=False,
+    fromfile=None,
+    findleaks=False,
+    use_resources=None,
+    trace=False,
+    coverdir="coverage",
+    runleaks=False,
+    huntrleaks=False,
+    verbose2=False,
+    print_slow=False,
+    random_seed=None,
+    use_mp=None,
+    verbose3=False,
+    forever=False,
+    header=False,
+):
     """Execute a test suite.
 
     This also parses command-line options and modifies its behavior
@@ -259,13 +286,40 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
 
     support.record_original_stdout(sys.stdout)
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'hvqxsSrf:lu:t:TD:NLR:FwWM:nj:',
-            ['help', 'verbose', 'verbose2', 'verbose3', 'quiet',
-             'exclude', 'single', 'slow', 'random', 'fromfile', 'findleaks',
-             'use=', 'threshold=', 'trace', 'coverdir=', 'nocoverdir',
-             'runleaks', 'huntrleaks=', 'memlimit=', 'randseed=',
-             'multiprocess=', 'coverage', 'slaveargs=', 'forever', 'debug',
-             'start=', 'nowindows', 'header'])
+        opts, args = getopt.getopt(
+            sys.argv[1:],
+            "hvqxsSrf:lu:t:TD:NLR:FwWM:nj:",
+            [
+                "help",
+                "verbose",
+                "verbose2",
+                "verbose3",
+                "quiet",
+                "exclude",
+                "single",
+                "slow",
+                "random",
+                "fromfile",
+                "findleaks",
+                "use=",
+                "threshold=",
+                "trace",
+                "coverdir=",
+                "nocoverdir",
+                "runleaks",
+                "huntrleaks=",
+                "memlimit=",
+                "randseed=",
+                "multiprocess=",
+                "coverage",
+                "slaveargs=",
+                "forever",
+                "debug",
+                "start=",
+                "nowindows",
+                "header",
+            ],
+        )
     except getopt.error as msg:
         usage(msg)
 
@@ -277,52 +331,53 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
     debug = False
     start = None
     for o, a in opts:
-        if o in ('-h', '--help'):
+        if o in ("-h", "--help"):
             print(__doc__)
             return
-        elif o in ('-v', '--verbose'):
+        elif o in ("-v", "--verbose"):
             verbose += 1
-        elif o in ('-w', '--verbose2'):
+        elif o in ("-w", "--verbose2"):
             verbose2 = True
-        elif o in ('-d', '--debug'):
+        elif o in ("-d", "--debug"):
             debug = True
-        elif o in ('-W', '--verbose3'):
+        elif o in ("-W", "--verbose3"):
             verbose3 = True
-        elif o in ('-q', '--quiet'):
-            quiet = True;
+        elif o in ("-q", "--quiet"):
+            quiet = True
             verbose = 0
-        elif o in ('-x', '--exclude'):
+        elif o in ("-x", "--exclude"):
             exclude = True
-        elif o in ('-S', '--start'):
+        elif o in ("-S", "--start"):
             start = a
-        elif o in ('-s', '--single'):
+        elif o in ("-s", "--single"):
             single = True
-        elif o in ('-S', '--slow'):
+        elif o in ("-S", "--slow"):
             print_slow = True
-        elif o in ('-r', '--randomize'):
+        elif o in ("-r", "--randomize"):
             randomize = True
-        elif o == '--randseed':
+        elif o == "--randseed":
             random_seed = int(a)
-        elif o in ('-f', '--fromfile'):
+        elif o in ("-f", "--fromfile"):
             fromfile = a
-        elif o in ('-l', '--findleaks'):
+        elif o in ("-l", "--findleaks"):
             findleaks = True
-        elif o in ('-L', '--runleaks'):
+        elif o in ("-L", "--runleaks"):
             runleaks = True
-        elif o in ('-t', '--threshold'):
+        elif o in ("-t", "--threshold"):
             import gc
+
             gc.set_threshold(int(a))
-        elif o in ('-T', '--coverage'):
+        elif o in ("-T", "--coverage"):
             trace = True
-        elif o in ('-D', '--coverdir'):
+        elif o in ("-D", "--coverdir"):
             coverdir = os.path.join(os.getcwd(), a)
-        elif o in ('-N', '--nocoverdir'):
+        elif o in ("-N", "--nocoverdir"):
             coverdir = None
-        elif o in ('-R', '--huntrleaks'):
-            huntrleaks = a.split(':')
+        elif o in ("-R", "--huntrleaks"):
+            huntrleaks = a.split(":")
             if len(huntrleaks) not in (2, 3):
                 print(a, huntrleaks)
-                usage('-R takes 2 or 3 colon-separated arguments')
+                usage("-R takes 2 or 3 colon-separated arguments")
             if not huntrleaks[0]:
                 huntrleaks[0] = 5
             else:
@@ -336,31 +391,34 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
             # Avoid false positives due to the character cache in
             # stringobject.c filling slowly with random data
             warm_char_cache()
-        elif o in ('-M', '--memlimit'):
+        elif o in ("-M", "--memlimit"):
             support.set_memlimit(a)
-        elif o in ('-u', '--use'):
-            u = [x.lower() for x in a.split(',')]
+        elif o in ("-u", "--use"):
+            u = [x.lower() for x in a.split(",")]
             for r in u:
-                if r == 'all':
+                if r == "all":
                     use_resources[:] = RESOURCE_NAMES
                     continue
                 remove = False
-                if r[0] == '-':
+                if r[0] == "-":
                     remove = True
                     r = r[1:]
                 if r not in RESOURCE_NAMES:
-                    usage('Invalid -u/--use option: ' + a)
+                    usage("Invalid -u/--use option: " + a)
                 if remove:
                     if r in use_resources:
                         use_resources.remove(r)
                 elif r not in use_resources:
                     use_resources.append(r)
-        elif o in ('-n', '--nowindows'):
+        elif o in ("-n", "--nowindows"):
             import msvcrt
-            msvcrt.SetErrorMode(msvcrt.SEM_FAILCRITICALERRORS|
-                    msvcrt.SEM_NOALIGNMENTFAULTEXCEPT|
-                    msvcrt.SEM_NOGPFAULTERRORBOX|
-                    msvcrt.SEM_NOOPENFILEERRORBOX)
+
+            msvcrt.SetErrorMode(
+                msvcrt.SEM_FAILCRITICALERRORS
+                | msvcrt.SEM_NOALIGNMENTFAULTEXCEPT
+                | msvcrt.SEM_NOGPFAULTERRORBOX
+                | msvcrt.SEM_NOOPENFILEERRORBOX
+            )
             try:
                 msvcrt.CrtSetReportMode
             except AttributeError:
@@ -370,25 +428,30 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
                 for m in [msvcrt.CRT_WARN, msvcrt.CRT_ERROR, msvcrt.CRT_ASSERT]:
                     msvcrt.CrtSetReportMode(m, msvcrt.CRTDBG_MODE_FILE)
                     msvcrt.CrtSetReportFile(m, msvcrt.CRTDBG_FILE_STDERR)
-        elif o in ('-F', '--forever'):
+        elif o in ("-F", "--forever"):
             forever = True
-        elif o in ('-j', '--multiprocess'):
+        elif o in ("-j", "--multiprocess"):
             use_mp = int(a)
-        elif o == '--header':
+        elif o == "--header":
             header = True
-        elif o == '--slaveargs':
+        elif o == "--slaveargs":
             args, kwargs = json.loads(a)
             try:
                 result = runtest(*args, **kwargs)
             except BaseException as e:
                 result = INTERRUPTED, e.__class__.__name__
             sys.stdout.flush()
-            print()   # Force a newline (just in case)
+            print()  # Force a newline (just in case)
             print(json.dumps(result))
             sys.exit(0)
         else:
-            print(("No handler for option {}.  Please report this as a bug "
-                   "at http://bugs.python.org.").format(o), file=sys.stderr)
+            print(
+                (
+                    "No handler for option {}.  Please report this as a bug "
+                    "at http://bugs.python.org."
+                ).format(o),
+                file=sys.stderr,
+            )
             sys.exit(1)
     if single and fromfile:
         usage("-s and -f don't go together!")
@@ -408,19 +471,19 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
         try:
             import gc
         except ImportError:
-            print('No GC available, disabling findleaks.')
+            print("No GC available, disabling findleaks.")
             findleaks = False
         else:
             # Uncomment the line below to report garbage that is not
             # freeable by reference counting alone.  By default only
             # garbage that is not collectable by the GC is reported.
-            #gc.set_debug(gc.DEBUG_SAVEALL)
+            # gc.set_debug(gc.DEBUG_SAVEALL)
             found_garbage = []
 
     if single:
-        filename = os.path.join(TEMPDIR, 'pynexttest')
+        filename = os.path.join(TEMPDIR, "pynexttest")
         try:
-            fp = open(filename, 'r')
+            fp = open(filename, "r")
             next_test = fp.read().strip()
             tests = [next_test]
             fp.close()
@@ -430,11 +493,11 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
     if fromfile:
         tests = []
         fp = open(os.path.join(support.SAVEDCWD, fromfile))
-        count_pat = re.compile(r'\[\s*\d+/\s*\d+\]')
+        count_pat = re.compile(r"\[\s*\d+/\s*\d+\]")
         for line in fp:
-            line = count_pat.sub('', line)
-            guts = line.split() # assuming no test has whitespace in its name
-            if guts and not guts[0].startswith('#'):
+            line = count_pat.sub("", line)
+            guts = line.split()  # assuming no test has whitespace in its name
+            if guts and not guts[0].startswith("#"):
                 tests.extend(guts)
         fp.close()
 
@@ -455,8 +518,7 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
     if verbose or header or not (quiet or single or tests or args):
         # Print basic platform information
         print("==", platform.python_implementation(), *sys.version.split())
-        print("==  ", platform.platform(aliased=True),
-                      "%s-endian" % sys.byteorder)
+        print("==  ", platform.platform(aliased=True), "%s-endian" % sys.byteorder)
         print("==  ", os.getcwd())
         print("Testing with flags:", sys.flags)
 
@@ -465,13 +527,13 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
     if single:
         selected = selected[:1]
         try:
-            next_single_test = alltests[alltests.index(selected[0])+1]
+            next_single_test = alltests[alltests.index(selected[0]) + 1]
         except IndexError:
             next_single_test = None
     # Remove all the tests that precede start if it's set.
     if start:
         try:
-            del tests[:tests.index(start)]
+            del tests[: tests.index(start)]
         except ValueError:
             print("Couldn't find starting test (%s), using all tests" % start)
     if randomize:
@@ -479,13 +541,17 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
         print("Using random seed", random_seed)
         random.shuffle(selected)
     if trace:
-        import trace, tempfile
-        tracer = trace.Trace(ignoredirs=[sys.prefix, sys.exec_prefix,
-                                         tempfile.gettempdir()],
-                             trace=False, count=True)
+        import trace
+        import tempfile
+
+        tracer = trace.Trace(
+            ignoredirs=[sys.prefix, sys.exec_prefix, tempfile.gettempdir()],
+            trace=False,
+            count=True,
+        )
 
     test_times = []
-    support.verbose = verbose      # Tell tests to be moderately quiet
+    support.verbose = verbose  # Tell tests to be moderately quiet
     support.use_resources = use_resources
     save_modules = sys.modules.keys()
 
@@ -506,18 +572,20 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
             resource_denieds.append(test)
 
     if forever:
+
         def test_forever(tests=list(selected)):
             while True:
                 for test in tests:
                     yield test
                     if bad:
                         return
+
         tests = test_forever()
-        test_count = ''
+        test_count = ""
         test_count_width = 3
     else:
         tests = iter(selected)
-        test_count = '/{}'.format(len(selected))
+        test_count = "/{}".format(len(selected))
         test_count_width = len(test_count) - 1
 
     if use_mp:
@@ -528,19 +596,24 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
             sys.exit(2)
         from queue import Queue
         from subprocess import Popen, PIPE
+
         debug_output_pat = re.compile(r"\[\d+ refs\]$")
         output = Queue()
+
         def tests_and_args():
             for test in tests:
                 args_tuple = (
                     (test, verbose, quiet),
-                    dict(huntrleaks=huntrleaks, use_resources=use_resources,
-                        debug=debug)
+                    dict(
+                        huntrleaks=huntrleaks, use_resources=use_resources, debug=debug
+                    ),
                 )
                 yield (test, args_tuple)
+
         pending = tests_and_args()
         opt_args = support.args_from_interpreter_flags()
-        base_cmd = [sys.executable] + opt_args + ['-m', 'test.regrtest']
+        base_cmd = [sys.executable] + opt_args + ["-m", "test.regrtest"]
+
         def work():
             # A worker thread.
             try:
@@ -551,10 +624,13 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
                         output.put((None, None, None, None))
                         return
                     # -E is needed by some tests, e.g. test_import
-                    popen = Popen(base_cmd + ['--slaveargs', json.dumps(args_tuple)],
-                                   stdout=PIPE, stderr=PIPE,
-                                   universal_newlines=True,
-                                   close_fds=(os.name != 'nt'))
+                    popen = Popen(
+                        base_cmd + ["--slaveargs", json.dumps(args_tuple)],
+                        stdout=PIPE,
+                        stderr=PIPE,
+                        universal_newlines=True,
+                        close_fds=(os.name != "nt"),
+                    )
                     stdout, stderr = popen.communicate()
                     # Strip last refcount output line if it exists, since it
                     # comes from the shutdown of the interpreter in the subcommand.
@@ -568,6 +644,7 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
             except BaseException:
                 output.put((None, None, None, None))
                 raise
+
         workers = [Thread(target=work) for i in range(use_mp)]
         for worker in workers:
             worker.start()
@@ -580,15 +657,18 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
                     finished += 1
                     continue
                 if not quiet:
-                    print("[{1:{0}}{2}] {3}".format(
-                        test_count_width, test_index, test_count, test))
+                    print(
+                        "[{1:{0}}{2}] {3}".format(
+                            test_count_width, test_index, test_count, test
+                        )
+                    )
                 if stdout:
                     print(stdout)
                 if stderr:
                     print(stderr, file=sys.stderr)
                 if result[0] == INTERRUPTED:
-                    assert result[1] == 'KeyboardInterrupt'
-                    raise KeyboardInterrupt   # What else?
+                    assert result[1] == "KeyboardInterrupt"
+                    raise KeyboardInterrupt  # What else?
                 accumulate_result(test, result)
                 test_index += 1
         except KeyboardInterrupt:
@@ -599,14 +679,18 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
     else:
         for test_index, test in enumerate(tests, 1):
             if not quiet:
-                print("[{1:{0}}{2}] {3}".format(
-                    test_count_width, test_index, test_count, test))
+                print(
+                    "[{1:{0}}{2}] {3}".format(
+                        test_count_width, test_index, test_count, test
+                    )
+                )
                 sys.stdout.flush()
             if trace:
                 # If we're tracing code coverage, then we don't exit with status
                 # if on a false return value from main.
-                tracer.runctx('runtest(test, verbose, quiet)',
-                              globals=globals(), locals=vars())
+                tracer.runctx(
+                    "runtest(test, verbose, quiet)", globals=globals(), locals=vars()
+                )
             else:
                 try:
                     result = runtest(test, verbose, quiet, huntrleaks, debug)
@@ -622,7 +706,7 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
             if findleaks:
                 gc.collect()
                 if gc.garbage:
-                    print("Warning: test created", len(gc.garbage), end=' ')
+                    print("Warning: test created", len(gc.garbage), end=" ")
                     print("uncollectable object(s).")
                     # move the uncollectable objects somewhere so we don't see
                     # them again
@@ -642,7 +726,7 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
         printlist(omitted)
     if good and not quiet:
         if not bad and not skipped and not interrupted and len(good) > 1:
-            print("All", end=' ')
+            print("All", end=" ")
         print(count(len(good), "test"), "OK.")
     if print_slow:
         test_times.sort(reverse=True)
@@ -655,8 +739,11 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
             print(count(len(bad), "test"), "failed:")
             printlist(bad)
         if environment_changed:
-            print("{} altered the execution environment:".format(
-                     count(len(environment_changed), "test")))
+            print(
+                "{} altered the execution environment:".format(
+                    count(len(environment_changed), "test")
+                )
+            )
             printlist(environment_changed)
     if skipped and not quiet:
         print(count(len(skipped), "test"), "skipped:")
@@ -667,8 +754,7 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
         if e.isvalid():
             surprise = set(skipped) - e.getexpected() - set(resource_denieds)
             if surprise:
-                print(count(len(surprise), "skip"), \
-                      "unexpected on", plat + ":")
+                print(count(len(surprise), "skip"), "unexpected on", plat + ":")
                 printlist(surprise)
             else:
                 print("Those skips are all expected on", plat + ".")
@@ -693,8 +779,8 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
 
     if single:
         if next_single_test:
-            with open(filename, 'w') as fp:
-                fp.write(next_single_test + '\n')
+            with open(filename, "w") as fp:
+                fp.write(next_single_test + "\n")
         else:
             os.unlink(filename)
 
@@ -709,21 +795,22 @@ def main(tests=None, testdir=None, verbose=0, quiet=False,
 
 
 STDTESTS = [
-    'test_grammar',
-    'test_opcodes',
-    'test_dict',
-    'test_builtin',
-    'test_exceptions',
-    'test_types',
-    'test_unittest',
-    'test_doctest',
-    'test_doctest2',
+    "test_grammar",
+    "test_opcodes",
+    "test_dict",
+    "test_builtin",
+    "test_exceptions",
+    "test_types",
+    "test_unittest",
+    "test_doctest",
+    "test_doctest2",
 ]
 
 NOTTESTS = {
-    'test_future1',
-    'test_future2',
+    "test_future1",
+    "test_future2",
 }
+
 
 def findtests(testdir=None, stdtests=STDTESTS, nottests=NOTTESTS):
     """Return a list of all applicable test modules."""
@@ -737,6 +824,7 @@ def findtests(testdir=None, stdtests=STDTESTS, nottests=NOTTESTS):
             tests.append(modname)
     return stdtests + sorted(tests)
 
+
 def replace_stdout():
     """Set stdout encoder error handler to backslashreplace (as stderr error
     handler) to avoid UnicodeEncodeError when printing a traceback"""
@@ -747,18 +835,22 @@ def replace_stdout():
     import atexit
 
     stdout = sys.stdout
-    sys.stdout = open(stdout.fileno(), 'w',
+    sys.stdout = open(
+        stdout.fileno(),
+        "w",
         encoding=stdout.encoding,
         errors="backslashreplace",
-        closefd=False)
+        closefd=False,
+    )
 
     def restore_stdout():
         sys.stdout.close()
         sys.stdout = stdout
+
     atexit.register(restore_stdout)
 
-def runtest(test, verbose, quiet,
-            huntrleaks=False, debug=False, use_resources=None):
+
+def runtest(test, verbose, quiet, huntrleaks=False, debug=False, use_resources=None):
     """Run a single test.
 
     test -- the name of the test
@@ -785,6 +877,7 @@ def runtest(test, verbose, quiet,
     finally:
         cleanup_test_droppings(test, verbose)
 
+
 # Unit tests are supposed to leave the execution environment unchanged
 # once they complete.  But sometimes tests have bugs, especially when
 # tests fail, and the changes to environment go on to mess up other
@@ -792,6 +885,7 @@ def runtest(test, verbose, quiet,
 # are run in random order and so problems may appear to come and go.
 # There are a few things we can save and restore to mitigate this, and
 # the following context manager handles this task.
+
 
 class saved_test_environment:
     """Save bits of the test environment and restore them at block exit.
@@ -824,39 +918,56 @@ class saved_test_environment:
     # Note: XXX will have any '.' replaced with '_' characters when determining
     # the corresponding method names.
 
-    resources = ('sys.argv', 'cwd', 'sys.stdin', 'sys.stdout', 'sys.stderr',
-                 'os.environ', 'sys.path', 'sys.path_hooks', '__import__',
-                 'warnings.filters', 'asyncore.socket_map',
-                 'logging._handlers', 'logging._handlerList')
+    resources = (
+        "sys.argv",
+        "cwd",
+        "sys.stdin",
+        "sys.stdout",
+        "sys.stderr",
+        "os.environ",
+        "sys.path",
+        "sys.path_hooks",
+        "__import__",
+        "warnings.filters",
+        "asyncore.socket_map",
+        "logging._handlers",
+        "logging._handlerList",
+    )
 
     def get_sys_argv(self):
         return id(sys.argv), sys.argv, sys.argv[:]
+
     def restore_sys_argv(self, saved_argv):
         sys.argv = saved_argv[1]
         sys.argv[:] = saved_argv[2]
 
     def get_cwd(self):
         return os.getcwd()
+
     def restore_cwd(self, saved_cwd):
         os.chdir(saved_cwd)
 
     def get_sys_stdout(self):
         return sys.stdout
+
     def restore_sys_stdout(self, saved_stdout):
         sys.stdout = saved_stdout
 
     def get_sys_stderr(self):
         return sys.stderr
+
     def restore_sys_stderr(self, saved_stderr):
         sys.stderr = saved_stderr
 
     def get_sys_stdin(self):
         return sys.stdin
+
     def restore_sys_stdin(self, saved_stdin):
         sys.stdin = saved_stdin
 
     def get_os_environ(self):
         return id(os.environ), os.environ, dict(os.environ)
+
     def restore_os_environ(self, saved_environ):
         os.environ = saved_environ[1]
         os.environ.clear()
@@ -864,33 +975,38 @@ class saved_test_environment:
 
     def get_sys_path(self):
         return id(sys.path), sys.path, sys.path[:]
+
     def restore_sys_path(self, saved_path):
         sys.path = saved_path[1]
         sys.path[:] = saved_path[2]
 
     def get_sys_path_hooks(self):
         return id(sys.path_hooks), sys.path_hooks, sys.path_hooks[:]
+
     def restore_sys_path_hooks(self, saved_hooks):
         sys.path_hooks = saved_hooks[1]
         sys.path_hooks[:] = saved_hooks[2]
 
     def get___import__(self):
         return builtins.__import__
+
     def restore___import__(self, import_):
         builtins.__import__ = import_
 
     def get_warnings_filters(self):
         return id(warnings.filters), warnings.filters, warnings.filters[:]
+
     def restore_warnings_filters(self, saved_filters):
         warnings.filters = saved_filters[1]
         warnings.filters[:] = saved_filters[2]
 
     def get_asyncore_socket_map(self):
-        asyncore = sys.modules.get('asyncore')
+        asyncore = sys.modules.get("asyncore")
         # XXX Making a copy keeps objects alive until __exit__ gets called.
         return asyncore and asyncore.socket_map.copy() or {}
+
     def restore_asyncore_socket_map(self, saved_map):
-        asyncore = sys.modules.get('asyncore')
+        asyncore = sys.modules.get("asyncore")
         if asyncore is not None:
             asyncore.close_all(ignore_all=True)
             asyncore.socket_map.update(saved_map)
@@ -898,6 +1014,7 @@ class saved_test_environment:
     def get_logging__handlers(self):
         # _handlers is a WeakValueDictionary
         return id(logging._handlers), logging._handlers, logging._handlers.copy()
+
     def restore_logging__handlers(self, saved_handlers):
         # Can't easily revert the logging state
         pass
@@ -905,20 +1022,22 @@ class saved_test_environment:
     def get_logging__handlerList(self):
         # _handlerList is a list of weakrefs to handlers
         return id(logging._handlerList), logging._handlerList, logging._handlerList[:]
+
     def restore_logging__handlerList(self, saved_handlerList):
         # Can't easily revert the logging state
         pass
 
     def resource_info(self):
         for name in self.resources:
-            method_suffix = name.replace('.', '_')
-            get_name = 'get_' + method_suffix
-            restore_name = 'restore_' + method_suffix
+            method_suffix = name.replace(".", "_")
+            get_name = "get_" + method_suffix
+            restore_name = "restore_" + method_suffix
             yield name, getattr(self, get_name), getattr(self, restore_name)
 
     def __enter__(self):
-        self.saved_values = dict((name, get()) for name, get, restore
-                                                   in self.resource_info())
+        self.saved_values = dict(
+            (name, get()) for name, get, restore in self.resource_info()
+        )
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -932,13 +1051,15 @@ class saved_test_environment:
                 self.changed = True
                 restore(original)
                 if not self.quiet:
-                    print("Warning -- {} was modified by {}".format(
-                                                 name, self.testname),
-                                                 file=sys.stderr)
+                    print(
+                        "Warning -- {} was modified by {}".format(name, self.testname),
+                        file=sys.stderr,
+                    )
                     if self.verbose > 1:
-                        print("  Before: {}\n  After:  {} ".format(
-                                                  original, current),
-                                                  file=sys.stderr)
+                        print(
+                            "  Before: {}\n  After:  {} ".format(original, current),
+                            file=sys.stderr,
+                        )
         return False
 
 
@@ -952,11 +1073,11 @@ def runtest_inner(test, verbose, quiet, huntrleaks=False, debug=False):
     test_time = 0.0
     refleak = False  # True if the test leaked references.
     try:
-        if test.startswith('test.'):
+        if test.startswith("test."):
             abstest = test
         else:
             # Always import it from the test package
-            abstest = 'test.' + test
+            abstest = "test." + test
         with saved_test_environment(test, verbose, quiet) as environment:
             start_time = time.time()
             the_package = __import__(abstest, globals(), locals(), [])
@@ -968,8 +1089,7 @@ def runtest_inner(test, verbose, quiet, huntrleaks=False, debug=False):
             if indirect_test is not None:
                 indirect_test()
             if huntrleaks:
-                refleak = dash_R(the_module, test, indirect_test,
-                    huntrleaks)
+                refleak = dash_R(the_module, test, indirect_test, huntrleaks)
             test_time = time.time() - start_time
     except support.ResourceDenied as msg:
         if not quiet:
@@ -1002,6 +1122,7 @@ def runtest_inner(test, verbose, quiet, huntrleaks=False, debug=False):
             return ENV_CHANGED, test_time
         return PASSED, test_time
 
+
 def cleanup_test_droppings(testname, verbose):
     import shutil
     import stat
@@ -1018,9 +1139,10 @@ def cleanup_test_droppings(testname, verbose):
     # since if a test leaves a file open, it cannot be deleted by name (while
     # there's nothing we can do about that here either, we can display the
     # name of the offending test, which is a real help).
-    for name in (support.TESTFN,
-                 "db_home",
-                ):
+    for name in (
+        support.TESTFN,
+        "db_home",
+    ):
         if not os.path.exists(name):
             continue
 
@@ -1029,20 +1151,27 @@ def cleanup_test_droppings(testname, verbose):
         elif os.path.isfile(name):
             kind, nuker = "file", os.unlink
         else:
-            raise SystemError("os.path says %r exists but is neither "
-                              "directory nor file" % name)
+            raise SystemError(
+                "os.path says %r exists but is neither directory nor file" % name
+            )
 
         if verbose:
             print("%r left behind %s %r" % (testname, kind, name))
         try:
             # if we have chmod, fix possible permissions problems
             # that might prevent cleanup
-            if (hasattr(os, 'chmod')):
+            if hasattr(os, "chmod"):
                 os.chmod(name, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
             nuker(name)
         except Exception as msg:
-            print(("%r left behind %s %r and it couldn't be "
-                "removed: %s" % (testname, kind, name, msg)), file=sys.stderr)
+            print(
+                (
+                    "%r left behind %s %r and it couldn't be "
+                    "removed: %s" % (testname, kind, name, msg)
+                ),
+                file=sys.stderr,
+            )
+
 
 def dash_R(the_module, test, indirect_test, huntrleaks):
     """Run a test multiple times, looking for reference leaks.
@@ -1051,11 +1180,11 @@ def dash_R(the_module, test, indirect_test, huntrleaks):
         False if the test didn't leak references; True if we detected refleaks.
     """
     # This code is hackish and inelegant, but it seems to do the job.
-    import copyreg, _abcoll
+    import copyreg
+    import _abcoll
 
-    if not hasattr(sys, 'gettotalrefcount'):
-        raise Exception("Tracking reference leaks requires a debug build "
-                        "of Python")
+    if not hasattr(sys, "gettotalrefcount"):
+        raise Exception("Tracking reference leaks requires a debug build of Python")
 
     # Save current values for dash_R_cleanup() to restore.
     fs = warnings.filters[:]
@@ -1064,7 +1193,7 @@ def dash_R(the_module, test, indirect_test, huntrleaks):
     try:
         import zipimport
     except ImportError:
-        zdc = None # Run unmodified on platforms without zipimport support
+        zdc = None  # Run unmodified on platforms without zipimport support
     else:
         zdc = zipimport._zip_directory_cache.copy()
     abcs = {}
@@ -1075,25 +1204,27 @@ def dash_R(the_module, test, indirect_test, huntrleaks):
             abcs[obj] = obj._abc_registry.copy()
 
     if indirect_test:
+
         def run_the_test():
             indirect_test()
     else:
+
         def run_the_test():
             del sys.modules[the_module.__name__]
-            exec('import ' + the_module.__name__)
+            exec("import " + the_module.__name__)
 
     deltas = []
     nwarmup, ntracked, fname = huntrleaks
     fname = os.path.join(support.SAVEDCWD, fname)
     repcount = nwarmup + ntracked
     print("beginning", repcount, "repetitions", file=sys.stderr)
-    print(("1234567890"*(repcount//10 + 1))[:repcount], file=sys.stderr)
+    print(("1234567890" * (repcount // 10 + 1))[:repcount], file=sys.stderr)
     sys.stderr.flush()
     dash_R_cleanup(fs, ps, pic, zdc, abcs)
     for i in range(repcount):
         rc_before = sys.gettotalrefcount()
         run_the_test()
-        sys.stderr.write('.')
+        sys.stderr.write(".")
         sys.stderr.flush()
         dash_R_cleanup(fs, ps, pic, zdc, abcs)
         rc_after = sys.gettotalrefcount()
@@ -1101,7 +1232,7 @@ def dash_R(the_module, test, indirect_test, huntrleaks):
             deltas.append(rc_after - rc_before)
     print(file=sys.stderr)
     if any(deltas):
-        msg = '%s leaked %s references, sum=%s' % (test, deltas, sum(deltas))
+        msg = "%s leaked %s references, sum=%s" % (test, deltas, sum(deltas))
         print(msg, file=sys.stderr)
         sys.stderr.flush()
         with open(fname, "a") as refrep:
@@ -1110,17 +1241,25 @@ def dash_R(the_module, test, indirect_test, huntrleaks):
         return True
     return False
 
+
 def dash_R_cleanup(fs, ps, pic, zdc, abcs):
-    import gc, copyreg
-    import _strptime, linecache
-    import urllib.parse, urllib.request, mimetypes, doctest
-    import struct, filecmp, _abcoll
+    import gc
+    import copyreg
+    import _strptime
+    import linecache
+    import urllib.parse
+    import urllib.request
+    import mimetypes
+    import doctest
+    import struct
+    import filecmp
+    import _abcoll
     from distutils.dir_util import _path_created
     from weakref import WeakSet
 
     # Clear the warnings registry, so they can be displayed again
     for mod in sys.modules.values():
-        if hasattr(mod, '__warningregistry__'):
+        if hasattr(mod, "__warningregistry__"):
             del mod.__warningregistry__
 
     # Restore some original values.
@@ -1132,7 +1271,7 @@ def dash_R_cleanup(fs, ps, pic, zdc, abcs):
     try:
         import zipimport
     except ImportError:
-        pass # Run unmodified on platforms without zipimport support
+        pass  # Run unmodified on platforms without zipimport support
     else:
         zipimport._zip_directory_cache.clear()
         zipimport._zip_directory_cache.update(zdc)
@@ -1170,27 +1309,32 @@ def dash_R_cleanup(fs, ps, pic, zdc, abcs):
     # Collect cyclic trash.
     gc.collect()
 
+
 def warm_char_cache():
     s = bytes(range(256))
     for i in range(256):
-        s[i:i+1]
+        s[i : i + 1]
+
 
 def findtestdir(path=None):
     return path or os.path.dirname(__file__) or os.curdir
+
 
 def removepy(names):
     if not names:
         return
     for idx, name in enumerate(names):
         basename, ext = os.path.splitext(name)
-        if ext == '.py':
+        if ext == ".py":
             names[idx] = basename
+
 
 def count(n, word):
     if n == 1:
         return "%d %s" % (n, word)
     else:
         return "%d %ss" % (n, word)
+
 
 def printlist(x, width=70, indent=4):
     """Print the elements of iterable x to stdout.
@@ -1201,10 +1345,18 @@ def printlist(x, width=70, indent=4):
     """
 
     from textwrap import fill
-    blanks = ' ' * indent
+
+    blanks = " " * indent
     # Print the sorted list: 'x' may be a '--random' list or a set()
-    print(fill(' '.join(str(elt) for elt in sorted(x)), width,
-               initial_indent=blanks, subsequent_indent=blanks))
+    print(
+        fill(
+            " ".join(str(elt) for elt in sorted(x)),
+            width,
+            initial_indent=blanks,
+            subsequent_indent=blanks,
+        )
+    )
+
 
 # Map sys.platform to a string containing the basenames of tests
 # expected to be skipped on that platform.
@@ -1221,8 +1373,7 @@ def printlist(x, width=70, indent=4):
 # are also handled separately.
 
 _expectations = {
-    'win32':
-        """
+    "win32": """
         test__locale
         test_crypt
         test_curses
@@ -1250,15 +1401,13 @@ _expectations = {
         test_wait3
         test_wait4
         """,
-    'linux2':
-        """
+    "linux2": """
         test_curses
         test_largefile
         test_kqueue
         test_ossaudiodev
         """,
-    'unixware7':
-        """
+    "unixware7": """
         test_epoll
         test_largefile
         test_kqueue
@@ -1268,8 +1417,7 @@ _expectations = {
         test_sax
         test_sundry
         """,
-    'openunix8':
-        """
+    "openunix8": """
         test_epoll
         test_largefile
         test_kqueue
@@ -1279,8 +1427,7 @@ _expectations = {
         test_sax
         test_sundry
         """,
-    'sco_sv3':
-        """
+    "sco_sv3": """
         test_asynchat
         test_fork1
         test_epoll
@@ -1299,8 +1446,7 @@ _expectations = {
         test_threadedtempfile
         test_threading
         """,
-    'darwin':
-        """
+    "darwin": """
         test__locale
         test_curses
         test_epoll
@@ -1312,8 +1458,7 @@ _expectations = {
         test_ossaudiodev
         test_poll
         """,
-    'sunos5':
-        """
+    "sunos5": """
         test_curses
         test_dbm
         test_epoll
@@ -1324,8 +1469,7 @@ _expectations = {
         test_zipfile
         test_zlib
         """,
-    'hp-ux11':
-        """
+    "hp-ux11": """
         test_curses
         test_epoll
         test_dbm_gnu
@@ -1340,8 +1484,7 @@ _expectations = {
         test_zipfile
         test_zlib
         """,
-    'cygwin':
-        """
+    "cygwin": """
         test_curses
         test_dbm
         test_epoll
@@ -1352,8 +1495,7 @@ _expectations = {
         test_ossaudiodev
         test_socketserver
         """,
-    'os2emx':
-        """
+    "os2emx": """
         test_audioop
         test_curses
         test_epoll
@@ -1366,8 +1508,7 @@ _expectations = {
         test_resource
         test_signal
         """,
-    'freebsd4':
-        """
+    "freebsd4": """
         test_epoll
         test_dbm_gnu
         test_locale
@@ -1383,8 +1524,7 @@ _expectations = {
         test_urllibnet
         test_multiprocessing
         """,
-    'aix5':
-        """
+    "aix5": """
         test_bz2
         test_epoll
         test_dbm_gnu
@@ -1398,8 +1538,7 @@ _expectations = {
         test_zipimport
         test_zlib
         """,
-    'openbsd3':
-        """
+    "openbsd3": """
         test_ctypes
         test_epoll
         test_dbm_gnu
@@ -1413,8 +1552,7 @@ _expectations = {
         test_ttk_textonly
         test_multiprocessing
         """,
-    'netbsd3':
-        """
+    "netbsd3": """
         test_ctypes
         test_curses
         test_epoll
@@ -1429,10 +1567,11 @@ _expectations = {
         test_multiprocessing
         """,
 }
-_expectations['freebsd5'] = _expectations['freebsd4']
-_expectations['freebsd6'] = _expectations['freebsd4']
-_expectations['freebsd7'] = _expectations['freebsd4']
-_expectations['freebsd8'] = _expectations['freebsd4']
+_expectations["freebsd5"] = _expectations["freebsd4"]
+_expectations["freebsd6"] = _expectations["freebsd4"]
+_expectations["freebsd7"] = _expectations["freebsd4"]
+_expectations["freebsd8"] = _expectations["freebsd4"]
+
 
 class _ExpectedSkips:
     def __init__(self):
@@ -1446,34 +1585,38 @@ class _ExpectedSkips:
 
             # These are broken tests, for now skipped on every platform.
             # XXX Fix these!
-            self.expected.add('test_nis')
+            self.expected.add("test_nis")
 
             # expected to be skipped on every platform, even Linux
             if not os.path.supports_unicode_filenames:
-                self.expected.add('test_pep277')
+                self.expected.add("test_pep277")
 
             # doctest, profile and cProfile tests fail when the codec for the
             # fs encoding isn't built in because PyUnicode_Decode() adds two
             # calls into Python.
             encs = ("utf-8", "latin-1", "ascii", "mbcs", "utf-16", "utf-32")
             if sys.getfilesystemencoding().lower() not in encs:
-                self.expected.add('test_profile')
-                self.expected.add('test_cProfile')
-                self.expected.add('test_doctest')
+                self.expected.add("test_profile")
+                self.expected.add("test_cProfile")
+                self.expected.add("test_doctest")
 
             if test_timeout.skip_expected:
-                self.expected.add('test_timeout')
+                self.expected.add("test_timeout")
 
             if sys.platform != "win32":
                 # test_sqlite is only reliable on Windows where the library
                 # is distributed with Python
-                WIN_ONLY = {"test_unicode_file", "test_winreg",
-                            "test_winsound", "test_startfile",
-                            "test_sqlite"}
+                WIN_ONLY = {
+                    "test_unicode_file",
+                    "test_winreg",
+                    "test_winsound",
+                    "test_startfile",
+                    "test_sqlite",
+                }
                 self.expected |= WIN_ONLY
 
-            if sys.platform != 'sunos5':
-                self.expected.add('test_nis')
+            if sys.platform != "sunos5":
+                self.expected.add("test_nis")
 
             if support.python_is_optimized():
                 self.expected.add("test_gdb")
@@ -1493,12 +1636,13 @@ class _ExpectedSkips:
         assert self.isvalid()
         return self.expected
 
+
 def _make_temp_dir_for_build(TEMPDIR):
     # When tests are run from the Python build directory, it is best practice
     # to keep the test files in a subfolder.  It eases the cleanup of leftover
     # files using command "make distclean".
     if sysconfig.is_python_build():
-        TEMPDIR = os.path.join(sysconfig.get_config_var('srcdir'), 'build')
+        TEMPDIR = os.path.join(sysconfig.get_config_var("srcdir"), "build")
         TEMPDIR = os.path.abspath(TEMPDIR)
         if not os.path.exists(TEMPDIR):
             os.mkdir(TEMPDIR)
@@ -1506,12 +1650,13 @@ def _make_temp_dir_for_build(TEMPDIR):
     # Define a writable temp dir that will be used as cwd while running
     # the tests. The name of the dir includes the pid to allow parallel
     # testing (see the -j option).
-    TESTCWD = 'test_python_{}'.format(os.getpid())
+    TESTCWD = "test_python_{}".format(os.getpid())
 
     TESTCWD = os.path.join(TEMPDIR, TESTCWD)
     return TEMPDIR, TESTCWD
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     # Remove regrtest.py's own directory from the module search path. Despite
     # the elimination of implicit relative imports, this is still needed to
     # ensure that submodules of the test package do not inappropriately appear

@@ -38,26 +38,31 @@ import signal
 
 from multiprocessing import util, process
 
-__all__ = ['Popen', 'assert_spawning', 'exit', 'duplicate', 'close', 'ForkingPickler']
+__all__ = ["Popen", "assert_spawning", "exit", "duplicate", "close", "ForkingPickler"]
 
 #
 # Check that the current thread is spawning a child process
 #
 
+
 def assert_spawning(self):
     if not Popen.thread_is_spawning():
         raise RuntimeError(
-            '%s objects should only be shared between processes'
-            ' through inheritance' % type(self).__name__
-            )
+            "%s objects should only be shared between processes"
+            " through inheritance" % type(self).__name__
+        )
+
 
 #
 # Try making some callable types picklable
 #
 
 from pickle import _Pickler as Pickler
+
+
 class ForkingPickler(Pickler):
     dispatch = Pickler.dispatch.copy()
+
     @classmethod
     def register(cls, type, reduce):
         def dispatcher(self, obj):
@@ -66,21 +71,29 @@ class ForkingPickler(Pickler):
                 self.save_global(obj, rv)
             else:
                 self.save_reduce(obj=obj, *rv)
+
         cls.dispatch[type] = dispatcher
+
 
 def _reduce_method(m):
     if m.__self__ is None:
         return getattr, (m.__class__, m.__func__.__name__)
     else:
         return getattr, (m.__self__, m.__func__.__name__)
+
+
 class _C:
     def f(self):
         pass
+
+
 ForkingPickler.register(type(_C().f), _reduce_method)
 
 
 def _reduce_method_descriptor(m):
     return getattr, (m.__objclass__, m.__name__)
+
+
 ForkingPickler.register(type(list.append), _reduce_method_descriptor)
 ForkingPickler.register(type(int.__add__), _reduce_method_descriptor)
 
@@ -89,17 +102,20 @@ try:
 except ImportError:
     pass
 else:
+
     def _reduce_partial(p):
         return _rebuild_partial, (p.func, p.args, p.keywords or {})
+
     def _rebuild_partial(func, args, keywords):
         return partial(func, *args, **keywords)
+
     ForkingPickler.register(partial, _reduce_partial)
 
 #
 # Unix
 #
 
-if sys.platform != 'win32':
+if sys.platform != "win32":
     import time
 
     exit = os._exit
@@ -112,7 +128,6 @@ if sys.platform != 'win32':
     #
 
     class Popen(object):
-
         def __init__(self, process_obj):
             sys.stdout.flush()
             sys.stderr.flush()
@@ -120,8 +135,9 @@ if sys.platform != 'win32':
 
             self.pid = os.fork()
             if self.pid == 0:
-                if 'random' in sys.modules:
+                if "random" in sys.modules:
                     import random
+
                     random.seed()
                 code = process_obj._bootstrap()
                 sys.stdout.flush()
@@ -164,7 +180,7 @@ if sys.platform != 'win32':
             if self.returncode is None:
                 try:
                     os.kill(self.pid, signal.SIGTERM)
-                except OSError as e:
+                except OSError:
                     if self.wait(timeout=0.1) is None:
                         raise
 
@@ -184,7 +200,6 @@ else:
 
     from pickle import dump, load, HIGHEST_PROTOCOL
     from _multiprocessing import win32, Connection, PipeConnection
-    from .util import Finalize
 
     def dump(obj, file, protocol=None):
         ForkingPickler(file, protocol).dump(obj)
@@ -194,7 +209,7 @@ else:
     #
 
     TERMINATE = 0x10000
-    WINEXE = (sys.platform == 'win32' and getattr(sys, 'frozen', False))
+    WINEXE = sys.platform == "win32" and getattr(sys, "frozen", False)
 
     exit = win32.ExitProcess
     close = win32.CloseHandle
@@ -204,8 +219,8 @@ else:
     # People embedding Python want to modify it.
     #
 
-    if sys.executable.lower().endswith('pythonservice.exe'):
-        _python_exe = os.path.join(sys.exec_prefix, 'python.exe')
+    if sys.executable.lower().endswith("pythonservice.exe"):
+        _python_exe = os.path.join(sys.exec_prefix, "python.exe")
     else:
         _python_exe = sys.executable
 
@@ -221,9 +236,13 @@ else:
         if target_process is None:
             target_process = _subprocess.GetCurrentProcess()
         return _subprocess.DuplicateHandle(
-            _subprocess.GetCurrentProcess(), handle, target_process,
-            0, inheritable, _subprocess.DUPLICATE_SAME_ACCESS
-            ).Detach()
+            _subprocess.GetCurrentProcess(),
+            handle,
+            target_process,
+            0,
+            inheritable,
+            _subprocess.DUPLICATE_SAME_ACCESS,
+        ).Detach()
 
     #
     # We define a Popen class similar to the one from subprocess, but
@@ -231,9 +250,10 @@ else:
     #
 
     class Popen(object):
-        '''
+        """
         Start a subprocess to run the code of a process object
-        '''
+        """
+
         _tls = _thread._local()
 
         def __init__(self, process_obj):
@@ -246,10 +266,10 @@ else:
 
             # start process
             cmd = get_command_line() + [rhandle]
-            cmd = ' '.join('"%s"' % x for x in cmd)
+            cmd = " ".join('"%s"' % x for x in cmd)
             hp, ht, pid, tid = _subprocess.CreateProcess(
                 _python_exe, cmd, None, None, 1, 0, None, None, None
-                )
+            )
             ht.Close()
             close(rhandle)
 
@@ -260,7 +280,7 @@ else:
 
             # send information to child
             prep_data = get_preparation_data(process_obj._name)
-            to_child = os.fdopen(wfd, 'wb')
+            to_child = os.fdopen(wfd, "wb")
             Popen._tls.process_handle = int(hp)
             try:
                 dump(prep_data, to_child, HIGHEST_PROTOCOL)
@@ -271,7 +291,7 @@ else:
 
         @staticmethod
         def thread_is_spawning():
-            return getattr(Popen._tls, 'process_handle', None) is not None
+            return getattr(Popen._tls, "process_handle", None) is not None
 
         @staticmethod
         def duplicate_for_child(handle):
@@ -309,31 +329,29 @@ else:
     #
 
     def is_forking(argv):
-        '''
+        """
         Return whether commandline indicates we are forking
-        '''
-        if len(argv) >= 2 and argv[1] == '--multiprocessing-fork':
+        """
+        if len(argv) >= 2 and argv[1] == "--multiprocessing-fork":
             assert len(argv) == 3
             return True
         else:
             return False
 
-
     def freeze_support():
-        '''
+        """
         Run code for process object if this in not the main process
-        '''
+        """
         if is_forking(sys.argv):
             main()
             sys.exit()
 
-
     def get_command_line():
-        '''
+        """
         Returns prefix of command line used for spawning a child process
-        '''
-        if process.current_process()._identity==() and is_forking(sys.argv):
-            raise RuntimeError('''
+        """
+        if process.current_process()._identity == () and is_forking(sys.argv):
+            raise RuntimeError("""
             Attempt to start a new process before the current process
             has finished its bootstrapping phase.
 
@@ -345,24 +363,23 @@ else:
                     ...
 
             The "freeze_support()" line can be omitted if the program
-            is not going to be frozen to produce a Windows executable.''')
+            is not going to be frozen to produce a Windows executable.""")
 
-        if getattr(sys, 'frozen', False):
-            return [sys.executable, '--multiprocessing-fork']
+        if getattr(sys, "frozen", False):
+            return [sys.executable, "--multiprocessing-fork"]
         else:
-            prog = 'from multiprocessing.forking import main; main()'
-            return [_python_exe, '-c', prog, '--multiprocessing-fork']
-
+            prog = "from multiprocessing.forking import main; main()"
+            return [_python_exe, "-c", prog, "--multiprocessing-fork"]
 
     def main():
-        '''
+        """
         Run code specifed by data received over pipe
-        '''
+        """
         assert is_forking(sys.argv)
 
         handle = int(sys.argv[-1])
         fd = msvcrt.open_osfhandle(handle, os.O_RDONLY)
-        from_parent = os.fdopen(fd, 'rb')
+        from_parent = os.fdopen(fd, "rb")
 
         process.current_process()._inheriting = True
         preparation_data = load(from_parent)
@@ -375,11 +392,10 @@ else:
         exitcode = self._bootstrap()
         exit(exitcode)
 
-
     def get_preparation_data(name):
-        '''
+        """
         Return info about parent needed by child to unpickle process object
-        '''
+        """
         from .util import _logger, _log_to_stderr
 
         d = dict(
@@ -389,20 +405,19 @@ else:
             log_to_stderr=_log_to_stderr,
             orig_dir=process.ORIGINAL_DIR,
             authkey=process.current_process().authkey,
-            )
+        )
 
         if _logger is not None:
-            d['log_level'] = _logger.getEffectiveLevel()
+            d["log_level"] = _logger.getEffectiveLevel()
 
         if not WINEXE:
-            main_path = getattr(sys.modules['__main__'], '__file__', None)
-            if not main_path and sys.argv[0] not in ('', '-c'):
+            main_path = getattr(sys.modules["__main__"], "__file__", None)
+            if not main_path and sys.argv[0] not in ("", "-c"):
                 main_path = sys.argv[0]
             if main_path is not None:
-                if not os.path.isabs(main_path) and \
-                                          process.ORIGINAL_DIR is not None:
+                if not os.path.isabs(main_path) and process.ORIGINAL_DIR is not None:
                     main_path = os.path.join(process.ORIGINAL_DIR, main_path)
-                d['main_path'] = os.path.normpath(main_path)
+                d["main_path"] = os.path.normpath(main_path)
 
         return d
 
@@ -413,11 +428,14 @@ else:
     def reduce_connection(conn):
         if not Popen.thread_is_spawning():
             raise RuntimeError(
-                'By default %s objects can only be shared between processes\n'
-                'using inheritance' % type(conn).__name__
-                )
-        return type(conn), (Popen.duplicate_for_child(conn.fileno()),
-                            conn.readable, conn.writable)
+                "By default %s objects can only be shared between processes\n"
+                "using inheritance" % type(conn).__name__
+            )
+        return type(conn), (
+            Popen.duplicate_for_child(conn.fileno()),
+            conn.readable,
+            conn.writable,
+        )
 
     ForkingPickler.register(Connection, reduce_connection)
     ForkingPickler.register(PipeConnection, reduce_connection)
@@ -428,56 +446,57 @@ else:
 
 old_main_modules = []
 
+
 def prepare(data):
-    '''
+    """
     Try to get current process ready to unpickle process object
-    '''
-    old_main_modules.append(sys.modules['__main__'])
+    """
+    old_main_modules.append(sys.modules["__main__"])
 
-    if 'name' in data:
-        process.current_process().name = data['name']
+    if "name" in data:
+        process.current_process().name = data["name"]
 
-    if 'authkey' in data:
-        process.current_process()._authkey = data['authkey']
+    if "authkey" in data:
+        process.current_process()._authkey = data["authkey"]
 
-    if 'log_to_stderr' in data and data['log_to_stderr']:
+    if "log_to_stderr" in data and data["log_to_stderr"]:
         util.log_to_stderr()
 
-    if 'log_level' in data:
-        util.get_logger().setLevel(data['log_level'])
+    if "log_level" in data:
+        util.get_logger().setLevel(data["log_level"])
 
-    if 'sys_path' in data:
-        sys.path = data['sys_path']
+    if "sys_path" in data:
+        sys.path = data["sys_path"]
 
-    if 'sys_argv' in data:
-        sys.argv = data['sys_argv']
+    if "sys_argv" in data:
+        sys.argv = data["sys_argv"]
 
-    if 'dir' in data:
-        os.chdir(data['dir'])
+    if "dir" in data:
+        os.chdir(data["dir"])
 
-    if 'orig_dir' in data:
-        process.ORIGINAL_DIR = data['orig_dir']
+    if "orig_dir" in data:
+        process.ORIGINAL_DIR = data["orig_dir"]
 
-    if 'main_path' in data:
+    if "main_path" in data:
         # XXX (ncoghlan): The following code makes several bogus
         # assumptions regarding the relationship between __file__
         # and a module's real name. See PEP 302 and issue #10845
-        main_path = data['main_path']
+        main_path = data["main_path"]
         main_name = os.path.splitext(os.path.basename(main_path))[0]
-        if main_name == '__init__':
+        if main_name == "__init__":
             main_name = os.path.basename(os.path.dirname(main_path))
 
-        if main_name == '__main__':
-            main_module = sys.modules['__main__']
+        if main_name == "__main__":
+            main_module = sys.modules["__main__"]
             main_module.__file__ = main_path
-        elif main_name != 'ipython':
+        elif main_name != "ipython":
             # Main modules not actually called __main__.py may
             # contain additional code that should still be executed
             import imp
 
             if main_path is None:
                 dirs = None
-            elif os.path.basename(main_path).startswith('__init__.py'):
+            elif os.path.basename(main_path).startswith("__init__.py"):
                 dirs = [os.path.dirname(os.path.dirname(main_path))]
             else:
                 dirs = [os.path.dirname(main_path)]
@@ -488,22 +507,20 @@ def prepare(data):
                 # We would like to do "imp.load_module('__main__', ...)"
                 # here.  However, that would cause 'if __name__ ==
                 # "__main__"' clauses to be executed.
-                main_module = imp.load_module(
-                    '__parents_main__', file, path_name, etc
-                    )
+                main_module = imp.load_module("__parents_main__", file, path_name, etc)
             finally:
                 if file:
                     file.close()
 
-            sys.modules['__main__'] = main_module
-            main_module.__name__ = '__main__'
+            sys.modules["__main__"] = main_module
+            main_module.__name__ = "__main__"
 
             # Try to make the potentially picklable objects in
             # sys.modules['__main__'] realize they are in the main
             # module -- somewhat ugly.
             for obj in list(main_module.__dict__.values()):
                 try:
-                    if obj.__module__ == '__parents_main__':
-                        obj.__module__ = '__main__'
+                    if obj.__module__ == "__parents_main__":
+                        obj.__module__ = "__main__"
                 except Exception:
                     pass

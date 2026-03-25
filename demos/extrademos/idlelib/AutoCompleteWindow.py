@@ -1,6 +1,7 @@
 """
 An auto-completion window for IDLE, used by the AutoComplete extension
 """
+
 from tkinter import *
 from idlelib.MultiCall import MC_SHIFT
 from idlelib.AutoComplete import COMPLETE_FILES, COMPLETE_ATTRIBUTES
@@ -10,17 +11,26 @@ HIDE_SEQUENCES = ("<FocusOut>", "<ButtonPress>")
 KEYPRESS_VIRTUAL_EVENT_NAME = "<<autocompletewindow-keypress>>"
 # We need to bind event beyond <Key> so that the function will be called
 # before the default specific IDLE function
-KEYPRESS_SEQUENCES = ("<Key>", "<Key-BackSpace>", "<Key-Return>", "<Key-Tab>",
-                      "<Key-Up>", "<Key-Down>", "<Key-Home>", "<Key-End>",
-                      "<Key-Prior>", "<Key-Next>")
+KEYPRESS_SEQUENCES = (
+    "<Key>",
+    "<Key-BackSpace>",
+    "<Key-Return>",
+    "<Key-Tab>",
+    "<Key-Up>",
+    "<Key-Down>",
+    "<Key-Home>",
+    "<Key-End>",
+    "<Key-Prior>",
+    "<Key-Next>",
+)
 KEYRELEASE_VIRTUAL_EVENT_NAME = "<<autocompletewindow-keyrelease>>"
 KEYRELEASE_SEQUENCE = "<KeyRelease>"
 LISTUPDATE_SEQUENCE = "<B1-ButtonRelease>"
 WINCONFIG_SEQUENCE = "<Configure>"
 DOUBLECLICK_SEQUENCE = "<B1-Double-ButtonRelease>"
 
-class AutoCompleteWindow:
 
+class AutoCompleteWindow:
     def __init__(self, widget):
         # The widget (Text) on which we place the AutoCompleteWindow
         self.widget = widget
@@ -48,8 +58,9 @@ class AutoCompleteWindow:
         # (for example, he clicked the list)
         self.userwantswindow = None
         # event ids
-        self.hideid = self.keypressid = self.listupdateid = self.winconfigid \
-        = self.keyreleaseid = self.doubleclickid                         = None
+        self.hideid = self.keypressid = self.listupdateid = self.winconfigid = (
+            self.keyreleaseid
+        ) = self.doubleclickid = None
         # Flag set if last keypress was a tab
         self.lastkey_was_tab = False
 
@@ -59,32 +70,34 @@ class AutoCompleteWindow:
         while i < min_len and self.start[i] == newstart[i]:
             i += 1
         if i < len(self.start):
-            self.widget.delete("%s+%dc" % (self.startindex, i),
-                               "%s+%dc" % (self.startindex, len(self.start)))
+            self.widget.delete(
+                "%s+%dc" % (self.startindex, i),
+                "%s+%dc" % (self.startindex, len(self.start)),
+            )
         if i < len(newstart):
-            self.widget.insert("%s+%dc" % (self.startindex, i),
-                               newstart[i:])
+            self.widget.insert("%s+%dc" % (self.startindex, i), newstart[i:])
         self.start = newstart
 
     def _binary_search(self, s):
         """Find the first index in self.completions where completions[i] is
         greater or equal to s, or the last index if there is no such
         one."""
-        i = 0; j = len(self.completions)
+        i = 0
+        j = len(self.completions)
         while j > i:
             m = (i + j) // 2
             if self.completions[m] >= s:
                 j = m
             else:
                 i = m + 1
-        return min(i, len(self.completions)-1)
+        return min(i, len(self.completions) - 1)
 
     def _complete_string(self, s):
         """Assuming that s is the prefix of a string in self.completions,
         return the longest string which is a prefix of all the strings which
         s is a prefix of them. If s is not a prefix of a string, return s."""
         first = self._binary_search(s)
-        if self.completions[first][:len(s)] != s:
+        if self.completions[first][: len(s)] != s:
             # There is not even one completion which s is a prefix of.
             return s
         # Find the end of the range of completions where s is a prefix of.
@@ -92,13 +105,13 @@ class AutoCompleteWindow:
         j = len(self.completions)
         while j > i:
             m = (i + j) // 2
-            if self.completions[m][:len(s)] != s:
+            if self.completions[m][: len(s)] != s:
                 j = m
             else:
                 i = m + 1
-        last = i-1
+        last = i - 1
 
-        if first == last: # only one possible completion
+        if first == last:  # only one possible completion
             return self.completions[first]
 
         # We should return the maximum prefix of first and last
@@ -129,13 +142,17 @@ class AutoCompleteWindow:
             newstart = selstart[:i]
         self._change_start(newstart)
 
-        if self.completions[cursel][:len(self.start)] == self.start:
+        if self.completions[cursel][: len(self.start)] == self.start:
             # start is a prefix of the selected completion
-            self.listbox.configure(selectbackground=self.origselbackground,
-                                   selectforeground=self.origselforeground)
+            self.listbox.configure(
+                selectbackground=self.origselbackground,
+                selectforeground=self.origselforeground,
+            )
         else:
-            self.listbox.configure(selectbackground=self.listbox.cget("bg"),
-                                   selectforeground=self.listbox.cget("fg"))
+            self.listbox.configure(
+                selectbackground=self.listbox.cget("bg"),
+                selectforeground=self.listbox.cget("fg"),
+            )
             # If there are more completions, show them, and call me again.
             if self.morecompletions:
                 self.completions = self.morecompletions
@@ -159,9 +176,10 @@ class AutoCompleteWindow:
             completed = self._complete_string(self.start)
             self._change_start(completed)
             i = self._binary_search(completed)
-            if self.completions[i] == completed and \
-               (i == len(self.completions)-1 or
-                self.completions[i+1][:len(completed)] != completed):
+            if self.completions[i] == completed and (
+                i == len(self.completions) - 1
+                or self.completions[i + 1][: len(completed)] != completed
+            ):
                 # There is exactly one matching completion
                 return
         self.userwantswindow = userWantsWin
@@ -177,13 +195,19 @@ class AutoCompleteWindow:
             # This command is only needed and available on Tk >= 8.4.0 for OSX
             # Without it, call tips intrude on the typing process by grabbing
             # the focus.
-            acw.tk.call("::tk::unsupported::MacWindowStyle", "style", acw._w,
-                        "help", "noActivates")
+            acw.tk.call(
+                "::tk::unsupported::MacWindowStyle",
+                "style",
+                acw._w,
+                "help",
+                "noActivates",
+            )
         except TclError:
             pass
         self.scrollbar = scrollbar = Scrollbar(acw, orient=VERTICAL)
-        self.listbox = listbox = Listbox(acw, yscrollcommand=scrollbar.set,
-                                         exportselection=False, bg="white")
+        self.listbox = listbox = Listbox(
+            acw, yscrollcommand=scrollbar.set, exportselection=False, bg="white"
+        )
         for item in self.completions:
             listbox.insert(END, item)
         self.origselforeground = listbox.cget("selectforeground")
@@ -197,22 +221,21 @@ class AutoCompleteWindow:
         self._selection_changed()
 
         # bind events
-        self.hideid = self.widget.bind(HIDE_VIRTUAL_EVENT_NAME,
-                                       self.hide_event)
+        self.hideid = self.widget.bind(HIDE_VIRTUAL_EVENT_NAME, self.hide_event)
         for seq in HIDE_SEQUENCES:
             self.widget.event_add(HIDE_VIRTUAL_EVENT_NAME, seq)
-        self.keypressid = self.widget.bind(KEYPRESS_VIRTUAL_EVENT_NAME,
-                                           self.keypress_event)
+        self.keypressid = self.widget.bind(
+            KEYPRESS_VIRTUAL_EVENT_NAME, self.keypress_event
+        )
         for seq in KEYPRESS_SEQUENCES:
             self.widget.event_add(KEYPRESS_VIRTUAL_EVENT_NAME, seq)
-        self.keyreleaseid = self.widget.bind(KEYRELEASE_VIRTUAL_EVENT_NAME,
-                                             self.keyrelease_event)
-        self.widget.event_add(KEYRELEASE_VIRTUAL_EVENT_NAME,KEYRELEASE_SEQUENCE)
-        self.listupdateid = listbox.bind(LISTUPDATE_SEQUENCE,
-                                         self.listselect_event)
+        self.keyreleaseid = self.widget.bind(
+            KEYRELEASE_VIRTUAL_EVENT_NAME, self.keyrelease_event
+        )
+        self.widget.event_add(KEYRELEASE_VIRTUAL_EVENT_NAME, KEYRELEASE_SEQUENCE)
+        self.listupdateid = listbox.bind(LISTUPDATE_SEQUENCE, self.listselect_event)
         self.winconfigid = acw.bind(WINCONFIG_SEQUENCE, self.winconfig_event)
-        self.doubleclickid = listbox.bind(DOUBLECLICK_SEQUENCE,
-                                          self.doubleclick_event)
+        self.doubleclickid = listbox.bind(DOUBLECLICK_SEQUENCE, self.doubleclick_event)
 
     def winconfig_event(self, event):
         if not self.is_active():
@@ -226,8 +249,10 @@ class AutoCompleteWindow:
         text_width, text_height = text.winfo_width(), text.winfo_height()
         new_x = text.winfo_rootx() + min(x, max(0, text_width - acw_width))
         new_y = text.winfo_rooty() + y
-        if (text_height - (y + cy) >= acw_height # enough height below
-            or y < acw_height): # not enough height above
+        if (
+            text_height - (y + cy) >= acw_height  # enough height below
+            or y < acw_height
+        ):  # not enough height above
             # place acw below current line
             new_y += cy
         else:
@@ -263,19 +288,20 @@ class AutoCompleteWindow:
             state = 0
         if keysym != "Tab":
             self.lastkey_was_tab = False
-        if (len(keysym) == 1 or keysym in ("underscore", "BackSpace")
-            or (self.mode == COMPLETE_FILES and keysym in
-                ("period", "minus"))) \
-           and not (state & ~MC_SHIFT):
+        if (
+            len(keysym) == 1
+            or keysym in ("underscore", "BackSpace")
+            or (self.mode == COMPLETE_FILES and keysym in ("period", "minus"))
+        ) and not (state & ~MC_SHIFT):
             # Normal editing of text
             if len(keysym) == 1:
                 self._change_start(self.start + keysym)
             elif keysym == "underscore":
-                self._change_start(self.start + '_')
+                self._change_start(self.start + "_")
             elif keysym == "period":
-                self._change_start(self.start + '.')
+                self._change_start(self.start + ".")
             elif keysym == "minus":
-                self._change_start(self.start + '-')
+                self._change_start(self.start + "-")
             else:
                 # keysym == "BackSpace"
                 if len(self.start) == 0:
@@ -292,51 +318,65 @@ class AutoCompleteWindow:
             self.hide_window()
             return
 
-        elif (self.mode == COMPLETE_ATTRIBUTES and keysym in
-              ("period", "space", "parenleft", "parenright", "bracketleft",
-               "bracketright")) or \
-             (self.mode == COMPLETE_FILES and keysym in
-              ("slash", "backslash", "quotedbl", "apostrophe")) \
-             and not (state & ~MC_SHIFT):
+        elif (
+            (
+                self.mode == COMPLETE_ATTRIBUTES
+                and keysym
+                in (
+                    "period",
+                    "space",
+                    "parenleft",
+                    "parenright",
+                    "bracketleft",
+                    "bracketright",
+                )
+            )
+            or (
+                self.mode == COMPLETE_FILES
+                and keysym in ("slash", "backslash", "quotedbl", "apostrophe")
+            )
+            and not (state & ~MC_SHIFT)
+        ):
             # If start is a prefix of the selection, but is not '' when
             # completing file names, put the whole
             # selected completion. Anyway, close the list.
             cursel = int(self.listbox.curselection()[0])
-            if self.completions[cursel][:len(self.start)] == self.start \
-               and (self.mode == COMPLETE_ATTRIBUTES or self.start):
+            if self.completions[cursel][: len(self.start)] == self.start and (
+                self.mode == COMPLETE_ATTRIBUTES or self.start
+            ):
                 self._change_start(self.completions[cursel])
             self.hide_window()
             return
 
-        elif keysym in ("Home", "End", "Prior", "Next", "Up", "Down") and \
-             not state:
+        elif keysym in ("Home", "End", "Prior", "Next", "Up", "Down") and not state:
             # Move the selection in the listbox
             self.userwantswindow = True
             cursel = int(self.listbox.curselection()[0])
             if keysym == "Home":
                 newsel = 0
             elif keysym == "End":
-                newsel = len(self.completions)-1
+                newsel = len(self.completions) - 1
             elif keysym in ("Prior", "Next"):
-                jump = self.listbox.nearest(self.listbox.winfo_height()) - \
-                       self.listbox.nearest(0)
+                jump = self.listbox.nearest(
+                    self.listbox.winfo_height()
+                ) - self.listbox.nearest(0)
                 if keysym == "Prior":
-                    newsel = max(0, cursel-jump)
+                    newsel = max(0, cursel - jump)
                 else:
                     assert keysym == "Next"
-                    newsel = min(len(self.completions)-1, cursel+jump)
+                    newsel = min(len(self.completions) - 1, cursel + jump)
             elif keysym == "Up":
-                newsel = max(0, cursel-1)
+                newsel = max(0, cursel - 1)
             else:
                 assert keysym == "Down"
-                newsel = min(len(self.completions)-1, cursel+1)
+                newsel = min(len(self.completions) - 1, cursel + 1)
             self.listbox.select_clear(cursel)
             self.listbox.select_set(newsel)
             self._selection_changed()
             self._change_start(self.completions[newsel])
             return "break"
 
-        elif (keysym == "Tab" and not state):
+        elif keysym == "Tab" and not state:
             if self.lastkey_was_tab:
                 # two tabs in a row; insert current selection and close acw
                 cursel = int(self.listbox.curselection()[0])
@@ -349,8 +389,10 @@ class AutoCompleteWindow:
                 self.lastkey_was_tab = True
                 return
 
-        elif any(s in keysym for s in ("Shift", "Control", "Alt",
-                                       "Meta", "Command", "Option")):
+        elif any(
+            s in keysym
+            for s in ("Shift", "Control", "Alt", "Meta", "Command", "Option")
+        ):
             # A modifier key, so ignore
             return
 
@@ -362,8 +404,9 @@ class AutoCompleteWindow:
     def keyrelease_event(self, event):
         if not self.is_active():
             return
-        if self.widget.index("insert") != \
-           self.widget.index("%s+%dc" % (self.startindex, len(self.start))):
+        if self.widget.index("insert") != self.widget.index(
+            "%s+%dc" % (self.startindex, len(self.start))
+        ):
             # If we didn't catch an event which moved the insert, close window
             self.hide_window()
 
@@ -387,8 +430,7 @@ class AutoCompleteWindow:
             self.widget.event_delete(KEYPRESS_VIRTUAL_EVENT_NAME, seq)
         self.widget.unbind(KEYPRESS_VIRTUAL_EVENT_NAME, self.keypressid)
         self.keypressid = None
-        self.widget.event_delete(KEYRELEASE_VIRTUAL_EVENT_NAME,
-                                 KEYRELEASE_SEQUENCE)
+        self.widget.event_delete(KEYRELEASE_VIRTUAL_EVENT_NAME, KEYRELEASE_SEQUENCE)
         self.widget.unbind(KEYRELEASE_VIRTUAL_EVENT_NAME, self.keyreleaseid)
         self.keyreleaseid = None
         self.listbox.unbind(LISTUPDATE_SEQUENCE, self.listupdateid)

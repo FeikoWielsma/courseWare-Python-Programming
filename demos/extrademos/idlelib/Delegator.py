@@ -1,5 +1,4 @@
 class Delegator:
-
     # The cache is only used to be able to change delegates!
 
     def __init__(self, delegate=None):
@@ -7,7 +6,7 @@ class Delegator:
         self.__cache = {}
 
     def __getattr__(self, name):
-        attr = getattr(self.delegate, name) # May raise AttributeError
+        attr = getattr(self.delegate, name)  # May raise AttributeError
         setattr(self, name, attr)
         self.__cache[name] = attr
         return attr

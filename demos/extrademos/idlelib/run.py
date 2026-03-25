@@ -17,18 +17,18 @@ from idlelib import rpc
 
 import __main__
 
-LOCALHOST = '127.0.0.1'
+LOCALHOST = "127.0.0.1"
 
 try:
     import warnings
 except ImportError:
     pass
 else:
-    def idle_formatwarning_subproc(message, category, filename, lineno,
-                                   line=None):
+
+    def idle_formatwarning_subproc(message, category, filename, lineno, line=None):
         """Format warnings the IDLE way"""
         s = "\nWarning (from warnings module):\n"
-        s += '  File \"%s\", line %s\n' % (filename, lineno)
+        s += '  File "%s", line %s\n' % (filename, lineno)
         if line is None:
             line = linecache.getline(filename, lineno)
         line = line.strip()
@@ -36,6 +36,7 @@ else:
             s += "    %s\n" % line
         s += "%s: %s\n" % (category.__name__, message)
         return s
+
     warnings.formatwarning = idle_formatwarning_subproc
 
 # Thread shared globals: Establish a queue between a subthread (which handles
@@ -45,6 +46,7 @@ else:
 exit_now = False
 quitting = False
 interruptable = False
+
 
 def main(del_exitfunc=False):
     """Start the Python execution server in a subprocess
@@ -68,18 +70,17 @@ def main(del_exitfunc=False):
     global quitting
     global no_exitfunc
     no_exitfunc = del_exitfunc
-    #time.sleep(15) # test subprocess not responding
+    # time.sleep(15) # test subprocess not responding
     try:
-        assert(len(sys.argv) > 1)
+        assert len(sys.argv) > 1
         port = int(sys.argv[-1])
     except:
-        print("IDLE Subprocess: no IP port passed in sys.argv.",
-              file=sys.__stderr__)
+        print("IDLE Subprocess: no IP port passed in sys.argv.", file=sys.__stderr__)
         return
     sys.argv[:] = [""]
-    sockthread = threading.Thread(target=manage_socket,
-                                  name='SockThread',
-                                  args=((LOCALHOST, port),))
+    sockthread = threading.Thread(
+        target=manage_socket, name="SockThread", args=((LOCALHOST, port),)
+    )
     sockthread.daemon = True
     sockthread.start()
     while 1:
@@ -115,6 +116,7 @@ def main(del_exitfunc=False):
             else:
                 continue
 
+
 def manage_socket(address):
     for i in range(3):
         time.sleep(i)
@@ -122,50 +124,68 @@ def manage_socket(address):
             server = MyRPCServer(address, MyHandler)
             break
         except socket.error as err:
-            print("IDLE Subprocess: socket error: " + err.args[1] +
-                  ", retrying....", file=sys.__stderr__)
+            print(
+                "IDLE Subprocess: socket error: " + err.args[1] + ", retrying....",
+                file=sys.__stderr__,
+            )
             socket_error = err
     else:
-        print("IDLE Subprocess: Connection to "
-              "IDLE GUI failed, exiting.", file=sys.__stderr__)
+        print(
+            "IDLE Subprocess: Connection to IDLE GUI failed, exiting.",
+            file=sys.__stderr__,
+        )
         show_socket_error(socket_error, address)
         global exit_now
         exit_now = True
         return
-    server.handle_request() # A single request only
+    server.handle_request()  # A single request only
+
 
 def show_socket_error(err, address):
     import tkinter
     import tkinter.messagebox as tkMessageBox
+
     root = tkinter.Tk()
     root.withdraw()
-    if err.args[0] == 61: # connection refused
-        msg = "IDLE's subprocess can't connect to %s:%d.  This may be due "\
-              "to your personal firewall configuration.  It is safe to "\
-              "allow this internal connection because no data is visible on "\
-              "external ports." % address
+    if err.args[0] == 61:  # connection refused
+        msg = (
+            "IDLE's subprocess can't connect to %s:%d.  This may be due "
+            "to your personal firewall configuration.  It is safe to "
+            "allow this internal connection because no data is visible on "
+            "external ports." % address
+        )
         tkMessageBox.showerror("IDLE Subprocess Error", msg, parent=root)
     else:
-        tkMessageBox.showerror("IDLE Subprocess Error",
-                               "Socket Error: %s" % err.args[1])
+        tkMessageBox.showerror(
+            "IDLE Subprocess Error", "Socket Error: %s" % err.args[1]
+        )
     root.destroy()
+
 
 def print_exception():
     import linecache
+
     linecache.checkcache()
     flush_stdout()
     efile = sys.stderr
     typ, val, tb = excinfo = sys.exc_info()
     sys.last_type, sys.last_value, sys.last_traceback = excinfo
     tbe = traceback.extract_tb(tb)
-    print('Traceback (most recent call last):', file=efile)
-    exclude = ("run.py", "rpc.py", "threading.py", "queue.py",
-               "RemoteDebugger.py", "bdb.py")
+    print("Traceback (most recent call last):", file=efile)
+    exclude = (
+        "run.py",
+        "rpc.py",
+        "threading.py",
+        "queue.py",
+        "RemoteDebugger.py",
+        "bdb.py",
+    )
     cleanup_traceback(tbe, exclude)
     traceback.print_list(tbe, file=efile)
     lines = traceback.format_exception_only(typ, val)
     for line in lines:
-        print(line, end='', file=efile)
+        print(line, end="", file=efile)
+
 
 def cleanup_traceback(tb, exclude):
     "Remove excluded traces from beginning/end of tb; get cached lines"
@@ -173,9 +193,9 @@ def cleanup_traceback(tb, exclude):
     while tb:
         for rpcfile in exclude:
             if tb[0][0].count(rpcfile):
-                break    # found an exclude, break for: and delete tb[0]
+                break  # found an exclude, break for: and delete tb[0]
         else:
-            break        # no excludes, have left RPC code, break while:
+            break  # no excludes, have left RPC code, break while:
         del tb[0]
     while tb:
         for rpcfile in exclude:
@@ -188,18 +208,19 @@ def cleanup_traceback(tb, exclude):
         # exception was in IDLE internals, don't prune!
         tb[:] = orig_tb[:]
         print("** IDLE Internal Exception: ", file=sys.stderr)
-    rpchandler = rpc.objecttable['exec'].rpchandler
+    rpchandler = rpc.objecttable["exec"].rpchandler
     for i in range(len(tb)):
         fn, ln, nm, line = tb[i]
-        if nm == '?':
+        if nm == "?":
             nm = "-toplevel-"
         if not line and fn.startswith("<pyshell#"):
-            line = rpchandler.remotecall('linecache', 'getline',
-                                              (fn, ln), {})
+            line = rpchandler.remotecall("linecache", "getline", (fn, ln), {})
         tb[i] = fn, ln, nm, line
+
 
 def flush_stdout():
     """XXX How to do this now?"""
+
 
 def exit():
     """Exit subprocess, possibly after first clearing exit functions.
@@ -211,11 +232,12 @@ def exit():
     """
     if no_exitfunc:
         import atexit
+
         atexit._clear()
     sys.exit(0)
 
-class MyRPCServer(rpc.RPCServer):
 
+class MyRPCServer(rpc.RPCServer):
     def handle_error(self, request, client_address):
         """Override RPCServer method for IDLE
 
@@ -233,20 +255,19 @@ class MyRPCServer(rpc.RPCServer):
             thread.interrupt_main()
         except:
             erf = sys.__stderr__
-            print('\n' + '-'*40, file=erf)
-            print('Unhandled server exception!', file=erf)
-            print('Thread: %s' % threading.current_thread().name, file=erf)
-            print('Client Address: ', client_address, file=erf)
-            print('Request: ', repr(request), file=erf)
+            print("\n" + "-" * 40, file=erf)
+            print("Unhandled server exception!", file=erf)
+            print("Thread: %s" % threading.current_thread().name, file=erf)
+            print("Client Address: ", client_address, file=erf)
+            print("Request: ", repr(request), file=erf)
             traceback.print_exc(file=erf)
-            print('\n*** Unrecoverable, server exiting!', file=erf)
-            print('-'*40, file=erf)
+            print("\n*** Unrecoverable, server exiting!", file=erf)
+            print("-" * 40, file=erf)
             quitting = True
             thread.interrupt_main()
 
 
 class MyHandler(rpc.RPCHandler):
-
     def handle(self):
         """Override base method"""
         executive = Executive(self)
@@ -255,11 +276,14 @@ class MyHandler(rpc.RPCHandler):
         sys.stdout = self.get_remote_proxy("stdout")
         sys.stderr = self.get_remote_proxy("stderr")
         # page help() text to shell.
-        import pydoc # import must be done here to capture i/o binding
+        import pydoc  # import must be done here to capture i/o binding
+
         pydoc.pager = pydoc.plainpager
         from idlelib import IOBinding
-        sys.stdin.encoding = sys.stdout.encoding = \
-                             sys.stderr.encoding = IOBinding.encoding
+
+        sys.stdin.encoding = sys.stdout.encoding = sys.stderr.encoding = (
+            IOBinding.encoding
+        )
         self.interp = self.get_remote_proxy("interp")
         rpc.RPCHandler.getresponse(self, myseq=None, wait=0.05)
 
@@ -281,7 +305,6 @@ class MyHandler(rpc.RPCHandler):
 
 
 class Executive(object):
-
     def __init__(self, rpchandler):
         self.rpchandler = rpchandler
         self.locals = __main__.__dict__

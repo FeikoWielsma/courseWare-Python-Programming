@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
 Custom margin and spacing of box layout
 
@@ -12,6 +12,7 @@ http://doc.qt.nokia.com/latest/qlayout.html
 
 http://www.pyside.org/docs/pyside/PySide/QtGui/QLayout.html
 """
+
 import os
 import sys
 
@@ -24,7 +25,6 @@ try:
     from PySide import QtCore
     from PySide import QtGui
 except ImportError:
-    from PyQt4 import QtCore
     from PyQt4 import QtGui
 
 
@@ -33,26 +33,24 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
-
+        self.set_geometry(x, y, w, h)
 
         vbox = QtGui.QVBoxLayout(self)
 
         chat_history = QtGui.QTextEdit(self)
         w, h = 100, 100
-        chat_history.setMinimumSize(w, h)
-        vbox.addWidget(chat_history)
+        chat_history.set_minimum_size(w, h)
+        vbox.add_widget(chat_history)
 
         input_win = QtGui.QTextEdit(self)
         w, h = 100, 100
-        input_win.setMinimumSize(w, h)
-        vbox.addWidget(input_win)
+        input_win.set_minimum_size(w, h)
+        vbox.add_widget(input_win)
 
+        vbox.set_spacing(0)
+        vbox.set_contents_margins(0, 0, 0, 0)
 
-        vbox.setSpacing(0)
-        vbox.setContentsMargins(0, 0, 0, 0)
-
-        self.setLayout(vbox)
+        self.set_layout(vbox)
 
     def show_and_raise(self):
         self.show()

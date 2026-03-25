@@ -17,27 +17,41 @@ a requested config value, a message is printed to stderr to aid in
 configuration problem notification and resolution.
 
 """
+
 import os
 import sys
 
 from idlelib import macosxSupport
-from configparser import ConfigParser, NoOptionError, NoSectionError
+from configparser import ConfigParser
 
-class InvalidConfigType(Exception): pass
-class InvalidConfigSet(Exception): pass
-class InvalidFgBg(Exception): pass
-class InvalidTheme(Exception): pass
+
+class InvalidConfigType(Exception):
+    pass
+
+
+class InvalidConfigSet(Exception):
+    pass
+
+
+class InvalidFgBg(Exception):
+    pass
+
+
+class InvalidTheme(Exception):
+    pass
+
 
 class IdleConfParser(ConfigParser):
     """
     A ConfigParser specialised for idle configuration file handling
     """
+
     def __init__(self, cfgFile, cfgDefaults=None):
         """
         cfgFile - string, fully specified configuration file name
         """
-        self.file=cfgFile
-        ConfigParser.__init__(self,defaults=cfgDefaults)
+        self.file = cfgFile
+        ConfigParser.__init__(self, defaults=cfgDefaults)
 
     def Get(self, section, option, type=None, default=None, raw=False):
         """
@@ -46,20 +60,20 @@ class IdleConfParser(ConfigParser):
         """
         if not self.has_option(section, option):
             return default
-        if type=='bool':
+        if type == "bool":
             return self.getboolean(section, option)
-        elif type=='int':
+        elif type == "int":
             return self.getint(section, option)
         else:
             return self.get(section, option, raw=raw)
 
-    def GetOptionList(self,section):
+    def GetOptionList(self, section):
         """
         Get an option list for given section
         """
         if self.has_section(section):
             return self.options(section)
-        else:  #return a default value
+        else:  # return a default value
             return []
 
     def Load(self):
@@ -68,12 +82,13 @@ class IdleConfParser(ConfigParser):
         """
         self.read(self.file)
 
+
 class IdleUserConfParser(IdleConfParser):
     """
     IdleConfigParser specialised for user configuration handling.
     """
 
-    def AddSection(self,section):
+    def AddSection(self, section):
         """
         if section doesn't exist, add it
         """
@@ -99,29 +114,29 @@ class IdleUserConfParser(IdleConfParser):
         else:
             return 1
 
-    def RemoveOption(self,section,option):
+    def RemoveOption(self, section, option):
         """
         If section/option exists, remove it.
         Returns 1 if option was removed, 0 otherwise.
         """
         if self.has_section(section):
-            return self.remove_option(section,option)
+            return self.remove_option(section, option)
 
-    def SetOption(self,section,option,value):
+    def SetOption(self, section, option, value):
         """
         Sets option to value, adding section if required.
         Returns 1 if option was added or changed, otherwise 0.
         """
-        if self.has_option(section,option):
-            if self.get(section,option)==value:
+        if self.has_option(section, option):
+            if self.get(section, option) == value:
                 return 0
             else:
-                self.set(section,option,value)
+                self.set(section, option, value)
                 return 1
         else:
             if not self.has_section(section):
                 self.add_section(section)
-            self.set(section,option,value)
+            self.set(section, option, value)
             return 1
 
     def RemoveFile(self):
@@ -141,13 +156,14 @@ class IdleUserConfParser(IdleConfParser):
         if not self.IsEmpty():
             fname = self.file
             try:
-                cfgFile = open(fname, 'w')
+                cfgFile = open(fname, "w")
             except IOError:
                 os.unlink(fname)
-                cfgFile = open(fname, 'w')
+                cfgFile = open(fname, "w")
             self.write(cfgFile)
         else:
             self.RemoveFile()
+
 
 class IdleConf:
     """
@@ -163,34 +179,35 @@ class IdleConf:
         (user home dir)/.idlerc/config-highlight.cfg
         (user home dir)/.idlerc/config-keys.cfg
     """
+
     def __init__(self):
-        self.defaultCfg={}
-        self.userCfg={}
-        self.cfg={}
+        self.defaultCfg = {}
+        self.userCfg = {}
+        self.cfg = {}
         self.CreateConfigHandlers()
         self.LoadCfgFiles()
-        #self.LoadCfg()
+        # self.LoadCfg()
 
     def CreateConfigHandlers(self):
         """
         set up a dictionary of config parsers for default and user
         configurations respectively
         """
-        #build idle install path
-        if __name__ != '__main__': # we were imported
-            idleDir=os.path.dirname(__file__)
-        else: # we were exec'ed (for testing only)
-            idleDir=os.path.abspath(sys.path[0])
-        userDir=self.GetUserCfgDir()
-        configTypes=('main','extensions','highlight','keys')
-        defCfgFiles={}
-        usrCfgFiles={}
-        for cfgType in configTypes: #build config file names
-            defCfgFiles[cfgType]=os.path.join(idleDir,'config-'+cfgType+'.def')
-            usrCfgFiles[cfgType]=os.path.join(userDir,'config-'+cfgType+'.cfg')
-        for cfgType in configTypes: #create config parsers
-            self.defaultCfg[cfgType]=IdleConfParser(defCfgFiles[cfgType])
-            self.userCfg[cfgType]=IdleUserConfParser(usrCfgFiles[cfgType])
+        # build idle install path
+        if __name__ != "__main__":  # we were imported
+            idleDir = os.path.dirname(__file__)
+        else:  # we were exec'ed (for testing only)
+            idleDir = os.path.abspath(sys.path[0])
+        userDir = self.GetUserCfgDir()
+        configTypes = ("main", "extensions", "highlight", "keys")
+        defCfgFiles = {}
+        usrCfgFiles = {}
+        for cfgType in configTypes:  # build config file names
+            defCfgFiles[cfgType] = os.path.join(idleDir, "config-" + cfgType + ".def")
+            usrCfgFiles[cfgType] = os.path.join(userDir, "config-" + cfgType + ".cfg")
+        for cfgType in configTypes:  # create config parsers
+            self.defaultCfg[cfgType] = IdleConfParser(defCfgFiles[cfgType])
+            self.userCfg[cfgType] = IdleUserConfParser(usrCfgFiles[cfgType])
 
     def GetUserCfgDir(self):
         """
@@ -198,18 +215,21 @@ class IdleConf:
         user config files.
 
         """
-        cfgDir = '.idlerc'
-        userDir = os.path.expanduser('~')
-        if userDir != '~': # expanduser() found user home dir
+        cfgDir = ".idlerc"
+        userDir = os.path.expanduser("~")
+        if userDir != "~":  # expanduser() found user home dir
             if not os.path.exists(userDir):
-                warn = ('\n Warning: os.path.expanduser("~") points to\n '+
-                        userDir+',\n but the path does not exist.\n')
+                warn = (
+                    '\n Warning: os.path.expanduser("~") points to\n '
+                    + userDir
+                    + ",\n but the path does not exist.\n"
+                )
                 try:
                     sys.stderr.write(warn)
                 except IOError:
                     pass
-                userDir = '~'
-        if userDir == "~": # still no path to home!
+                userDir = "~"
+        if userDir == "~":  # still no path to home!
             # traditionally IDLE has defaulted to os.getcwd(), is this adequate?
             userDir = os.getcwd()
         userDir = os.path.join(userDir, cfgDir)
@@ -217,14 +237,25 @@ class IdleConf:
             try:
                 os.mkdir(userDir)
             except (OSError, IOError):
-                warn = ('\n Warning: unable to create user config directory\n'+
-                        userDir+'\n Check path and permissions.\n Exiting!\n\n')
+                warn = (
+                    "\n Warning: unable to create user config directory\n"
+                    + userDir
+                    + "\n Check path and permissions.\n Exiting!\n\n"
+                )
                 sys.stderr.write(warn)
                 raise SystemExit
         return userDir
 
-    def GetOption(self, configType, section, option, default=None, type=None,
-                  warn_on_default=True, raw=False):
+    def GetOption(
+        self,
+        configType,
+        section,
+        option,
+        default=None,
+        type=None,
+        warn_on_default=True,
+        raw=False,
+    ):
         """
         Get an option value for given config type and given general
         configuration section/option or return a default. If type is specified,
@@ -237,19 +268,18 @@ class IdleConf:
         printed to stderr.
 
         """
-        if self.userCfg[configType].has_option(section,option):
-            return self.userCfg[configType].Get(section, option,
-                                                type=type, raw=raw)
-        elif self.defaultCfg[configType].has_option(section,option):
-            return self.defaultCfg[configType].Get(section, option,
-                                                   type=type, raw=raw)
-        else: #returning default, print warning
+        if self.userCfg[configType].has_option(section, option):
+            return self.userCfg[configType].Get(section, option, type=type, raw=raw)
+        elif self.defaultCfg[configType].has_option(section, option):
+            return self.defaultCfg[configType].Get(section, option, type=type, raw=raw)
+        else:  # returning default, print warning
             if warn_on_default:
-                warning = ('\n Warning: configHandler.py - IdleConf.GetOption -\n'
-                           ' problem retrieving configuration option %r\n'
-                           ' from section %r.\n'
-                           ' returning default value: %r\n' %
-                           (option, section, default))
+                warning = (
+                    "\n Warning: configHandler.py - IdleConf.GetOption -\n"
+                    " problem retrieving configuration option %r\n"
+                    " from section %r.\n"
+                    " returning default value: %r\n" % (option, section, default)
+                )
                 try:
                     sys.stderr.write(warning)
                 except IOError:
@@ -257,9 +287,7 @@ class IdleConf:
             return default
 
     def SetOption(self, configType, section, option, value):
-        """In user's config file, set section's option to value.
-
-        """
+        """In user's config file, set section's option to value."""
         self.userCfg[configType].SetOption(section, option, value)
 
     def GetSectionList(self, configSet, configType):
@@ -269,14 +297,14 @@ class IdleConf:
         configSet must be either 'user' or 'default'
         configType must be one of ('main','extensions','highlight','keys')
         """
-        if not (configType in ('main','extensions','highlight','keys')):
-            raise InvalidConfigType('Invalid configType specified')
-        if configSet == 'user':
-            cfgParser=self.userCfg[configType]
-        elif configSet == 'default':
-            cfgParser=self.defaultCfg[configType]
+        if configType not in ("main", "extensions", "highlight", "keys"):
+            raise InvalidConfigType("Invalid configType specified")
+        if configSet == "user":
+            cfgParser = self.userCfg[configType]
+        elif configSet == "default":
+            cfgParser = self.defaultCfg[configType]
         else:
-            raise InvalidConfigSet('Invalid configSet specified')
+            raise InvalidConfigSet("Invalid configSet specified")
         return cfgParser.sections()
 
     def GetHighlight(self, theme, element, fgBg=None):
@@ -286,27 +314,27 @@ class IdleConf:
         containing fg and bg colours (appropriate for passing to Tkinter in,
         e.g., a tag_config call), otherwise fg or bg colour only as specified.
         """
-        if self.defaultCfg['highlight'].has_section(theme):
-            themeDict=self.GetThemeDict('default',theme)
+        if self.defaultCfg["highlight"].has_section(theme):
+            themeDict = self.GetThemeDict("default", theme)
         else:
-            themeDict=self.GetThemeDict('user',theme)
-        fore=themeDict[element+'-foreground']
-        if element=='cursor': #there is no config value for cursor bg
-            back=themeDict['normal-background']
+            themeDict = self.GetThemeDict("user", theme)
+        fore = themeDict[element + "-foreground"]
+        if element == "cursor":  # there is no config value for cursor bg
+            back = themeDict["normal-background"]
         else:
-            back=themeDict[element+'-background']
-        highlight={"foreground": fore,"background": back}
-        if not fgBg: #return dict of both colours
+            back = themeDict[element + "-background"]
+        highlight = {"foreground": fore, "background": back}
+        if not fgBg:  # return dict of both colours
             return highlight
-        else: #return specified colour only
-            if fgBg == 'fg':
+        else:  # return specified colour only
+            if fgBg == "fg":
                 return highlight["foreground"]
-            if fgBg == 'bg':
+            if fgBg == "bg":
                 return highlight["background"]
             else:
-                raise InvalidFgBg('Invalid fgBg specified')
+                raise InvalidFgBg("Invalid fgBg specified")
 
-    def GetThemeDict(self,type,themeName):
+    def GetThemeDict(self, type, themeName):
         """
         type - string, 'default' or 'user' theme type
         themeName - string, theme name
@@ -315,99 +343,107 @@ class IdleConf:
         fallback defaults to guarantee that all theme elements are present in
         a newly created theme.
         """
-        if type == 'user':
-            cfgParser=self.userCfg['highlight']
-        elif type == 'default':
-            cfgParser=self.defaultCfg['highlight']
+        if type == "user":
+            cfgParser = self.userCfg["highlight"]
+        elif type == "default":
+            cfgParser = self.defaultCfg["highlight"]
         else:
-            raise InvalidTheme('Invalid theme type specified')
-        #foreground and background values are provded for each theme element
-        #(apart from cursor) even though all these values are not yet used
-        #by idle, to allow for their use in the future. Default values are
-        #generally black and white.
-        theme={ 'normal-foreground':'#000000',
-                'normal-background':'#ffffff',
-                'keyword-foreground':'#000000',
-                'keyword-background':'#ffffff',
-                'builtin-foreground':'#000000',
-                'builtin-background':'#ffffff',
-                'comment-foreground':'#000000',
-                'comment-background':'#ffffff',
-                'string-foreground':'#000000',
-                'string-background':'#ffffff',
-                'definition-foreground':'#000000',
-                'definition-background':'#ffffff',
-                'hilite-foreground':'#000000',
-                'hilite-background':'gray',
-                'break-foreground':'#ffffff',
-                'break-background':'#000000',
-                'hit-foreground':'#ffffff',
-                'hit-background':'#000000',
-                'error-foreground':'#ffffff',
-                'error-background':'#000000',
-                #cursor (only foreground can be set)
-                'cursor-foreground':'#000000',
-                #shell window
-                'stdout-foreground':'#000000',
-                'stdout-background':'#ffffff',
-                'stderr-foreground':'#000000',
-                'stderr-background':'#ffffff',
-                'console-foreground':'#000000',
-                'console-background':'#ffffff' }
+            raise InvalidTheme("Invalid theme type specified")
+        # foreground and background values are provded for each theme element
+        # (apart from cursor) even though all these values are not yet used
+        # by idle, to allow for their use in the future. Default values are
+        # generally black and white.
+        theme = {
+            "normal-foreground": "#000000",
+            "normal-background": "#ffffff",
+            "keyword-foreground": "#000000",
+            "keyword-background": "#ffffff",
+            "builtin-foreground": "#000000",
+            "builtin-background": "#ffffff",
+            "comment-foreground": "#000000",
+            "comment-background": "#ffffff",
+            "string-foreground": "#000000",
+            "string-background": "#ffffff",
+            "definition-foreground": "#000000",
+            "definition-background": "#ffffff",
+            "hilite-foreground": "#000000",
+            "hilite-background": "gray",
+            "break-foreground": "#ffffff",
+            "break-background": "#000000",
+            "hit-foreground": "#ffffff",
+            "hit-background": "#000000",
+            "error-foreground": "#ffffff",
+            "error-background": "#000000",
+            # cursor (only foreground can be set)
+            "cursor-foreground": "#000000",
+            # shell window
+            "stdout-foreground": "#000000",
+            "stdout-background": "#ffffff",
+            "stderr-foreground": "#000000",
+            "stderr-background": "#ffffff",
+            "console-foreground": "#000000",
+            "console-background": "#ffffff",
+        }
         for element in theme:
-            if not cfgParser.has_option(themeName,element):
-                #we are going to return a default, print warning
-                warning=('\n Warning: configHandler.py - IdleConf.GetThemeDict'
-                           ' -\n problem retrieving theme element %r'
-                           '\n from theme %r.\n'
-                           ' returning default value: %r\n' %
-                           (element, themeName, theme[element]))
+            if not cfgParser.has_option(themeName, element):
+                # we are going to return a default, print warning
+                warning = (
+                    "\n Warning: configHandler.py - IdleConf.GetThemeDict"
+                    " -\n problem retrieving theme element %r"
+                    "\n from theme %r.\n"
+                    " returning default value: %r\n"
+                    % (element, themeName, theme[element])
+                )
                 try:
                     sys.stderr.write(warning)
                 except IOError:
                     pass
-            colour=cfgParser.Get(themeName,element,default=theme[element])
-            theme[element]=colour
+            colour = cfgParser.Get(themeName, element, default=theme[element])
+            theme[element] = colour
         return theme
 
     def CurrentTheme(self):
         """
         Returns the name of the currently active theme
         """
-        return self.GetOption('main','Theme','name',default='')
+        return self.GetOption("main", "Theme", "name", default="")
 
     def CurrentKeys(self):
         """
         Returns the name of the currently active key set
         """
-        return self.GetOption('main','Keys','name',default='')
+        return self.GetOption("main", "Keys", "name", default="")
 
     def GetExtensions(self, active_only=True, editor_only=False, shell_only=False):
         """
         Gets a list of all idle extensions declared in the config files.
         active_only - boolean, if true only return active (enabled) extensions
         """
-        extns=self.RemoveKeyBindNames(
-                self.GetSectionList('default','extensions'))
-        userExtns=self.RemoveKeyBindNames(
-                self.GetSectionList('user','extensions'))
+        extns = self.RemoveKeyBindNames(self.GetSectionList("default", "extensions"))
+        userExtns = self.RemoveKeyBindNames(self.GetSectionList("user", "extensions"))
         for extn in userExtns:
-            if extn not in extns: #user has added own extension
+            if extn not in extns:  # user has added own extension
                 extns.append(extn)
         if active_only:
-            activeExtns=[]
+            activeExtns = []
             for extn in extns:
-                if self.GetOption('extensions', extn, 'enable', default=True,
-                                  type='bool'):
-                    #the extension is enabled
+                if self.GetOption(
+                    "extensions", extn, "enable", default=True, type="bool"
+                ):
+                    # the extension is enabled
                     if editor_only or shell_only:
                         if editor_only:
                             option = "enable_editor"
                         else:
                             option = "enable_shell"
-                        if self.GetOption('extensions', extn,option,
-                                          default=True, type='bool',
-                                          warn_on_default=False):
+                        if self.GetOption(
+                            "extensions",
+                            extn,
+                            option,
+                            default=True,
+                            type="bool",
+                            warn_on_default=False,
+                        ):
                             activeExtns.append(extn)
                     else:
                         activeExtns.append(extn)
@@ -415,85 +451,87 @@ class IdleConf:
         else:
             return extns
 
-    def RemoveKeyBindNames(self,extnNameList):
-        #get rid of keybinding section names
-        names=extnNameList
-        kbNameIndicies=[]
+    def RemoveKeyBindNames(self, extnNameList):
+        # get rid of keybinding section names
+        names = extnNameList
+        kbNameIndicies = []
         for name in names:
-            if name.endswith(('_bindings', '_cfgBindings')):
+            if name.endswith(("_bindings", "_cfgBindings")):
                 kbNameIndicies.append(names.index(name))
         kbNameIndicies.sort()
         kbNameIndicies.reverse()
-        for index in kbNameIndicies: #delete each keybinding section name
-            del(names[index])
+        for index in kbNameIndicies:  # delete each keybinding section name
+            del names[index]
         return names
 
-    def GetExtnNameForEvent(self,virtualEvent):
+    def GetExtnNameForEvent(self, virtualEvent):
         """
         Returns the name of the extension that virtualEvent is bound in, or
         None if not bound in any extension.
         virtualEvent - string, name of the virtual event to test for, without
                        the enclosing '<< >>'
         """
-        extName=None
-        vEvent='<<'+virtualEvent+'>>'
+        extName = None
+        vEvent = "<<" + virtualEvent + ">>"
         for extn in self.GetExtensions(active_only=0):
             for event in self.GetExtensionKeys(extn):
                 if event == vEvent:
-                    extName=extn
+                    extName = extn
         return extName
 
-    def GetExtensionKeys(self,extensionName):
+    def GetExtensionKeys(self, extensionName):
         """
         returns a dictionary of the configurable keybindings for a particular
         extension,as they exist in the dictionary returned by GetCurrentKeySet;
         that is, where previously used bindings are disabled.
         """
-        keysName=extensionName+'_cfgBindings'
-        activeKeys=self.GetCurrentKeySet()
-        extKeys={}
-        if self.defaultCfg['extensions'].has_section(keysName):
-            eventNames=self.defaultCfg['extensions'].GetOptionList(keysName)
+        keysName = extensionName + "_cfgBindings"
+        activeKeys = self.GetCurrentKeySet()
+        extKeys = {}
+        if self.defaultCfg["extensions"].has_section(keysName):
+            eventNames = self.defaultCfg["extensions"].GetOptionList(keysName)
             for eventName in eventNames:
-                event='<<'+eventName+'>>'
-                binding=activeKeys[event]
-                extKeys[event]=binding
+                event = "<<" + eventName + ">>"
+                binding = activeKeys[event]
+                extKeys[event] = binding
         return extKeys
 
-    def __GetRawExtensionKeys(self,extensionName):
+    def __GetRawExtensionKeys(self, extensionName):
         """
         returns a dictionary of the configurable keybindings for a particular
         extension, as defined in the configuration files, or an empty dictionary
         if no bindings are found
         """
-        keysName=extensionName+'_cfgBindings'
-        extKeys={}
-        if self.defaultCfg['extensions'].has_section(keysName):
-            eventNames=self.defaultCfg['extensions'].GetOptionList(keysName)
+        keysName = extensionName + "_cfgBindings"
+        extKeys = {}
+        if self.defaultCfg["extensions"].has_section(keysName):
+            eventNames = self.defaultCfg["extensions"].GetOptionList(keysName)
             for eventName in eventNames:
-                binding=self.GetOption('extensions',keysName,
-                        eventName,default='').split()
-                event='<<'+eventName+'>>'
-                extKeys[event]=binding
+                binding = self.GetOption(
+                    "extensions", keysName, eventName, default=""
+                ).split()
+                event = "<<" + eventName + ">>"
+                extKeys[event] = binding
         return extKeys
 
-    def GetExtensionBindings(self,extensionName):
+    def GetExtensionBindings(self, extensionName):
         """
         Returns a dictionary of all the event bindings for a particular
         extension. The configurable keybindings are returned as they exist in
         the dictionary returned by GetCurrentKeySet; that is, where re-used
         keybindings are disabled.
         """
-        bindsName=extensionName+'_bindings'
-        extBinds=self.GetExtensionKeys(extensionName)
-        #add the non-configurable bindings
-        if self.defaultCfg['extensions'].has_section(bindsName):
-            eventNames=self.defaultCfg['extensions'].GetOptionList(bindsName)
+        bindsName = extensionName + "_bindings"
+        extBinds = self.GetExtensionKeys(extensionName)
+        # add the non-configurable bindings
+        if self.defaultCfg["extensions"].has_section(bindsName):
+            eventNames = self.defaultCfg["extensions"].GetOptionList(bindsName)
             for eventName in eventNames:
-                binding=self.GetOption('extensions',bindsName,
-                        eventName,default='').split()
-                event='<<'+eventName+'>>'
-                extBinds[event]=binding
+                binding = self.GetOption(
+                    "extensions", bindsName, eventName, default=""
+                ).split()
+                event = "<<" + eventName + ">>"
+                extBinds[event] = binding
 
         return extBinds
 
@@ -504,8 +542,8 @@ class IdleConf:
         eventStr - string, the virtual event we want the binding for,
                    represented as a string, eg. '<<event>>'
         """
-        eventName=eventStr[2:-2] #trim off the angle brackets
-        binding=self.GetOption('keys',keySetName,eventName,default='').split()
+        eventName = eventStr[2:-2]  # trim off the angle brackets
+        binding = self.GetOption("keys", keySetName, eventName, default="").split()
         return binding
 
     def GetCurrentKeySet(self):
@@ -516,37 +554,37 @@ class IdleConf:
             # Alt key by ones that use the Option key because the former
             # don't work reliably.
             for k, v in result.items():
-                v2 = [ x.replace('<Alt-', '<Option-') for x in v ]
+                v2 = [x.replace("<Alt-", "<Option-") for x in v]
                 if v != v2:
                     result[k] = v2
 
         return result
 
-    def GetKeySet(self,keySetName):
+    def GetKeySet(self, keySetName):
         """
         Returns a dictionary of: all requested core keybindings, plus the
         keybindings for all currently active extensions. If a binding defined
         in an extension is already in use, that binding is disabled.
         """
-        keySet=self.GetCoreKeys(keySetName)
-        activeExtns=self.GetExtensions(active_only=1)
+        keySet = self.GetCoreKeys(keySetName)
+        activeExtns = self.GetExtensions(active_only=1)
         for extn in activeExtns:
-            extKeys=self.__GetRawExtensionKeys(extn)
-            if extKeys: #the extension defines keybindings
+            extKeys = self.__GetRawExtensionKeys(extn)
+            if extKeys:  # the extension defines keybindings
                 for event in extKeys:
                     if extKeys[event] in keySet.values():
-                        #the binding is already in use
-                        extKeys[event]='' #disable this binding
-                    keySet[event]=extKeys[event] #add binding
+                        # the binding is already in use
+                        extKeys[event] = ""  # disable this binding
+                    keySet[event] = extKeys[event]  # add binding
         return keySet
 
-    def IsCoreBinding(self,virtualEvent):
+    def IsCoreBinding(self, virtualEvent):
         """
         returns true if the virtual event is bound in the core idle keybindings.
         virtualEvent - string, name of the virtual event to test for, without
                        the enclosing '<< >>'
         """
-        return ('<<'+virtualEvent+'>>') in self.GetCoreKeys()
+        return ("<<" + virtualEvent + ">>") in self.GetCoreKeys()
 
     def GetCoreKeys(self, keySetName=None):
         """
@@ -557,75 +595,77 @@ class IdleConf:
         be an 'ultimate last resort fallback' to the CUA-ish bindings
         defined here.
         """
-        keyBindings={
-            '<<copy>>': ['<Control-c>', '<Control-C>'],
-            '<<cut>>': ['<Control-x>', '<Control-X>'],
-            '<<paste>>': ['<Control-v>', '<Control-V>'],
-            '<<beginning-of-line>>': ['<Control-a>', '<Home>'],
-            '<<center-insert>>': ['<Control-l>'],
-            '<<close-all-windows>>': ['<Control-q>'],
-            '<<close-window>>': ['<Alt-F4>'],
-            '<<do-nothing>>': ['<Control-x>'],
-            '<<end-of-file>>': ['<Control-d>'],
-            '<<python-docs>>': ['<F1>'],
-            '<<python-context-help>>': ['<Shift-F1>'],
-            '<<history-next>>': ['<Alt-n>'],
-            '<<history-previous>>': ['<Alt-p>'],
-            '<<interrupt-execution>>': ['<Control-c>'],
-            '<<view-restart>>': ['<F6>'],
-            '<<restart-shell>>': ['<Control-F6>'],
-            '<<open-class-browser>>': ['<Alt-c>'],
-            '<<open-module>>': ['<Alt-m>'],
-            '<<open-new-window>>': ['<Control-n>'],
-            '<<open-window-from-file>>': ['<Control-o>'],
-            '<<plain-newline-and-indent>>': ['<Control-j>'],
-            '<<print-window>>': ['<Control-p>'],
-            '<<redo>>': ['<Control-y>'],
-            '<<remove-selection>>': ['<Escape>'],
-            '<<save-copy-of-window-as-file>>': ['<Alt-Shift-S>'],
-            '<<save-window-as-file>>': ['<Alt-s>'],
-            '<<save-window>>': ['<Control-s>'],
-            '<<select-all>>': ['<Alt-a>'],
-            '<<toggle-auto-coloring>>': ['<Control-slash>'],
-            '<<undo>>': ['<Control-z>'],
-            '<<find-again>>': ['<Control-g>', '<F3>'],
-            '<<find-in-files>>': ['<Alt-F3>'],
-            '<<find-selection>>': ['<Control-F3>'],
-            '<<find>>': ['<Control-f>'],
-            '<<replace>>': ['<Control-h>'],
-            '<<goto-line>>': ['<Alt-g>'],
-            '<<smart-backspace>>': ['<Key-BackSpace>'],
-            '<<newline-and-indent>>': ['<Key-Return> <Key-KP_Enter>'],
-            '<<smart-indent>>': ['<Key-Tab>'],
-            '<<indent-region>>': ['<Control-Key-bracketright>'],
-            '<<dedent-region>>': ['<Control-Key-bracketleft>'],
-            '<<comment-region>>': ['<Alt-Key-3>'],
-            '<<uncomment-region>>': ['<Alt-Key-4>'],
-            '<<tabify-region>>': ['<Alt-Key-5>'],
-            '<<untabify-region>>': ['<Alt-Key-6>'],
-            '<<toggle-tabs>>': ['<Alt-Key-t>'],
-            '<<change-indentwidth>>': ['<Alt-Key-u>'],
-            '<<del-word-left>>': ['<Control-Key-BackSpace>'],
-            '<<del-word-right>>': ['<Control-Key-Delete>']
-            }
+        keyBindings = {
+            "<<copy>>": ["<Control-c>", "<Control-C>"],
+            "<<cut>>": ["<Control-x>", "<Control-X>"],
+            "<<paste>>": ["<Control-v>", "<Control-V>"],
+            "<<beginning-of-line>>": ["<Control-a>", "<Home>"],
+            "<<center-insert>>": ["<Control-l>"],
+            "<<close-all-windows>>": ["<Control-q>"],
+            "<<close-window>>": ["<Alt-F4>"],
+            "<<do-nothing>>": ["<Control-x>"],
+            "<<end-of-file>>": ["<Control-d>"],
+            "<<python-docs>>": ["<F1>"],
+            "<<python-context-help>>": ["<Shift-F1>"],
+            "<<history-next>>": ["<Alt-n>"],
+            "<<history-previous>>": ["<Alt-p>"],
+            "<<interrupt-execution>>": ["<Control-c>"],
+            "<<view-restart>>": ["<F6>"],
+            "<<restart-shell>>": ["<Control-F6>"],
+            "<<open-class-browser>>": ["<Alt-c>"],
+            "<<open-module>>": ["<Alt-m>"],
+            "<<open-new-window>>": ["<Control-n>"],
+            "<<open-window-from-file>>": ["<Control-o>"],
+            "<<plain-newline-and-indent>>": ["<Control-j>"],
+            "<<print-window>>": ["<Control-p>"],
+            "<<redo>>": ["<Control-y>"],
+            "<<remove-selection>>": ["<Escape>"],
+            "<<save-copy-of-window-as-file>>": ["<Alt-Shift-S>"],
+            "<<save-window-as-file>>": ["<Alt-s>"],
+            "<<save-window>>": ["<Control-s>"],
+            "<<select-all>>": ["<Alt-a>"],
+            "<<toggle-auto-coloring>>": ["<Control-slash>"],
+            "<<undo>>": ["<Control-z>"],
+            "<<find-again>>": ["<Control-g>", "<F3>"],
+            "<<find-in-files>>": ["<Alt-F3>"],
+            "<<find-selection>>": ["<Control-F3>"],
+            "<<find>>": ["<Control-f>"],
+            "<<replace>>": ["<Control-h>"],
+            "<<goto-line>>": ["<Alt-g>"],
+            "<<smart-backspace>>": ["<Key-BackSpace>"],
+            "<<newline-and-indent>>": ["<Key-Return> <Key-KP_Enter>"],
+            "<<smart-indent>>": ["<Key-Tab>"],
+            "<<indent-region>>": ["<Control-Key-bracketright>"],
+            "<<dedent-region>>": ["<Control-Key-bracketleft>"],
+            "<<comment-region>>": ["<Alt-Key-3>"],
+            "<<uncomment-region>>": ["<Alt-Key-4>"],
+            "<<tabify-region>>": ["<Alt-Key-5>"],
+            "<<untabify-region>>": ["<Alt-Key-6>"],
+            "<<toggle-tabs>>": ["<Alt-Key-t>"],
+            "<<change-indentwidth>>": ["<Alt-Key-u>"],
+            "<<del-word-left>>": ["<Control-Key-BackSpace>"],
+            "<<del-word-right>>": ["<Control-Key-Delete>"],
+        }
         if keySetName:
             for event in keyBindings:
-                binding=self.GetKeyBinding(keySetName,event)
+                binding = self.GetKeyBinding(keySetName, event)
                 if binding:
-                    keyBindings[event]=binding
-                else: #we are going to return a default, print warning
-                    warning=('\n Warning: configHandler.py - IdleConf.GetCoreKeys'
-                               ' -\n problem retrieving key binding for event %r'
-                               '\n from key set %r.\n'
-                               ' returning default value: %r\n' %
-                               (event, keySetName, keyBindings[event]))
+                    keyBindings[event] = binding
+                else:  # we are going to return a default, print warning
+                    warning = (
+                        "\n Warning: configHandler.py - IdleConf.GetCoreKeys"
+                        " -\n problem retrieving key binding for event %r"
+                        "\n from key set %r.\n"
+                        " returning default value: %r\n"
+                        % (event, keySetName, keyBindings[event])
+                    )
                     try:
                         sys.stderr.write(warning)
                     except IOError:
                         pass
         return keyBindings
 
-    def GetExtraHelpSourceList(self,configSet):
+    def GetExtraHelpSourceList(self, configSet):
         """Fetch list of extra help sources from a given configSet.
 
         Valid configSets are 'user' or 'default'.  Return a list of tuples of
@@ -635,25 +675,25 @@ class IdleConf:
         therefore the returned list must be sorted by 'option'.
 
         """
-        helpSources=[]
-        if configSet=='user':
-            cfgParser=self.userCfg['main']
-        elif configSet=='default':
-            cfgParser=self.defaultCfg['main']
+        helpSources = []
+        if configSet == "user":
+            cfgParser = self.userCfg["main"]
+        elif configSet == "default":
+            cfgParser = self.defaultCfg["main"]
         else:
-            raise InvalidConfigSet('Invalid configSet specified')
-        options=cfgParser.GetOptionList('HelpFiles')
+            raise InvalidConfigSet("Invalid configSet specified")
+        options = cfgParser.GetOptionList("HelpFiles")
         for option in options:
-            value=cfgParser.Get('HelpFiles',option,default=';')
-            if value.find(';')==-1: #malformed config entry with no ';'
-                menuItem='' #make these empty
-                helpPath='' #so value won't be added to list
-            else: #config entry contains ';' as expected
-                value=value.split(';')
-                menuItem=value[0].strip()
-                helpPath=value[1].strip()
-            if menuItem and helpPath: #neither are empty strings
-                helpSources.append( (menuItem,helpPath,option) )
+            value = cfgParser.Get("HelpFiles", option, default=";")
+            if value.find(";") == -1:  # malformed config entry with no ';'
+                menuItem = ""  # make these empty
+                helpPath = ""  # so value won't be added to list
+            else:  # config entry contains ';' as expected
+                value = value.split(";")
+                menuItem = value[0].strip()
+                helpPath = value[1].strip()
+            if menuItem and helpPath:  # neither are empty strings
+                helpSources.append((menuItem, helpPath, option))
         helpSources.sort(key=lambda x: x[2])
         return helpSources
 
@@ -663,8 +703,9 @@ class IdleConf:
         sources configured, or an empty list if there are none. Tuples are of
         the format returned by GetExtraHelpSourceList.
         """
-        allHelpSources=( self.GetExtraHelpSourceList('default')+
-                self.GetExtraHelpSourceList('user') )
+        allHelpSources = self.GetExtraHelpSourceList(
+            "default"
+        ) + self.GetExtraHelpSourceList("user")
         return allHelpSources
 
     def LoadCfgFiles(self):
@@ -673,7 +714,7 @@ class IdleConf:
         """
         for key in self.defaultCfg:
             self.defaultCfg[key].Load()
-            self.userCfg[key].Load() #same keys
+            self.userCfg[key].Load()  # same keys
 
     def SaveUserCfgFiles(self):
         """
@@ -682,23 +723,26 @@ class IdleConf:
         for key in self.userCfg:
             self.userCfg[key].Save()
 
-idleConf=IdleConf()
+
+idleConf = IdleConf()
 
 ### module test
-if __name__ == '__main__':
+if __name__ == "__main__":
+
     def dumpCfg(cfg):
-        print('\n',cfg,'\n')
+        print("\n", cfg, "\n")
         for key in cfg:
-            sections=cfg[key].sections()
+            sections = cfg[key].sections()
             print(key)
             print(sections)
             for section in sections:
-                options=cfg[key].options(section)
+                options = cfg[key].options(section)
                 print(section)
                 print(options)
                 for option in options:
-                    print(option, '=', cfg[key].Get(section,option))
+                    print(option, "=", cfg[key].Get(section, option))
+
     dumpCfg(idleConf.defaultCfg)
     dumpCfg(idleConf.userCfg)
-    print(idleConf.userCfg['main'].Get('Theme','name'))
-    #print idleConf.userCfg['highlight'].GetDefHighlight('Foo','normal')
+    print(idleConf.userCfg["main"].Get("Theme", "name"))
+    # print idleConf.userCfg['highlight'].GetDefHighlight('Foo','normal')

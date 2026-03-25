@@ -15,15 +15,15 @@ from test import support
 
 # test_io
 import io
-class TextIOWrapperTest(unittest.TestCase):
 
+
+class TextIOWrapperTest(unittest.TestCase):
     def setUp(self):
         self.testdata = b"AAA\r\nBBB\rCCC\r\nDDD\nEEE\r\n"
         self.normalized = b"AAA\nBBB\nCCC\nDDD\nEEE\n".decode("ASCII")
 
     def tearDown(self):
         support.unlink(support.TESTFN)
-
 
     def test_issue1395_1(self):
         txt = io.TextIOWrapper(io.BytesIO(self.testdata), encoding="ASCII")
@@ -79,10 +79,9 @@ class TextIOWrapperTest(unittest.TestCase):
         self.assertEqual(txt.read(4), "BBB\n")
 
 
-
 def test_main():
-    support.run_unittest(
-        TextIOWrapperTest)
+    support.run_unittest(TextIOWrapperTest)
+
 
 if __name__ == "__main__":
     test_main()

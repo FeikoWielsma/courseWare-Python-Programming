@@ -19,12 +19,14 @@ FILES_PER_THREAD = 50
 import tempfile
 
 from test.support import threading_setup, threading_cleanup, run_unittest, import_module
-threading = import_module('threading')
+
+threading = import_module("threading")
 import unittest
 import io
 from traceback import print_exc
 
 startEvent = threading.Event()
+
 
 class TempFileGreedy(threading.Thread):
     error_count = 0
@@ -66,13 +68,14 @@ class ThreadedTempFileTest(unittest.TestCase):
 
         threading_cleanup(*thread_info)
 
-        msg = "Errors: errors %d ok %d\n%s" % (len(errors), ok,
-            '\n'.join(errors))
+        msg = "Errors: errors %d ok %d\n%s" % (len(errors), ok, "\n".join(errors))
         self.assertEqual(errors, [], msg)
         self.assertEqual(ok, NUM_THREADS * FILES_PER_THREAD)
 
+
 def test_main():
     run_unittest(ThreadedTempFileTest)
+
 
 if __name__ == "__main__":
     test_main()

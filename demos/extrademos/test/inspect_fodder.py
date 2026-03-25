@@ -1,12 +1,15 @@
 # line 1
-'A module docstring.'
+"A module docstring."
 
-import sys, inspect
+import sys
+import inspect
 # line 5
+
 
 # line 7
 def spam(a, b, c, d=3, e=4, f=5, *g, **h):
     eggs(b + d, c + f)
+
 
 # line 11
 def eggs(x, y):
@@ -17,6 +20,7 @@ def eggs(x, y):
     p = x
     q = y / 0
 
+
 # line 20
 class StupidGit:
     """A longer,
@@ -24,20 +28,22 @@ class StupidGit:
     indented
 
     docstring."""
-# line 27
+
+    # line 27
 
     def abuse(self, a, b, c):
         """Another
 
-\tdocstring
+        \tdocstring
 
-        containing
+                containing
 
-\ttabs
-\t
+        \ttabs
+        \t
         """
         self.argue(a, b, c)
-# line 40
+
+    # line 40
     def argue(self, a, b, c):
         try:
             spam(a, b, c)
@@ -45,12 +51,15 @@ class StupidGit:
             self.ex = sys.exc_info()
             self.tr = inspect.trace()
 
+
 # line 48
 class MalodorousPervert(StupidGit):
     pass
 
+
 class ParrotDroppings:
     pass
+
 
 class FesteringGob(MalodorousPervert, ParrotDroppings):
     pass

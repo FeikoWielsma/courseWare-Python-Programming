@@ -23,16 +23,16 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
 
         del_contact = "Ctrl+Shift+d"
         key_seq = QtGui.QKeySequence(del_contact)
 
         act = QtGui.QAction(self)
-        act.setShortcut(key_seq)
+        act.set_shortcut(key_seq)
         
-        self.addAction(act)
+        self.add_action(act)
         act.triggered.connect(self._short_cut_cb)
 
     def _short_cut_cb(self):

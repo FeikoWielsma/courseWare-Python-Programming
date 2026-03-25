@@ -1,8 +1,8 @@
 from test.support import verbose, run_unittest, import_module
 
-#Skip these tests if either fcntl or termios is not available
-fcntl = import_module('fcntl')
-import_module('termios')
+# Skip these tests if either fcntl or termios is not available
+fcntl = import_module("fcntl")
+import_module("termios")
 
 import errno
 import pty
@@ -15,9 +15,11 @@ TEST_STRING_1 = b"I wish to buy a fish license.\n"
 TEST_STRING_2 = b"For my pet fish, Eric.\n"
 
 if verbose:
+
     def debug(msg):
         print(msg)
 else:
+
     def debug(msg):
         pass
 
@@ -34,12 +36,12 @@ def normalize_output(data):
     # from someone more knowledgable.
 
     # OSF/1 (Tru64) apparently turns \n into \r\r\n.
-    if data.endswith(b'\r\r\n'):
-        return data.replace(b'\r\r\n', b'\n')
+    if data.endswith(b"\r\r\n"):
+        return data.replace(b"\r\r\n", b"\n")
 
     # IRIX apparently turns \n into \r\n.
-    if data.endswith(b'\r\n'):
-        return data.replace(b'\r\n', b'\n')
+    if data.endswith(b"\r\n"):
+        return data.replace(b"\r\n", b"\n")
 
     return data
 
@@ -66,8 +68,7 @@ class PtyTest(unittest.TestCase):
         try:
             debug("Calling master_open()")
             master_fd, slave_name = pty.master_open()
-            debug("Got master_fd '%d', slave_name '%s'" %
-                  (master_fd, slave_name))
+            debug("Got master_fd '%d', slave_name '%s'" % (master_fd, slave_name))
             debug("Calling slave_open(%r)" % (slave_name,))
             slave_fd = pty.slave_open(slave_name)
             debug("Got slave_fd '%d'" % slave_fd)
@@ -75,7 +76,7 @@ class PtyTest(unittest.TestCase):
             # " An optional feature could not be imported " ... ?
             raise unittest.SkipTest("Pseudo-terminals (seemingly) not functional.")
 
-        self.assertTrue(os.isatty(slave_fd), 'slave_fd is not a tty')
+        self.assertTrue(os.isatty(slave_fd), "slave_fd is not a tty")
 
         # Solaris requires reading the fd before anything is returned.
         # My guess is that since we open and close the slave fd
@@ -86,7 +87,7 @@ class PtyTest(unittest.TestCase):
         fcntl.fcntl(master_fd, fcntl.F_SETFL, orig_flags | os.O_NONBLOCK)
         try:
             s1 = os.read(master_fd, 1024)
-            self.assertEqual(b'', s1)
+            self.assertEqual(b"", s1)
         except OSError as e:
             if e.errno != errno.EAGAIN:
                 raise
@@ -96,18 +97,16 @@ class PtyTest(unittest.TestCase):
         debug("Writing to slave_fd")
         os.write(slave_fd, TEST_STRING_1)
         s1 = os.read(master_fd, 1024)
-        self.assertEqual(b'I wish to buy a fish license.\n',
-                         normalize_output(s1))
+        self.assertEqual(b"I wish to buy a fish license.\n", normalize_output(s1))
 
         debug("Writing chunked output")
         os.write(slave_fd, TEST_STRING_2[:5])
         os.write(slave_fd, TEST_STRING_2[5:])
         s2 = os.read(master_fd, 1024)
-        self.assertEqual(b'For my pet fish, Eric.\n', normalize_output(s2))
+        self.assertEqual(b"For my pet fish, Eric.\n", normalize_output(s2))
 
         os.close(slave_fd)
         os.close(master_fd)
-
 
     def test_fork(self):
         debug("calling pty.fork()")
@@ -161,8 +160,7 @@ class PtyTest(unittest.TestCase):
                     break
                 if not data:
                     break
-                sys.stdout.write(str(data.replace(b'\r\n', b'\n'),
-                                     encoding='ascii'))
+                sys.stdout.write(str(data.replace(b"\r\n", b"\n"), encoding="ascii"))
 
             ##line = os.read(master_fd, 80)
             ##lines = line.replace('\r\n', '\n').split('\n')
@@ -194,8 +192,10 @@ class PtyTest(unittest.TestCase):
 
         # pty.fork() passed.
 
+
 def test_main(verbose=None):
     run_unittest(PtyTest)
+
 
 if __name__ == "__main__":
     test_main()

@@ -22,24 +22,24 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
 
         self.lineedit = QtGui.QLineEdit(self)
         self.lineedit.move(10, 10)
 
         # required >= Qt 4.7
-        self.lineedit.setPlaceholderText("placeholder")
+        self.lineedit.set_placeholder_text("placeholder")
 
 
-#        http://doc.qt.nokia.com/latest/qlineedit.html#inputMask-prop
+#        http://doc.qt.nokia.com/latest/qlineedit.html#input_mask-prop
 #        mac_address_mask = "HH:HH:HH:HH:HH:HH;_"
-#        self.lineedit.setInputMask(mac_address_mask)
+#        self.lineedit.set_input_mask(mac_address_mask)
 
-        self.lineedit.cursorPositionChanged.connect(self._lineedit_cursorPositionChanged)
-        self.lineedit.returnPressed.connect(self._lineedit_returnPressed)
+        self.lineedit.cursor_position_changed.connect(self._lineedit_cursorPositionChanged)
+        self.lineedit.return_pressed.connect(self._lineedit_returnPressed)
 
-        self.setFocus()
+        self.set_focus()
 
     def _lineedit_cursorPositionChanged(self, old, new):
         print old, new

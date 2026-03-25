@@ -5,6 +5,8 @@ from collections import namedtuple, OrderedDict
 __unittest = True
 
 _MAX_LENGTH = 80
+
+
 def safe_repr(obj, short=False):
     try:
         result = repr(obj)
@@ -12,10 +14,12 @@ def safe_repr(obj, short=False):
         result = object.__repr__(obj)
     if not short or len(result) < _MAX_LENGTH:
         return result
-    return result[:_MAX_LENGTH] + ' [truncated]...'
+    return result[:_MAX_LENGTH] + " [truncated]..."
+
 
 def strclass(cls):
     return "%s.%s" % (cls.__module__, cls.__name__)
+
 
 def sorted_list_difference(expected, actual):
     """Finds elements in only one or the other of two, sorted input lists.
@@ -75,14 +79,17 @@ def unorderable_list_difference(expected, actual):
     # anything left in actual is unexpected
     return missing, actual
 
+
 def three_way_cmp(x, y):
     """Return -1 if x < y, 0 if x == y and 1 if x > y"""
     return (x > y) - (x < y)
 
-_Mismatch = namedtuple('Mismatch', 'actual expected value')
+
+_Mismatch = namedtuple("Mismatch", "actual expected value")
+
 
 def _count_diff_all_purpose(actual, expected):
-    'Returns list of (cnt_act, cnt_exp, elem) triples where the counts differ'
+    "Returns list of (cnt_act, cnt_exp, elem) triples where the counts differ"
     # elements need not be hashable
     s, t = list(actual), list(expected)
     m, n = len(s), len(t)
@@ -116,15 +123,17 @@ def _count_diff_all_purpose(actual, expected):
         result.append(diff)
     return result
 
+
 def _ordered_count(iterable):
-    'Return dict of element counts, in the order they were first seen'
+    "Return dict of element counts, in the order they were first seen"
     c = OrderedDict()
     for elem in iterable:
         c[elem] = c.get(elem, 0) + 1
     return c
 
+
 def _count_diff_hashable(actual, expected):
-    'Returns list of (cnt_act, cnt_exp, elem) triples where the counts differ'
+    "Returns list of (cnt_act, cnt_exp, elem) triples where the counts differ"
     # elements must be hashable
     s, t = _ordered_count(actual), _ordered_count(expected)
     result = []

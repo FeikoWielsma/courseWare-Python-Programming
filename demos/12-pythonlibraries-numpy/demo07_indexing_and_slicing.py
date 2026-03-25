@@ -5,9 +5,9 @@ F = np.array([1, 1, 2, 3, 5, 8, 13, 21])
 print(F[0])
 # print the last element of F
 print(F[-1])
-B = np.array([ [[111, 112], [121, 122]],
-               [[211, 212], [221, 222]],
-               [[311, 312], [321, 322]] ])
+B = np.array(
+    [[[111, 112], [121, 122]], [[211, 212], [221, 222]], [[311, 312], [321, 322]]]
+)
 print(B[0][1][0])
 
 # If we execute the code above, we will get the following:

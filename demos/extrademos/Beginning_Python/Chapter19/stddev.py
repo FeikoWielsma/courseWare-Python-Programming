@@ -2,6 +2,7 @@
 
 from math import sqrt
 
+
 def stddev(numbers):
     n = len(numbers)
     sum = 0

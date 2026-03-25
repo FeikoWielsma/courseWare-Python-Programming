@@ -13,16 +13,16 @@ import tkinter
 # weight/slant
 NORMAL = "normal"
 ROMAN = "roman"
-BOLD   = "bold"
+BOLD = "bold"
 ITALIC = "italic"
 
+
 def nametofont(name):
-    """Given the name of a tk named font, returns a Font representation.
-    """
+    """Given the name of a tk named font, returns a Font representation."""
     return Font(name=name, exists=True)
 
-class Font:
 
+class Font:
     """Represents a named font.
 
     Constructor options are:
@@ -47,20 +47,20 @@ class Font:
     def _set(self, kw):
         options = []
         for k, v in kw.items():
-            options.append("-"+k)
+            options.append("-" + k)
             options.append(str(v))
         return tuple(options)
 
     def _get(self, args):
         options = []
         for k in args:
-            options.append("-"+k)
+            options.append("-" + k)
         return tuple(options)
 
     def _mkdict(self, args):
         options = {}
         for i in range(0, len(args), 2):
-            options[args[i][1:]] = args[i+1]
+            options[args[i][1:]] = args[i + 1]
         return options
 
     def __init__(self, root=None, font=None, name=None, exists=False, **options):
@@ -80,7 +80,8 @@ class Font:
             # confirm font exists
             if self.name not in root.tk.call("font", "names"):
                 raise tkinter._tkinter.TclError(
-                    "named font %s does not already exist" % (self.name,))
+                    "named font %s does not already exist" % (self.name,)
+                )
             # if font config info supplied, apply it
             if font:
                 root.tk.call("font", "configure", self.name, *font)
@@ -89,9 +90,9 @@ class Font:
             root.tk.call("font", "create", self.name, *font)
             self.delete_font = True
         # backlinks!
-        self._root  = root
+        self._root = root
         self._split = root.tk.splitlist
-        self._call  = root.tk.call
+        self._call = root.tk.call
 
     def __str__(self):
         return self.name
@@ -121,25 +122,20 @@ class Font:
     def actual(self, option=None):
         "Return actual font attributes"
         if option:
-            return self._call("font", "actual", self.name, "-"+option)
+            return self._call("font", "actual", self.name, "-" + option)
         else:
-            return self._mkdict(
-                self._split(self._call("font", "actual", self.name))
-                )
+            return self._mkdict(self._split(self._call("font", "actual", self.name)))
 
     def cget(self, option):
         "Get font attribute"
-        return self._call("font", "config", self.name, "-"+option)
+        return self._call("font", "config", self.name, "-" + option)
 
     def config(self, **options):
         "Modify font attributes"
         if options:
-            self._call("font", "config", self.name,
-                  *self._set(options))
+            self._call("font", "config", self.name, *self._set(options))
         else:
-            return self._mkdict(
-                self._split(self._call("font", "config", self.name))
-                )
+            return self._mkdict(self._split(self._call("font", "config", self.name)))
 
     configure = config
 
@@ -154,15 +150,14 @@ class Font:
         using this font before calling this method."""
 
         if options:
-            return int(
-                self._call("font", "metrics", self.name, self._get(options))
-                )
+            return int(self._call("font", "metrics", self.name, self._get(options)))
         else:
             res = self._split(self._call("font", "metrics", self.name))
             options = {}
             for i in range(0, len(res), 2):
-                options[res[i][1:]] = int(res[i+1])
+                options[res[i][1:]] = int(res[i + 1])
             return options
+
 
 def families(root=None):
     "Get font families (as a tuple)"
@@ -170,17 +165,18 @@ def families(root=None):
         root = tkinter._default_root
     return root.tk.splitlist(root.tk.call("font", "families"))
 
+
 def names(root=None):
     "Get names of defined fonts (as a tuple)"
     if not root:
         root = tkinter._default_root
     return root.tk.splitlist(root.tk.call("font", "names"))
 
+
 # --------------------------------------------------------------------
 # test stuff
 
 if __name__ == "__main__":
-
     root = tkinter.Tk()
 
     # create a font

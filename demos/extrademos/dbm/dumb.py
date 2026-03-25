@@ -31,8 +31,8 @@ _BLOCKSIZE = 512
 
 error = IOError
 
-class _Database(collections.MutableMapping):
 
+class _Database(collections.MutableMapping):
     # The on-disk directory and data files can remain in mutually
     # inconsistent states for an arbitrarily long time (see comments
     # at the end of __setitem__).  This is only repaired when _commit()
@@ -41,8 +41,8 @@ class _Database(collections.MutableMapping):
     # already have gotten rebound to None.  Since it's crucial that
     # _commit() finish successfully, we can't ignore shutdown races
     # here, and _commit() must not reference any globals.
-    _os = _os       # for _commit()
-    _io = _io       # for _commit()
+    _os = _os  # for _commit()
+    _io = _io  # for _commit()
 
     def __init__(self, filebasename, mode):
         self._mode = mode
@@ -52,23 +52,23 @@ class _Database(collections.MutableMapping):
         # where key is the string key, pos is the offset into the dat
         # file of the associated value's first byte, and siz is the number
         # of bytes in the associated value.
-        self._dirfile = filebasename + '.dir'
+        self._dirfile = filebasename + ".dir"
 
         # The data file is a binary file pointed into by the directory
         # file, and holds the values associated with keys.  Each value
         # begins at a _BLOCKSIZE-aligned byte offset, and is a raw
         # binary 8-bit string value.
-        self._datfile = filebasename + '.dat'
-        self._bakfile = filebasename + '.bak'
+        self._datfile = filebasename + ".dat"
+        self._bakfile = filebasename + ".bak"
 
         # The index is an in-memory dict, mirroring the directory file.
         self._index = None  # maps keys to (pos, siz) pairs
 
         # Mod by Jack: create data file if needed
         try:
-            f = _io.open(self._datfile, 'r', encoding="Latin-1")
+            f = _io.open(self._datfile, "r", encoding="Latin-1")
         except IOError:
-            f = _io.open(self._datfile, 'w', encoding="Latin-1")
+            f = _io.open(self._datfile, "w", encoding="Latin-1")
             self._chmod(self._datfile)
         f.close()
         self._update()
@@ -77,14 +77,14 @@ class _Database(collections.MutableMapping):
     def _update(self):
         self._index = {}
         try:
-            f = _io.open(self._dirfile, 'r', encoding="Latin-1")
+            f = _io.open(self._dirfile, "r", encoding="Latin-1")
         except IOError:
             pass
         else:
             for line in f:
                 line = line.rstrip()
                 key, pos_and_siz_pair = eval(line)
-                key = key.encode('Latin-1')
+                key = key.encode("Latin-1")
                 self._index[key] = pos_and_siz_pair
             f.close()
 
@@ -108,21 +108,21 @@ class _Database(collections.MutableMapping):
         except self._os.error:
             pass
 
-        f = self._io.open(self._dirfile, 'w', encoding="Latin-1")
+        f = self._io.open(self._dirfile, "w", encoding="Latin-1")
         self._chmod(self._dirfile)
         for key, pos_and_siz_pair in self._index.items():
             # Use Latin-1 since it has no qualms with any value in any
             # position; UTF-8, though, does care sometimes.
-            f.write("%r, %r\n" % (key.decode('Latin-1'), pos_and_siz_pair))
+            f.write("%r, %r\n" % (key.decode("Latin-1"), pos_and_siz_pair))
         f.close()
 
     sync = _commit
 
     def __getitem__(self, key):
         if isinstance(key, str):
-            key = key.encode('utf-8')
-        pos, siz = self._index[key]     # may raise KeyError
-        f = _io.open(self._datfile, 'rb')
+            key = key.encode("utf-8")
+        pos, siz = self._index[key]  # may raise KeyError
+        f = _io.open(self._datfile, "rb")
         f.seek(pos)
         dat = f.read(siz)
         f.close()
@@ -133,11 +133,11 @@ class _Database(collections.MutableMapping):
     # to get to an aligned offset.  Return pair
     #     (starting offset of val, len(val))
     def _addval(self, val):
-        f = _io.open(self._datfile, 'rb+')
+        f = _io.open(self._datfile, "rb+")
         f.seek(0, 2)
         pos = int(f.tell())
         npos = ((pos + _BLOCKSIZE - 1) // _BLOCKSIZE) * _BLOCKSIZE
-        f.write(b'\0'*(npos-pos))
+        f.write(b"\0" * (npos - pos))
         pos = npos
         f.write(val)
         f.close()
@@ -148,7 +148,7 @@ class _Database(collections.MutableMapping):
     # pos to hold val, without overwriting some other value.  Return
     # pair (pos, len(val)).
     def _setval(self, pos, val):
-        f = _io.open(self._datfile, 'rb+')
+        f = _io.open(self._datfile, "rb+")
         f.seek(pos)
         f.write(val)
         f.close()
@@ -159,18 +159,18 @@ class _Database(collections.MutableMapping):
     # the in-memory index dict, and append one to the directory file.
     def _addkey(self, key, pos_and_siz_pair):
         self._index[key] = pos_and_siz_pair
-        f = _io.open(self._dirfile, 'a', encoding="Latin-1")
+        f = _io.open(self._dirfile, "a", encoding="Latin-1")
         self._chmod(self._dirfile)
         f.write("%r, %r\n" % (key.decode("Latin-1"), pos_and_siz_pair))
         f.close()
 
     def __setitem__(self, key, val):
         if isinstance(key, str):
-            key = key.encode('utf-8')
+            key = key.encode("utf-8")
         elif not isinstance(key, (bytes, bytearray)):
             raise TypeError("keys must be bytes or strings")
         if isinstance(val, str):
-            val = val.encode('utf-8')
+            val = val.encode("utf-8")
         elif not isinstance(val, (bytes, bytearray)):
             raise TypeError("values must be bytes or strings")
         if key not in self._index:
@@ -199,7 +199,7 @@ class _Database(collections.MutableMapping):
 
     def __delitem__(self, key):
         if isinstance(key, str):
-            key = key.encode('utf-8')
+            key = key.encode("utf-8")
         # The blocks used by the associated value are lost.
         del self._index[key]
         # XXX It's unclear why we do a _commit() here (the code always
@@ -216,11 +216,12 @@ class _Database(collections.MutableMapping):
 
     def __contains__(self, key):
         if isinstance(key, str):
-            key = key.encode('utf-8')
+            key = key.encode("utf-8")
         return key in self._index
 
     def iterkeys(self):
         return iter(self._index.keys())
+
     __iter__ = iterkeys
 
     def __len__(self):
@@ -233,7 +234,7 @@ class _Database(collections.MutableMapping):
     __del__ = close
 
     def _chmod(self, file):
-        if hasattr(self._os, 'chmod'):
+        if hasattr(self._os, "chmod"):
             self._os.chmod(file, self._mode)
 
 

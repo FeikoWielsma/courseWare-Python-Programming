@@ -1,9 +1,7 @@
 import sys
 
-print('\nThe PYTHONPATH is', sys.path)
+print("\n_the PYTHONPATH is", sys.path)
 
-print('The command line arguments are:')
+print("The command line arguments are:")
 for i in sys.argv:
     print(i)
- 
-

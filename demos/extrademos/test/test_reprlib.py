@@ -1,6 +1,6 @@
 """
-  Test cases for the repr module
-  Nick Mathewson
+Test cases for the repr module
+Nick Mathewson
 """
 
 import sys
@@ -9,7 +9,7 @@ import shutil
 import unittest
 
 from test.support import run_unittest
-from reprlib import repr as r # Don't shadow builtin repr
+from reprlib import repr as r  # Don't shadow builtin repr
 from reprlib import Repr
 from reprlib import recursive_repr
 
@@ -20,19 +20,19 @@ def nestedTuple(nesting):
         t = (t,)
     return t
 
-class ReprTests(unittest.TestCase):
 
+class ReprTests(unittest.TestCase):
     def test_string(self):
         eq = self.assertEqual
         eq(r("abc"), "'abc'")
-        eq(r("abcdefghijklmnop"),"'abcdefghijklmnop'")
+        eq(r("abcdefghijklmnop"), "'abcdefghijklmnop'")
 
-        s = "a"*30+"b"*30
+        s = "a" * 30 + "b" * 30
         expected = repr(s)[:13] + "..." + repr(s)[-14:]
         eq(r(s), expected)
 
         eq(r("\"'"), repr("\"'"))
-        s = "\""*30+"'"*100
+        s = '"' * 30 + "'" * 100
         expected = repr(s)[:13] + "..." + repr(s)[-14:]
         eq(r(s), expected)
 
@@ -86,26 +86,25 @@ class ReprTests(unittest.TestCase):
 
         # Dictionaries give up after 4.
         eq(r({}), "{}")
-        d = {'alice': 1, 'bob': 2, 'charles': 3, 'dave': 4}
+        d = {"alice": 1, "bob": 2, "charles": 3, "dave": 4}
         eq(r(d), "{'alice': 1, 'bob': 2, 'charles': 3, 'dave': 4}")
-        d['arthur'] = 1
+        d["arthur"] = 1
         eq(r(d), "{'alice': 1, 'arthur': 1, 'bob': 2, 'charles': 3, ...}")
 
         # array.array after 5.
-        eq(r(array('i')), "array('i', [])")
-        eq(r(array('i', [1])), "array('i', [1])")
-        eq(r(array('i', [1, 2])), "array('i', [1, 2])")
-        eq(r(array('i', [1, 2, 3])), "array('i', [1, 2, 3])")
-        eq(r(array('i', [1, 2, 3, 4])), "array('i', [1, 2, 3, 4])")
-        eq(r(array('i', [1, 2, 3, 4, 5])), "array('i', [1, 2, 3, 4, 5])")
-        eq(r(array('i', [1, 2, 3, 4, 5, 6])),
-                   "array('i', [1, 2, 3, 4, 5, ...])")
+        eq(r(array("i")), "array('i', [])")
+        eq(r(array("i", [1])), "array('i', [1])")
+        eq(r(array("i", [1, 2])), "array('i', [1, 2])")
+        eq(r(array("i", [1, 2, 3])), "array('i', [1, 2, 3])")
+        eq(r(array("i", [1, 2, 3, 4])), "array('i', [1, 2, 3, 4])")
+        eq(r(array("i", [1, 2, 3, 4, 5])), "array('i', [1, 2, 3, 4, 5])")
+        eq(r(array("i", [1, 2, 3, 4, 5, 6])), "array('i', [1, 2, 3, 4, 5, ...])")
 
     def test_numbers(self):
         eq = self.assertEqual
         eq(r(123), repr(123))
         eq(r(123), repr(123))
-        eq(r(1.0/3), repr(1.0/3))
+        eq(r(1.0 / 3), repr(1.0 / 3))
 
         n = 10**100
         expected = repr(n)[:18] + "..." + repr(n)[-19:]
@@ -116,12 +115,12 @@ class ReprTests(unittest.TestCase):
         i1 = ClassWithRepr("a")
         eq(r(i1), repr(i1))
 
-        i2 = ClassWithRepr("x"*1000)
+        i2 = ClassWithRepr("x" * 1000)
         expected = repr(i2)[:13] + "..." + repr(i2)[-14:]
         eq(r(i2), expected)
 
         i3 = ClassWithFailingRepr()
-        eq(r(i3), ("<ClassWithFailingRepr instance at %x>"%id(i3)))
+        eq(r(i3), ("<ClassWithFailingRepr instance at %x>" % id(i3)))
 
         s = r(ClassWithFailingRepr)
         self.assertTrue(s.startswith("<class "))
@@ -129,23 +128,23 @@ class ReprTests(unittest.TestCase):
         self.assertIn(s.find("..."), [12, 13])
 
     def test_lambda(self):
-        self.assertTrue(repr(lambda x: x).startswith(
-            "<function <lambda"))
+        self.assertTrue(repr(lambda x: x).startswith("<function <lambda"))
         # XXX anonymous functions?  see func_repr
 
     def test_builtin_function(self):
         eq = self.assertEqual
         # Functions
-        eq(repr(hash), '<built-in function hash>')
+        eq(repr(hash), "<built-in function hash>")
         # Methods
-        self.assertTrue(repr(''.split).startswith(
-            '<built-in method split of str object at 0x'))
+        self.assertTrue(
+            repr("".split).startswith("<built-in method split of str object at 0x")
+        )
 
     def test_range(self):
         eq = self.assertEqual
-        eq(repr(range(1)), 'range(0, 1)')
-        eq(repr(range(1, 2)), 'range(1, 2)')
-        eq(repr(range(1, 4, 3)), 'range(1, 4, 3)')
+        eq(repr(range(1)), "range(0, 1)")
+        eq(repr(range(1, 2)), "range(1, 2)")
+        eq(repr(range(1, 4, 3)), "range(1, 4, 3)")
 
     def test_nesting(self):
         eq = self.assertEqual
@@ -156,10 +155,14 @@ class ReprTests(unittest.TestCase):
         eq(r(nestedTuple(6)), "(((((((),),),),),),)")
         eq(r(nestedTuple(7)), "(((((((...),),),),),),)")
 
-        eq(r({ nestedTuple(5) : nestedTuple(5) }),
-           "{((((((),),),),),): ((((((),),),),),)}")
-        eq(r({ nestedTuple(6) : nestedTuple(6) }),
-           "{((((((...),),),),),): ((((((...),),),),),)}")
+        eq(
+            r({nestedTuple(5): nestedTuple(5)}),
+            "{((((((),),),),),): ((((((),),),),),)}",
+        )
+        eq(
+            r({nestedTuple(6): nestedTuple(6)}),
+            "{((((((...),),),),),): ((((((...),),),),),)}",
+        )
 
         eq(r([[[[[[{}]]]]]]), "[[[[[[{}]]]]]]")
         eq(r([[[[[[[{}]]]]]]]), "[[[[[[[...]]]]]]]")
@@ -172,16 +175,19 @@ class ReprTests(unittest.TestCase):
         eq = self.assertEqual
         # method descriptors
         eq(repr(dict.items), "<method 'items' of 'dict' objects>")
+
         # XXX member descriptors
         # XXX attribute descriptors
         # XXX slot descriptors
         # static and class methods
         class C:
-            def foo(cls): pass
+            def foo(cls):
+                pass
+
         x = staticmethod(C.foo)
-        self.assertTrue(repr(x).startswith('<staticmethod object at 0x'))
+        self.assertTrue(repr(x).startswith("<staticmethod object at 0x"))
         x = classmethod(C.foo)
-        self.assertTrue(repr(x).startswith('<classmethod object at 0x'))
+        self.assertTrue(repr(x).startswith("<classmethod object at 0x"))
 
     def test_unsortable(self):
         # Repr.repr() used to call sorted() on sets, frozensets and dicts
@@ -193,23 +199,25 @@ class ReprTests(unittest.TestCase):
         r(y)
         r(z)
 
-def touch(path, text=''):
-    fp = open(path, 'w')
+
+def touch(path, text=""):
+    fp = open(path, "w")
     fp.write(text)
     fp.close()
 
+
 class LongReprTest(unittest.TestCase):
     def setUp(self):
-        longname = 'areallylongpackageandmodulenametotestreprtruncation'
+        longname = "areallylongpackageandmodulenametotestreprtruncation"
         self.pkgname = os.path.join(longname)
         self.subpkgname = os.path.join(longname, longname)
         # Make the package and subpackage
         shutil.rmtree(self.pkgname, ignore_errors=True)
         os.mkdir(self.pkgname)
-        touch(os.path.join(self.pkgname, '__init__.py'))
+        touch(os.path.join(self.pkgname, "__init__.py"))
         shutil.rmtree(self.subpkgname, ignore_errors=True)
         os.mkdir(self.subpkgname)
-        touch(os.path.join(self.subpkgname, '__init__.py'))
+        touch(os.path.join(self.subpkgname, "__init__.py"))
         # Remember where we are
         self.here = os.getcwd()
         sys.path.insert(0, self.here)
@@ -231,21 +239,35 @@ class LongReprTest(unittest.TestCase):
 
     def test_module(self):
         eq = self.assertEqual
-        touch(os.path.join(self.subpkgname, self.pkgname + '.py'))
-        from areallylongpackageandmodulenametotestreprtruncation.areallylongpackageandmodulenametotestreprtruncation import areallylongpackageandmodulenametotestreprtruncation
-        eq(repr(areallylongpackageandmodulenametotestreprtruncation),
-           "<module '%s' from '%s'>" % (areallylongpackageandmodulenametotestreprtruncation.__name__, areallylongpackageandmodulenametotestreprtruncation.__file__))
+        touch(os.path.join(self.subpkgname, self.pkgname + ".py"))
+        from areallylongpackageandmodulenametotestreprtruncation.areallylongpackageandmodulenametotestreprtruncation import (
+            areallylongpackageandmodulenametotestreprtruncation,
+        )
+
+        eq(
+            repr(areallylongpackageandmodulenametotestreprtruncation),
+            "<module '%s' from '%s'>"
+            % (
+                areallylongpackageandmodulenametotestreprtruncation.__name__,
+                areallylongpackageandmodulenametotestreprtruncation.__file__,
+            ),
+        )
         eq(repr(sys), "<module 'sys' (built-in)>")
 
     def test_type(self):
         eq = self.assertEqual
-        touch(os.path.join(self.subpkgname, 'foo.py'), '''\
+        touch(
+            os.path.join(self.subpkgname, "foo.py"),
+            """\
 class foo(object):
     pass
-''')
-        from areallylongpackageandmodulenametotestreprtruncation.areallylongpackageandmodulenametotestreprtruncation import foo
-        eq(repr(foo.foo),
-               "<class '%s.foo'>" % foo.__name__)
+""",
+        )
+        from areallylongpackageandmodulenametotestreprtruncation.areallylongpackageandmodulenametotestreprtruncation import (
+            foo,
+        )
+
+        eq(repr(foo.foo), "<class '%s.foo'>" % foo.__name__)
 
     def test_object(self):
         # XXX Test the repr of a type with a really long tp_name but with no
@@ -253,47 +275,72 @@ class foo(object):
         pass
 
     def test_class(self):
-        touch(os.path.join(self.subpkgname, 'bar.py'), '''\
+        touch(
+            os.path.join(self.subpkgname, "bar.py"),
+            """\
 class bar:
     pass
-''')
-        from areallylongpackageandmodulenametotestreprtruncation.areallylongpackageandmodulenametotestreprtruncation import bar
+""",
+        )
+        from areallylongpackageandmodulenametotestreprtruncation.areallylongpackageandmodulenametotestreprtruncation import (
+            bar,
+        )
+
         # Module name may be prefixed with "test.", depending on how run.
         self.assertEqual(repr(bar.bar), "<class '%s.bar'>" % bar.__name__)
 
     def test_instance(self):
-        touch(os.path.join(self.subpkgname, 'baz.py'), '''\
+        touch(
+            os.path.join(self.subpkgname, "baz.py"),
+            """\
 class baz:
     pass
-''')
-        from areallylongpackageandmodulenametotestreprtruncation.areallylongpackageandmodulenametotestreprtruncation import baz
+""",
+        )
+        from areallylongpackageandmodulenametotestreprtruncation.areallylongpackageandmodulenametotestreprtruncation import (
+            baz,
+        )
+
         ibaz = baz.baz()
-        self.assertTrue(repr(ibaz).startswith(
-            "<%s.baz object at 0x" % baz.__name__))
+        self.assertTrue(repr(ibaz).startswith("<%s.baz object at 0x" % baz.__name__))
 
     def test_method(self):
         eq = self.assertEqual
-        touch(os.path.join(self.subpkgname, 'qux.py'), '''\
+        touch(
+            os.path.join(self.subpkgname, "qux.py"),
+            """\
 class aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:
     def amethod(self): pass
-''')
-        from areallylongpackageandmodulenametotestreprtruncation.areallylongpackageandmodulenametotestreprtruncation import qux
+""",
+        )
+        from areallylongpackageandmodulenametotestreprtruncation.areallylongpackageandmodulenametotestreprtruncation import (
+            qux,
+        )
+
         # Unbound methods first
-        self.assertTrue(repr(qux.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.amethod).startswith(
-        '<function amethod'))
+        self.assertTrue(
+            repr(
+                qux.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.amethod
+            ).startswith("<function amethod")
+        )
         # Bound method next
         iqux = qux.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa()
-        self.assertTrue(repr(iqux.amethod).startswith(
-            '<bound method aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.amethod of <%s.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa object at 0x' \
-            % (qux.__name__,) ))
+        self.assertTrue(
+            repr(iqux.amethod).startswith(
+                "<bound method aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.amethod of <%s.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa object at 0x"
+                % (qux.__name__,)
+            )
+        )
 
     def test_builtin_function(self):
         # XXX test built-in functions and methods with really long names
         pass
 
+
 class ClassWithRepr:
     def __init__(self, s):
         self.s = s
+
     def __repr__(self):
         return "ClassWithRepr(%r)" % self.s
 
@@ -302,33 +349,40 @@ class ClassWithFailingRepr:
     def __repr__(self):
         raise Exception("This should be caught by Repr.repr_instance")
 
+
 class MyContainer:
-    'Helper class for TestRecursiveRepr'
+    "Helper class for TestRecursiveRepr"
+
     def __init__(self, values):
         self.values = list(values)
+
     def append(self, value):
         self.values.append(value)
+
     @recursive_repr()
     def __repr__(self):
-        return '<' + ', '.join(map(str, self.values)) + '>'
+        return "<" + ", ".join(map(str, self.values)) + ">"
+
 
 class MyContainer2(MyContainer):
-    @recursive_repr('+++')
+    @recursive_repr("+++")
     def __repr__(self):
-        return '<' + ', '.join(map(str, self.values)) + '>'
+        return "<" + ", ".join(map(str, self.values)) + ">"
+
 
 class TestRecursiveRepr(unittest.TestCase):
     def test_recursive_repr(self):
-        m = MyContainer(list('abcde'))
+        m = MyContainer(list("abcde"))
         m.append(m)
-        m.append('x')
+        m.append("x")
         m.append(m)
-        self.assertEqual(repr(m), '<a, b, c, d, e, ..., x, ...>')
-        m = MyContainer2(list('abcde'))
+        self.assertEqual(repr(m), "<a, b, c, d, e, ..., x, ...>")
+        m = MyContainer2(list("abcde"))
         m.append(m)
-        m.append('x')
+        m.append("x")
         m.append(m)
-        self.assertEqual(repr(m), '<a, b, c, d, e, +++, x, +++>')
+        self.assertEqual(repr(m), "<a, b, c, d, e, +++, x, +++>")
+
 
 def test_main():
     run_unittest(ReprTests)

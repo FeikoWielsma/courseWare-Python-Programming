@@ -5,7 +5,6 @@ from test import support
 
 
 class StructSeqTest(unittest.TestCase):
-
     def test_tuple(self):
         t = time.gmtime()
         self.assertIsInstance(t, tuple)
@@ -23,18 +22,20 @@ class StructSeqTest(unittest.TestCase):
         for j in range(-len(t), len(t)):
             self.assertEqual(t[:j], astuple[:j])
 
-        self.assertRaises(IndexError, t.__getitem__, -len(t)-1)
+        self.assertRaises(IndexError, t.__getitem__, -len(t) - 1)
         self.assertRaises(IndexError, t.__getitem__, len(t))
-        for i in range(-len(t), len(t)-1):
+        for i in range(-len(t), len(t) - 1):
             self.assertEqual(t[i], astuple[i])
 
     def test_repr(self):
         t = time.gmtime()
         self.assertTrue(repr(t))
         t = time.gmtime(0)
-        self.assertEqual(repr(t),
+        self.assertEqual(
+            repr(t),
             "time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=0, "
-            "tm_min=0, tm_sec=0, tm_wday=3, tm_yday=1, tm_isdst=0)")
+            "tm_min=0, tm_sec=0, tm_wday=3, tm_yday=1, tm_isdst=0)",
+        )
         # os.stat() gives a complicated struct sequence.
         st = os.stat(__file__)
         rep = repr(st)
@@ -47,14 +48,14 @@ class StructSeqTest(unittest.TestCase):
         t1 = time.gmtime()
         t2 = t1 + tuple(t1)
         for i in range(len(t1)):
-            self.assertEqual(t2[i], t2[i+len(t1)])
+            self.assertEqual(t2[i], t2[i + len(t1)])
 
     def test_repeat(self):
         t1 = time.gmtime()
         t2 = 3 * t1
         for i in range(len(t1)):
-            self.assertEqual(t2[i], t2[i+len(t1)])
-            self.assertEqual(t2[i], t2[i+2*len(t1)])
+            self.assertEqual(t2[i], t2[i + len(t1)])
+            self.assertEqual(t2[i], t2[i + 2 * len(t1)])
 
     def test_contains(self):
         t1 = time.gmtime()
@@ -79,7 +80,7 @@ class StructSeqTest(unittest.TestCase):
     def test_fields(self):
         t = time.gmtime()
         self.assertEqual(len(t), t.n_fields)
-        self.assertEqual(t.n_fields, t.n_sequence_fields+t.n_unnamed_fields)
+        self.assertEqual(t.n_fields, t.n_sequence_fields + t.n_unnamed_fields)
 
     def test_constructor(self):
         t = time.struct_time
@@ -101,6 +102,7 @@ class StructSeqTest(unittest.TestCase):
         class C:
             def __getitem__(self, i):
                 raise Exc
+
             def __len__(self):
                 return 9
 
@@ -119,11 +121,12 @@ class StructSeqTest(unittest.TestCase):
             for stop in indices:
                 # Skip step 0 (invalid)
                 for step in indices[1:]:
-                    self.assertEqual(list(t[start:stop:step]),
-                                     L[start:stop:step])
+                    self.assertEqual(list(t[start:stop:step]), L[start:stop:step])
+
 
 def test_main():
     support.run_unittest(StructSeqTest)
+
 
 if __name__ == "__main__":
     test_main()

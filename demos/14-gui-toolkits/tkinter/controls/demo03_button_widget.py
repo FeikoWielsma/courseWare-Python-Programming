@@ -1,13 +1,13 @@
 from tkinter import *
 
-mainWindow = Tk()
-mainWindow.title("Hello tkinter")
-mainWindow.geometry('350x200')
+main_window = Tk()
+main_window.title("Hello tkinter")
+main_window.geometry("350x200")
 
-lbl = Label(mainWindow, text="Hello")
+lbl = Label(main_window, text="Hello")
 lbl.grid(column=0, row=0)
 
-btn = Button(mainWindow, text="Click Me")
+btn = Button(main_window, text="Click Me")
 btn.grid(column=0, row=1)
 
-mainWindow.mainloop()
+main_window.mainloop()

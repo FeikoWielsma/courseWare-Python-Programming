@@ -5,15 +5,18 @@ import unittest
 from test import support
 
 x = 2
+
+
 def nester():
     x = 3
+
     def inner():
         return x
+
     return inner()
 
 
 class TestFuture(unittest.TestCase):
-
     def test_floor_div_operator(self):
         self.assertEqual(7 // 2, 3)
 
@@ -23,8 +26,10 @@ class TestFuture(unittest.TestCase):
     def test_nested_scopes(self):
         self.assertEqual(nester(), 3)
 
+
 def test_main():
     support.run_unittest(TestFuture)
+
 
 if __name__ == "__main__":
     test_main()

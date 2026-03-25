@@ -1,11 +1,11 @@
-from xml.dom import minidom 
-xmldoc = minidom.parse('courses.xml') 
-reflist = xmldoc.getElementsByTagName('course')      
+from xml.dom import minidom
 
-firstref = reflist[0]                             
-print (firstref.toxml()) 
+xmldoc = minidom.parse("courses.xml")
+reflist = xmldoc.get_elements_by_tag_name("course")
 
-plist = firstref.getElementsByTagName("price")        
+firstref = reflist[0]
+print(firstref.toxml())
 
-print (plist[0].toxml())                            
- 
+plist = firstref.get_elements_by_tag_name("price")
+
+print(plist[0].toxml())

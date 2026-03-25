@@ -3,11 +3,20 @@ Path operations common to more than one OS
 Do not use directly.  The OS specific modules import the appropriate
 functions from this module themselves.
 """
+
 import os
 import stat
 
-__all__ = ['commonprefix', 'exists', 'getatime', 'getctime', 'getmtime',
-           'getsize', 'isdir', 'isfile']
+__all__ = [
+    "commonprefix",
+    "exists",
+    "getatime",
+    "getctime",
+    "getmtime",
+    "getsize",
+    "isdir",
+    "isfile",
+]
 
 
 # Does a path exist?
@@ -67,7 +76,8 @@ def getctime(filename):
 # Return the longest prefix of all list elements.
 def commonprefix(m):
     "Given a list of pathnames, returns the longest common leading component"
-    if not m: return ''
+    if not m:
+        return ""
     s1 = min(m)
     s2 = max(m)
     for i, c in enumerate(s1):
@@ -75,10 +85,12 @@ def commonprefix(m):
             return s1[:i]
     return s1
 
+
 # Split a path in root and extension.
 # The extension is everything starting at the last dot in the last
 # pathname component; the root is everything before that.
 # It is always true that root + ext == p.
+
 
 # Generic implementation of splitext, to be parametrized with
 # the separators
@@ -99,7 +111,7 @@ def _splitext(p, sep, altsep, extsep):
         # skip all leading dots
         filenameIndex = sepIndex + 1
         while filenameIndex < dotIndex:
-            if p[filenameIndex:filenameIndex+1] != extsep:
+            if p[filenameIndex : filenameIndex + 1] != extsep:
                 return p[:dotIndex], p[dotIndex:]
             filenameIndex += 1
 

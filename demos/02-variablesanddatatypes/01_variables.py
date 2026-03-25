@@ -1,10 +1,10 @@
-counter = 100          # An integer assignment
+counter = 100  # An integer assignment
 print(counter)
 print(type(counter))
-miles = 1000.0       # A floating point
+miles = 1000.0  # A floating point
 print(miles)
 print(type(miles))
-name = "John"       # A string
+name = "John"  # A string
 print(name)
 print(type(name))
 
@@ -14,8 +14,8 @@ print(var1, var2)
 var3 = var1 + var2
 print(var3)
 
-var1 = 'somestring'
-var2 = 'otherstring'
+var1 = "somestring"
+var2 = "otherstring"
 print(var1, var2)
 var3 = var1 + var2
 print(var3)

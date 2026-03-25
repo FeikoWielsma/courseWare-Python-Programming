@@ -5,6 +5,7 @@ custom application window icon
 Tested environment:
     Mac OS X 10.6.8
 """
+
 import os
 import sys
 
@@ -12,7 +13,6 @@ try:
     from PySide import QtCore
     from PySide import QtGui
 except ImportError:
-    from PyQt4 import QtCore
     from PyQt4 import QtGui
 
 
@@ -25,20 +25,21 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
         icon = QtGui.QIcon(icon_path)
-        self.setWindowIcon(icon)
+        self.set_window_icon(icon)
 
     def show_and_raise(self):
         self.show()
         self.raise_()
 
+
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
 
     icon = QtGui.QIcon(icon_path)
-    app.setWindowIcon(icon)
+    app.set_window_icon(icon)
 
     demo = Demo()
     demo.show_and_raise()

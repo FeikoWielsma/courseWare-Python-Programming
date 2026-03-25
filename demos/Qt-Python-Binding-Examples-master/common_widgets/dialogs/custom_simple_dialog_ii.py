@@ -37,11 +37,11 @@ class CustomDlg(QtGui.QDialog):
         self.resize(400, 250)
 
         self._settings = settings
-        self.setModal(True)
+        self.set_modal(True)
 
         # add custom sub-widgets here ...
 
-    def keyPressEvent(self, evt):
+    def key_press_event(self, evt):
         close_win_cmd_w = (evt.key() == QtCore.Qt.Key_W and evt.modifiers() == QtCore.Qt.ControlModifier)
         close_win_esc = (evt.key() == QtCore.Qt.Key_Escape)
 
@@ -67,24 +67,24 @@ class QuitConfirmDlg(CustomDlg):
         self.resize(400, 250)
 
         self.tips_label = QtGui.QLabel("When you click the close button should me:", self)
-        self.tips_label.setGeometry(QtCore.QRect(40, 40, 280, 15))
+        self.tips_label.set_geometry(QtCore.QRect(40, 40, 280, 15))
 
         self.minimize_rbtn = QtGui.QRadioButton("&Minimize to system tray", self)
-        self.minimize_rbtn.setGeometry(QtCore.QRect(70, 90, 180, 20))
+        self.minimize_rbtn.set_geometry(QtCore.QRect(70, 90, 180, 20))
 
         self.exit_rbtn = QtGui.QRadioButton("&Exit program", self)
-        self.exit_rbtn.setGeometry(QtCore.QRect(70, 120, 110, 20))
+        self.exit_rbtn.set_geometry(QtCore.QRect(70, 120, 110, 20))
 
         self.no_confirm_cbox = QtGui.QCheckBox("&Don't ask me again", self)
-        self.no_confirm_cbox.setGeometry(QtCore.QRect(40, 180, 150, 20))
+        self.no_confirm_cbox.set_geometry(QtCore.QRect(40, 180, 150, 20))
 
-        self.minimize_rbtn.setChecked(not self._settings['x_action_is_quit'])
-        self.exit_rbtn.setChecked(self._settings['x_action_is_quit'])
-        self.no_confirm_cbox.setChecked(not self._settings['confirm'])
+        self.minimize_rbtn.set_checked(not self._settings['x_action_is_quit'])
+        self.exit_rbtn.set_checked(self._settings['x_action_is_quit'])
+        self.no_confirm_cbox.set_checked(not self._settings['confirm'])
 
     def get_inputs(self):
-        self._settings["x_action_is_quit"] = self.exit_rbtn.isChecked()
-        self._settings["confirm"] = not self.no_confirm_cbox.isChecked()
+        self._settings["x_action_is_quit"] = self.exit_rbtn.is_checked()
+        self._settings["confirm"] = not self.no_confirm_cbox.is_checked()
 
         return self._settings
 
@@ -102,7 +102,7 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
         self.settings_btn = QtGui.QPushButton("Settings", self)
         self.settings_btn.clicked.connect(self._settings_btn_clicked)

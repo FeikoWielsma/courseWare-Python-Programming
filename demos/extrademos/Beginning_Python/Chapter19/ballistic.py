@@ -2,9 +2,10 @@
 
 from math import sin, cos, pi
 
+
 def trajectory(velocity, angle):
     """Compute time of flight and range of a projectile.
-    
+
     For a projectile with initial 'velocity' in meters/sec launched at
     'angle' from horizontal in degrees, returns time of flight in sec
     and range in meters, neglecting friction."""

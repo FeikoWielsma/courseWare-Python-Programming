@@ -5,14 +5,18 @@
 
 from concurrent.futures import Future
 
+
 def patch_future(cls):
     def __iter__(self):
         if not self.done():
             yield self
         return self.result()
+
     cls.__iter__ = __iter__
 
+
 patch_future(Future)
+
 
 class Task:
     def __init__(self, gen):
@@ -35,10 +39,12 @@ class Task:
         except Exception as exc:
             self.step(None, exc)
 
+
 # ------- Example
-if __name__ == '__main__':
+if __name__ == "__main__":
     import time
     from concurrent.futures import ThreadPoolExecutor
+
     pool = ThreadPoolExecutor(max_workers=8)
 
     def func(x, y):
@@ -48,20 +54,20 @@ if __name__ == '__main__':
     def do_func(x, y):
         try:
             result = yield pool.submit(func, x, y)
-            print('Got:', result)
+            print("Got:", result)
         except Exception as e:
-            print('Failed:', repr(e))
+            print("Failed:", repr(e))
 
     def example5():
-        '''
+        """
         Now it works!
-        '''
+        """
+
         def after(delay, fut):
-            '''
+            """
             Run a future after a time delay.
-            '''
+            """
             yield from pool.submit(time.sleep, delay)
             yield from fut
 
         Task(after(10, do_func(2, 3))).step()
-

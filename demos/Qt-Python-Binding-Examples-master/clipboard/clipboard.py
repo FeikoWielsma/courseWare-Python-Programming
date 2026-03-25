@@ -32,17 +32,17 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
         
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
 #        if get_platform_name() == "Darwin":
-#            self.setAttribute(QtCore.Qt.WA_MacBrushedMetal, True)
+#            self.set_attribute(QtCore.Qt.WA_MacBrushedMetal, True)
 
 
     def show_and_raise(self):
         self.show()
         self.raise_()
 
-    def keyPressEvent(self, evt):
+    def key_press_event(self, evt):
         key = evt.key()
         modifier = evt.modifiers()
 
@@ -51,9 +51,9 @@ class Demo(QtGui.QWidget):
             print 'is_paste'
 
             clipboard = QtGui.QApplication.clipboard()
-            mime_data = clipboard.mimeData()
+            mime_data = clipboard.mime_data()
 
-            print "urls:", [i.toLocalFile() for i in mime_data.urls()]
+            print "urls:", [i.to_local_file() for i in mime_data.urls()]
             print "text:", mime_data.text()
             print "html:", mime_data.html()            
 

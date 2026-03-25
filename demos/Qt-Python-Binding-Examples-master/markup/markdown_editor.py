@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding:utf8 -*-
+# -*- coding:utf8 -*-
 import sys
 import web
 
@@ -10,7 +10,6 @@ try:
 except ImportError:
     from PyQt4 import QtCore
     from PyQt4 import QtGui
-    from PyQt4 import QtWebKit
 
 
 buf = '<msg id="2825" type="0" show-once="0"> <validity begin="2010-12-25 16:00:00.000" end="2015-10-26 15:59:59.000"/> <content type="text/plain">尊敬的用户，您的手机已停机，这将影响您使用飞信的部分功能。为了您的正常使用，请尽快充值。</content> <url style="auto:0;">http://space.fetion.com.cn/redirection/count/203</url> </msg>'
@@ -28,53 +27,49 @@ class Foo(QtGui.QWidget):
         super(Foo, self).__init__()
 
         x, y, w, h = 100, 100, 900, 600
-        self.setGeometry(x, y, w, h)
-        
+        self.set_geometry(x, y, w, h)
 
         self.source = QtGui.QTextEdit(self)
-#        self.preview = QtWebKit.QWebView(self)
+        #        self.preview = QtWebKit.QWebView(self)
         self.preview = QtGui.QTextEdit(self)
-        self.preview.setReadOnly(True)
-        self.preview.setFrameShape(QtGui.QFrame.NoFrame)
+        self.preview.set_read_only(True)
+        self.preview.set_frame_shape(QtGui.QFrame.NoFrame)
 
         qd = QtGui.QTextDocument()
-        qd.setDefaultStyleSheet(DEFAULT_STYLE)
+        qd.set_default_style_sheet(DEFAULT_STYLE)
 
-        self.preview.setDocument(qd)
+        self.preview.set_document(qd)
 
         self.splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
-        self.splitter.addWidget(self.source)
-        self.splitter.addWidget(self.preview)
+        self.splitter.add_widget(self.source)
+        self.splitter.add_widget(self.preview)
 
-
-#        widget = self.splitter.widget(0)
-#        policy = widget.sizePolicy()
-#        policy.setHorizontalStretch(1)
-#        policy.setVerticalStretch(1)
-#        widget.setSizePolicy(policy)
+        #        widget = self.splitter.widget(0)
+        #        policy = widget.size_policy()
+        #        policy.set_horizontal_stretch(1)
+        #        policy.set_vertical_stretch(1)
+        #        widget.set_size_policy(policy)
 
         self.hbox = QtGui.QHBoxLayout(self)
-        self.hbox.setContentsMargins(0, 0, 0, 0)
-        self.hbox.setSpacing(0)
-        self.hbox.addWidget(self.splitter)
-        self.setLayout(self.hbox)
+        self.hbox.set_contents_margins(0, 0, 0, 0)
+        self.hbox.set_spacing(0)
+        self.hbox.add_widget(self.splitter)
+        self.set_layout(self.hbox)
 
-        
         self.font = QtGui.QFont("Monaco", 12)
-        self.setFont(self.font)
+        self.set_font(self.font)
 
+        self.source.text_changed.connect(self.source_text_changed)
 
-        self.source.textChanged.connect(self.source_text_changed)
-        
-        self.source.setText(web.safeunicode(buf))
+        self.source.set_text(web.safeunicode(buf))
 
     def source_text_changed(self):
-        buf = self.source.toPlainText()
-#        import markdown
-#        buf = markdown.markdown(buf)
-        self.preview.setHtml(buf)
-        
-    
+        buf = self.source.to_plain_text()
+        #        import markdown
+        #        buf = markdown.markdown(buf)
+        self.preview.set_html(buf)
+
+
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     foo = Foo()

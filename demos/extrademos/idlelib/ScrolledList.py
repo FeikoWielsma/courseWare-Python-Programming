@@ -1,7 +1,7 @@
 from tkinter import *
 
-class ScrolledList:
 
+class ScrolledList:
     default = "(None)"
 
     def __init__(self, master, **options):
@@ -11,8 +11,7 @@ class ScrolledList:
         self.frame.pack(fill="both", expand=1)
         self.vbar = vbar = Scrollbar(frame, name="vbar")
         self.vbar.pack(side="right", fill="y")
-        self.listbox = listbox = Listbox(frame, exportselection=0,
-            background="white")
+        self.listbox = listbox = Listbox(frame, exportselection=0, background="white")
         if options:
             listbox.configure(options)
         listbox.pack(expand=1, fill="both")
@@ -122,18 +121,27 @@ class ScrolledList:
 def test():
     root = Tk()
     root.protocol("WM_DELETE_WINDOW", root.destroy)
+
     class MyScrolledList(ScrolledList):
-        def fill_menu(self): self.menu.add_command(label="pass")
-        def on_select(self, index): print("select", self.get(index))
-        def on_double(self, index): print("double", self.get(index))
+        def fill_menu(self):
+            self.menu.add_command(label="pass")
+
+        def on_select(self, index):
+            print("select", self.get(index))
+
+        def on_double(self, index):
+            print("double", self.get(index))
+
     s = MyScrolledList(root)
     for i in range(30):
         s.append("item %02d" % i)
     return root
 
+
 def main():
     root = test()
     root.mainloop()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

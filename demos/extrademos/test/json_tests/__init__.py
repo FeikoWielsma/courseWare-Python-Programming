@@ -5,6 +5,7 @@ import doctest
 
 here = os.path.dirname(__file__)
 
+
 def test_suite():
     suite = additional_tests()
     loader = unittest.TestLoader()
@@ -16,20 +17,26 @@ def test_suite():
             suite.addTests(loader.loadTestsFromModule(module))
     return suite
 
+
 def additional_tests():
     import json
     import json.encoder
     import json.decoder
+
     suite = unittest.TestSuite()
     for mod in (json, json.encoder, json.decoder):
         suite.addTest(doctest.DocTestSuite(mod))
     return suite
+
 
 def main():
     suite = test_suite()
     runner = unittest.TextTestRunner()
     runner.run(suite)
 
-if __name__ == '__main__':
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+if __name__ == "__main__":
+    sys.path.insert(
+        0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    )
     main()

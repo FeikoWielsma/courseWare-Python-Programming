@@ -13,10 +13,11 @@ class firstn(object):
 
     def next(self):
         if self.num < self.n:
-            cur, self.num = self.num, self.num+1
+            cur, self.num = self.num, self.num + 1
             return cur
         else:
             raise StopIteration()
+
 
 sum_of_first_n = sum(firstn(1000000))
 print(sum_of_first_n)

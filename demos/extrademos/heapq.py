@@ -124,20 +124,30 @@ Believe me, real good tape sorts were quite spectacular to watch!
 From all times, sorting has always been a Great Art! :-)
 """
 
-__all__ = ['heappush', 'heappop', 'heapify', 'heapreplace', 'merge',
-           'nlargest', 'nsmallest', 'heappushpop']
+__all__ = [
+    "heappush",
+    "heappop",
+    "heapify",
+    "heapreplace",
+    "merge",
+    "nlargest",
+    "nsmallest",
+    "heappushpop",
+]
 
 from itertools import islice, repeat, count, tee, chain
 import bisect
 
+
 def heappush(heap, item):
     """Push item onto heap, maintaining the heap invariant."""
     heap.append(item)
-    _siftdown(heap, 0, len(heap)-1)
+    _siftdown(heap, 0, len(heap) - 1)
+
 
 def heappop(heap):
     """Pop the smallest item off the heap, maintaining the heap invariant."""
-    lastelt = heap.pop()    # raises appropriate IndexError if heap is empty
+    lastelt = heap.pop()  # raises appropriate IndexError if heap is empty
     if heap:
         returnitem = heap[0]
         heap[0] = lastelt
@@ -145,6 +155,7 @@ def heappop(heap):
     else:
         returnitem = lastelt
     return returnitem
+
 
 def heapreplace(heap, item):
     """Pop and return the current smallest value, and add the new item.
@@ -157,10 +168,11 @@ def heapreplace(heap, item):
         if item > heap[0]:
             item = heapreplace(heap, item)
     """
-    returnitem = heap[0]    # raises appropriate IndexError if heap is empty
+    returnitem = heap[0]  # raises appropriate IndexError if heap is empty
     heap[0] = item
     _siftup(heap, 0)
     return returnitem
+
 
 def heappushpop(heap, item):
     """Fast version of a heappush followed by a heappop."""
@@ -168,6 +180,7 @@ def heappushpop(heap, item):
         item, heap[0] = heap[0], item
         _siftup(heap, 0)
     return item
+
 
 def heapify(x):
     """Transform list into a heap, in-place, in O(len(heap)) time."""
@@ -177,8 +190,9 @@ def heapify(x):
     # or i < (n-1)/2.  If n is even = 2*j, this is (2*j-1)/2 = j-1/2 so
     # j-1 is the largest, which is n//2 - 1.  If n is odd = 2*j+1, this is
     # (2*j+1-1)/2 = j so j-1 is the largest, and that's again n//2-1.
-    for i in reversed(range(n//2)):
+    for i in reversed(range(n // 2)):
         _siftup(x, i)
+
 
 def nlargest(n, iterable):
     """Find the n largest elements in a dataset.
@@ -196,12 +210,13 @@ def nlargest(n, iterable):
     result.sort(reverse=True)
     return result
 
+
 def nsmallest(n, iterable):
     """Find the n smallest elements in a dataset.
 
     Equivalent to:  sorted(iterable)[:n]
     """
-    if hasattr(iterable, '__len__') and n * 10 <= len(iterable):
+    if hasattr(iterable, "__len__") and n * 10 <= len(iterable):
         # For smaller values of n, the bisect method is faster than a minheap.
         # It is also memory efficient, consuming only n elements of space.
         it = iter(iterable)
@@ -210,7 +225,7 @@ def nsmallest(n, iterable):
             return result
         insort = bisect.insort
         pop = result.pop
-        los = result[-1]    # los --> Largest of the nsmallest
+        los = result[-1]  # los --> Largest of the nsmallest
         for elem in it:
             if los <= elem:
                 continue
@@ -226,6 +241,7 @@ def nsmallest(n, iterable):
     h = list(iterable)
     heapify(h)
     return list(map(heappop, repeat(h, min(n, len(h)))))
+
 
 # 'heap' is a heap at all indices >= startpos, except possibly for pos.  pos
 # is the index of a leaf with a possibly out-of-order value.  Restore the
@@ -243,6 +259,7 @@ def _siftdown(heap, startpos, pos):
             continue
         break
     heap[pos] = newitem
+
 
 # The child indices of heap index pos are already heaps, and we want to make
 # a heap at index pos too.  We do this by bubbling the smaller child of
@@ -283,12 +300,13 @@ def _siftdown(heap, startpos, pos):
 # heappop() compares):  list.sort() is (unsurprisingly!) more efficient
 # for sorting.
 
+
 def _siftup(heap, pos):
     endpos = len(heap)
     startpos = pos
     newitem = heap[pos]
     # Bubble up the smaller child until hitting a leaf.
-    childpos = 2*pos + 1    # leftmost child position
+    childpos = 2 * pos + 1  # leftmost child position
     while childpos < endpos:
         # Set childpos to index of smaller child.
         rightpos = childpos + 1
@@ -297,11 +315,12 @@ def _siftup(heap, pos):
         # Move the smaller child up.
         heap[pos] = heap[childpos]
         pos = childpos
-        childpos = 2*pos + 1
+        childpos = 2 * pos + 1
     # The leaf at pos is empty now.  Put newitem there, and bubble it up
     # to its final resting place (by sifting its parents down).
     heap[pos] = newitem
     _siftdown(heap, startpos, pos)
+
 
 # If available, use C implementation
 try:
@@ -309,8 +328,9 @@ try:
 except ImportError:
     pass
 
+
 def merge(*iterables):
-    '''Merge multiple sorted inputs into a single sorted output.
+    """Merge multiple sorted inputs into a single sorted output.
 
     Similar to sorted(itertools.chain(*iterables)) but returns a generator,
     does not pull the data into memory all at once, and assumes that each of
@@ -319,7 +339,7 @@ def merge(*iterables):
     >>> list(merge([1,3,5,7], [0,2,4,8], [5,10,15,20], [], [25]))
     [0, 1, 2, 3, 4, 5, 5, 7, 8, 10, 15, 20, 25]
 
-    '''
+    """
     _heappop, _heapreplace, _StopIteration = heappop, heapreplace, StopIteration
 
     h = []
@@ -335,17 +355,20 @@ def merge(*iterables):
     while 1:
         try:
             while 1:
-                v, itnum, next = s = h[0]   # raises IndexError when h is empty
+                v, itnum, next = s = h[0]  # raises IndexError when h is empty
                 yield v
-                s[0] = next()               # raises StopIteration when exhausted
-                _heapreplace(h, s)          # restore heap condition
+                s[0] = next()  # raises StopIteration when exhausted
+                _heapreplace(h, s)  # restore heap condition
         except _StopIteration:
-            _heappop(h)                     # remove empty iterator
+            _heappop(h)  # remove empty iterator
         except IndexError:
             return
 
+
 # Extend the implementations of nsmallest and nlargest to use a key= argument
 _nsmallest = nsmallest
+
+
 def nsmallest(n, iterable, key=None):
     """Find the n smallest elements in a dataset.
 
@@ -372,17 +395,20 @@ def nsmallest(n, iterable, key=None):
 
     # When key is none, use simpler decoration
     if key is None:
-        it = zip(iterable, count())                         # decorate
+        it = zip(iterable, count())  # decorate
         result = _nsmallest(n, it)
-        return [r[0] for r in result]                       # undecorate
+        return [r[0] for r in result]  # undecorate
 
     # General case, slowest method
     in1, in2 = tee(iterable)
-    it = zip(map(key, in1), count(), in2)                   # decorate
+    it = zip(map(key, in1), count(), in2)  # decorate
     result = _nsmallest(n, it)
-    return [r[2] for r in result]                           # undecorate
+    return [r[2] for r in result]  # undecorate
+
 
 _nlargest = nlargest
+
+
 def nlargest(n, iterable, key=None):
     """Find the n largest elements in a dataset.
 
@@ -410,15 +436,16 @@ def nlargest(n, iterable, key=None):
 
     # When key is none, use simpler decoration
     if key is None:
-        it = zip(iterable, count(0,-1))                     # decorate
+        it = zip(iterable, count(0, -1))  # decorate
         result = _nlargest(n, it)
-        return [r[0] for r in result]                       # undecorate
+        return [r[0] for r in result]  # undecorate
 
     # General case, slowest method
     in1, in2 = tee(iterable)
-    it = zip(map(key, in1), count(0,-1), in2)               # decorate
+    it = zip(map(key, in1), count(0, -1), in2)  # decorate
     result = _nlargest(n, it)
-    return [r[2] for r in result]                           # undecorate
+    return [r[2] for r in result]  # undecorate
+
 
 if __name__ == "__main__":
     # Simple sanity test
@@ -432,4 +459,5 @@ if __name__ == "__main__":
     print(sort)
 
     import doctest
+
     doctest.testmod()

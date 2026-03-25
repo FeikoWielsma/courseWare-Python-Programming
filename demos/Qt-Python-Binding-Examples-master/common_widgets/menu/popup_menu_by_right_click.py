@@ -22,7 +22,7 @@ class Demo(QtGui.QMainWindow):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
 
         self.popup_menu = QtGui.QMenu(self)
@@ -30,17 +30,17 @@ class Demo(QtGui.QMainWindow):
         # menu item
         self.item_add_act = QtGui.QAction("Add", self)
         self.item_add_act.triggered.connect(self.add_cb)
-        self.popup_menu.addAction(self.item_add_act)
+        self.popup_menu.add_action(self.item_add_act)
 
         self.item_delete_act = QtGui.QAction("Delete", self)
         self.item_delete_act.triggered.connect(self.delete_cb)
-        self.popup_menu.addAction(self.item_delete_act)
+        self.popup_menu.add_action(self.item_delete_act)
 
-        self.popup_menu.addSeparator()
+        self.popup_menu.add_separator()
 
         self.item_rename_act = QtGui.QAction("Rename", self)
         self.item_rename_act.triggered.connect(self.rename_cb)
-        self.popup_menu.addAction(self.item_rename_act)
+        self.popup_menu.add_action(self.item_rename_act)
 
     def add_cb(self):
         print "add callback"
@@ -51,8 +51,8 @@ class Demo(QtGui.QMainWindow):
     def rename_cb(self):
         print "rename callback"
 
-    def contextMenuEvent(self, event):
-        point = self.mapToGlobal(event.pos())
+    def context_menu_event(self, event):
+        point = self.map_to_global(event.pos())
         act = self.popup_menu.exec_(point)
 
         if act == self.item_add_act:
@@ -62,7 +62,7 @@ class Demo(QtGui.QMainWindow):
         elif act == self.item_rename_act:
             print "item rename clicked"
 
-        return super(Demo, self).contextMenuEvent(event)
+        return super(Demo, self).context_menu_event(event)
 
     def show_and_raise(self):
         self.show()

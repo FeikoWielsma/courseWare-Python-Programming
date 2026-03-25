@@ -9,8 +9,10 @@ import fractions
 import unittest
 from copy import copy, deepcopy
 from pickle import dumps, loads
+
 F = fractions.Fraction
 gcd = fractions.gcd
+
 
 class DummyFloat(object):
     """Dummy float class for testing comparisons with Fractions"""
@@ -28,11 +30,20 @@ class DummyFloat(object):
         else:
             return NotImplemented
 
-    def __eq__(self, other): return self._richcmp(other, operator.eq)
-    def __le__(self, other): return self._richcmp(other, operator.le)
-    def __lt__(self, other): return self._richcmp(other, operator.lt)
-    def __ge__(self, other): return self._richcmp(other, operator.ge)
-    def __gt__(self, other): return self._richcmp(other, operator.gt)
+    def __eq__(self, other):
+        return self._richcmp(other, operator.eq)
+
+    def __le__(self, other):
+        return self._richcmp(other, operator.le)
+
+    def __lt__(self, other):
+        return self._richcmp(other, operator.lt)
+
+    def __ge__(self, other):
+        return self._richcmp(other, operator.ge)
+
+    def __gt__(self, other):
+        return self._richcmp(other, operator.gt)
 
     # shouldn't be calling __float__ at all when doing comparisons
     def __float__(self):
@@ -41,6 +52,7 @@ class DummyFloat(object):
     # same goes for subtraction
     def __sub__(self, other):
         assert False, "__sub__ should not be invoked for comparisons"
+
     __rsub__ = __sub__
 
 
@@ -54,30 +66,29 @@ class DummyRational(object):
 
     def __eq__(self, other):
         if isinstance(other, fractions.Fraction):
-            return (self.num == other._numerator and
-                    self.den == other._denominator)
+            return self.num == other._numerator and self.den == other._denominator
         else:
             return NotImplemented
 
     def __lt__(self, other):
-        return(self.num * other._denominator < self.den * other._numerator)
+        return self.num * other._denominator < self.den * other._numerator
 
     def __gt__(self, other):
-        return(self.num * other._denominator > self.den * other._numerator)
+        return self.num * other._denominator > self.den * other._numerator
 
     def __le__(self, other):
-        return(self.num * other._denominator <= self.den * other._numerator)
+        return self.num * other._denominator <= self.den * other._numerator
 
     def __ge__(self, other):
-        return(self.num * other._denominator >= self.den * other._numerator)
+        return self.num * other._denominator >= self.den * other._numerator
 
     # this class is for testing comparisons; conversion to float
     # should never be used for a comparison, since it loses accuracy
     def __float__(self):
         assert False, "__float__ should not be invoked"
 
-class GcdTest(unittest.TestCase):
 
+class GcdTest(unittest.TestCase):
     def testMisc(self):
         self.assertEqual(0, gcd(0, 0))
         self.assertEqual(1, gcd(1, 0))
@@ -96,14 +107,12 @@ def _components(r):
 
 
 class FractionTest(unittest.TestCase):
-
     def assertTypedEquals(self, expected, actual):
         """Asserts that both the types and values are the same."""
         self.assertEqual(type(expected), type(actual))
         self.assertEqual(expected, actual)
 
-    def assertRaisesMessage(self, exc_type, message,
-                            callable, *args, **kwargs):
+    def assertRaisesMessage(self, exc_type, message, callable, *args, **kwargs):
         """Asserts that callable(*args, **kwargs) raises exc_type(message)."""
         try:
             callable(*args, **kwargs)
@@ -128,8 +137,7 @@ class FractionTest(unittest.TestCase):
         self.assertEqual((-9, 5), _components(F(2, F(-10, 9))))
         self.assertEqual((2486, 2485), _components(F(F(22, 7), F(355, 113))))
 
-        self.assertRaisesMessage(ZeroDivisionError, "Fraction(12, 0)",
-                                 F, 12, 0)
+        self.assertRaisesMessage(ZeroDivisionError, "Fraction(12, 0)", F, 12, 0)
         self.assertRaises(TypeError, F, 1.5 + 3j)
 
         self.assertRaises(TypeError, F, "3/2", 3)
@@ -140,23 +148,19 @@ class FractionTest(unittest.TestCase):
     def testInitFromFloat(self):
         self.assertEqual((5, 2), _components(F(2.5)))
         self.assertEqual((0, 1), _components(F(-0.0)))
-        self.assertEqual((3602879701896397, 36028797018963968),
-                         _components(F(0.1)))
-        self.assertRaises(TypeError, F, float('nan'))
-        self.assertRaises(TypeError, F, float('inf'))
-        self.assertRaises(TypeError, F, float('-inf'))
+        self.assertEqual((3602879701896397, 36028797018963968), _components(F(0.1)))
+        self.assertRaises(TypeError, F, float("nan"))
+        self.assertRaises(TypeError, F, float("inf"))
+        self.assertRaises(TypeError, F, float("-inf"))
 
     def testInitFromDecimal(self):
-        self.assertEqual((11, 10),
-                         _components(F(Decimal('1.1'))))
-        self.assertEqual((7, 200),
-                         _components(F(Decimal('3.5e-2'))))
-        self.assertEqual((0, 1),
-                         _components(F(Decimal('.000e20'))))
-        self.assertRaises(TypeError, F, Decimal('nan'))
-        self.assertRaises(TypeError, F, Decimal('snan'))
-        self.assertRaises(TypeError, F, Decimal('inf'))
-        self.assertRaises(TypeError, F, Decimal('-inf'))
+        self.assertEqual((11, 10), _components(F(Decimal("1.1"))))
+        self.assertEqual((7, 200), _components(F(Decimal("3.5e-2"))))
+        self.assertEqual((0, 1), _components(F(Decimal(".000e20"))))
+        self.assertRaises(TypeError, F, Decimal("nan"))
+        self.assertRaises(TypeError, F, Decimal("snan"))
+        self.assertRaises(TypeError, F, Decimal("inf"))
+        self.assertRaises(TypeError, F, Decimal("-inf"))
 
     def testFromString(self):
         self.assertEqual((5, 1), _components(F("5")))
@@ -174,50 +178,66 @@ class FractionTest(unittest.TestCase):
         self.assertEqual((0, 1), _components(F(" .0e+0\t")))
         self.assertEqual((0, 1), _components(F("-0.000e0")))
 
+        self.assertRaisesMessage(ZeroDivisionError, "Fraction(3, 0)", F, "3/0")
         self.assertRaisesMessage(
-            ZeroDivisionError, "Fraction(3, 0)",
-            F, "3/0")
+            ValueError, "Invalid literal for Fraction: '3/'", F, "3/"
+        )
         self.assertRaisesMessage(
-            ValueError, "Invalid literal for Fraction: '3/'",
-            F, "3/")
+            ValueError, "Invalid literal for Fraction: '/2'", F, "/2"
+        )
         self.assertRaisesMessage(
-            ValueError, "Invalid literal for Fraction: '/2'",
-            F, "/2")
-        self.assertRaisesMessage(
-            ValueError, "Invalid literal for Fraction: '3 /2'",
-            F, "3 /2")
+            ValueError, "Invalid literal for Fraction: '3 /2'", F, "3 /2"
+        )
         self.assertRaisesMessage(
             # Denominators don't need a sign.
-            ValueError, "Invalid literal for Fraction: '3/+2'",
-            F, "3/+2")
+            ValueError,
+            "Invalid literal for Fraction: '3/+2'",
+            F,
+            "3/+2",
+        )
         self.assertRaisesMessage(
             # Imitate float's parsing.
-            ValueError, "Invalid literal for Fraction: '+ 3/2'",
-            F, "+ 3/2")
+            ValueError,
+            "Invalid literal for Fraction: '+ 3/2'",
+            F,
+            "+ 3/2",
+        )
         self.assertRaisesMessage(
             # Avoid treating '.' as a regex special character.
-            ValueError, "Invalid literal for Fraction: '3a2'",
-            F, "3a2")
+            ValueError,
+            "Invalid literal for Fraction: '3a2'",
+            F,
+            "3a2",
+        )
         self.assertRaisesMessage(
             # Don't accept combinations of decimals and rationals.
-            ValueError, "Invalid literal for Fraction: '3/7.2'",
-            F, "3/7.2")
+            ValueError,
+            "Invalid literal for Fraction: '3/7.2'",
+            F,
+            "3/7.2",
+        )
         self.assertRaisesMessage(
             # Don't accept combinations of decimals and rationals.
-            ValueError, "Invalid literal for Fraction: '3.2/7'",
-            F, "3.2/7")
+            ValueError,
+            "Invalid literal for Fraction: '3.2/7'",
+            F,
+            "3.2/7",
+        )
         self.assertRaisesMessage(
             # Allow 3. and .3, but not .
-            ValueError, "Invalid literal for Fraction: '.'",
-            F, ".")
+            ValueError,
+            "Invalid literal for Fraction: '.'",
+            F,
+            ".",
+        )
 
     def testImmutable(self):
         r = F(7, 3)
         r.__init__(2, 15)
         self.assertEqual((7, 3), _components(r))
 
-        self.assertRaises(AttributeError, setattr, r, 'numerator', 12)
-        self.assertRaises(AttributeError, setattr, r, 'denominator', 6)
+        self.assertRaises(AttributeError, setattr, r, "numerator", 12)
+        self.assertRaises(AttributeError, setattr, r, "denominator", 6)
         self.assertEqual((7, 3), _components(r))
 
         # But if you _really_ need to:
@@ -228,57 +248,65 @@ class FractionTest(unittest.TestCase):
         self.assertNotEqual(F(4, 2), r)
 
     def testFromFloat(self):
-        self.assertRaises(TypeError, F.from_float, 3+4j)
+        self.assertRaises(TypeError, F.from_float, 3 + 4j)
         self.assertEqual((10, 1), _components(F.from_float(10)))
         bigint = 1234567890123456789
         self.assertEqual((bigint, 1), _components(F.from_float(bigint)))
         self.assertEqual((0, 1), _components(F.from_float(-0.0)))
         self.assertEqual((10, 1), _components(F.from_float(10.0)))
         self.assertEqual((-5, 2), _components(F.from_float(-2.5)))
-        self.assertEqual((99999999999999991611392, 1),
-                         _components(F.from_float(1e23)))
+        self.assertEqual((99999999999999991611392, 1), _components(F.from_float(1e23)))
         self.assertEqual(float(10**23), float(F.from_float(1e23)))
-        self.assertEqual((3602879701896397, 1125899906842624),
-                         _components(F.from_float(3.2)))
+        self.assertEqual(
+            (3602879701896397, 1125899906842624), _components(F.from_float(3.2))
+        )
         self.assertEqual(3.2, float(F.from_float(3.2)))
 
         inf = 1e1000
         nan = inf - inf
         self.assertRaisesMessage(
-            TypeError, "Cannot convert inf to Fraction.",
-            F.from_float, inf)
+            TypeError, "Cannot convert inf to Fraction.", F.from_float, inf
+        )
         self.assertRaisesMessage(
-            TypeError, "Cannot convert -inf to Fraction.",
-            F.from_float, -inf)
+            TypeError, "Cannot convert -inf to Fraction.", F.from_float, -inf
+        )
         self.assertRaisesMessage(
-            TypeError, "Cannot convert nan to Fraction.",
-            F.from_float, nan)
+            TypeError, "Cannot convert nan to Fraction.", F.from_float, nan
+        )
 
     def testFromDecimal(self):
-        self.assertRaises(TypeError, F.from_decimal, 3+4j)
+        self.assertRaises(TypeError, F.from_decimal, 3 + 4j)
         self.assertEqual(F(10, 1), F.from_decimal(10))
         self.assertEqual(F(0), F.from_decimal(Decimal("-0")))
         self.assertEqual(F(5, 10), F.from_decimal(Decimal("0.5")))
         self.assertEqual(F(5, 1000), F.from_decimal(Decimal("5e-3")))
         self.assertEqual(F(5000), F.from_decimal(Decimal("5e3")))
-        self.assertEqual(1 - F(1, 10**30),
-                         F.from_decimal(Decimal("0." + "9" * 30)))
+        self.assertEqual(1 - F(1, 10**30), F.from_decimal(Decimal("0." + "9" * 30)))
 
         self.assertRaisesMessage(
-            TypeError, "Cannot convert Infinity to Fraction.",
-            F.from_decimal, Decimal("inf"))
+            TypeError,
+            "Cannot convert Infinity to Fraction.",
+            F.from_decimal,
+            Decimal("inf"),
+        )
         self.assertRaisesMessage(
-            TypeError, "Cannot convert -Infinity to Fraction.",
-            F.from_decimal, Decimal("-inf"))
+            TypeError,
+            "Cannot convert -Infinity to Fraction.",
+            F.from_decimal,
+            Decimal("-inf"),
+        )
         self.assertRaisesMessage(
-            TypeError, "Cannot convert NaN to Fraction.",
-            F.from_decimal, Decimal("nan"))
+            TypeError, "Cannot convert NaN to Fraction.", F.from_decimal, Decimal("nan")
+        )
         self.assertRaisesMessage(
-            TypeError, "Cannot convert sNaN to Fraction.",
-            F.from_decimal, Decimal("snan"))
+            TypeError,
+            "Cannot convert sNaN to Fraction.",
+            F.from_decimal,
+            Decimal("snan"),
+        )
 
     def testLimitDenominator(self):
-        rpi = F('3.1415926535897932')
+        rpi = F("3.1415926535897932")
         self.assertEqual(rpi.limit_denominator(10000), F(355, 113))
         self.assertEqual(-rpi.limit_denominator(10000), F(-355, 113))
         self.assertEqual(rpi.limit_denominator(113), F(355, 113))
@@ -304,11 +332,12 @@ class FractionTest(unittest.TestCase):
 
         # Check that __float__ isn't implemented by converting the
         # numerator and denominator to float before dividing.
-        self.assertRaises(OverflowError, float, int('2'*400+'7'))
-        self.assertAlmostEqual(2.0/3,
-                               float(F(int('2'*400+'7'), int('3'*400+'1'))))
+        self.assertRaises(OverflowError, float, int("2" * 400 + "7"))
+        self.assertAlmostEqual(
+            2.0 / 3, float(F(int("2" * 400 + "7"), int("3" * 400 + "1")))
+        )
 
-        self.assertTypedEquals(0.1+0j, complex(F(1,10)))
+        self.assertTypedEquals(0.1 + 0j, complex(F(1, 10)))
 
     def testRound(self):
         self.assertTypedEquals(F(-200), round(F(-150), -2))
@@ -316,7 +345,6 @@ class FractionTest(unittest.TestCase):
         self.assertTypedEquals(F(30), round(F(26), -1))
         self.assertTypedEquals(F(-2, 10), round(F(-15, 100), 1))
         self.assertTypedEquals(F(-2, 10), round(F(-25, 100), 1))
-
 
     def testArithmetic(self):
         self.assertEqual(F(1, 2), F(1, 10) + F(2, 5))
@@ -380,12 +408,12 @@ class FractionTest(unittest.TestCase):
         self.assertTypedEquals(F(100, 1), F(10, 1) ** 2)
         self.assertTypedEquals(0.1, F(1, 10) ** 1.0)
         self.assertTypedEquals(0.1 + 0j, F(1, 10) ** (1.0 + 0j))
-        self.assertTypedEquals(4 , 2 ** F(2, 1))
+        self.assertTypedEquals(4, 2 ** F(2, 1))
         z = pow(-1, F(1, 2))
         self.assertAlmostEqual(0, z.real)
         self.assertEqual(1, z.imag)
-        self.assertTypedEquals(F(1, 4) , 2 ** F(-2, 1))
-        self.assertTypedEquals(2.0 , 4 ** F(1, 2))
+        self.assertTypedEquals(F(1, 4), 2 ** F(-2, 1))
+        self.assertTypedEquals(2.0, 4 ** F(1, 2))
         self.assertTypedEquals(0.25, 2.0 ** F(-2, 1))
         self.assertTypedEquals(1.0 + 0j, (1.0 + 0j) ** F(1, 10))
 
@@ -394,7 +422,10 @@ class FractionTest(unittest.TestCase):
         self.assertRaisesMessage(
             TypeError,
             "unsupported operand type(s) for +: 'Fraction' and 'Decimal'",
-            operator.add, F(3,11), Decimal('3.1415926'))
+            operator.add,
+            F(3, 11),
+            Decimal("3.1415926"),
+        )
 
     def testComparisons(self):
         self.assertTrue(F(1, 2) < F(2, 3))
@@ -440,7 +471,7 @@ class FractionTest(unittest.TestCase):
         self.assertTrue(DummyRational(1, 2) >= F(1, 7))
 
     def testComparisonsDummyFloat(self):
-        x = DummyFloat(1./3.)
+        x = DummyFloat(1.0 / 3.0)
         y = F(1, 3)
         self.assertTrue(x != y)
         self.assertTrue(x < y or x > y)
@@ -462,12 +493,12 @@ class FractionTest(unittest.TestCase):
         self.assertTrue(0.4 < F(1, 2))
         self.assertFalse(0.5 < F(1, 2))
 
-        self.assertFalse(float('inf') < F(1, 2))
-        self.assertTrue(float('-inf') < F(0, 10))
-        self.assertFalse(float('nan') < F(-3, 7))
-        self.assertTrue(F(1, 2) < float('inf'))
-        self.assertFalse(F(17, 12) < float('-inf'))
-        self.assertFalse(F(144, -89) < float('nan'))
+        self.assertFalse(float("inf") < F(1, 2))
+        self.assertTrue(float("-inf") < F(0, 10))
+        self.assertFalse(float("nan") < F(-3, 7))
+        self.assertTrue(F(1, 2) < float("inf"))
+        self.assertFalse(F(17, 12) < float("-inf"))
+        self.assertFalse(F(144, -89) < float("nan"))
 
     def testMixedLessEqual(self):
         self.assertTrue(0.5 <= F(1, 2))
@@ -479,12 +510,12 @@ class FractionTest(unittest.TestCase):
         self.assertTrue(F(4, 2) <= 2)
         self.assertFalse(F(5, 2) <= 2)
 
-        self.assertFalse(float('inf') <= F(1, 2))
-        self.assertTrue(float('-inf') <= F(0, 10))
-        self.assertFalse(float('nan') <= F(-3, 7))
-        self.assertTrue(F(1, 2) <= float('inf'))
-        self.assertFalse(F(17, 12) <= float('-inf'))
-        self.assertFalse(F(144, -89) <= float('nan'))
+        self.assertFalse(float("inf") <= F(1, 2))
+        self.assertTrue(float("-inf") <= F(0, 10))
+        self.assertFalse(float("nan") <= F(-3, 7))
+        self.assertTrue(F(1, 2) <= float("inf"))
+        self.assertFalse(F(17, 12) <= float("-inf"))
+        self.assertFalse(F(144, -89) <= float("nan"))
 
     def testBigFloatComparisons(self):
         # Because 10**23 can't be represented exactly as a float:
@@ -523,17 +554,15 @@ class FractionTest(unittest.TestCase):
         self.assertFalse(2 == F(3, 2))
         self.assertTrue(F(4, 2) == 2)
         self.assertFalse(F(5, 2) == 2)
-        self.assertFalse(F(5, 2) == float('nan'))
-        self.assertFalse(float('nan') == F(3, 7))
-        self.assertFalse(F(5, 2) == float('inf'))
-        self.assertFalse(float('-inf') == F(2, 5))
+        self.assertFalse(F(5, 2) == float("nan"))
+        self.assertFalse(float("nan") == F(3, 7))
+        self.assertFalse(F(5, 2) == float("inf"))
+        self.assertFalse(float("-inf") == F(2, 5))
 
     def testStringification(self):
         self.assertEqual("Fraction(7, 3)", repr(F(7, 3)))
-        self.assertEqual("Fraction(6283185307, 2000000000)",
-                         repr(F('3.1415926535')))
-        self.assertEqual("Fraction(-1, 100000000000000000000)",
-                         repr(F(1, -10**20)))
+        self.assertEqual("Fraction(6283185307, 2000000000)", repr(F("3.1415926535")))
+        self.assertEqual("Fraction(-1, 100000000000000000000)", repr(F(1, -(10**20))))
         self.assertEqual("7/3", str(F(7, 3)))
         self.assertEqual("7", str(F(7, 1)))
 
@@ -552,8 +581,8 @@ class FractionTest(unittest.TestCase):
         lasts, t, s, n, na, d, da = 0, three, 3, 1, 0, 0, 24
         while abs(s - lasts) > F(1, 10**9):
             lasts = s
-            n, na = n+na, na+8
-            d, da = d+da, da+32
+            n, na = n + na, na + 8
+            d, da = d + da, da + 32
             t = (t * n) / d
             s += t
         self.assertAlmostEqual(math.pi, s)
@@ -566,7 +595,7 @@ class FractionTest(unittest.TestCase):
         while abs(s - lasts) > F(1, 10**9):
             lasts = s
             i += 2
-            fact *= i * (i-1)
+            fact *= i * (i - 1)
             num *= x * x
             sign *= -1
             s += num / fact * sign
@@ -581,10 +610,12 @@ class FractionTest(unittest.TestCase):
     def test_slots(self):
         # Issue 4998
         r = F(13, 7)
-        self.assertRaises(AttributeError, setattr, r, 'a', 10)
+        self.assertRaises(AttributeError, setattr, r, "a", 10)
+
 
 def test_main():
     run_unittest(FractionTest, GcdTest)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test_main()

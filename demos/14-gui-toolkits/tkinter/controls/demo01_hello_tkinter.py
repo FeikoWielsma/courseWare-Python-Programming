@@ -1,5 +1,5 @@
 from tkinter import *
 
-mainWindow = Tk()
-mainWindow.title("Hello tkinter")
-mainWindow.mainloop()
+main_window = Tk()
+main_window.title("Hello tkinter")
+main_window.mainloop()

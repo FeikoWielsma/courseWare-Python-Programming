@@ -8,5 +8,4 @@ with timethis("Read a text file"):
     data = open("big.txt").read()
 
 with timethis("Read a binary file"):
-    data = open("big.txt","rb").read()
-
+    data = open("big.txt", "rb").read()

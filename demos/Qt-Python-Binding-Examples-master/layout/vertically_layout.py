@@ -1,44 +1,44 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
 vertically layout demo
 
 Tested environment:
     Mac OS X 10.6.8
-    
+
 """
+
 import sys
 
 try:
     from PySide import QtCore
     from PySide import QtGui
 except ImportError:
-    from PyQt4 import QtCore
     from PyQt4 import QtGui
+
 
 class Demo(QtGui.QWidget):
     def __init__(self):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
-
+        self.set_geometry(x, y, w, h)
 
         vbox = QtGui.QVBoxLayout(self)
 
-        btn1 = QtGui.QPushButton('btn 1', self)
-        vbox.addWidget(btn1)
+        btn1 = QtGui.QPushButton("btn 1", self)
+        vbox.add_widget(btn1)
 
-        btn2 = QtGui.QPushButton('btn 2', self)
-        vbox.addWidget(btn2)
+        btn2 = QtGui.QPushButton("btn 2", self)
+        vbox.add_widget(btn2)
 
-        btn3 = QtGui.QPushButton('btn 3', self)
-        vbox.addWidget(btn3)
+        btn3 = QtGui.QPushButton("btn 3", self)
+        vbox.add_widget(btn3)
 
-        btn4 = QtGui.QPushButton('btn 4', self)
-        vbox.addWidget(btn4)
+        btn4 = QtGui.QPushButton("btn 4", self)
+        vbox.add_widget(btn4)
 
-        self.setLayout(vbox)
+        self.set_layout(vbox)
 
     def show_and_raise(self):
         self.show()

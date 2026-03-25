@@ -2,16 +2,17 @@ import re
 import sys
 
 # Reason last stmt is continued (or C_NONE if it's not).
-(C_NONE, C_BACKSLASH, C_STRING_FIRST_LINE,
- C_STRING_NEXT_LINES, C_BRACKET) = range(5)
+(C_NONE, C_BACKSLASH, C_STRING_FIRST_LINE, C_STRING_NEXT_LINES, C_BRACKET) = range(5)
 
-if 0:   # for throwaway debugging output
+if 0:  # for throwaway debugging output
+
     def dump(*stuff):
         sys.__stdout__.write(" ".join(map(str, stuff)) + "\n")
 
 # Find what looks like the start of a popular stmt.
 
-_synchre = re.compile(r"""
+_synchre = re.compile(
+    r"""
     ^
     [ \t]*
     (?: while
@@ -30,20 +31,26 @@ _synchre = re.compile(r"""
     |   yield
     )
     \b
-""", re.VERBOSE | re.MULTILINE).search
+""",
+    re.VERBOSE | re.MULTILINE,
+).search
 
 # Match blank line or non-indenting comment line.
 
-_junkre = re.compile(r"""
+_junkre = re.compile(
+    r"""
     [ \t]*
     (?: \# \S .* )?
     \n
-""", re.VERBOSE).match
+""",
+    re.VERBOSE,
+).match
 
 # Match any flavor of string; the terminating quote is optional
 # so that we're robust in the face of incomplete program text.
 
-_match_stringre = re.compile(r"""
+_match_stringre = re.compile(
+    r"""
     \""" [^"\\]* (?:
                      (?: \\. | "(?!"") )
                      [^"\\]*
@@ -59,19 +66,25 @@ _match_stringre = re.compile(r"""
     (?: ''' )?
 
 |   ' [^'\\\n]* (?: \\. [^'\\\n]* )* '?
-""", re.VERBOSE | re.DOTALL).match
+""",
+    re.VERBOSE | re.DOTALL,
+).match
 
 # Match a line that starts with something interesting;
 # used to find the first item of a bracket structure.
 
-_itemre = re.compile(r"""
+_itemre = re.compile(
+    r"""
     [ \t]*
     [^\s#\\]    # if we match, m.end()-1 is the interesting char
-""", re.VERBOSE).match
+""",
+    re.VERBOSE,
+).match
 
 # Match start of stmts that should be followed by a dedent.
 
-_closere = re.compile(r"""
+_closere = re.compile(
+    r"""
     \s*
     (?: return
     |   break
@@ -80,39 +93,44 @@ _closere = re.compile(r"""
     |   pass
     )
     \b
-""", re.VERBOSE).match
+""",
+    re.VERBOSE,
+).match
 
 # Chew up non-special chars as quickly as possible.  If match is
 # successful, m.end() less 1 is the index of the last boring char
 # matched.  If match is unsuccessful, the string starts with an
 # interesting char.
 
-_chew_ordinaryre = re.compile(r"""
+_chew_ordinaryre = re.compile(
+    r"""
     [^[\](){}#'"\\]+
-""", re.VERBOSE).match
+""",
+    re.VERBOSE,
+).match
 
 # Build translation table to map uninteresting chars to "x", open
 # brackets to "(", and close brackets to ")".
 
 _tran = {}
 for i in range(256):
-    _tran[i] = 'x'
+    _tran[i] = "x"
 for ch in "({[":
-    _tran[ord(ch)] = '('
+    _tran[ord(ch)] = "("
 for ch in ")}]":
-    _tran[ord(ch)] = ')'
+    _tran[ord(ch)] = ")"
 for ch in "\"'\\\n#":
     _tran[ord(ch)] = ch
 del i, ch
 
-class Parser:
 
+class Parser:
     def __init__(self, indentwidth, tabwidth):
         self.indentwidth = indentwidth
         self.tabwidth = tabwidth
 
     def set_str(self, s):
-        assert len(s) == 0 or s[-1] == '\n'
+        assert len(s) == 0 or s[-1] == "\n"
         if isinstance(s, str):
             # The parse functions have no idea what to do with Unicode, so
             # replace all Unicode characters with "x".  This is "safe"
@@ -140,8 +158,7 @@ class Parser:
     # function, meaning that when it says "no", it's absolutely
     # guaranteed that the char is not in a string.
 
-    def find_good_parse_start(self, is_char_in_string=None,
-                              _synchre=_synchre):
+    def find_good_parse_start(self, is_char_in_string=None, _synchre=_synchre):
         str, pos = self.str, None
 
         if not is_char_in_string:
@@ -156,7 +173,7 @@ class Parser:
             i = str.rfind(":\n", 0, limit)
             if i < 0:
                 break
-            i = str.rfind('\n', 0, i) + 1  # start of colon line
+            i = str.rfind("\n", 0, i) + 1  # start of colon line
             m = _synchre(str, i, limit)
             if m and not is_char_in_string(m.start()):
                 pos = m.start()
@@ -193,7 +210,7 @@ class Parser:
     # find_good_parse_start's result.
 
     def set_lo(self, lo):
-        assert lo == 0 or self.str[lo-1] == '\n'
+        assert lo == 0 or self.str[lo - 1] == "\n"
         if lo > 0:
             self.str = self.str[lo:]
 
@@ -212,11 +229,11 @@ class Parser:
         # by a factor of 10-40, and so greatly speed the following loop.
         str = self.str
         str = str.translate(_tran)
-        str = str.replace('xxxxxxxx', 'x')
-        str = str.replace('xxxx', 'x')
-        str = str.replace('xx', 'x')
-        str = str.replace('xx', 'x')
-        str = str.replace('\nx', '\n')
+        str = str.replace("xxxxxxxx", "x")
+        str = str.replace("xxxx", "x")
+        str = str.replace("xx", "x")
+        str = str.replace("xx", "x")
+        str = str.replace("\nx", "\n")
         # note that replacing x\n with \n would be incorrect, because
         # x may be preceded by a backslash
 
@@ -224,30 +241,30 @@ class Parser:
         # the line numbers of non-continued stmts, and determining
         # whether & why the last stmt is a continuation.
         continuation = C_NONE
-        level = lno = 0     # level is nesting level; lno is line number
+        level = lno = 0  # level is nesting level; lno is line number
         self.goodlines = goodlines = [0]
         push_good = goodlines.append
         i, n = 0, len(str)
         while i < n:
             ch = str[i]
-            i = i+1
+            i = i + 1
 
             # cases are checked in decreasing order of frequency
-            if ch == 'x':
+            if ch == "x":
                 continue
 
-            if ch == '\n':
+            if ch == "\n":
                 lno = lno + 1
                 if level == 0:
                     push_good(lno)
                     # else we're in an unclosed bracket structure
                 continue
 
-            if ch == '(':
+            if ch == "(":
                 level = level + 1
                 continue
 
-            if ch == ')':
+            if ch == ")":
                 if level:
                     level = level - 1
                     # else the program is invalid, but we can't complain
@@ -256,23 +273,23 @@ class Parser:
             if ch == '"' or ch == "'":
                 # consume the string
                 quote = ch
-                if str[i-1:i+2] == quote * 3:
+                if str[i - 1 : i + 2] == quote * 3:
                     quote = quote * 3
                 firstlno = lno
                 w = len(quote) - 1
-                i = i+w
+                i = i + w
                 while i < n:
                     ch = str[i]
-                    i = i+1
+                    i = i + 1
 
-                    if ch == 'x':
+                    if ch == "x":
                         continue
 
-                    if str[i-1:i+w] == quote:
-                        i = i+w
+                    if str[i - 1 : i + w] == quote:
+                        i = i + w
                         break
 
-                    if ch == '\n':
+                    if ch == "\n":
                         lno = lno + 1
                         if w == 0:
                             # unterminated single-quoted string
@@ -281,11 +298,11 @@ class Parser:
                             break
                         continue
 
-                    if ch == '\\':
+                    if ch == "\\":
                         assert i < n
-                        if str[i] == '\n':
+                        if str[i] == "\n":
                             lno = lno + 1
-                        i = i+1
+                        i = i + 1
                         continue
 
                     # else comment char or paren inside string
@@ -299,27 +316,30 @@ class Parser:
                         continuation = C_STRING_FIRST_LINE
                     else:
                         continuation = C_STRING_NEXT_LINES
-                continue    # with outer loop
+                continue  # with outer loop
 
-            if ch == '#':
+            if ch == "#":
                 # consume the comment
-                i = str.find('\n', i)
+                i = str.find("\n", i)
                 assert i >= 0
                 continue
 
-            assert ch == '\\'
+            assert ch == "\\"
             assert i < n
-            if str[i] == '\n':
+            if str[i] == "\n":
                 lno = lno + 1
-                if i+1 == n:
+                if i + 1 == n:
                     continuation = C_BACKSLASH
-            i = i+1
+            i = i + 1
 
         # The last stmt may be continued for all 3 reasons.
         # String continuation takes precedence over bracket
         # continuation, which beats backslash continuation.
-        if (continuation != C_STRING_FIRST_LINE
-            and continuation != C_STRING_NEXT_LINES and level > 0):
+        if (
+            continuation != C_STRING_FIRST_LINE
+            and continuation != C_STRING_NEXT_LINES
+            and level > 0
+        ):
             continuation = C_BRACKET
         self.continuation = continuation
 
@@ -359,19 +379,19 @@ class Parser:
         # Set p and q to slice indices of last interesting stmt.
         str, goodlines = self.str, self.goodlines
         i = len(goodlines) - 1
-        p = len(str)    # index of newest line
+        p = len(str)  # index of newest line
         while i:
             assert p
             # p is the index of the stmt at line number goodlines[i].
             # Move p back to the stmt at line number goodlines[i-1].
             q = p
-            for nothing in range(goodlines[i-1], goodlines[i]):
+            for nothing in range(goodlines[i - 1], goodlines[i]):
                 # tricky: sets p to 0 if no preceding newline
-                p = str.rfind('\n', 0, p-1) + 1
+                p = str.rfind("\n", 0, p - 1) + 1
             # The stmt str[p:q] isn't a continuation, but may be blank
             # or a non-indenting comment line.
-            if  _junkre(str, p):
-                i = i-1
+            if _junkre(str, p):
+                i = i - 1
             else:
                 break
         if i == 0:
@@ -393,9 +413,9 @@ class Parser:
                 # we skipped at least one boring char
                 newp = m.end()
                 # back up over totally boring whitespace
-                i = newp - 1    # index of last boring char
+                i = newp - 1  # index of last boring char
                 while i >= p and str[i] in " \t\n":
-                    i = i-1
+                    i = i - 1
                 if i >= p:
                     lastch = str[i]
                 p = newp
@@ -408,14 +428,14 @@ class Parser:
                 push_stack(p)
                 bracketing.append((p, len(stack)))
                 lastch = ch
-                p = p+1
+                p = p + 1
                 continue
 
             if ch in ")]}":
                 if stack:
                     del stack[-1]
                 lastch = ch
-                p = p+1
+                p = p + 1
                 bracketing.append((p, len(stack)))
                 continue
 
@@ -427,27 +447,27 @@ class Parser:
                 # strings to a couple of characters per line.  study1
                 # also needed to keep track of newlines, and we don't
                 # have to.
-                bracketing.append((p, len(stack)+1))
+                bracketing.append((p, len(stack) + 1))
                 lastch = ch
                 p = _match_stringre(str, p, q).end()
                 bracketing.append((p, len(stack)))
                 continue
 
-            if ch == '#':
+            if ch == "#":
                 # consume comment and trailing newline
-                bracketing.append((p, len(stack)+1))
-                p = str.find('\n', p, q) + 1
+                bracketing.append((p, len(stack) + 1))
+                p = str.find("\n", p, q) + 1
                 assert p > 0
                 bracketing.append((p, len(stack)))
                 continue
 
-            assert ch == '\\'
-            p = p+1     # beyond backslash
+            assert ch == "\\"
+            p = p + 1  # beyond backslash
             assert p < q
-            if str[p] != '\n':
+            if str[p] != "\n":
                 # the program is invalid, but can't complain
                 lastch = ch + str[p]
-            p = p+1     # beyond escaped char
+            p = p + 1  # beyond escaped char
 
         # end while p < q:
 
@@ -465,24 +485,24 @@ class Parser:
         j = self.lastopenbracketpos
         str = self.str
         n = len(str)
-        origi = i = str.rfind('\n', 0, j) + 1
-        j = j+1     # one beyond open bracket
+        origi = i = str.rfind("\n", 0, j) + 1
+        j = j + 1  # one beyond open bracket
         # find first list item; set i to start of its line
         while j < n:
             m = _itemre(str, j)
             if m:
-                j = m.end() - 1     # index of first interesting char
+                j = m.end() - 1  # index of first interesting char
                 extra = 0
                 break
             else:
                 # this line is junk; advance to next line
-                i = j = str.find('\n', j) + 1
+                i = j = str.find("\n", j) + 1
         else:
             # nothing interesting follows the bracket;
             # reproduce the bracket line's indentation + a level
             j = i = origi
             while str[j] in " \t":
-                j = j+1
+                j = j + 1
             extra = self.indentwidth
         return len(str[i:j].expandtabs(self.tabwidth)) + extra
 
@@ -505,38 +525,41 @@ class Parser:
         str = self.str
         i = self.stmt_start
         while str[i] in " \t":
-            i = i+1
+            i = i + 1
         startpos = i
 
         # See whether the initial line starts an assignment stmt; i.e.,
         # look for an = operator
-        endpos = str.find('\n', startpos) + 1
+        endpos = str.find("\n", startpos) + 1
         found = level = 0
         while i < endpos:
             ch = str[i]
             if ch in "([{":
                 level = level + 1
-                i = i+1
+                i = i + 1
             elif ch in ")]}":
                 if level:
                     level = level - 1
-                i = i+1
+                i = i + 1
             elif ch == '"' or ch == "'":
                 i = _match_stringre(str, i, endpos).end()
-            elif ch == '#':
+            elif ch == "#":
                 break
-            elif level == 0 and ch == '=' and \
-                   (i == 0 or str[i-1] not in "=<>!") and \
-                   str[i+1] != '=':
+            elif (
+                level == 0
+                and ch == "="
+                and (i == 0 or str[i - 1] not in "=<>!")
+                and str[i + 1] != "="
+            ):
                 found = 1
                 break
             else:
-                i = i+1
+                i = i + 1
 
         if found:
             # found a legit =, but it may be the last interesting
             # thing on the line
-            i = i+1     # move beyond the =
+            i = i + 1  # move beyond the =
             found = re.match(r"\s*\\", str[i:endpos]) is None
 
         if not found:
@@ -544,10 +567,9 @@ class Parser:
             # of non-whitespace chars
             i = startpos
             while str[i] not in " \t\n":
-                i = i+1
+                i = i + 1
 
-        return len(str[self.stmt_start:i].expandtabs(\
-                                     self.tabwidth)) + 1
+        return len(str[self.stmt_start : i].expandtabs(self.tabwidth)) + 1
 
     # Return the leading whitespace on the initial line of the last
     # interesting stmt.
@@ -565,7 +587,7 @@ class Parser:
 
     def is_block_opener(self):
         self._study2()
-        return self.lastch == ':'
+        return self.lastch == ":"
 
     # Did the last interesting stmt close a block?
 

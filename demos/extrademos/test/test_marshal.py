@@ -6,6 +6,7 @@ import sys
 import unittest
 import os
 
+
 class HelperMixin:
     def helper(self, sample, *extra):
         new = marshal.loads(marshal.dumps(sample, *extra))
@@ -18,6 +19,7 @@ class HelperMixin:
             self.assertEqual(sample, new)
         finally:
             support.unlink(support.TESTFN)
+
 
 class IntTestCase(unittest.TestCase, HelperMixin):
     def test_ints(self):
@@ -35,16 +37,16 @@ class IntTestCase(unittest.TestCase, HelperMixin):
         def to_little_endian_string(value, nbytes):
             b = bytearray()
             for i in range(nbytes):
-                b.append(value & 0xff)
+                b.append(value & 0xFF)
                 value >>= 8
             return b
 
         maxint64 = (1 << 63) - 1
-        minint64 = -maxint64-1
+        minint64 = -maxint64 - 1
 
         for base in maxint64, minint64, -maxint64, -(minint64 >> 1):
             while base:
-                s = b'I' + to_little_endian_string(base, 8)
+                s = b"I" + to_little_endian_string(base, 8)
                 got = marshal.loads(s)
                 self.assertEqual(base, got)
                 if base == -1:  # a fixed-point for shifting right 1
@@ -55,6 +57,7 @@ class IntTestCase(unittest.TestCase, HelperMixin):
     def test_bool(self):
         for b in (True, False):
             self.helper(b)
+
 
 class FloatTestCase(unittest.TestCase, HelperMixin):
     def test_floats(self):
@@ -83,23 +86,26 @@ class FloatTestCase(unittest.TestCase, HelperMixin):
                 self.helper(f, 1)
             n *= 123.4567
 
+
 class StringTestCase(unittest.TestCase, HelperMixin):
     def test_unicode(self):
-        for s in ["", "Andr\xe8 Previn", "abc", " "*10000]:
+        for s in ["", "Andr\xe8 Previn", "abc", " " * 10000]:
             self.helper(marshal.loads(marshal.dumps(s)))
 
     def test_string(self):
-        for s in ["", "Andr\xe8 Previn", "abc", " "*10000]:
+        for s in ["", "Andr\xe8 Previn", "abc", " " * 10000]:
             self.helper(s)
 
     def test_bytes(self):
-        for s in [b"", b"Andr\xe8 Previn", b"abc", b" "*10000]:
+        for s in [b"", b"Andr\xe8 Previn", b"abc", b" " * 10000]:
             self.helper(s)
+
 
 class ExceptionTestCase(unittest.TestCase):
     def test_exceptions(self):
         new = marshal.loads(marshal.dumps(StopIteration))
         self.assertEqual(StopIteration, new)
+
 
 class CodeTestCase(unittest.TestCase):
     def test_code(self):
@@ -109,20 +115,22 @@ class CodeTestCase(unittest.TestCase):
 
     def test_many_codeobjects(self):
         # Issue2957: bad recursion count on code objects
-        count = 5000    # more than MAX_MARSHAL_STACK_DEPTH
+        count = 5000  # more than MAX_MARSHAL_STACK_DEPTH
         codes = (ExceptionTestCase.test_exceptions.__code__,) * count
         marshal.loads(marshal.dumps(codes))
 
+
 class ContainerTestCase(unittest.TestCase, HelperMixin):
-    d = {'astring': 'foo@bar.baz.spam',
-         'afloat': 7283.43,
-         'anint': 2**20,
-         'ashortlong': 2,
-         'alist': ['.zyx.41'],
-         'atuple': ('.zyx.41',)*10,
-         'aboolean': False,
-         'aunicode': "Andr\xe8 Previn"
-         }
+    d = {
+        "astring": "foo@bar.baz.spam",
+        "afloat": 7283.43,
+        "anint": 2**20,
+        "ashortlong": 2,
+        "alist": [".zyx.41"],
+        "atuple": (".zyx.41",) * 10,
+        "aboolean": False,
+        "aunicode": "Andr\xe8 Previn",
+    }
 
     def test_dict(self):
         self.helper(self.d)
@@ -137,14 +145,15 @@ class ContainerTestCase(unittest.TestCase, HelperMixin):
         for constructor in (set, frozenset):
             self.helper(constructor(self.d.keys()))
 
+
 class BugsTestCase(unittest.TestCase):
     def test_bug_5888452(self):
         # Simple-minded check for SF 588452: Debug build crashes
         marshal.dumps([128] * 1000)
 
     def test_patch_873224(self):
-        self.assertRaises(Exception, marshal.loads, '0')
-        self.assertRaises(Exception, marshal.loads, 'f')
+        self.assertRaises(Exception, marshal.loads, "0")
+        self.assertRaises(Exception, marshal.loads, "f")
         self.assertRaises(Exception, marshal.loads, marshal.dumps(2**65)[:-1])
 
     def test_version_argument(self):
@@ -162,14 +171,14 @@ class BugsTestCase(unittest.TestCase):
                 pass
 
     def test_loads_recursion(self):
-        s = 'c' + ('X' * 4*4) + '{' * 2**20
+        s = "c" + ("X" * 4 * 4) + "{" * 2**20
         self.assertRaises(ValueError, marshal.loads, s)
 
     def test_recursion_limit(self):
         # Create a deeply nested structure.
         head = last = []
         # The max stack depth should match the value in Python/marshal.c.
-        if os.name == 'nt' and hasattr(sys, 'gettotalrefcount'):
+        if os.name == "nt" and hasattr(sys, "gettotalrefcount"):
             MAX_MARSHAL_STACK_DEPTH = 1500
         else:
             MAX_MARSHAL_STACK_DEPTH = 2000
@@ -196,30 +205,33 @@ class BugsTestCase(unittest.TestCase):
         for typ in (int, float, complex, tuple, list, dict, set, frozenset):
             # Note: str sublclasses are not tested because they get handled
             # by marshal's routines for objects supporting the buffer API.
-            subtyp = type('subtyp', (typ,), {})
+            subtyp = type("subtyp", (typ,), {})
             self.assertRaises(ValueError, marshal.dumps, subtyp())
 
     # Issue #1792 introduced a change in how marshal increases the size of its
     # internal buffer; this test ensures that the new code is exercised.
     def test_large_marshal(self):
         size = int(1e6)
-        testString = 'abc' * size
+        testString = "abc" * size
         marshal.dumps(testString)
 
     def test_invalid_longs(self):
         # Issue #7019: marshal.loads shouldn't produce unnormalized PyLongs
-        invalid_string = b'l\x02\x00\x00\x00\x00\x00\x00\x00'
+        invalid_string = b"l\x02\x00\x00\x00\x00\x00\x00\x00"
         self.assertRaises(ValueError, marshal.loads, invalid_string)
 
 
 def test_main():
-    support.run_unittest(IntTestCase,
-                              FloatTestCase,
-                              StringTestCase,
-                              CodeTestCase,
-                              ContainerTestCase,
-                              ExceptionTestCase,
-                              BugsTestCase)
+    support.run_unittest(
+        IntTestCase,
+        FloatTestCase,
+        StringTestCase,
+        CodeTestCase,
+        ContainerTestCase,
+        ExceptionTestCase,
+        BugsTestCase,
+    )
+
 
 if __name__ == "__main__":
     test_main()

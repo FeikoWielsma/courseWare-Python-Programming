@@ -57,7 +57,6 @@ def byte(i):
 
 
 class TestLiterals(unittest.TestCase):
-
     def setUp(self):
         self.save_path = sys.path[:]
         self.tmpdir = tempfile.mkdtemp()
@@ -71,10 +70,10 @@ class TestLiterals(unittest.TestCase):
         # Check that the template doesn't contain any non-printables
         # except for \n.
         for c in TEMPLATE:
-            assert c == '\n' or ' ' <= c <= '~', repr(c)
+            assert c == "\n" or " " <= c <= "~", repr(c)
 
     def test_eval_str_normal(self):
-        self.assertEqual(eval(""" 'x' """), 'x')
+        self.assertEqual(eval(""" 'x' """), "x")
         self.assertEqual(eval(r""" '\x01' """), chr(1))
         self.assertEqual(eval(""" '\x01' """), chr(1))
         self.assertEqual(eval(r""" '\x81' """), chr(0x81))
@@ -83,26 +82,26 @@ class TestLiterals(unittest.TestCase):
         self.assertEqual(eval(""" '\u1881' """), chr(0x1881))
 
     def test_eval_str_raw(self):
-        self.assertEqual(eval(""" r'x' """), 'x')
-        self.assertEqual(eval(r""" r'\x01' """), '\\' + 'x01')
+        self.assertEqual(eval(""" r'x' """), "x")
+        self.assertEqual(eval(r""" r'\x01' """), "\\" + "x01")
         self.assertEqual(eval(""" r'\x01' """), chr(1))
-        self.assertEqual(eval(r""" r'\x81' """), '\\' + 'x81')
+        self.assertEqual(eval(r""" r'\x81' """), "\\" + "x81")
         self.assertEqual(eval(""" r'\x81' """), chr(0x81))
-        self.assertEqual(eval(r""" r'\u1881' """), '\\' + 'u1881')
+        self.assertEqual(eval(r""" r'\u1881' """), "\\" + "u1881")
         self.assertEqual(eval(""" r'\u1881' """), chr(0x1881))
 
     def test_eval_bytes_normal(self):
-        self.assertEqual(eval(""" b'x' """), b'x')
+        self.assertEqual(eval(""" b'x' """), b"x")
         self.assertEqual(eval(r""" b'\x01' """), byte(1))
         self.assertEqual(eval(""" b'\x01' """), byte(1))
         self.assertEqual(eval(r""" b'\x81' """), byte(0x81))
         self.assertRaises(SyntaxError, eval, """ b'\x81' """)
-        self.assertEqual(eval(r""" b'\u1881' """), b'\\' + b'u1881')
+        self.assertEqual(eval(r""" b'\u1881' """), b"\\" + b"u1881")
         self.assertRaises(SyntaxError, eval, """ b'\u1881' """)
 
     def test_eval_bytes_raw(self):
-        self.assertEqual(eval(""" br'x' """), b'x')
-        self.assertEqual(eval(r""" br'\x01' """), b'\\' + b'x01')
+        self.assertEqual(eval(""" br'x' """), b"x")
+        self.assertEqual(eval(r""" br'\x01' """), b"\\" + b"x01")
         self.assertEqual(eval(""" br'\x01' """), byte(1))
         self.assertEqual(eval(r""" br'\x81' """), b"\\" + b"x81")
         self.assertRaises(SyntaxError, eval, """ br'\x81' """)

@@ -14,29 +14,30 @@ from textpack import marker
 
 class UnpackApp(StreamApp):
     def start(self):
-        self.endargs()          # ignore more -o's, etc.
+        self.endargs()  # ignore more -o's, etc.
 
     def run(self):
         mlen = len(marker)
         while 1:
             line = self.readline()
-            if not line: 
+            if not line:
                 break
             elif line[:mlen] != marker:
                 self.write(line)
             else:
                 name = string.strip(line[mlen:])
-                self.message('creating: ' + name)
+                self.message("creating: " + name)
                 self.setOutput(name)
 
     def setOutput(self, name=None):
         import os
+
         try:
-            os.rename(name, name + '.bkp')   
-        except: pass
+            os.rename(name, name + ".bkp")
+        except:
+            pass
         StreamApp.setOutput(self, name)
 
 
-if __name__ == '__main__':  UnpackApp().main()
-
-
+if __name__ == "__main__":
+    UnpackApp().main()

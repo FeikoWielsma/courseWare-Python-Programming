@@ -9,21 +9,28 @@
 ##########################################################
 
 import sys
-filename = 'data/people-simple.fs'
+
+filename = "data/people-simple.fs"
 from zodbtools import FileDB
-from PP3E.Dbase.TableBrowser.formgui   import FormGui
+from PP3E.Dbase.TableBrowser.formgui import FormGui
 from PP3E.Dbase.TableBrowser.formtable import Table, InstanceRecord
 
-class Person: pass
-initrecs = {'bob': dict(name='bob', job='devel', pay=30),
-            'sue': dict(name='sue', job='music', pay=40)}
-            
+
+class Person:
+    pass
+
+
+initrecs = {
+    "bob": dict(name="bob", job="devel", pay=30),
+    "sue": dict(name="sue", job="music", pay=40),
+}
+
 dbtable = Table(FileDB(filename), InstanceRecord(Person))
 if len(sys.argv) > 1:
     for key in dbtable.keys():
-        del dbtable[key]                 # "viewzodb.py -" inits db
-    dbtable.storeItems(initrecs)         # "viewzodb.py" browses db
-    
+        del dbtable[key]  # "viewzodb.py -" inits db
+    dbtable.storeItems(initrecs)  # "viewzodb.py" browses db
+
 FormGui(dbtable).mainloop()
 dbtable.printItems()
 dbtable.close()

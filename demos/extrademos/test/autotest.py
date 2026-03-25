@@ -3,4 +3,5 @@
 # from test import autotest.
 
 from test import regrtest
+
 regrtest.main()

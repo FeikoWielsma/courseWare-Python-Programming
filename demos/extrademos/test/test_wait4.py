@@ -1,5 +1,4 @@
-"""This test checks for correct wait4() behavior.
-"""
+"""This test checks for correct wait4() behavior."""
 
 import os
 import time
@@ -7,8 +6,8 @@ from test.fork_wait import ForkWait
 from test.support import run_unittest, reap_children, get_attribute
 
 # If either of these do not exist, skip this test.
-get_attribute(os, 'fork')
-get_attribute(os, 'wait4')
+get_attribute(os, "fork")
+get_attribute(os, "wait4")
 
 
 class Wait4Test(ForkWait):
@@ -21,12 +20,16 @@ class Wait4Test(ForkWait):
                 break
             time.sleep(1.0)
         self.assertEqual(spid, cpid)
-        self.assertEqual(status, 0, "cause = %d, exit = %d" % (status&0xff, status>>8))
+        self.assertEqual(
+            status, 0, "cause = %d, exit = %d" % (status & 0xFF, status >> 8)
+        )
         self.assertTrue(rusage)
+
 
 def test_main():
     run_unittest(Wait4Test)
     reap_children()
+
 
 if __name__ == "__main__":
     test_main()

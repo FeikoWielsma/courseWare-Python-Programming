@@ -4,6 +4,7 @@ import urllib.robotparser
 from urllib.error import URLError
 from test import support
 
+
 class RobotTestCase(unittest.TestCase):
     def __init__(self, index, parser, url, good, agent):
         unittest.TestCase.__init__(self)
@@ -30,11 +31,11 @@ class RobotTestCase(unittest.TestCase):
     def __str__(self):
         return self.str
 
+
 tests = unittest.TestSuite()
 
-def RobotTest(index, robots_txt, good_urls, bad_urls,
-              agent="test_robotparser"):
 
+def RobotTest(index, robots_txt, good_urls, bad_urls, agent="test_robotparser"):
     lines = io.StringIO(robots_txt).readlines()
     parser = urllib.robotparser.RobotFileParser()
     parser.parse(lines)
@@ -42,6 +43,7 @@ def RobotTest(index, robots_txt, good_urls, bad_urls,
         tests.addTest(RobotTestCase(index, parser, url, 1, agent))
     for url in bad_urls:
         tests.addTest(RobotTestCase(index, parser, url, 0, agent))
+
 
 # Examples from http://www.robotstxt.org/wc/norobots.html (fetched 2002)
 
@@ -53,8 +55,8 @@ Disallow: /tmp/ # these will soon disappear
 Disallow: /foo.html
 """
 
-good = ['/','/test.html']
-bad = ['/cyberworld/map/index.html','/tmp/xxx','/foo.html']
+good = ["/", "/test.html"]
+bad = ["/cyberworld/map/index.html", "/tmp/xxx", "/foo.html"]
 
 RobotTest(1, doc, good, bad)
 
@@ -71,8 +73,8 @@ Disallow:
 
 """
 
-good = ['/','/test.html',('cybermapper','/cyberworld/map/index.html')]
-bad = ['/cyberworld/map/index.html']
+good = ["/", "/test.html", ("cybermapper", "/cyberworld/map/index.html")]
+bad = ["/cyberworld/map/index.html"]
 
 RobotTest(2, doc, good, bad)
 
@@ -84,7 +86,7 @@ Disallow: /
 """
 
 good = []
-bad = ['/cyberworld/map/index.html','/','/tmp/']
+bad = ["/cyberworld/map/index.html", "/", "/tmp/"]
 
 RobotTest(3, doc, good, bad)
 
@@ -99,14 +101,19 @@ Disallow: /a%2fb.html
 Disallow: /%7ejoe/index.html
 """
 
-good = [] # XFAIL '/a/b.html'
-bad = ['/tmp','/tmp.html','/tmp/a.html',
-       '/a%3cd.html','/a%3Cd.html','/a%2fb.html',
-       '/~joe/index.html'
-       ]
+good = []  # XFAIL '/a/b.html'
+bad = [
+    "/tmp",
+    "/tmp.html",
+    "/tmp/a.html",
+    "/a%3cd.html",
+    "/a%3Cd.html",
+    "/a%2fb.html",
+    "/~joe/index.html",
+]
 
-RobotTest(4, doc, good, bad, 'figtree')
-RobotTest(5, doc, good, bad, 'FigTree Robot libwww-perl/5.04')
+RobotTest(4, doc, good, bad, "figtree")
+RobotTest(5, doc, good, bad, "FigTree Robot libwww-perl/5.04")
 
 # 6.
 doc = """
@@ -117,10 +124,17 @@ Disallow: /a/b.html
 Disallow: /%7ejoe/index.html
 """
 
-good = ['/tmp',] # XFAIL: '/a%2fb.html'
-bad = ['/tmp/','/tmp/a.html',
-       '/a%3cd.html','/a%3Cd.html',"/a/b.html",
-       '/%7Ejoe/index.html']
+good = [
+    "/tmp",
+]  # XFAIL: '/a%2fb.html'
+bad = [
+    "/tmp/",
+    "/tmp/a.html",
+    "/a%3cd.html",
+    "/a%3Cd.html",
+    "/a/b.html",
+    "/%7Ejoe/index.html",
+]
 
 RobotTest(6, doc, good, bad)
 
@@ -132,8 +146,8 @@ User-Agent: *
 Disallow: /.
 """
 
-good = ['/foo.html']
-bad = [] # Bug report says "/" should be denied, but that is not in the RFC
+good = ["/foo.html"]
+bad = []  # Bug report says "/" should be denied, but that is not in the RFC
 
 RobotTest(7, doc, good, bad)
 
@@ -146,8 +160,8 @@ Allow: /folder1/myfile.html
 Disallow: /folder1/
 """
 
-good = ['/folder1/myfile.html']
-bad = ['/folder1/anotherfile.html']
+good = ["/folder1/myfile.html"]
+bad = ["/folder1/anotherfile.html"]
 
 RobotTest(8, doc, good, bad, agent="Googlebot")
 
@@ -162,12 +176,12 @@ Allow: /
 """
 
 good = []
-bad = ['/something.jpg']
+bad = ["/something.jpg"]
 
 RobotTest(9, doc, good, bad, agent="Googlebot")
 
 good = []
-bad = ['/something.jpg']
+bad = ["/something.jpg"]
 
 RobotTest(10, doc, good, bad, agent="Googlebot-Mobile")
 
@@ -181,11 +195,11 @@ Disallow: /
 """
 
 good = []
-bad = ['/something.jpg']
+bad = ["/something.jpg"]
 
 RobotTest(11, doc, good, bad, agent="Googlebot")
 
-good = ['/something.jpg']
+good = ["/something.jpg"]
 bad = []
 
 RobotTest(12, doc, good, bad, agent="Googlebot-Mobile")
@@ -199,8 +213,8 @@ Allow: /folder1/myfile.html
 Disallow: /folder1/
 """
 
-good = ['/folder1/myfile.html']
-bad = ['/folder1/anotherfile.html']
+good = ["/folder1/myfile.html"]
+bad = ["/folder1/anotherfile.html"]
 
 RobotTest(13, doc, good, bad, agent="googlebot")
 
@@ -211,8 +225,8 @@ User-agent: *
 Disallow: /some/path?name=value
 """
 
-good = ['/some/path']
-bad = ['/some/path?name=value']
+good = ["/some/path"]
+bad = ["/some/path?name=value"]
 
 RobotTest(14, doc, good, bad)
 
@@ -225,39 +239,40 @@ User-agent: *
 Disallow: /another/path
 """
 
-good = ['/another/path']
-bad = ['/some/path']
+good = ["/another/path"]
+bad = ["/some/path"]
 
 RobotTest(15, doc, good, bad)
 
 
 class NetworkTestCase(unittest.TestCase):
-
     def testPasswordProtectedSite(self):
-        support.requires('network')
-        with support.transient_internet('mueblesmoraleda.com'):
-            url = 'http://mueblesmoraleda.com'
+        support.requires("network")
+        with support.transient_internet("mueblesmoraleda.com"):
+            url = "http://mueblesmoraleda.com"
             parser = urllib.robotparser.RobotFileParser()
             parser.set_url(url)
             try:
                 parser.read()
             except URLError:
-                self.skipTest('%s is unavailable' % url)
-            self.assertEqual(parser.can_fetch("*", url+"/robots.txt"), False)
+                self.skipTest("%s is unavailable" % url)
+            self.assertEqual(parser.can_fetch("*", url + "/robots.txt"), False)
 
     def testPythonOrg(self):
-        support.requires('network')
-        with support.transient_internet('www.python.org'):
+        support.requires("network")
+        with support.transient_internet("www.python.org"):
             parser = urllib.robotparser.RobotFileParser(
-                "http://www.python.org/robots.txt")
+                "http://www.python.org/robots.txt"
+            )
             parser.read()
-            self.assertTrue(
-                parser.can_fetch("*", "http://www.python.org/robots.txt"))
+            self.assertTrue(parser.can_fetch("*", "http://www.python.org/robots.txt"))
+
 
 def test_main():
     support.run_unittest(NetworkTestCase)
     support.run_unittest(tests)
 
-if __name__=='__main__':
+
+if __name__ == "__main__":
     support.verbose = 1
     test_main()

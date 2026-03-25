@@ -22,13 +22,13 @@ class DragWidget(QtGui.QPushButton):
     def __init__(self, parent=None):
         super(DragWidget, self).__init__('DND me', parent)
 
-    def mousePressEvent(self, evt):
+    def mouse_press_event(self, evt):
         if evt.button() == QtCore.Qt.MouseButton.LeftButton:
             mime_data = QtCore.QMimeData()
-            mime_data.setText(self.text())
+            mime_data.set_text(self.text())
 
             drag = QtGui.QDrag(self)
-            drag.setMimeData(mime_data)
+            drag.set_mime_data(mime_data)
             drag.exec_(QtCore.Qt.MoveAction)
 
 
@@ -37,24 +37,24 @@ class Demo(QtGui.QMainWindow):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
         self.btn = DragWidget(self)
         self.btn.move(10, 10)
 
-        self.setAcceptDrops(True)
+        self.set_accept_drops(True)
 
     def show_and_raise(self):
         self.show()
         self.raise_()
 
-    def dragEnterEvent(self, drag_enter_evt):
-        mime_data = drag_enter_evt.mimeData()
-        if mime_data.hasFormat('text/plain'):
-            drag_enter_evt.acceptProposedAction()
+    def drag_enter_event(self, drag_enter_evt):
+        mime_data = drag_enter_evt.mime_data()
+        if mime_data.has_format('text/plain'):
+            drag_enter_evt.accept_proposed_action()
 
-    def dragMoveEvent(self, evt):
-        print 'dragMoveEvent', evt.pos()
+    def drag_move_event(self, evt):
+        print 'drag_move_event', evt.pos()
 
         self.btn.move(evt.pos())
 

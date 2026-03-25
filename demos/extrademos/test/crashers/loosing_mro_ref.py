@@ -6,9 +6,10 @@ type without holding a strong reference to it.  Probably works with
 super.__getattribute__() too, which uses the same kind of code.
 """
 
+
 class MyKey(object):
     def __hash__(self):
-        return hash('mykey')
+        return hash("mykey")
 
     def __eq__(self, other):
         # the following line decrefs the previous X.__mro__
@@ -22,14 +23,16 @@ class MyKey(object):
 
 
 class Base(object):
-    mykey = 'from Base'
+    mykey = "from Base"
+
 
 class Base2(object):
-    mykey = 'from Base2'
+    mykey = "from Base2"
+
 
 # you can't add a non-string key to X.__dict__, but it can be
 # there from the beginning :-)
-X = type('X', (Base,), {MyKey(): 5})
+X = type("X", (Base,), {MyKey(): 5})
 
 print(X.mykey)
 # I get a segfault, or a slightly wrong assertion error in a debug build.

@@ -19,19 +19,21 @@ import email
 from email import __file__ as testfile
 from email.iterators import _structure
 
+
 def openfile(filename):
     from os.path import join, dirname, abspath
-    path = abspath(join(dirname(testfile), os.pardir, 'moredata', filename))
-    return open(path, 'r')
+
+    path = abspath(join(dirname(testfile), os.pardir, "moredata", filename))
+    return open(path, "r")
+
 
 # Prevent this test from running in the Python distro
 try:
-    openfile('crispin-torture.txt')
+    openfile("crispin-torture.txt")
 except IOError:
     raise TestSkipped
 
 
-
 class TortureBase(TestEmailBase):
     def _msgobj(self, filename):
         fp = openfile(filename)
@@ -42,23 +44,24 @@ class TortureBase(TestEmailBase):
         return msg
 
 
-
 class TestCrispinTorture(TortureBase):
     # Mark Crispin's torture test from the SquirrelMail project
     def test_mondo_message(self):
         eq = self.assertEqual
         neq = self.ndiffAssertEqual
-        msg = self._msgobj('crispin-torture.txt')
+        msg = self._msgobj("crispin-torture.txt")
         payload = msg.get_payload()
         eq(type(payload), ListType)
         eq(len(payload), 12)
         eq(msg.preamble, None)
-        eq(msg.epilogue, '\n')
+        eq(msg.epilogue, "\n")
         # Probably the best way to verify the message is parsed correctly is to
         # dump its structure and compare it against the known structure.
         fp = StringIO()
         _structure(msg, fp=fp)
-        neq(fp.getvalue(), """\
+        neq(
+            fp.getvalue(),
+            """\
 multipart/mixed
     text/plain
     message/rfc822
@@ -111,12 +114,13 @@ multipart/mixed
                     application/atomicmail
                     message/rfc822
                         audio/x-sun
-""")
+""",
+        )
 
-
+
 def _testclasses():
     mod = sys.modules[__name__]
-    return [getattr(mod, name) for name in dir(mod) if name.startswith('Test')]
+    return [getattr(mod, name) for name in dir(mod) if name.startswith("Test")]
 
 
 def suite():
@@ -131,6 +135,5 @@ def test_main():
         run_unittest(testclass)
 
 
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+if __name__ == "__main__":
+    unittest.main(defaultTest="suite")

@@ -2,11 +2,11 @@ from tkinter import *
 
 from tkinter import scrolledtext
 
-mainWindow = Tk()
-mainWindow.title("Scrolled Text Control Demo")
-mainWindow.geometry('500x200')
+main_window = Tk()
+main_window.title("Scrolled Text Control Demo")
+main_window.geometry("500x200")
 
-txt = scrolledtext.ScrolledText(mainWindow, width=40, height=10)
+txt = scrolledtext.ScrolledText(main_window, width=40, height=10)
 txt.grid(column=0, row=0)
 
-mainWindow.mainloop()
+main_window.mainloop()

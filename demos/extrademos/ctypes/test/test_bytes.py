@@ -1,7 +1,9 @@
 """Test where byte objects are accepted"""
+
 import unittest
 import sys
 from ctypes import *
+
 
 class BytesTest(unittest.TestCase):
     def test_c_char(self):
@@ -39,12 +41,15 @@ class BytesTest(unittest.TestCase):
         self.assertEqual(type(x.a), str)
 
     if sys.platform == "win32":
+
         def test_BSTR(self):
             from _ctypes import _SimpleCData
+
             class BSTR(_SimpleCData):
                 _type_ = "X"
 
             BSTR("abc")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

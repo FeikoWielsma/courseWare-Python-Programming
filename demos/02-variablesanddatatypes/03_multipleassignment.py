@@ -2,7 +2,7 @@ a = b = c = 10
 print(a, b, c)
 print(id(a), id(b), id(c))
 
-a = 11;
+a = 11
 print(a, b, c)
 print(id(a), id(b), id(c))
 

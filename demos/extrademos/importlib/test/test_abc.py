@@ -5,7 +5,6 @@ import unittest
 
 
 class InheritanceTests:
-
     """Test that the specified class is a subclass/superclass of the expected
     classes."""
 
@@ -20,70 +19,71 @@ class InheritanceTests:
     def test_subclasses(self):
         # Test that the expected subclasses inherit.
         for subclass in self.subclasses:
-            self.assertTrue(issubclass(subclass, self.__test),
-                "{0} is not a subclass of {1}".format(subclass, self.__test))
+            self.assertTrue(
+                issubclass(subclass, self.__test),
+                "{0} is not a subclass of {1}".format(subclass, self.__test),
+            )
 
     def test_superclasses(self):
         # Test that the class inherits from the expected superclasses.
         for superclass in self.superclasses:
-            self.assertTrue(issubclass(self.__test, superclass),
-               "{0} is not a superclass of {1}".format(superclass, self.__test))
+            self.assertTrue(
+                issubclass(self.__test, superclass),
+                "{0} is not a superclass of {1}".format(superclass, self.__test),
+            )
 
 
 class Finder(InheritanceTests, unittest.TestCase):
-
-    subclasses = [machinery.BuiltinImporter, machinery.FrozenImporter,
-                    machinery.PathFinder]
+    subclasses = [
+        machinery.BuiltinImporter,
+        machinery.FrozenImporter,
+        machinery.PathFinder,
+    ]
 
 
 class Loader(InheritanceTests, unittest.TestCase):
-
     subclasses = [abc.PyLoader]
 
 
 class ResourceLoader(InheritanceTests, unittest.TestCase):
-
     superclasses = [abc.Loader]
 
 
 class InspectLoader(InheritanceTests, unittest.TestCase):
-
     superclasses = [abc.Loader]
-    subclasses = [abc.PyLoader, machinery.BuiltinImporter,
-                    machinery.FrozenImporter]
+    subclasses = [abc.PyLoader, machinery.BuiltinImporter, machinery.FrozenImporter]
 
 
 class ExecutionLoader(InheritanceTests, unittest.TestCase):
-
     superclasses = [abc.InspectLoader]
     subclasses = [abc.PyLoader]
 
 
 class SourceLoader(InheritanceTests, unittest.TestCase):
-
     superclasses = [abc.ResourceLoader, abc.ExecutionLoader]
 
 
 class PyLoader(InheritanceTests, unittest.TestCase):
-
     superclasses = [abc.Loader, abc.ResourceLoader, abc.ExecutionLoader]
 
 
 class PyPycLoader(InheritanceTests, unittest.TestCase):
-
     superclasses = [abc.PyLoader]
 
 
 def test_main():
     from test.support import run_unittest
+
     classes = []
     for class_ in globals().values():
-        if (inspect.isclass(class_) and
-                issubclass(class_, unittest.TestCase) and
-                issubclass(class_, InheritanceTests)):
+        if (
+            inspect.isclass(class_)
+            and issubclass(class_, unittest.TestCase)
+            and issubclass(class_, InheritanceTests)
+        ):
             classes.append(class_)
     run_unittest(*classes)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_main()

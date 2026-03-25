@@ -9,7 +9,6 @@ from lib2to3 import main
 
 
 class TestMain(unittest.TestCase):
-
     def tearDown(self):
         # Clean up logging configuration down by main.
         del logging.root.handlers[:]
@@ -37,5 +36,7 @@ class TestMain(unittest.TestCase):
         self.assertEqual(ret, 0)
         output = out.getvalue().decode("ascii")
         self.assertTrue("-print 'nothing'" in output)
-        self.assertTrue("WARNING: couldn't encode <stdin>'s diff for "
-                        "your terminal" in err.getvalue())
+        self.assertTrue(
+            "WARNING: couldn't encode <stdin>'s diff for "
+            "your terminal" in err.getvalue()
+        )

@@ -4,8 +4,8 @@ from test import support
 from test.pickletester import AbstractPickleTests
 from test.pickletester import AbstractPickleModuleTests
 
-class OptimizedPickleTests(AbstractPickleTests, AbstractPickleModuleTests):
 
+class OptimizedPickleTests(AbstractPickleTests, AbstractPickleModuleTests):
     def dumps(self, arg, proto=None):
         return pickletools.optimize(pickle.dumps(arg, proto))
 

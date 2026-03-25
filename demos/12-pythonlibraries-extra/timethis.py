@@ -31,32 +31,38 @@ count_to_a_million()
 
 All timing output is collected and not printed until a program
 exits.  If any code block or function marked with timethis() is
-executed more than once, timing measurements are collected 
+executed more than once, timing measurements are collected
 and used to calculate a mean and standard deviation.
 """
 
 import atexit
 import time
 import math
-from   contextlib import contextmanager
-from   collections import defaultdict
+from contextlib import contextmanager
+from collections import defaultdict
 
 # Dictionary holding timing measurements
 _stats = defaultdict(list)
+
 
 # Exit processing to print performance results
 def _printstats():
     if not _stats:
         return
     maxwidth = max(len(str(key)) for key in _stats)
-    for key,times in sorted(_stats.items(),key=lambda x: str(x[0])):
+    for key, times in sorted(_stats.items(), key=lambda x: str(x[0])):
         # Compute average and standard deviation
-        mean = sum(times)/float(len(times))
-        stddev = math.sqrt(sum((x-mean)**2 for x in times)/len(times))
-        print("{0:<{maxwidth}s} : {1:0.5f}s : N={2:5d} : stddev={3:0.5f}".format(
-                key,mean,len(times),stddev,maxwidth=maxwidth))
+        mean = sum(times) / float(len(times))
+        stddev = math.sqrt(sum((x - mean) ** 2 for x in times) / len(times))
+        print(
+            "{0:<{maxwidth}s} : {1:0.5f}s : N={2:5d} : stddev={3:0.5f}".format(
+                key, mean, len(times), stddev, maxwidth=maxwidth
+            )
+        )
+
 
 atexit.register(_printstats)
+
 
 # This utility function is used to perform timing benchmarks
 def timethis(what):
@@ -65,17 +71,21 @@ def timethis(what):
         start = time.time()
         yield
         end = time.time()
-        _stats[what].append(end-start)
-    if hasattr(what,"__call__"):
-        def timed(*args,**kwargs):
+        _stats[what].append(end - start)
+
+    if hasattr(what, "__call__"):
+
+        def timed(*args, **kwargs):
             with benchmark():
-                return what(*args,**kwargs)
+                return what(*args, **kwargs)
+
         return timed
     else:
         return benchmark()
 
+
 # Example
-if __name__ == '__main__':
+if __name__ == "__main__":
     # A single measurement
     with timethis("count to ten million"):
         n = 0
@@ -85,9 +95,9 @@ if __name__ == '__main__':
     # Repeated measurements
     for i in range(10):
         with timethis("count to one million"):
-             n = 0
-             while n < 1000000:
-                 n += 1
+            n = 0
+            while n < 1000000:
+                n += 1
 
     # A function call
     @timethis
@@ -99,4 +109,3 @@ if __name__ == '__main__':
     count_to_a_million()
     count_to_a_million()
     count_to_a_million()
-

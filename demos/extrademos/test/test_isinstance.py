@@ -7,7 +7,6 @@ from test import support
 import sys
 
 
-
 class TestIsInstanceExceptions(unittest.TestCase):
     # Test to make sure that an AttributeError when accessing the instance's
     # class's bases is masked.  This was actually a bug in Python 2.2 and
@@ -28,11 +27,13 @@ class TestIsInstanceExceptions(unittest.TestCase):
             def getclass(self):
                 # This must return an object that has no __bases__ attribute
                 return None
+
             __class__ = property(getclass)
 
         class C(object):
             def getbases(self):
                 return ()
+
             __bases__ = property(getbases)
 
         self.assertEqual(False, isinstance(I(), C()))
@@ -43,16 +44,19 @@ class TestIsInstanceExceptions(unittest.TestCase):
         class E(object):
             def getbases(self):
                 raise RuntimeError
+
             __bases__ = property(getbases)
 
         class I(object):
             def getclass(self):
                 return E()
+
             __class__ = property(getclass)
 
         class C(object):
             def getbases(self):
                 return ()
+
             __bases__ = property(getbases)
 
         self.assertRaises(RuntimeError, isinstance, I(), C())
@@ -60,11 +64,13 @@ class TestIsInstanceExceptions(unittest.TestCase):
     # Here's a situation where getattr(cls, '__bases__') raises an exception.
     # If that exception is not AttributeError, it should not get masked
     def test_dont_mask_non_attribute_error(self):
-        class I: pass
+        class I:
+            pass
 
         class C(object):
             def getbases(self):
                 raise RuntimeError
+
             __bases__ = property(getbases)
 
         self.assertRaises(RuntimeError, isinstance, I(), C())
@@ -72,11 +78,13 @@ class TestIsInstanceExceptions(unittest.TestCase):
     # Like above, except that getattr(cls, '__bases__') raises an
     # AttributeError, which /should/ get masked as a TypeError
     def test_mask_attribute_error(self):
-        class I: pass
+        class I:
+            pass
 
         class C(object):
             def getbases(self):
                 raise AttributeError
+
             __bases__ = property(getbases)
 
         self.assertRaises(TypeError, isinstance, I(), C())
@@ -87,16 +95,19 @@ class TestIsInstanceExceptions(unittest.TestCase):
         class C(object):
             def getclass(self):
                 raise RuntimeError
+
             __class__ = property(getclass)
 
         c = C()
         self.assertRaises(RuntimeError, isinstance, c, bool)
 
         # test another code path
-        class D: pass
+        class D:
+            pass
+
         self.assertRaises(RuntimeError, isinstance, c, D)
 
-
+
 # These tests are similar to above, but tickle certain code paths in
 # issubclass() instead of isinstance() -- really PyObject_IsSubclass()
 # vs. PyObject_IsInstance().
@@ -105,9 +116,11 @@ class TestIsSubclassExceptions(unittest.TestCase):
         class C(object):
             def getbases(self):
                 raise RuntimeError
+
             __bases__ = property(getbases)
 
-        class S(C): pass
+        class S(C):
+            pass
 
         self.assertRaises(RuntimeError, issubclass, C(), S())
 
@@ -115,9 +128,11 @@ class TestIsSubclassExceptions(unittest.TestCase):
         class C(object):
             def getbases(self):
                 raise AttributeError
+
             __bases__ = property(getbases)
 
-        class S(C): pass
+        class S(C):
+            pass
 
         self.assertRaises(TypeError, issubclass, C(), S())
 
@@ -126,27 +141,30 @@ class TestIsSubclassExceptions(unittest.TestCase):
     # return a valid __bases__, and it's okay for it to be a normal --
     # unrelated by inheritance -- class.
     def test_dont_mask_non_attribute_error_in_cls_arg(self):
-        class B: pass
+        class B:
+            pass
 
         class C(object):
             def getbases(self):
                 raise RuntimeError
+
             __bases__ = property(getbases)
 
         self.assertRaises(RuntimeError, issubclass, B, C())
 
     def test_mask_attribute_error_in_cls_arg(self):
-        class B: pass
+        class B:
+            pass
 
         class C(object):
             def getbases(self):
                 raise AttributeError
+
             __bases__ = property(getbases)
 
         self.assertRaises(TypeError, issubclass, B, C())
 
 
-
 # meta classes for creating abstract classes and instances
 class AbstractClass(object):
     def __init__(self, bases):
@@ -154,10 +172,12 @@ class AbstractClass(object):
 
     def getbases(self):
         return self.bases
+
     __bases__ = property(getbases)
 
     def __call__(self):
         return AbstractInstance(self)
+
 
 class AbstractInstance(object):
     def __init__(self, klass):
@@ -165,29 +185,34 @@ class AbstractInstance(object):
 
     def getclass(self):
         return self.klass
+
     __class__ = property(getclass)
+
 
 # abstract classes
 AbstractSuper = AbstractClass(bases=())
 
 AbstractChild = AbstractClass(bases=(AbstractSuper,))
 
+
 # normal classes
 class Super:
     pass
 
+
 class Child(Super):
     pass
+
 
 # new-style classes
 class NewSuper(object):
     pass
 
+
 class NewChild(NewSuper):
     pass
 
 
-
 class TestIsInstanceIsSubclass(unittest.TestCase):
     # Tests to ensure that isinstance and issubclass work on abstract
     # classes and instances.  Before the 2.2 release, TypeErrors were
@@ -266,24 +291,23 @@ class TestIsInstanceIsSubclass(unittest.TestCase):
     def test_isinstance_recursion_limit(self):
         # make sure that issubclass raises RuntimeError before the C stack is
         # blown
-        self.assertRaises(RuntimeError, blowstack, isinstance, '', str)
+        self.assertRaises(RuntimeError, blowstack, isinstance, "", str)
+
 
 def blowstack(fxn, arg, compare_to):
     # Make sure that calling isinstance with a deeply nested tuple for its
     # argument will raise RuntimeError eventually.
     tuple_arg = (compare_to,)
-    for cnt in range(sys.getrecursionlimit()+5):
+    for cnt in range(sys.getrecursionlimit() + 5):
         tuple_arg = (tuple_arg,)
         fxn(arg, tuple_arg)
 
-
+
 def test_main():
     support.run_unittest(
-        TestIsInstanceExceptions,
-        TestIsSubclassExceptions,
-        TestIsInstanceIsSubclass
+        TestIsInstanceExceptions, TestIsSubclassExceptions, TestIsInstanceIsSubclass
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_main()

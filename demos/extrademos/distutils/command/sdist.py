@@ -5,19 +5,19 @@ Implements the Distutils 'sdist' command (create a source distribution)."""
 __revision__ = "$Id: sdist.py 84711 2010-09-11 15:28:56Z eric.araujo $"
 
 import os
-import string
 import sys
 from types import *
 from glob import glob
 from warnings import warn
 
 from distutils.core import Command
-from distutils import dir_util, dep_util, file_util, archive_util
+from distutils import dir_util, file_util, archive_util
 from distutils.text_file import TextFile
 from distutils.errors import *
 from distutils.filelist import FileList
 from distutils import log
 from distutils.util import convert_path
+
 
 def show_formats():
     """Print all possible values for the 'formats' option (used by
@@ -25,16 +25,15 @@ def show_formats():
     """
     from distutils.fancy_getopt import FancyGetopt
     from distutils.archive_util import ARCHIVE_FORMATS
+
     formats = []
     for format in ARCHIVE_FORMATS.keys():
-        formats.append(("formats=" + format, None,
-                        ARCHIVE_FORMATS[format][2]))
+        formats.append(("formats=" + format, None, ARCHIVE_FORMATS[format][2]))
     formats.sort()
-    FancyGetopt(formats).print_help(
-        "List of available source distribution formats:")
+    FancyGetopt(formats).print_help("List of available source distribution formats:")
+
 
 class sdist(Command):
-
     description = "create a source distribution (tarball, zip file, etc.)"
 
     def checking_metadata(self):
@@ -44,56 +43,71 @@ class sdist(Command):
         return self.metadata_check
 
     user_options = [
-        ('template=', 't',
-         "name of manifest template file [default: MANIFEST.in]"),
-        ('manifest=', 'm',
-         "name of manifest file [default: MANIFEST]"),
-        ('use-defaults', None,
-         "include the default file set in the manifest "
-         "[default; disable with --no-defaults]"),
-        ('no-defaults', None,
-         "don't include the default file set"),
-        ('prune', None,
-         "specifically exclude files/directories that should not be "
-         "distributed (build tree, RCS/CVS dirs, etc.) "
-         "[default; disable with --no-prune]"),
-        ('no-prune', None,
-         "don't automatically exclude anything"),
-        ('manifest-only', 'o',
-         "just regenerate the manifest and then stop "
-         "(implies --force-manifest)"),
-        ('force-manifest', 'f',
-         "forcibly regenerate the manifest and carry on as usual. "
-         "Deprecated: now the manifest is always regenerated."),
-        ('formats=', None,
-         "formats for source distribution (comma-separated list)"),
-        ('keep-temp', 'k',
-         "keep the distribution tree around after creating " +
-         "archive file(s)"),
-        ('dist-dir=', 'd',
-         "directory to put the source distribution archive(s) in "
-         "[default: dist]"),
-        ('metadata-check', None,
-         "Ensure that all required elements of meta-data "
-         "are supplied. Warn if any missing. [default]"),
-        ]
+        ("template=", "t", "name of manifest template file [default: MANIFEST.in]"),
+        ("manifest=", "m", "name of manifest file [default: MANIFEST]"),
+        (
+            "use-defaults",
+            None,
+            "include the default file set in the manifest "
+            "[default; disable with --no-defaults]",
+        ),
+        ("no-defaults", None, "don't include the default file set"),
+        (
+            "prune",
+            None,
+            "specifically exclude files/directories that should not be "
+            "distributed (build tree, RCS/CVS dirs, etc.) "
+            "[default; disable with --no-prune]",
+        ),
+        ("no-prune", None, "don't automatically exclude anything"),
+        (
+            "manifest-only",
+            "o",
+            "just regenerate the manifest and then stop (implies --force-manifest)",
+        ),
+        (
+            "force-manifest",
+            "f",
+            "forcibly regenerate the manifest and carry on as usual. "
+            "Deprecated: now the manifest is always regenerated.",
+        ),
+        ("formats=", None, "formats for source distribution (comma-separated list)"),
+        (
+            "keep-temp",
+            "k",
+            "keep the distribution tree around after creating " + "archive file(s)",
+        ),
+        (
+            "dist-dir=",
+            "d",
+            "directory to put the source distribution archive(s) in [default: dist]",
+        ),
+        (
+            "metadata-check",
+            None,
+            "Ensure that all required elements of meta-data "
+            "are supplied. Warn if any missing. [default]",
+        ),
+    ]
 
-    boolean_options = ['use-defaults', 'prune',
-                       'manifest-only', 'force-manifest',
-                       'keep-temp', 'metadata-check']
+    boolean_options = [
+        "use-defaults",
+        "prune",
+        "manifest-only",
+        "force-manifest",
+        "keep-temp",
+        "metadata-check",
+    ]
 
     help_options = [
-        ('help-formats', None,
-         "list available distribution formats", show_formats),
-        ]
+        ("help-formats", None, "list available distribution formats", show_formats),
+    ]
 
-    negative_opt = {'no-defaults': 'use-defaults',
-                    'no-prune': 'prune' }
+    negative_opt = {"no-defaults": "use-defaults", "no-prune": "prune"}
 
-    default_format = {'posix': 'gztar',
-                      'nt': 'zip' }
+    default_format = {"posix": "gztar", "nt": "zip"}
 
-    sub_commands = [('check', checking_metadata)]
+    sub_commands = [("check", checking_metadata)]
 
     def initialize_options(self):
         # 'template' and 'manifest' are, respectively, the names of
@@ -122,19 +136,19 @@ class sdist(Command):
         if self.template is None:
             self.template = "MANIFEST.in"
 
-        self.ensure_string_list('formats')
+        self.ensure_string_list("formats")
         if self.formats is None:
             try:
                 self.formats = [self.default_format[os.name]]
             except KeyError:
                 raise DistutilsPlatformError(
-                      "don't know how to create source distributions "
-                      "on platform %s" % os.name)
+                    "don't know how to create source distributions "
+                    "on platform %s" % os.name
+                )
 
         bad_format = archive_util.check_archive_formats(self.formats)
         if bad_format:
-            raise DistutilsOptionError(
-                  "unknown archive format '%s'" % bad_format)
+            raise DistutilsOptionError("unknown archive format '%s'" % bad_format)
 
         if self.dist_dir is None:
             self.dist_dir = "dist"
@@ -163,9 +177,12 @@ class sdist(Command):
 
     def check_metadata(self):
         """Deprecated API."""
-        warn("distutils.command.sdist.check_metadata is deprecated, \
-              use the check command instead", PendingDeprecationWarning)
-        check = self.distribution.get_command_obj('check')
+        warn(
+            "distutils.command.sdist.check_metadata is deprecated, \
+              use the check command instead",
+            PendingDeprecationWarning,
+        )
+        check = self.distribution.get_command_obj("check")
         check.ensure_finalized()
         check.run()
 
@@ -185,9 +202,10 @@ class sdist(Command):
         #  This makes --force the default and only behavior.
         template_exists = os.path.isfile(self.template)
         if not template_exists:
-            self.warn(("manifest template '%s' does not exist " +
-                        "(using default file list)") %
-                        self.template)
+            self.warn(
+                ("manifest template '%s' does not exist " + "(using default file list)")
+                % self.template
+            )
         self.filelist.findall()
 
         if self.use_defaults:
@@ -217,7 +235,7 @@ class sdist(Command):
         Warns if (README or README.txt) or setup.py are missing; everything
         else is optional.
         """
-        standards = [('README', 'README.txt'), self.distribution.script_name]
+        standards = [("README", "README.txt"), self.distribution.script_name]
         for fn in standards:
             if isinstance(fn, tuple):
                 alts = fn
@@ -229,15 +247,16 @@ class sdist(Command):
                         break
 
                 if not got_it:
-                    self.warn("standard file not found: should have one of " +
-                              ', '.join(alts))
+                    self.warn(
+                        "standard file not found: should have one of " + ", ".join(alts)
+                    )
             else:
                 if os.path.exists(fn):
                     self.filelist.append(fn)
                 else:
                     self.warn("standard file '%s' not found" % fn)
 
-        optional = ['test/test*.py', 'setup.cfg']
+        optional = ["test/test*.py", "setup.cfg"]
         for pattern in optional:
             files = filter(os.path.isfile, glob(pattern))
             self.filelist.extend(files)
@@ -245,7 +264,7 @@ class sdist(Command):
         # build_py is used to get:
         #  - python modules
         #  - files defined in package_data
-        build_py = self.get_finalized_command('build_py')
+        build_py = self.get_finalized_command("build_py")
 
         # getting python files
         if self.distribution.has_pure_modules():
@@ -260,11 +279,11 @@ class sdist(Command):
         # getting distribution.data_files
         if self.distribution.has_data_files():
             for item in self.distribution.data_files:
-                if isinstance(item, str): # plain file
+                if isinstance(item, str):  # plain file
                     item = convert_path(item)
                     if os.path.isfile(item):
                         self.filelist.append(item)
-                else:    # a (dirname, filenames) tuple
+                else:  # a (dirname, filenames) tuple
                     dirname, filenames = item
                     for f in filenames:
                         f = convert_path(f)
@@ -272,15 +291,15 @@ class sdist(Command):
                             self.filelist.append(f)
 
         if self.distribution.has_ext_modules():
-            build_ext = self.get_finalized_command('build_ext')
+            build_ext = self.get_finalized_command("build_ext")
             self.filelist.extend(build_ext.get_source_files())
 
         if self.distribution.has_c_libraries():
-            build_clib = self.get_finalized_command('build_clib')
+            build_clib = self.get_finalized_command("build_clib")
             self.filelist.extend(build_clib.get_source_files())
 
         if self.distribution.has_scripts():
-            build_scripts = self.get_finalized_command('build_scripts')
+            build_scripts = self.get_finalized_command("build_scripts")
             self.filelist.extend(build_scripts.get_source_files())
 
     def read_template(self):
@@ -290,21 +309,27 @@ class sdist(Command):
         'self.filelist', which updates itself accordingly.
         """
         log.info("reading manifest template '%s'", self.template)
-        template = TextFile(self.template, strip_comments=1, skip_blanks=1,
-                            join_lines=1, lstrip_ws=1, rstrip_ws=1,
-                            collapse_join=1)
+        template = TextFile(
+            self.template,
+            strip_comments=1,
+            skip_blanks=1,
+            join_lines=1,
+            lstrip_ws=1,
+            rstrip_ws=1,
+            collapse_join=1,
+        )
 
         while True:
             line = template.readline()
-            if line is None:            # end of file
+            if line is None:  # end of file
                 break
 
             try:
                 self.filelist.process_template_line(line)
             except DistutilsTemplateError as msg:
-                self.warn("%s, line %d: %s" % (template.filename,
-                                               template.current_line,
-                                               msg))
+                self.warn(
+                    "%s, line %d: %s" % (template.filename, template.current_line, msg)
+                )
 
     def prune_file_list(self):
         """Prune off branches that might slip into the file list as created
@@ -314,20 +339,19 @@ class sdist(Command):
             previously with --keep-temp, or it aborted)
           * any RCS, CVS, .svn, .hg, .git, .bzr, _darcs directories
         """
-        build = self.get_finalized_command('build')
+        build = self.get_finalized_command("build")
         base_dir = self.distribution.get_fullname()
 
         self.filelist.exclude_pattern(None, prefix=build.build_base)
         self.filelist.exclude_pattern(None, prefix=base_dir)
 
-        if sys.platform == 'win32':
-            seps = r'/|\\'
+        if sys.platform == "win32":
+            seps = r"/|\\"
         else:
-            seps = '/'
+            seps = "/"
 
-        vcs_dirs = ['RCS', 'CVS', r'\.svn', r'\.hg', r'\.git', r'\.bzr',
-                    '_darcs']
-        vcs_ptrn = r'(^|%s)(%s)(%s).*' % (seps, '|'.join(vcs_dirs), seps)
+        vcs_dirs = ["RCS", "CVS", r"\.svn", r"\.hg", r"\.git", r"\.bzr", "_darcs"]
+        vcs_ptrn = r"(^|%s)(%s)(%s).*" % (seps, "|".join(vcs_dirs), seps)
         self.filelist.exclude_pattern(vcs_ptrn, is_regex=1)
 
     def write_manifest(self):
@@ -342,15 +366,20 @@ class sdist(Command):
             finally:
                 fp.close()
 
-            if first_line != '# file GENERATED by distutils, do NOT edit\n':
-                log.info("not writing to manually maintained "
-                         "manifest file '%s'" % self.manifest)
+            if first_line != "# file GENERATED by distutils, do NOT edit\n":
+                log.info(
+                    "not writing to manually maintained "
+                    "manifest file '%s'" % self.manifest
+                )
                 return
 
         content = self.filelist.files[:]
-        content.insert(0, '# file GENERATED by distutils, do NOT edit')
-        self.execute(file_util.write_file, (self.manifest, content),
-                     "writing manifest file '%s'" % self.manifest)
+        content.insert(0, "# file GENERATED by distutils, do NOT edit")
+        self.execute(
+            file_util.write_file,
+            (self.manifest, content),
+            "writing manifest file '%s'" % self.manifest,
+        )
 
     def read_manifest(self):
         """Read the manifest file (named by 'self.manifest') and use it to
@@ -361,9 +390,9 @@ class sdist(Command):
         manifest = open(self.manifest)
         while True:
             line = manifest.readline()
-            if line == '':              # end of file
+            if line == "":  # end of file
                 break
-            if line[-1] == '\n':
+            if line[-1] == "\n":
                 line = line[0:-1]
             self.filelist.append(line)
         manifest.close()
@@ -390,10 +419,10 @@ class sdist(Command):
         # out-of-date, because by default we blow away 'base_dir' when
         # we're done making the distribution archives.)
 
-        if hasattr(os, 'link'):        # can make hard links on this system
-            link = 'hard'
+        if hasattr(os, "link"):  # can make hard links on this system
+            link = "hard"
             msg = "making hard links in %s..." % base_dir
-        else:                           # nope, have to copy
+        else:  # nope, have to copy
             link = None
             msg = "copying files to %s..." % base_dir
 
@@ -424,15 +453,15 @@ class sdist(Command):
         base_name = os.path.join(self.dist_dir, base_dir)
 
         self.make_release_tree(base_dir, self.filelist.files)
-        archive_files = []              # remember names of files we create
+        archive_files = []  # remember names of files we create
         # tar archive must be created last to avoid overwrite and remove
-        if 'tar' in self.formats:
-            self.formats.append(self.formats.pop(self.formats.index('tar')))
+        if "tar" in self.formats:
+            self.formats.append(self.formats.pop(self.formats.index("tar")))
 
         for fmt in self.formats:
             file = self.make_archive(base_name, fmt, base_dir=base_dir)
             archive_files.append(file)
-            self.distribution.dist_files.append(('sdist', '', file))
+            self.distribution.dist_files.append(("sdist", "", file))
 
         self.archive_files = archive_files
 

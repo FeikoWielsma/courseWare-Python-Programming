@@ -12,6 +12,7 @@ Command line flags:
          Exclude specified tests.
   mask   mask to select filenames containing testcases, wildcards allowed
 """
+
 import sys
 import ctypes.test
 

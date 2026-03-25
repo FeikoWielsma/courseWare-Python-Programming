@@ -88,7 +88,6 @@ TESTDATA = b"""<?xml version="1.0" encoding="UTF-8"?>
 
 
 class TestPlistlib(unittest.TestCase):
-
     def tearDown(self):
         try:
             os.unlink(support.TESTFN)
@@ -99,21 +98,21 @@ class TestPlistlib(unittest.TestCase):
         pl = dict(
             aString="Doodah",
             aList=["A", "B", 12, 32.5, [1, 2, 3]],
-            aFloat = 0.5,
-            anInt = 728,
+            aFloat=0.5,
+            anInt=728,
             aDict=dict(
                 anotherString="<hello & 'hi' there!>",
-                aUnicodeValue='M\xe4ssig, Ma\xdf',
+                aUnicodeValue="M\xe4ssig, Ma\xdf",
                 aTrueValue=True,
                 aFalseValue=False,
                 deeperDict=dict(a=17, b=32.5, c=[1, 2, "text"]),
             ),
-            someData = plistlib.Data(b"<binary gunk>"),
-            someMoreData = plistlib.Data(b"<lots of binary gunk>\0\1\2\3" * 10),
-            nestedData = [plistlib.Data(b"<lots of binary gunk>\0\1\2\3" * 10)],
-            aDate = datetime.datetime(2004, 10, 26, 10, 33, 33),
+            someData=plistlib.Data(b"<binary gunk>"),
+            someMoreData=plistlib.Data(b"<lots of binary gunk>\0\1\2\3" * 10),
+            nestedData=[plistlib.Data(b"<lots of binary gunk>\0\1\2\3" * 10)],
+            aDate=datetime.datetime(2004, 10, 26, 10, 33, 33),
         )
-        pl['\xc5benraa'] = "That was a unicode key."
+        pl["\xc5benraa"] = "That was a unicode key."
         return pl
 
     def test_create(self):
@@ -138,17 +137,20 @@ class TestPlistlib(unittest.TestCase):
     def test_appleformatting(self):
         pl = plistlib.readPlistFromBytes(TESTDATA)
         data = plistlib.writePlistToBytes(pl)
-        self.assertEqual(data, TESTDATA,
-                         "generated data was not identical to Apple's output")
+        self.assertEqual(
+            data, TESTDATA, "generated data was not identical to Apple's output"
+        )
 
     def test_appleformattingfromliteral(self):
         pl = self._create()
         pl2 = plistlib.readPlistFromBytes(TESTDATA)
-        self.assertEqual(dict(pl), dict(pl2),
-                         "generated data was not identical to Apple's output")
+        self.assertEqual(
+            dict(pl), dict(pl2), "generated data was not identical to Apple's output"
+        )
 
     def test_bytesio(self):
         from io import BytesIO
+
         b = BytesIO()
         pl = self._create()
         plistlib.writePlist(pl, b)
@@ -163,9 +165,7 @@ class TestPlistlib(unittest.TestCase):
                 # \r, \n and \t are the only legal control chars in XML
                 plistlib.writePlistToBytes(testString)
             else:
-                self.assertRaises(ValueError,
-                                  plistlib.writePlistToBytes,
-                                  testString)
+                self.assertRaises(ValueError, plistlib.writePlistToBytes, testString)
 
     def test_nondictroot(self):
         test1 = "abc"
@@ -180,5 +180,5 @@ def test_main():
     support.run_unittest(TestPlistlib)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_main()

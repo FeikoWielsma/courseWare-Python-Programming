@@ -2,12 +2,13 @@ import unittest
 from ctypes import *
 import _ctypes_test
 
+
 class Callbacks(unittest.TestCase):
     functype = CFUNCTYPE
 
-##    def tearDown(self):
-##        import gc
-##        gc.collect()
+    ##    def tearDown(self):
+    ##        import gc
+    ##        gc.collect()
 
     def callback(self, *args):
         self.got_args = args
@@ -70,6 +71,7 @@ class Callbacks(unittest.TestCase):
     def test_float(self):
         # only almost equal: double -> float -> double
         import math
+
         self.check_type(c_float, math.e)
         self.check_type(c_float, -math.e)
 
@@ -88,13 +90,14 @@ class Callbacks(unittest.TestCase):
     # disabled: would now (correctly) raise a RuntimeWarning about
     # a memory leak.  A callback function cannot return a non-integral
     # C type without causing a memory leak.
-##    def test_char_p(self):
-##        self.check_type(c_char_p, "abc")
-##        self.check_type(c_char_p, "def")
+    ##    def test_char_p(self):
+    ##        self.check_type(c_char_p, "abc")
+    ##        self.check_type(c_char_p, "def")
 
     def test_pyobject(self):
         o = ()
         from sys import getrefcount as grc
+
         for o in (), [], object():
             initial = grc(o)
             # This call leaks a reference to 'o'...
@@ -122,30 +125,34 @@ class Callbacks(unittest.TestCase):
         proto = self.functype.__func__(None)
 
         class X(object):
-            def func(self): pass
+            def func(self):
+                pass
+
             def __init__(self):
                 self.v = proto(self.func)
 
         import gc
+
         for i in range(32):
             X()
         gc.collect()
-        live = [x for x in gc.get_objects()
-                if isinstance(x, X)]
+        live = [x for x in gc.get_objects() if isinstance(x, X)]
         self.assertEqual(len(live), 0)
+
 
 try:
     WINFUNCTYPE
 except NameError:
     pass
 else:
+
     class StdcallCallbacks(Callbacks):
         functype = WINFUNCTYPE
 
 ################################################################
 
-class SampleCallbacksTestCase(unittest.TestCase):
 
+class SampleCallbacksTestCase(unittest.TestCase):
     def test_integrate(self):
         # Derived from some then non-working code, posted by David Foster
         dll = CDLL(_ctypes_test.__file__)
@@ -162,15 +169,16 @@ class SampleCallbacksTestCase(unittest.TestCase):
             return x**2
 
         result = integrate(0.0, 1.0, CALLBACK(func), 10)
-        diff = abs(result - 1./3.)
+        diff = abs(result - 1.0 / 3.0)
 
         self.assertLess(diff, 0.01, "%s not less than 0.01" % diff)
 
     def test_issue_8959_a(self):
         from ctypes.util import find_library
+
         libc_path = find_library("c")
         if not libc_path:
-            return # cannot test
+            return  # cannot test
         libc = CDLL(libc_path)
 
         @CFUNCTYPE(c_int, POINTER(c_int), POINTER(c_int))
@@ -187,8 +195,10 @@ class SampleCallbacksTestCase(unittest.TestCase):
     except NameError:
         pass
     else:
+
         def test_issue_8959_b(self):
             from ctypes.wintypes import BOOL, HWND, LPARAM
+
             global windowCount
             windowCount = 0
 
@@ -196,7 +206,7 @@ class SampleCallbacksTestCase(unittest.TestCase):
             def EnumWindowsCallbackFunc(hwnd, lParam):
                 global windowCount
                 windowCount += 1
-                return True #Allow windows to keep enumerating
+                return True  # Allow windows to keep enumerating
 
             windll.user32.EnumWindows(EnumWindowsCallbackFunc, 0)
 
@@ -214,29 +224,28 @@ class SampleCallbacksTestCase(unittest.TestCase):
             return a + b + c + d + e
 
         result = func(2, 3, 4, 5, 6, CALLBACK(callback))
-        self.assertEqual(result, callback(2*2, 3*3, 4*4, 5*5, 6*6))
+        self.assertEqual(result, callback(2 * 2, 3 * 3, 4 * 4, 5 * 5, 6 * 6))
 
     def test_callback_register_double(self):
         # Issue #8275: buggy handling of callback args under Win64
         # NOTE: should be run on release builds as well
         dll = CDLL(_ctypes_test.__file__)
-        CALLBACK = CFUNCTYPE(c_double, c_double, c_double, c_double,
-                             c_double, c_double)
+        CALLBACK = CFUNCTYPE(c_double, c_double, c_double, c_double, c_double, c_double)
         # All this function does is call the callback with its args squared
         func = dll._testfunc_cbk_reg_double
-        func.argtypes = (c_double, c_double, c_double,
-                         c_double, c_double, CALLBACK)
+        func.argtypes = (c_double, c_double, c_double, c_double, c_double, CALLBACK)
         func.restype = c_double
 
         def callback(a, b, c, d, e):
             return a + b + c + d + e
 
         result = func(1.1, 2.2, 3.3, 4.4, 5.5, CALLBACK(callback))
-        self.assertEqual(result,
-                         callback(1.1*1.1, 2.2*2.2, 3.3*3.3, 4.4*4.4, 5.5*5.5))
+        self.assertEqual(
+            result, callback(1.1 * 1.1, 2.2 * 2.2, 3.3 * 3.3, 4.4 * 4.4, 5.5 * 5.5)
+        )
 
 
 ################################################################
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

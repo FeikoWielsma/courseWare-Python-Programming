@@ -7,4 +7,4 @@ while True:
     except Exception as x:
         print(x)
     else:
-        print (str(x) + " is a really good number")
+        print(str(x) + " is a really good number")

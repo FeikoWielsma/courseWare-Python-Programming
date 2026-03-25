@@ -5,14 +5,16 @@
 from timethis import timethis
 
 FRAGMENT_SIZE = 256
-NUMBER_FRAGS  = 10000
+NUMBER_FRAGS = 10000
+
 
 # A generator that creates byte fragments for us
-def make_fragments(size,count):
-    frag = b"x"*size
+def make_fragments(size, count):
+    frag = b"x" * size
     while count > 0:
         yield frag
         count -= 1
+
 
 # Try byte concatenation
 with timethis("Byte concatenation +="):
@@ -32,6 +34,3 @@ with timethis("Extending a bytearray"):
     msg = bytearray()
     for chunk in make_fragments(FRAGMENT_SIZE, NUMBER_FRAGS):
         msg.extend(chunk)
-
-
-

@@ -23,13 +23,13 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
     def show_and_raise(self):
         self.show()
         self.raise_()
 
-    def keyPressEvent(self, evt):
+    def key_press_event(self, evt):
         key = evt.key()
         modifier = evt.modifiers()
         DELETE_BUDDY = (modifier == QtCore.Qt.ControlModifier) and (key == QtCore.Qt.Key_Backspace)
@@ -37,8 +37,8 @@ class Demo(QtGui.QWidget):
         if DELETE_BUDDY:
             print 'pressed CMD - delete'
 
-    def mouseDoubleClickEvent(self, evt):
-        print "mouseDoubleClickEvent"
+    def mouse_double_click_event(self, evt):
+        print "mouse_double_click_event"
 
 
 if __name__ == "__main__":

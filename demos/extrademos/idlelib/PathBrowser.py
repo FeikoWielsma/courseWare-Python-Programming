@@ -5,8 +5,8 @@ import imp
 from idlelib.TreeWidget import TreeItem
 from idlelib.ClassBrowser import ClassBrowser, ModuleBrowserTreeItem
 
-class PathBrowser(ClassBrowser):
 
+class PathBrowser(ClassBrowser):
     def __init__(self, flist):
         self.init(flist)
 
@@ -17,8 +17,8 @@ class PathBrowser(ClassBrowser):
     def rootnode(self):
         return PathBrowserTreeItem()
 
-class PathBrowserTreeItem(TreeItem):
 
+class PathBrowserTreeItem(TreeItem):
     def GetText(self):
         return "sys.path"
 
@@ -29,8 +29,8 @@ class PathBrowserTreeItem(TreeItem):
             sublist.append(item)
         return sublist
 
-class DirBrowserTreeItem(TreeItem):
 
+class DirBrowserTreeItem(TreeItem):
     def __init__(self, dir, packages=[]):
         self.dir = dir
         self.packages = packages
@@ -85,11 +85,14 @@ class DirBrowserTreeItem(TreeItem):
         sorted.sort()
         return sorted
 
+
 def main():
     from idlelib import PyShell
+
     PathBrowser(PyShell.flist)
     if sys.stdin is sys.__stdin__:
         mainloop()
+
 
 if __name__ == "__main__":
     main()

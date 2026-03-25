@@ -4,24 +4,44 @@ import unittest
 from test.support import run_unittest, TESTFN, unlink, cpython_only
 
 # Test result of triple loop (too big to inline)
-TRIPLETS = [(0, 0, 0), (0, 0, 1), (0, 0, 2),
-            (0, 1, 0), (0, 1, 1), (0, 1, 2),
-            (0, 2, 0), (0, 2, 1), (0, 2, 2),
-
-            (1, 0, 0), (1, 0, 1), (1, 0, 2),
-            (1, 1, 0), (1, 1, 1), (1, 1, 2),
-            (1, 2, 0), (1, 2, 1), (1, 2, 2),
-
-            (2, 0, 0), (2, 0, 1), (2, 0, 2),
-            (2, 1, 0), (2, 1, 1), (2, 1, 2),
-            (2, 2, 0), (2, 2, 1), (2, 2, 2)]
+TRIPLETS = [
+    (0, 0, 0),
+    (0, 0, 1),
+    (0, 0, 2),
+    (0, 1, 0),
+    (0, 1, 1),
+    (0, 1, 2),
+    (0, 2, 0),
+    (0, 2, 1),
+    (0, 2, 2),
+    (1, 0, 0),
+    (1, 0, 1),
+    (1, 0, 2),
+    (1, 1, 0),
+    (1, 1, 1),
+    (1, 1, 2),
+    (1, 2, 0),
+    (1, 2, 1),
+    (1, 2, 2),
+    (2, 0, 0),
+    (2, 0, 1),
+    (2, 0, 2),
+    (2, 1, 0),
+    (2, 1, 1),
+    (2, 1, 2),
+    (2, 2, 0),
+    (2, 2, 1),
+    (2, 2, 2),
+]
 
 # Helper classes
+
 
 class BasicIterClass:
     def __init__(self, n):
         self.n = n
         self.i = 0
+
     def __next__(self):
         res = self.i
         if res >= self.n:
@@ -29,25 +49,30 @@ class BasicIterClass:
         self.i = res + 1
         return res
 
+
 class IteratingSequenceClass:
     def __init__(self, n):
         self.n = n
+
     def __iter__(self):
         return BasicIterClass(self.n)
+
 
 class SequenceClass:
     def __init__(self, n):
         self.n = n
+
     def __getitem__(self, i):
         if 0 <= i < self.n:
             return i
         else:
             raise IndexError
 
+
 # Main test suite
 
-class TestCase(unittest.TestCase):
 
+class TestCase(unittest.TestCase):
     # Helper to check that an iterator returns a given sequence
     def check_iterator(self, it, seq):
         res = []
@@ -94,8 +119,7 @@ class TestCase(unittest.TestCase):
     # Test triple list comprehension using iterators
     def test_nested_comprehensions_iter(self):
         seq = range(3)
-        res = [(i, j, k)
-               for i in iter(seq) for j in iter(seq) for k in iter(seq)]
+        res = [(i, j, k) for i in iter(seq) for j in iter(seq) for k in iter(seq)]
         self.assertEqual(res, TRIPLETS)
 
     # Test triple list comprehension without iterators
@@ -125,6 +149,7 @@ class TestCase(unittest.TestCase):
         class IterClass(object):
             def __iter__(self):
                 return self
+
         self.assertRaises(TypeError, iter, IterClass())
 
     # Test two-argument iter() with callable instance
@@ -132,20 +157,23 @@ class TestCase(unittest.TestCase):
         class C:
             def __init__(self):
                 self.i = 0
+
             def __call__(self):
                 i = self.i
                 self.i = i + 1
                 if i > 100:
-                    raise IndexError # Emergency stop
+                    raise IndexError  # Emergency stop
                 return i
+
         self.check_iterator(iter(C(), 10), list(range(10)))
 
     # Test two-argument iter() with function
     def test_iter_function(self):
         def spam(state=[0]):
             i = state[0]
-            state[0] = i+1
+            state[0] = i + 1
             return i
+
         self.check_iterator(iter(spam, 10), list(range(10)))
 
     # Test two-argument iter() with function that raises StopIteration
@@ -154,18 +182,20 @@ class TestCase(unittest.TestCase):
             i = state[0]
             if i == 10:
                 raise StopIteration
-            state[0] = i+1
+            state[0] = i + 1
             return i
+
         self.check_iterator(iter(spam, 20), list(range(10)))
 
     # Test exception propagation through function iterator
     def test_exception_function(self):
         def spam(state=[0]):
             i = state[0]
-            state[0] = i+1
+            state[0] = i + 1
             if i == 10:
                 raise RuntimeError
             return i
+
         res = []
         try:
             for x in iter(spam, 20):
@@ -182,6 +212,7 @@ class TestCase(unittest.TestCase):
                 if i == 10:
                     raise RuntimeError
                 return SequenceClass.__getitem__(self, i)
+
         res = []
         try:
             for x in MySequenceClass(20):
@@ -198,6 +229,7 @@ class TestCase(unittest.TestCase):
                 if i == 10:
                     raise StopIteration
                 return SequenceClass.__getitem__(self, i)
+
         self.check_for_loop(MySequenceClass(20), list(range(10)))
 
     # Test a big range
@@ -210,7 +242,7 @@ class TestCase(unittest.TestCase):
 
     # Test a tuple
     def test_iter_tuple(self):
-        self.check_for_loop(iter((0,1,2,3,4,5,6,7,8,9)), list(range(10)))
+        self.check_for_loop(iter((0, 1, 2, 3, 4, 5, 6, 7, 8, 9)), list(range(10)))
 
     # Test a range
     def test_iter_range(self):
@@ -268,8 +300,7 @@ class TestCase(unittest.TestCase):
         try:
             self.assertEqual(list(f), ["0\n", "1\n", "2\n", "3\n", "4\n"])
             f.seek(0, 0)
-            self.assertEqual(list(f),
-                             ["0\n", "1\n", "2\n", "3\n", "4\n"])
+            self.assertEqual(list(f), ["0\n", "1\n", "2\n", "3\n", "4\n"])
         finally:
             f.close()
             try:
@@ -301,8 +332,7 @@ class TestCase(unittest.TestCase):
         try:
             self.assertEqual(tuple(f), ("0\n", "1\n", "2\n", "3\n", "4\n"))
             f.seek(0, 0)
-            self.assertEqual(tuple(f),
-                             ("0\n", "1\n", "2\n", "3\n", "4\n"))
+            self.assertEqual(tuple(f), ("0\n", "1\n", "2\n", "3\n", "4\n"))
         finally:
             f.close()
             try:
@@ -312,8 +342,7 @@ class TestCase(unittest.TestCase):
 
     # Test filter()'s use of iterators.
     def test_builtin_filter(self):
-        self.assertEqual(list(filter(None, SequenceClass(5))),
-                         list(range(1, 5)))
+        self.assertEqual(list(filter(None, SequenceClass(5))), list(range(1, 5)))
         self.assertEqual(list(filter(None, SequenceClass(0))), [])
         self.assertEqual(list(filter(None, ())), [])
         self.assertEqual(list(filter(None, "abc")), ["a", "b", "c"])
@@ -327,21 +356,26 @@ class TestCase(unittest.TestCase):
         class Boolean:
             def __init__(self, truth):
                 self.truth = truth
+
             def __bool__(self):
                 return self.truth
+
         bTrue = Boolean(True)
         bFalse = Boolean(False)
 
         class Seq:
             def __init__(self, *args):
                 self.vals = args
+
             def __iter__(self):
                 class SeqIter:
                     def __init__(self, vals):
                         self.vals = vals
                         self.i = 0
+
                     def __iter__(self):
                         return self
+
                     def __next__(self):
                         i = self.i
                         self.i = i + 1
@@ -349,11 +383,12 @@ class TestCase(unittest.TestCase):
                             return self.vals[i]
                         else:
                             raise StopIteration
+
                 return SeqIter(self.vals)
 
         seq = Seq(*([bTrue, bFalse] * 25))
-        self.assertEqual(list(filter(lambda x: not x, seq)), [bFalse]*25)
-        self.assertEqual(list(filter(lambda x: not x, iter(seq))), [bFalse]*25)
+        self.assertEqual(list(filter(lambda x: not x, seq)), [bFalse] * 25)
+        self.assertEqual(list(filter(lambda x: not x, iter(seq))), [bFalse] * 25)
 
     # Test max() and min()'s use of iterators.
     def test_builtin_max_min(self):
@@ -389,22 +424,22 @@ class TestCase(unittest.TestCase):
 
     # Test map()'s use of iterators.
     def test_builtin_map(self):
-        self.assertEqual(list(map(lambda x: x+1, SequenceClass(5))),
-                         list(range(1, 6)))
+        self.assertEqual(
+            list(map(lambda x: x + 1, SequenceClass(5))), list(range(1, 6))
+        )
 
         d = {"one": 1, "two": 2, "three": 3}
-        self.assertEqual(list(map(lambda k, d=d: (k, d[k]), d)),
-                         list(d.items()))
+        self.assertEqual(list(map(lambda k, d=d: (k, d[k]), d)), list(d.items()))
         dkeys = list(d.keys())
-        expected = [(i < len(d) and dkeys[i] or None,
-                     i,
-                     i < len(d) and dkeys[i] or None)
-                    for i in range(3)]
+        expected = [
+            (i < len(d) and dkeys[i] or None, i, i < len(d) and dkeys[i] or None)
+            for i in range(3)
+        ]
 
         f = open(TESTFN, "w")
         try:
             for i in range(10):
-                f.write("xy" * i + "\n") # line i has len 2*i+1
+                f.write("xy" * i + "\n")  # line i has len 2*i+1
         finally:
             f.close()
         f = open(TESTFN, "r")
@@ -421,16 +456,14 @@ class TestCase(unittest.TestCase):
     def test_builtin_zip(self):
         self.assertEqual(list(zip()), [])
         self.assertEqual(list(zip(*[])), [])
-        self.assertEqual(list(zip(*[(1, 2), 'ab'])), [(1, 'a'), (2, 'b')])
+        self.assertEqual(list(zip(*[(1, 2), "ab"])), [(1, "a"), (2, "b")])
 
         self.assertRaises(TypeError, zip, None)
         self.assertRaises(TypeError, zip, range(10), 42)
         self.assertRaises(TypeError, zip, range(10), zip)
 
-        self.assertEqual(list(zip(IteratingSequenceClass(3))),
-                         [(0,), (1,), (2,)])
-        self.assertEqual(list(zip(SequenceClass(3))),
-                         [(0,), (1,), (2,)])
+        self.assertEqual(list(zip(IteratingSequenceClass(3))), [(0,), (1,), (2,)])
+        self.assertEqual(list(zip(SequenceClass(3))), [(0,), (1,), (2,)])
 
         d = {"one": 1, "two": 2, "three": 3}
         self.assertEqual(list(d.items()), list(zip(d, d.values())))
@@ -445,20 +478,20 @@ class TestCase(unittest.TestCase):
 
             def __next__(self):
                 i = self.i
-                self.i = i+1
+                self.i = i + 1
                 return i
 
         f = open(TESTFN, "w")
         try:
-            f.write("a\n" "bbb\n" "cc\n")
+            f.write("a\nbbb\ncc\n")
         finally:
             f.close()
         f = open(TESTFN, "r")
         try:
-            self.assertEqual(list(zip(IntsFrom(0), f, IntsFrom(-100))),
-                             [(0, "a\n", -100),
-                              (1, "bbb\n", -99),
-                              (2, "cc\n", -98)])
+            self.assertEqual(
+                list(zip(IntsFrom(0), f, IntsFrom(-100))),
+                [(0, "a\n", -100), (1, "bbb\n", -99), (2, "cc\n", -98)],
+            )
         finally:
             f.close()
             try:
@@ -498,7 +531,6 @@ class TestCase(unittest.TestCase):
                 self.assertEqual(lzip(x, y), expected)
 
     def test_unicode_join_endcase(self):
-
         # This class inserts a Unicode object into its argument's natural
         # iteration, in the 3rd position.
         class OhPhooey:
@@ -511,7 +543,7 @@ class TestCase(unittest.TestCase):
 
             def __next__(self):
                 i = self.i
-                self.i = i+1
+                self.i = i + 1
                 if i == 2:
                     return "fooled you!"
                 return next(self.it)
@@ -543,7 +575,7 @@ class TestCase(unittest.TestCase):
         for sc5 in IteratingSequenceClass(5), SequenceClass(5):
             for i in range(5):
                 self.assertIn(i, sc5)
-            for i in "abc", -1, 5, 42.42, (3, 4), [], {1: 1}, 3-12j, sc5:
+            for i in "abc", -1, 5, 42.42, (3, 4), [], {1: 1}, 3 - 12j, sc5:
                 self.assertNotIn(i, sc5)
 
         self.assertRaises(TypeError, lambda: 3 in 12)
@@ -562,7 +594,7 @@ class TestCase(unittest.TestCase):
 
         f = open(TESTFN, "w")
         try:
-            f.write("a\n" "b\n" "c\n")
+            f.write("a\nb\nc\n")
         finally:
             f.close()
         f = open(TESTFN, "r")
@@ -582,8 +614,9 @@ class TestCase(unittest.TestCase):
     # Test iterators with operator.countOf (PySequence_Count).
     def test_countOf(self):
         from operator import countOf
-        self.assertEqual(countOf([1,2,2,3,2,5], 2), 3)
-        self.assertEqual(countOf((1,2,2,3,2,5), 2), 3)
+
+        self.assertEqual(countOf([1, 2, 2, 3, 2, 5], 2), 3)
+        self.assertEqual(countOf((1, 2, 2, 3, 2, 5), 2), 3)
         self.assertEqual(countOf("122325", "2"), 3)
         self.assertEqual(countOf("122325", "6"), 0)
 
@@ -599,7 +632,7 @@ class TestCase(unittest.TestCase):
 
         f = open(TESTFN, "w")
         try:
-            f.write("a\n" "b\n" "c\n" "b\n")
+            f.write("a\nb\nc\nb\n")
         finally:
             f.close()
         f = open(TESTFN, "r")
@@ -617,12 +650,13 @@ class TestCase(unittest.TestCase):
     # Test iterators with operator.indexOf (PySequence_Index).
     def test_indexOf(self):
         from operator import indexOf
-        self.assertEqual(indexOf([1,2,2,3,2,5], 1), 0)
-        self.assertEqual(indexOf((1,2,2,3,2,5), 2), 1)
-        self.assertEqual(indexOf((1,2,2,3,2,5), 3), 3)
-        self.assertEqual(indexOf((1,2,2,3,2,5), 5), 5)
-        self.assertRaises(ValueError, indexOf, (1,2,2,3,2,5), 0)
-        self.assertRaises(ValueError, indexOf, (1,2,2,3,2,5), 6)
+
+        self.assertEqual(indexOf([1, 2, 2, 3, 2, 5], 1), 0)
+        self.assertEqual(indexOf((1, 2, 2, 3, 2, 5), 2), 1)
+        self.assertEqual(indexOf((1, 2, 2, 3, 2, 5), 3), 3)
+        self.assertEqual(indexOf((1, 2, 2, 3, 2, 5), 5), 5)
+        self.assertRaises(ValueError, indexOf, (1, 2, 2, 3, 2, 5), 0)
+        self.assertRaises(ValueError, indexOf, (1, 2, 2, 3, 2, 5), 6)
 
         self.assertEqual(indexOf("122325", "2"), 1)
         self.assertEqual(indexOf("122325", "5"), 5)
@@ -633,7 +667,7 @@ class TestCase(unittest.TestCase):
 
         f = open(TESTFN, "w")
         try:
-            f.write("a\n" "b\n" "c\n" "d\n" "e\n")
+            f.write("a\nb\nc\nd\ne\n")
         finally:
             f.close()
         f = open(TESTFN, "r")
@@ -665,7 +699,7 @@ class TestCase(unittest.TestCase):
 
             f.writelines(["1\n", "2\n"])
             f.writelines(("3\n", "4\n"))
-            f.writelines({'5\n': None})
+            f.writelines({"5\n": None})
             f.writelines({})
 
             # Try a big chunk too.
@@ -678,7 +712,7 @@ class TestCase(unittest.TestCase):
                 def __next__(self):
                     if self.i >= self.finish:
                         raise StopIteration
-                    result = str(self.i) + '\n'
+                    result = str(self.i) + "\n"
                     self.i += 1
                     return result
 
@@ -693,7 +727,7 @@ class TestCase(unittest.TestCase):
                 def __iter__(self):
                     return Iterator(self.start, self.finish)
 
-            f.writelines(Whatever(6, 6+2000))
+            f.writelines(Whatever(6, 6 + 2000))
             f.close()
 
             f = open(TESTFN)
@@ -707,7 +741,6 @@ class TestCase(unittest.TestCase):
             except OSError:
                 pass
 
-
     # Test iterators on RHS of unpacking assignments.
     def test_unpack_iter(self):
         a, b = 1, 2
@@ -716,21 +749,21 @@ class TestCase(unittest.TestCase):
         a, b, c = IteratingSequenceClass(3)
         self.assertEqual((a, b, c), (0, 1, 2))
 
-        try:    # too many values
+        try:  # too many values
             a, b = IteratingSequenceClass(3)
         except ValueError:
             pass
         else:
             self.fail("should have raised ValueError")
 
-        try:    # not enough values
+        try:  # not enough values
             a, b, c = IteratingSequenceClass(2)
         except ValueError:
             pass
         else:
             self.fail("should have raised ValueError")
 
-        try:    # not iterable
+        try:  # not iterable
             a, b, c = len
         except TypeError:
             pass
@@ -761,18 +794,20 @@ class TestCase(unittest.TestCase):
         (a, b), (c,) = IteratingSequenceClass(2), {42: 24}
         self.assertEqual((a, b, c), (0, 1, 42))
 
-
     @cpython_only
     def test_ref_counting_behavior(self):
         class C(object):
             count = 0
+
             def __new__(cls):
                 cls.count += 1
                 return object.__new__(cls)
+
             def __del__(self):
                 cls = self.__class__
                 assert cls.count > 0
                 cls.count -= 1
+
         x = C()
         self.assertEqual(C.count, 1)
         del x
@@ -785,7 +820,6 @@ class TestCase(unittest.TestCase):
             pass
         del l
         self.assertEqual(C.count, 0)
-
 
     # Make sure StopIteration is a "sink state".
     # This tests various things that weren't sink states in Python 2.2.1,
@@ -808,7 +842,7 @@ class TestCase(unittest.TestCase):
     def test_sinkstate_string(self):
         a = "abcde"
         b = iter(a)
-        self.assertEqual(list(b), ['a', 'b', 'c', 'd', 'e'])
+        self.assertEqual(list(b), ["a", "b", "c", "d", "e"])
         self.assertEqual(list(b), [])
 
     def test_sinkstate_sequence(self):
@@ -823,10 +857,11 @@ class TestCase(unittest.TestCase):
         # This used to fail
         def spam(state=[0]):
             i = state[0]
-            state[0] = i+1
+            state[0] = i + 1
             if i == 10:
                 raise AssertionError("shouldn't have gotten this far")
             return i
+
         b = iter(spam, 5)
         self.assertEqual(list(b), list(range(5)))
         self.assertEqual(list(b), [])
@@ -834,7 +869,7 @@ class TestCase(unittest.TestCase):
     def test_sinkstate_dict(self):
         # XXX For a more thorough test, see towards the end of:
         # http://mail.python.org/pipermail/python-dev/2002-July/026512.html
-        a = {1:1, 2:2, 0:0, 4:4, 3:3}
+        a = {1: 1, 2: 2, 0: 0, 4: 4, 3: 3}
         for b in iter(a), a.keys(), a.items(), a.values():
             b = iter(a)
             self.assertEqual(len(list(b)), 5)
@@ -844,6 +879,7 @@ class TestCase(unittest.TestCase):
         def gen():
             for i in range(5):
                 yield i
+
         b = gen()
         self.assertEqual(list(b), list(range(5)))
         self.assertEqual(list(b), [])
@@ -866,12 +902,13 @@ class TestCase(unittest.TestCase):
         class BadIterator(object):
             def __iter__(self):
                 return self
+
             def __next__(self):
                 del BadIterator.__next__
                 return 1
 
         try:
-            for i in BadIterator() :
+            for i in BadIterator():
                 pass
         except TypeError:
             pass

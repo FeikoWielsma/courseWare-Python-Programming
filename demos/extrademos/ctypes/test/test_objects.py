@@ -1,4 +1,4 @@
-r'''
+r"""
 This tests the '_objects' attribute of ctypes instances.  '_objects'
 holds references to objects that must be kept alive as long as the
 ctypes instance, to make sure that the memory buffer is valid.
@@ -52,11 +52,14 @@ of 'x' ('_b_base_' is either None, or the root object owning the memory block):
 {'0:2': b'spam spam spam'}
 >>>
 
-'''
+"""
 
-import unittest, doctest, sys
+import unittest
+import doctest
+import sys
 
 import ctypes.test.test_objects
+
 
 class TestCase(unittest.TestCase):
     if sys.hexversion > 0x02040000:
@@ -65,6 +68,7 @@ class TestCase(unittest.TestCase):
         def test(self):
             doctest.testmod(ctypes.test.test_objects)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     if sys.hexversion > 0x02040000:
         doctest.testmod(ctypes.test.test_objects)

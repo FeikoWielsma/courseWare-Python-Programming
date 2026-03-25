@@ -24,11 +24,11 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
         self._checkbox = QtGui.QCheckBox("CheckBox", self)
         self._checkbox.move(10, 10)
-        self._checkbox.stateChanged.connect(self._checkbox_cb)
+        self._checkbox.state_changed.connect(self._checkbox_cb)
 
     def _checkbox_cb(self, state):
         assert QtCore.Qt.Unchecked == 0

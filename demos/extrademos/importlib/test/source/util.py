@@ -2,7 +2,6 @@ from .. import util
 import contextlib
 import errno
 import functools
-import imp
 import os
 import os.path
 import sys
@@ -15,6 +14,7 @@ def writes_bytecode_files(fxn):
     tests that require it to be set to False."""
     if sys.dont_write_bytecode:
         return lambda *args, **kwargs: None
+
     @functools.wraps(fxn)
     def wrapper(*args, **kwargs):
         original = sys.dont_write_bytecode
@@ -24,6 +24,7 @@ def writes_bytecode_files(fxn):
         finally:
             sys.dont_write_bytecode = original
         return to_return
+
     return wrapper
 
 
@@ -55,32 +56,32 @@ def create_modules(*names):
     well.
 
     """
-    source = 'attr = {0!r}'
+    source = "attr = {0!r}"
     created_paths = []
     mapping = {}
     state_manager = None
     uncache_manager = None
     try:
         temp_dir = tempfile.mkdtemp()
-        mapping['.root'] = temp_dir
+        mapping[".root"] = temp_dir
         import_names = set()
         for name in names:
-            if not name.endswith('__init__'):
+            if not name.endswith("__init__"):
                 import_name = name
             else:
-                import_name = name[:-len('.__init__')]
+                import_name = name[: -len(".__init__")]
             import_names.add(import_name)
             if import_name in sys.modules:
                 del sys.modules[import_name]
-            name_parts = name.split('.')
+            name_parts = name.split(".")
             file_path = temp_dir
             for directory in name_parts[:-1]:
                 file_path = os.path.join(file_path, directory)
                 if not os.path.exists(file_path):
                     os.mkdir(file_path)
                     created_paths.append(file_path)
-            file_path = os.path.join(file_path, name_parts[-1] + '.py')
-            with open(file_path, 'w') as file:
+            file_path = os.path.join(file_path, name_parts[-1] + ".py")
+            with open(file_path, "w") as file:
                 file.write(source.format(name))
             created_paths.append(file_path)
             mapping[name] = file_path

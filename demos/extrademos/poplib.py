@@ -13,13 +13,17 @@ Based on the J. Myers POP3 draft, Jan. 96
 
 # Imports
 
-import re, socket
+import re
+import socket
 
-__all__ = ["POP3","error_proto"]
+__all__ = ["POP3", "error_proto"]
 
 # Exception raised when an error or invalid response is received:
 
-class error_proto(Exception): pass
+
+class error_proto(Exception):
+    pass
+
 
 # Standard Port
 POP3_PORT = 110
@@ -28,13 +32,12 @@ POP3_PORT = 110
 POP3_SSL_PORT = 995
 
 # Line terminators (we always output CRLF, but accept any of CRLF, LFCR, LF)
-CR = b'\r'
-LF = b'\n'
-CRLF = CR+LF
+CR = b"\r"
+LF = b"\n"
+CRLF = CR + LF
 
 
 class POP3:
-
     """This class supports both the minimal and optional command sets.
     Arguments can be strings or integers (where appropriate)
     (e.g.: retr(1) and retr('1') both work equally well.
@@ -75,14 +78,13 @@ class POP3:
             above.
     """
 
-    encoding = 'UTF-8'
+    encoding = "UTF-8"
 
-    def __init__(self, host, port=POP3_PORT,
-                 timeout=socket._GLOBAL_DEFAULT_TIMEOUT):
+    def __init__(self, host, port=POP3_PORT, timeout=socket._GLOBAL_DEFAULT_TIMEOUT):
         self.host = host
         self.port = port
         self.sock = self._create_socket(timeout)
-        self.file = self.sock.makefile('rb')
+        self.file = self.sock.makefile("rb")
         self._debugging = 0
         self.welcome = self._getresp()
 
@@ -90,17 +92,17 @@ class POP3:
         return socket.create_connection((self.host, self.port), timeout)
 
     def _putline(self, line):
-        if self._debugging > 1: print('*put*', repr(line))
+        if self._debugging > 1:
+            print("*put*", repr(line))
         self.sock.sendall(line + CRLF)
-
 
     # Internal: send one command to the server (through _putline())
 
     def _putcmd(self, line):
-        if self._debugging: print('*cmd*', repr(line))
+        if self._debugging:
+            print("*cmd*", repr(line))
         line = bytes(line, self.encoding)
         self._putline(line)
-
 
     # Internal: return one line from the server, stripping CRLF.
     # This is where all the CPU time of this module is consumed.
@@ -108,8 +110,10 @@ class POP3:
 
     def _getline(self):
         line = self.file.readline()
-        if self._debugging > 1: print('*get*', repr(line))
-        if not line: raise error_proto('-ERR EOF')
+        if self._debugging > 1:
+            print("*get*", repr(line))
+        if not line:
+            raise error_proto("-ERR EOF")
         octets = len(line)
         # server can send any combination of CR & LF
         # however, 'readline()' returns lines ending in LF
@@ -120,33 +124,32 @@ class POP3:
             return line[1:-1], octets
         return line[:-1], octets
 
-
     # Internal: get a response from the server.
     # Raise 'error_proto' if the response doesn't start with '+'.
 
     def _getresp(self):
         resp, o = self._getline()
-        if self._debugging > 1: print('*resp*', repr(resp))
-        if not resp.startswith(b'+'):
+        if self._debugging > 1:
+            print("*resp*", repr(resp))
+        if not resp.startswith(b"+"):
             raise error_proto(resp)
         return resp
-
 
     # Internal: get a response plus following text from the server.
 
     def _getlongresp(self):
         resp = self._getresp()
-        list = []; octets = 0
+        list = []
+        octets = 0
         line, o = self._getline()
-        while line != b'.':
-            if line.startswith(b'..'):
-                o = o-1
+        while line != b".":
+            if line.startswith(b".."):
+                o = o - 1
                 line = line[1:]
             octets = octets + o
             list.append(line)
             line, o = self._getline()
         return resp, list, octets
-
 
     # Internal: send a command and get the response
 
@@ -154,23 +157,19 @@ class POP3:
         self._putcmd(line)
         return self._getresp()
 
-
     # Internal: send a command and get the response plus following text
 
     def _longcmd(self, line):
         self._putcmd(line)
         return self._getlongresp()
 
-
     # These can be useful:
 
     def getwelcome(self):
         return self.welcome
 
-
     def set_debuglevel(self, level):
         self._debugging = level
-
 
     # Here are all the POP commands:
 
@@ -179,8 +178,7 @@ class POP3:
 
         (should indicate password required).
         """
-        return self._shortcmd('USER %s' % user)
-
+        return self._shortcmd("USER %s" % user)
 
     def pass_(self, pswd):
         """Send password, return response
@@ -189,21 +187,20 @@ class POP3:
 
         NB: mailbox is locked by server from here to 'quit()'
         """
-        return self._shortcmd('PASS %s' % pswd)
-
+        return self._shortcmd("PASS %s" % pswd)
 
     def stat(self):
         """Get mailbox status.
 
         Result is tuple of 2 ints (message count, mailbox size)
         """
-        retval = self._shortcmd('STAT')
+        retval = self._shortcmd("STAT")
         rets = retval.split()
-        if self._debugging: print('*stat*', repr(rets))
+        if self._debugging:
+            print("*stat*", repr(rets))
         numMessages = int(rets[1])
         sizeMessages = int(rets[2])
         return (numMessages, sizeMessages)
-
 
     def list(self, which=None):
         """Request listing, return result.
@@ -215,43 +212,38 @@ class POP3:
         single response: the "scan listing" for that message.
         """
         if which is not None:
-            return self._shortcmd('LIST %s' % which)
-        return self._longcmd('LIST')
-
+            return self._shortcmd("LIST %s" % which)
+        return self._longcmd("LIST")
 
     def retr(self, which):
         """Retrieve whole message number 'which'.
 
         Result is in form ['response', ['line', ...], octets].
         """
-        return self._longcmd('RETR %s' % which)
-
+        return self._longcmd("RETR %s" % which)
 
     def dele(self, which):
         """Delete message number 'which'.
 
         Result is 'response'.
         """
-        return self._shortcmd('DELE %s' % which)
-
+        return self._shortcmd("DELE %s" % which)
 
     def noop(self):
         """Does nothing.
 
         One supposes the response indicates the server is alive.
         """
-        return self._shortcmd('NOOP')
-
+        return self._shortcmd("NOOP")
 
     def rset(self):
         """Unmark all messages marked for deletion."""
-        return self._shortcmd('RSET')
-
+        return self._shortcmd("RSET")
 
     def quit(self):
         """Signoff: commit changes on server, unlock mailbox, close connection."""
         try:
-            resp = self._shortcmd('QUIT')
+            resp = self._shortcmd("QUIT")
         except error_proto as val:
             resp = val
         self.file.close()
@@ -259,17 +251,15 @@ class POP3:
         del self.file, self.sock
         return resp
 
-    #__del__ = quit
-
+    # __del__ = quit
 
     # optional commands:
 
     def rpop(self, user):
         """Not sure what this does."""
-        return self._shortcmd('RPOP %s' % user)
+        return self._shortcmd("RPOP %s" % user)
 
-
-    timestamp = re.compile(br'\+OK.*(<[^>]+>)')
+    timestamp = re.compile(rb"\+OK.*(<[^>]+>)")
 
     def apop(self, user, password):
         """Authorisation
@@ -285,12 +275,12 @@ class POP3:
         secret = bytes(password, self.encoding)
         m = self.timestamp.match(self.welcome)
         if not m:
-            raise error_proto('-ERR APOP not supported by server')
+            raise error_proto("-ERR APOP not supported by server")
         import hashlib
-        digest = m.group(1)+secret
-        digest = hashlib.md5(digest).hexdigest()
-        return self._shortcmd('APOP %s %s' % (user, digest))
 
+        digest = m.group(1) + secret
+        digest = hashlib.md5(digest).hexdigest()
+        return self._shortcmd("APOP %s %s" % (user, digest))
 
     def top(self, which, howmuch):
         """Retrieve message header of message number 'which'
@@ -298,8 +288,7 @@ class POP3:
 
         Result is in form ['response', ['line', ...], octets].
         """
-        return self._longcmd('TOP %s %s' % (which, howmuch))
-
+        return self._longcmd("TOP %s %s" % (which, howmuch))
 
     def uidl(self, which=None):
         """Return message digest (unique id) list.
@@ -309,8 +298,9 @@ class POP3:
         the list ['response', ['mesgnum uid', ...], octets]
         """
         if which is not None:
-            return self._shortcmd('UIDL %s' % which)
-        return self._longcmd('UIDL')
+            return self._shortcmd("UIDL %s" % which)
+        return self._longcmd("UIDL")
+
 
 try:
     import ssl
@@ -331,14 +321,21 @@ else:
         See the methods of the parent class POP3 for more documentation.
         """
 
-        def __init__(self, host, port=POP3_SSL_PORT, keyfile=None, certfile=None,
-                     timeout=socket._GLOBAL_DEFAULT_TIMEOUT, context=None):
+        def __init__(
+            self,
+            host,
+            port=POP3_SSL_PORT,
+            keyfile=None,
+            certfile=None,
+            timeout=socket._GLOBAL_DEFAULT_TIMEOUT,
+            context=None,
+        ):
             if context is not None and keyfile is not None:
-                raise ValueError("context and keyfile arguments are mutually "
-                                 "exclusive")
+                raise ValueError("context and keyfile arguments are mutually exclusive")
             if context is not None and certfile is not None:
-                raise ValueError("context and certfile arguments are mutually "
-                                 "exclusive")
+                raise ValueError(
+                    "context and certfile arguments are mutually exclusive"
+                )
             self.keyfile = keyfile
             self.certfile = certfile
             self.context = context
@@ -356,6 +353,7 @@ else:
 
 if __name__ == "__main__":
     import sys
+
     a = POP3(sys.argv[1])
     print(a.getwelcome())
     a.user(sys.argv[2])
@@ -366,6 +364,6 @@ if __name__ == "__main__":
         (header, msg, octets) = a.retr(i)
         print("Message %d:" % i)
         for line in msg:
-            print('   ' + line)
-        print('-----------------------')
+            print("   " + line)
+        print("-----------------------")
     a.quit()

@@ -6,7 +6,7 @@ import Queue, threading
 class ConsumerThread(threading.Thread):
     def __init__(self,target):
         threading.Thread.__init__(self)
-        self.setDaemon(True)
+        self.set_daemon(True)
         self.in_queue = Queue.Queue()
         self.target = target
     def send(self,item):

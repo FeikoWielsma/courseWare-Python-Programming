@@ -3,6 +3,7 @@ from tkinter import *
 from idlelib import SearchEngine
 from idlelib.SearchDialogBase import SearchDialogBase
 
+
 def replace(text):
     root = text._root()
     engine = SearchEngine.get(root)
@@ -11,8 +12,8 @@ def replace(text):
     dialog = engine._replacedialog
     dialog.open(text)
 
-class ReplaceDialog(SearchDialogBase):
 
+class ReplaceDialog(SearchDialogBase):
     title = "Replace Dialog"
     icon = "Replace"
 
@@ -84,7 +85,7 @@ class ReplaceDialog(SearchDialogBase):
             if not res:
                 break
             line, m = res
-            chars = text.get("%d.0" % line, "%d.0" % (line+1))
+            chars = text.get("%d.0" % line, "%d.0" % (line + 1))
             orig = m.group()
             new = m.expand(repl)
             i, j = m.span()
@@ -134,7 +135,7 @@ class ReplaceDialog(SearchDialogBase):
         if not pos:
             first = last = pos = text.index("insert")
         line, col = SearchEngine.get_line_col(pos)
-        chars = text.get("%d.0" % line, "%d.0" % (line+1))
+        chars = text.get("%d.0" % line, "%d.0" % (line + 1))
         m = prog.match(chars, col)
         if not prog:
             return False

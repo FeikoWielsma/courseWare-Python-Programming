@@ -12,10 +12,15 @@ import zipimport
 import doctest
 import inspect
 import linecache
-import pdb
 import unittest
-from test.script_helper import (spawn_python, kill_python, assert_python_ok,
-                                temp_dir, make_script, make_zip_script)
+from test.script_helper import (
+    spawn_python,
+    kill_python,
+    assert_python_ok,
+    temp_dir,
+    make_script,
+    make_zip_script,
+)
 
 verbose = test.support.verbose
 
@@ -54,9 +59,8 @@ def _run_object_doctest(obj, module):
     finally:
         sys.stdout = save_stdout
     if verbose:
-        print ('doctest (%s) ... %d tests with zero failures' % (module.__name__, t))
+        print("doctest (%s) ... %d tests with zero failures" % (module.__name__, t))
     return f, t
-
 
 
 class ZipSupportTests(unittest.TestCase):
@@ -85,14 +89,13 @@ class ZipSupportTests(unittest.TestCase):
     def test_inspect_getsource_issue4223(self):
         test_src = "def foo(): pass\n"
         with temp_dir() as d:
-            init_name = make_script(d, '__init__', test_src)
-            name_in_zip = os.path.join('zip_pkg',
-                                       os.path.basename(init_name))
-            zip_name, run_name = make_zip_script(d, 'test_zip',
-                                                init_name, name_in_zip)
+            init_name = make_script(d, "__init__", test_src)
+            name_in_zip = os.path.join("zip_pkg", os.path.basename(init_name))
+            zip_name, run_name = make_zip_script(d, "test_zip", init_name, name_in_zip)
             os.remove(init_name)
             sys.path.insert(0, zip_name)
             import zip_pkg
+
             try:
                 self.assertEqual(inspect.getsource(zip_pkg.foo), test_src)
             finally:
@@ -106,31 +109,28 @@ class ZipSupportTests(unittest.TestCase):
         # everything still works correctly
         test_src = inspect.getsource(test_doctest)
         test_src = test_src.replace(
-                         "from test import test_doctest",
-                         "import test_zipped_doctest as test_doctest")
-        test_src = test_src.replace("test.test_doctest",
-                                    "test_zipped_doctest")
-        test_src = test_src.replace("test.sample_doctest",
-                                    "sample_zipped_doctest")
+            "from test import test_doctest",
+            "import test_zipped_doctest as test_doctest",
+        )
+        test_src = test_src.replace("test.test_doctest", "test_zipped_doctest")
+        test_src = test_src.replace("test.sample_doctest", "sample_zipped_doctest")
         sample_src = inspect.getsource(sample_doctest)
-        sample_src = sample_src.replace("test.test_doctest",
-                                        "test_zipped_doctest")
+        sample_src = sample_src.replace("test.test_doctest", "test_zipped_doctest")
         with temp_dir() as d:
-            script_name = make_script(d, 'test_zipped_doctest',
-                                            test_src)
-            zip_name, run_name = make_zip_script(d, 'test_zip',
-                                                script_name)
-            z = zipfile.ZipFile(zip_name, 'a')
+            script_name = make_script(d, "test_zipped_doctest", test_src)
+            zip_name, run_name = make_zip_script(d, "test_zip", script_name)
+            z = zipfile.ZipFile(zip_name, "a")
             z.writestr("sample_zipped_doctest.py", sample_src)
             z.close()
             if verbose:
-                zip_file = zipfile.ZipFile(zip_name, 'r')
-                print ('Contents of %r:' % zip_name)
+                zip_file = zipfile.ZipFile(zip_name, "r")
+                print("Contents of %r:" % zip_name)
                 zip_file.printdir()
                 zip_file.close()
             os.remove(script_name)
             sys.path.insert(0, zip_name)
             import test_zipped_doctest
+
             try:
                 # Some of the doc tests depend on the colocated text files
                 # which aren't available to the zipped version (the doctest
@@ -193,23 +193,24 @@ class ZipSupportTests(unittest.TestCase):
                     """)
         pattern = 'File "%s", line 2, in %s'
         with temp_dir() as d:
-            script_name = make_script(d, 'script', test_src)
+            script_name = make_script(d, "script", test_src)
             rc, out, err = assert_python_ok(script_name)
             expected = pattern % (script_name, "__main__.Test")
             if verbose:
-                print ("Expected line", expected)
-                print ("Got stdout:")
-                print (ascii(out))
-            self.assertIn(expected.encode('utf-8'), out)
-            zip_name, run_name = make_zip_script(d, "test_zip",
-                                                script_name, '__main__.py')
+                print("Expected line", expected)
+                print("Got stdout:")
+                print(ascii(out))
+            self.assertIn(expected.encode("utf-8"), out)
+            zip_name, run_name = make_zip_script(
+                d, "test_zip", script_name, "__main__.py"
+            )
             rc, out, err = assert_python_ok(zip_name)
             expected = pattern % (run_name, "__main__.Test")
             if verbose:
-                print ("Expected line", expected)
-                print ("Got stdout:")
-                print (ascii(out))
-            self.assertIn(expected.encode('utf-8'), out)
+                print("Expected line", expected)
+                print("Got stdout:")
+                print(ascii(out))
+            self.assertIn(expected.encode("utf-8"), out)
 
     def test_pdb_issue4201(self):
         test_src = textwrap.dedent("""\
@@ -220,22 +221,24 @@ class ZipSupportTests(unittest.TestCase):
                     pdb.Pdb(nosigint=True).runcall(f)
                     """)
         with temp_dir() as d:
-            script_name = make_script(d, 'script', test_src)
+            script_name = make_script(d, "script", test_src)
             p = spawn_python(script_name)
-            p.stdin.write(b'l\n')
+            p.stdin.write(b"l\n")
             data = kill_python(p)
-            self.assertIn(script_name.encode('utf-8'), data)
-            zip_name, run_name = make_zip_script(d, "test_zip",
-                                                script_name, '__main__.py')
+            self.assertIn(script_name.encode("utf-8"), data)
+            zip_name, run_name = make_zip_script(
+                d, "test_zip", script_name, "__main__.py"
+            )
             p = spawn_python(zip_name)
-            p.stdin.write(b'l\n')
+            p.stdin.write(b"l\n")
             data = kill_python(p)
-            self.assertIn(run_name.encode('utf-8'), data)
+            self.assertIn(run_name.encode("utf-8"), data)
 
 
 def test_main():
     test.support.run_unittest(ZipSupportTests)
     test.support.reap_children()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test_main()

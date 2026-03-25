@@ -6,8 +6,8 @@
 wwwlog = open("access-log")
 total = 0
 for line in wwwlog:
-    bytestr = line.rsplit(None,1)[1]
-    if bytestr != '-':
+    bytestr = line.rsplit(None, 1)[1]
+    if bytestr != "-":
         total += int(bytestr)
 
-print ("Total", total)
+print("Total", total)

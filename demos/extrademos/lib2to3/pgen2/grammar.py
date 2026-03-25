@@ -16,7 +16,7 @@ fallback token code OP, but the parser needs the actual token code.
 import pickle
 
 # Local imports
-from . import token, tokenize
+from . import token
 
 
 class Grammar(object):
@@ -102,8 +102,14 @@ class Grammar(object):
         Copy the grammar.
         """
         new = self.__class__()
-        for dict_attr in ("symbol2number", "number2symbol", "dfas", "keywords",
-                          "tokens", "symbol2label"):
+        for dict_attr in (
+            "symbol2number",
+            "number2symbol",
+            "dfas",
+            "keywords",
+            "tokens",
+            "symbol2label",
+        ):
             setattr(new, dict_attr, getattr(self, dict_attr).copy())
         new.labels = self.labels[:]
         new.states = self.states[:]
@@ -113,6 +119,7 @@ class Grammar(object):
     def report(self):
         """Dump the grammar tables to standard output, for debugging."""
         from pprint import pprint
+
         print("s2n")
         pprint(self.symbol2number)
         print("n2s")

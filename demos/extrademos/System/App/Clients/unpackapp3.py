@@ -7,14 +7,17 @@
 
 from unpackapp import *
 
-class UnpackAppBkp(UnpackApp):
 
+class UnpackAppBkp(UnpackApp):
     def setOutput(self, name=None):
         import os
+
         try:
-            os.rename(name, name + '.bkp')   
-        except: pass
+            os.rename(name, name + ".bkp")
+        except:
+            pass
         UnpackApp.setOutput(self, name)
 
-if __name__ == '__main__':  UnpackAppBkp().main()
 
+if __name__ == "__main__":
+    UnpackAppBkp().main()

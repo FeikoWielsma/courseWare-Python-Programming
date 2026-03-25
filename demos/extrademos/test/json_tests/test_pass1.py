@@ -3,7 +3,7 @@ from unittest import TestCase
 import json
 
 # from http://json.org/JSON_checker/test/pass1.json
-JSON = r'''
+JSON = r"""
 [
     "JSON Test Pattern pass1",
     {"object with 1 member":["array with 1 element"]},
@@ -60,7 +60,8 @@ JSON = r'''
 
 
 ,"rosebud"]
-'''
+"""
+
 
 class TestPass1(TestCase):
     def test_parse(self):

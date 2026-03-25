@@ -1,4 +1,4 @@
-""" Tests for the linecache module """
+"""Tests for the linecache module"""
 
 import linecache
 import unittest
@@ -7,37 +7,36 @@ from test import support
 
 
 FILENAME = linecache.__file__
-INVALID_NAME = '!@$)(!@#_1'
-EMPTY = ''
-TESTS = 'cjkencodings_test inspect_fodder inspect_fodder2 mapping_tests'
+INVALID_NAME = "!@$)(!@#_1"
+EMPTY = ""
+TESTS = "cjkencodings_test inspect_fodder inspect_fodder2 mapping_tests"
 TESTS = TESTS.split()
 TEST_PATH = os.path.dirname(support.__file__)
 MODULES = "linecache abc".split()
 MODULE_PATH = os.path.dirname(FILENAME)
 
-SOURCE_1 = '''
+SOURCE_1 = """
 " Docstring "
 
 def function():
     return result
 
-'''
+"""
 
-SOURCE_2 = '''
+SOURCE_2 = """
 def f():
     return 1 + 1
 
 a = f()
 
-'''
+"""
 
-SOURCE_3 = '''
+SOURCE_3 = """
 def f():
-    return 3''' # No ending newline
+    return 3"""  # No ending newline
 
 
 class LineCacheTests(unittest.TestCase):
-
     def test_getline(self):
         getline = linecache.getline
 
@@ -54,20 +53,20 @@ class LineCacheTests(unittest.TestCase):
 
         # Check whether lines correspond to those from file iteration
         for entry in TESTS:
-            filename = os.path.join(TEST_PATH, entry) + '.py'
+            filename = os.path.join(TEST_PATH, entry) + ".py"
             with open(filename) as file:
                 for index, line in enumerate(file):
                     self.assertEqual(line, getline(filename, index + 1))
 
         # Check module loading
         for entry in MODULES:
-            filename = os.path.join(MODULE_PATH, entry) + '.py'
+            filename = os.path.join(MODULE_PATH, entry) + ".py"
             with open(filename) as file:
                 for index, line in enumerate(file):
                     self.assertEqual(line, getline(filename, index + 1))
 
         # Check that bogus data isn't returned (issue #1309567)
-        empty = linecache.getlines('a/b/c/__init__.py')
+        empty = linecache.getlines("a/b/c/__init__.py")
         self.assertEqual(empty, [])
 
     def test_no_ending_newline(self):
@@ -80,7 +79,7 @@ class LineCacheTests(unittest.TestCase):
     def test_clearcache(self):
         cached = []
         for entry in TESTS:
-            filename = os.path.join(TEST_PATH, entry) + '.py'
+            filename = os.path.join(TEST_PATH, entry) + ".py"
             cached.append(filename)
             linecache.getline(filename, 1)
 
@@ -96,9 +95,9 @@ class LineCacheTests(unittest.TestCase):
     def test_checkcache(self):
         getline = linecache.getline
         # Create a source file and cache its contents
-        source_name = support.TESTFN + '.py'
+        source_name = support.TESTFN + ".py"
         self.addCleanup(support.unlink, source_name)
-        with open(source_name, 'w') as source:
+        with open(source_name, "w") as source:
             source.write(SOURCE_1)
         getline(source_name, 1)
 
@@ -109,11 +108,11 @@ class LineCacheTests(unittest.TestCase):
                 self.assertEqual(line, getline(source_name, index + 1))
                 source_list.append(line)
 
-        with open(source_name, 'w') as source:
+        with open(source_name, "w") as source:
             source.write(SOURCE_2)
 
         # Try to update a bogus cache entry
-        linecache.checkcache('dummy')
+        linecache.checkcache("dummy")
 
         # Check that the cache matches the old contents
         for index, line in enumerate(source_list):
@@ -126,8 +125,10 @@ class LineCacheTests(unittest.TestCase):
                 self.assertEqual(line, getline(source_name, index + 1))
                 source_list.append(line)
 
+
 def test_main():
     support.run_unittest(LineCacheTests)
+
 
 if __name__ == "__main__":
     test_main()

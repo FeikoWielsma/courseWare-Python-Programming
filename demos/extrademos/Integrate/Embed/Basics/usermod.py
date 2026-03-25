@@ -7,8 +7,9 @@
 
 import string
 
-message = 'The meaning of life...'
+message = "The meaning of life..."
+
 
 def transform(input):
-    input = string.replace(input, 'life', 'Python')
+    input = string.replace(input, "life", "Python")
     return string.upper(input)

@@ -3,20 +3,25 @@
 from test import support
 
 # If this fails, the test will be skipped.
-thread = support.import_module('_thread')
+thread = support.import_module("_thread")
 
-import asyncore, asynchat, socket, time
+import asyncore
+import asynchat
+import socket
+import time
 import unittest
 import sys
+
 try:
     import threading
 except ImportError:
     threading = None
 
 HOST = support.HOST
-SERVER_QUIT = b'QUIT\n'
+SERVER_QUIT = b"QUIT\n"
 
 if threading:
+
     class echo_server(threading.Thread):
         # parameter to determine the number of bytes passed back to the
         # client each send
@@ -44,7 +49,7 @@ if threading:
                 self.buffer = self.buffer + data
 
             # remove the SERVER_QUIT message
-            self.buffer = self.buffer.replace(SERVER_QUIT, b'')
+            self.buffer = self.buffer.replace(SERVER_QUIT, b"")
 
             if self.start_resend_event:
                 self.start_resend_event.wait()
@@ -54,7 +59,7 @@ if threading:
                 # this may fail on some tests, such as test_close_when_done, since
                 # the client closes the channel when it's done sending
                 while self.buffer:
-                    n = conn.send(self.buffer[:self.chunk_size])
+                    n = conn.send(self.buffer[: self.chunk_size])
                     time.sleep(0.001)
                     self.buffer = self.buffer[n:]
             except:
@@ -64,7 +69,6 @@ if threading:
             self.sock.close()
 
     class echo_client(asynchat.async_chat):
-
         def __init__(self, terminator, server_port):
             asynchat.async_chat.__init__(self)
             self.contents = []
@@ -76,7 +80,7 @@ if threading:
             def handle_connect(self):
                 pass
 
-            if sys.platform == 'darwin':
+            if sys.platform == "darwin":
                 # select.poll returns a select.POLLHUP at the end of the tests
                 # on darwin, so just ignore it
                 def handle_expt(self):
@@ -95,18 +99,18 @@ if threading:
         s.start()
         event.wait()
         event.clear()
-        time.sleep(0.01) # Give server time to start accepting.
+        time.sleep(0.01)  # Give server time to start accepting.
         return s, event
 
 
-@unittest.skipUnless(threading, 'Threading required for this test.')
+@unittest.skipUnless(threading, "Threading required for this test.")
 class TestAsynchat(unittest.TestCase):
     usepoll = False
 
-    def setUp (self):
+    def setUp(self):
         self._threads = support.threading_setup()
 
-    def tearDown (self):
+    def tearDown(self):
         support.threading_cleanup(*self._threads)
 
     def line_terminator_check(self, term, server_chunk):
@@ -116,13 +120,13 @@ class TestAsynchat(unittest.TestCase):
         s.start()
         event.wait()
         event.clear()
-        time.sleep(0.01) # Give server time to start accepting.
+        time.sleep(0.01)  # Give server time to start accepting.
         c = echo_client(term, s.port)
         c.push(b"hello ")
         c.push(b"world" + term)
         c.push(b"I'm not dead yet!" + term)
         c.push(SERVER_QUIT)
-        asyncore.loop(use_poll=self.usepoll, count=300, timeout=.01)
+        asyncore.loop(use_poll=self.usepoll, count=300, timeout=0.01)
         s.join()
 
         self.assertEqual(c.contents, [b"hello world", b"I'm not dead yet!"])
@@ -133,18 +137,18 @@ class TestAsynchat(unittest.TestCase):
 
     def test_line_terminator1(self):
         # test one-character terminator
-        for l in (1,2,3):
-            self.line_terminator_check(b'\n', l)
+        for l in (1, 2, 3):
+            self.line_terminator_check(b"\n", l)
 
     def test_line_terminator2(self):
         # test two-character terminator
-        for l in (1,2,3):
-            self.line_terminator_check(b'\r\n', l)
+        for l in (1, 2, 3):
+            self.line_terminator_check(b"\r\n", l)
 
     def test_line_terminator3(self):
         # test three-character terminator
-        for l in (1,2,3):
-            self.line_terminator_check(b'qqq', l)
+        for l in (1, 2, 3):
+            self.line_terminator_check(b"qqq", l)
 
     def numeric_terminator_check(self, termlen):
         # Try reading a fixed number of bytes
@@ -153,7 +157,7 @@ class TestAsynchat(unittest.TestCase):
         data = b"hello world, I'm not dead yet!\n"
         c.push(data)
         c.push(SERVER_QUIT)
-        asyncore.loop(use_poll=self.usepoll, count=300, timeout=.01)
+        asyncore.loop(use_poll=self.usepoll, count=300, timeout=0.01)
         s.join()
 
         self.assertEqual(c.contents, [data[:termlen]])
@@ -173,7 +177,7 @@ class TestAsynchat(unittest.TestCase):
         data = b"hello world, I'm not dead yet!\n"
         c.push(data)
         c.push(SERVER_QUIT)
-        asyncore.loop(use_poll=self.usepoll, count=300, timeout=.01)
+        asyncore.loop(use_poll=self.usepoll, count=300, timeout=0.01)
         s.join()
 
         self.assertEqual(c.contents, [])
@@ -181,21 +185,21 @@ class TestAsynchat(unittest.TestCase):
 
     def test_simple_producer(self):
         s, event = start_echo_server()
-        c = echo_client(b'\n', s.port)
+        c = echo_client(b"\n", s.port)
         data = b"hello world\nI'm not dead yet!\n"
-        p = asynchat.simple_producer(data+SERVER_QUIT, buffer_size=8)
+        p = asynchat.simple_producer(data + SERVER_QUIT, buffer_size=8)
         c.push_with_producer(p)
-        asyncore.loop(use_poll=self.usepoll, count=300, timeout=.01)
+        asyncore.loop(use_poll=self.usepoll, count=300, timeout=0.01)
         s.join()
 
         self.assertEqual(c.contents, [b"hello world", b"I'm not dead yet!"])
 
     def test_string_producer(self):
         s, event = start_echo_server()
-        c = echo_client(b'\n', s.port)
+        c = echo_client(b"\n", s.port)
         data = b"hello world\nI'm not dead yet!\n"
-        c.push_with_producer(data+SERVER_QUIT)
-        asyncore.loop(use_poll=self.usepoll, count=300, timeout=.01)
+        c.push_with_producer(data + SERVER_QUIT)
+        asyncore.loop(use_poll=self.usepoll, count=300, timeout=0.01)
         s.join()
 
         self.assertEqual(c.contents, [b"hello world", b"I'm not dead yet!"])
@@ -203,23 +207,22 @@ class TestAsynchat(unittest.TestCase):
     def test_empty_line(self):
         # checks that empty lines are handled correctly
         s, event = start_echo_server()
-        c = echo_client(b'\n', s.port)
+        c = echo_client(b"\n", s.port)
         c.push(b"hello world\n\nI'm not dead yet!\n")
         c.push(SERVER_QUIT)
-        asyncore.loop(use_poll=self.usepoll, count=300, timeout=.01)
+        asyncore.loop(use_poll=self.usepoll, count=300, timeout=0.01)
         s.join()
 
-        self.assertEqual(c.contents,
-                         [b"hello world", b"", b"I'm not dead yet!"])
+        self.assertEqual(c.contents, [b"hello world", b"", b"I'm not dead yet!"])
 
     def test_close_when_done(self):
         s, event = start_echo_server()
         s.start_resend_event = threading.Event()
-        c = echo_client(b'\n', s.port)
+        c = echo_client(b"\n", s.port)
         c.push(b"hello world\nI'm not dead yet!\n")
         c.push(SERVER_QUIT)
         c.close_when_done()
-        asyncore.loop(use_poll=self.usepoll, count=300, timeout=.01)
+        asyncore.loop(use_poll=self.usepoll, count=300, timeout=0.01)
 
         # Only allow the server to start echoing data back to the client after
         # the client has closed its connection.  This prevents a race condition
@@ -238,39 +241,43 @@ class TestAsynchat(unittest.TestCase):
 class TestAsynchat_WithPoll(TestAsynchat):
     usepoll = True
 
+
 class TestHelperFunctions(unittest.TestCase):
     def test_find_prefix_at_end(self):
         self.assertEqual(asynchat.find_prefix_at_end("qwerty\r", "\r\n"), 1)
         self.assertEqual(asynchat.find_prefix_at_end("qwertydkjf", "\r\n"), 0)
 
+
 class TestFifo(unittest.TestCase):
     def test_basic(self):
         f = asynchat.fifo()
         f.push(7)
-        f.push(b'a')
+        f.push(b"a")
         self.assertEqual(len(f), 2)
         self.assertEqual(f.first(), 7)
         self.assertEqual(f.pop(), (1, 7))
         self.assertEqual(len(f), 1)
-        self.assertEqual(f.first(), b'a')
+        self.assertEqual(f.first(), b"a")
         self.assertEqual(f.is_empty(), False)
-        self.assertEqual(f.pop(), (1, b'a'))
+        self.assertEqual(f.pop(), (1, b"a"))
         self.assertEqual(len(f), 0)
         self.assertEqual(f.is_empty(), True)
         self.assertEqual(f.pop(), (0, None))
 
     def test_given_list(self):
-        f = asynchat.fifo([b'x', 17, 3])
+        f = asynchat.fifo([b"x", 17, 3])
         self.assertEqual(len(f), 3)
-        self.assertEqual(f.pop(), (1, b'x'))
+        self.assertEqual(f.pop(), (1, b"x"))
         self.assertEqual(f.pop(), (1, 17))
         self.assertEqual(f.pop(), (1, 3))
         self.assertEqual(f.pop(), (0, None))
 
 
 def test_main(verbose=None):
-    support.run_unittest(TestAsynchat, TestAsynchat_WithPoll,
-                              TestHelperFunctions, TestFifo)
+    support.run_unittest(
+        TestAsynchat, TestAsynchat_WithPoll, TestHelperFunctions, TestFifo
+    )
+
 
 if __name__ == "__main__":
     test_main(verbose=True)

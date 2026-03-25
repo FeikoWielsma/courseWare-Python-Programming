@@ -6,11 +6,11 @@ import tkinter as tk
 import sqlite3
 import csv
 
-mainWindow = Tk()
-mainWindow.columnconfigure(0, minsize=150)
-mainWindow.rowconfigure([0, 0], minsize=15)
+main_window = Tk()
+main_window.columnconfigure(0, minsize=150)
+main_window.rowconfigure([0, 0], minsize=15)
 
-tree = ttk.Treeview(mainWindow, column=("c1", "c2", "c3", "c4"), show='headings')
+tree = ttk.Treeview(main_window, column=("c1", "c2", "c3", "c4"), show="headings")
 
 tree.heading(column="c1", anchor=tk.W)
 tree.heading(column="c2", anchor=tk.W)
@@ -26,45 +26,51 @@ tree.heading("#3", text="LOCATION")
 tree.column("#4", anchor=tk.W)
 tree.heading("#4", text="PRICE")
 
-lbl_form_title = tk.Label(master=mainWindow, text="List of Courses")
-lbl_form_title.config(font=("Arial", 12, 'bold'))
+lbl_form_title = tk.Label(master=main_window, text="List of Courses")
+lbl_form_title.config(font=("Arial", 12, "bold"))
 lbl_form_title.grid(row=0, column=0, sticky="w", ipadx=10, ipady=15)
 
 tree.grid(row=1, column=0, sticky="e", ipadx=100, ipady=15)
 
-mainWindow.title("Training Application")
-mainWindow.geometry('900x500')
+main_window.title("Training Application")
+main_window.geometry("900x500")
+
 
 def OpenFile():
-    file = filedialog.askopenfilename(initialdir=".", title="Select file",
-                               filetypes=(("all files", "*.*"), ("jpeg files", "*.jpg")))
+    file = filedialog.askopenfilename(
+        initialdir=".",
+        title="Select file",
+        filetypes=(("all files", "*.*"), ("jpeg files", "*.jpg")),
+    )
     # tkinter.messagebox.showinfo("Opening File" + file)
     print(file)
 
+
 def ReadCourses():
     # courses = []
-    with open('courses.csv') as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
+    with open("courses.csv") as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=",")
         line_count = 0
 
         for course in csv_reader:
             print(type(course))
             if line_count == 0:
-                print(f'{course[0]:10}{course[1]:10}{course[2]:15}{course[3]}')
+                print(f"{course[0]:10}{course[1]:10}{course[2]:15}{course[3]}")
                 line_count += 1
             else:
                 tree.insert("", tk.END, values=course)
-                print(f'{course[0]:10}{course[1]:10}{course[2]:15}{course[3]}')
+                print(f"{course[0]:10}{course[1]:10}{course[2]:15}{course[3]}")
                 line_count += 1
                 # courses.append(course)
         print()
-        print(f'Processed {line_count} courses.')
+        print(f"Processed {line_count} courses.")
         LoadCourses()
+
 
 def AddCourse():
     def Cancel():
         print("Cancel Clicked")
-        newWindow.destroy()
+        new_window.destroy()
 
     def CourseToAdd():
         print("Adding a new course")
@@ -73,66 +79,76 @@ def AddCourse():
         print(ent_course_location.get())
         print(ent_course_price.get())
 
-        conn = sqlite3.connect('courses.db')
+        conn = sqlite3.connect("courses.db")
         c = conn.cursor()
         with conn:
-            conn.execute("INSERT INTO courses VALUES( ?, ?, ?, ?)",
-            (ent_course_name.get(), ent_course_duration.get(), ent_course_location.get(), ent_course_price.get()))
+            conn.execute(
+                "INSERT INTO courses VALUES( ?, ?, ?, ?)",
+                (
+                    ent_course_name.get(),
+                    ent_course_duration.get(),
+                    ent_course_location.get(),
+                    ent_course_price.get(),
+                ),
+            )
         # clear fields for new entry
-        ent_course_name.delete(0, 'end')
-        ent_course_duration.delete(0, 'end')
-        ent_course_location.delete(0, 'end')
-        ent_course_price.delete(0, 'end')
+        ent_course_name.delete(0, "end")
+        ent_course_duration.delete(0, "end")
+        ent_course_location.delete(0, "end")
+        ent_course_price.delete(0, "end")
         LoadCourses()
 
     print("Showing new course screen")
 
-    newWindow = Toplevel(mainWindow)
-    newWindow.title("Add Course")
+    new_window = Toplevel(main_window)
+    new_window.title("Add Course")
 
-    newWindow.geometry("500x200+500+200")
+    new_window.geometry("500x200+500+200")
 
-    newWindow.columnconfigure(0, minsize=150)
-    newWindow.rowconfigure([6, 0], minsize=25)
+    new_window.columnconfigure(0, minsize=150)
+    new_window.rowconfigure([6, 0], minsize=25)
 
-    lbl_form_title = tk.Label(master=newWindow, text="Add Course Details:")
-    lbl_form_title.config(font=("Arial", 12, 'bold'))
+    lbl_form_title = tk.Label(master=new_window, text="Add Course Details:")
+    lbl_form_title.config(font=("Arial", 12, "bold"))
     lbl_form_title.grid(row=0, column=0, sticky="w", ipadx=10, ipady=15)
 
-    lbl_course_name = tk.Label(master=newWindow, text="Course Name:")
+    lbl_course_name = tk.Label(master=new_window, text="Course Name:")
     lbl_course_name.grid(row=1, column=0, sticky="w", ipadx=10, ipady=1)
-    ent_course_name = tk.Entry(master=newWindow, width=40)
+    ent_course_name = tk.Entry(master=new_window, width=40)
     ent_course_name.grid(row=1, column=1, sticky="w", ipadx=10, ipady=1)
 
-    lbl_course_duration = tk.Label(master=newWindow, text="Course Duration:")
+    lbl_course_duration = tk.Label(master=new_window, text="Course Duration:")
     lbl_course_duration.grid(row=2, column=0, sticky="w", ipadx=10, ipady=1)
-    ent_course_duration = tk.Entry(master=newWindow, width=40)
+    ent_course_duration = tk.Entry(master=new_window, width=40)
     ent_course_duration.grid(row=2, column=1, sticky="w", ipadx=10, ipady=1)
 
-    lbl_course_location = tk.Label(master=newWindow, text="Course Location:")
+    lbl_course_location = tk.Label(master=new_window, text="Course Location:")
     lbl_course_location.grid(row=3, column=0, sticky="w", ipadx=10, ipady=1)
-    ent_course_location = tk.Entry(master=newWindow, width=40)
+    ent_course_location = tk.Entry(master=new_window, width=40)
     ent_course_location.grid(row=3, column=1, sticky="w", ipadx=10, ipady=1)
 
-    lbl_course_price = tk.Label(master=newWindow, text="Course Price:")
+    lbl_course_price = tk.Label(master=new_window, text="Course Price:")
     lbl_course_price.grid(row=4, column=0, sticky="w", ipadx=10, ipady=1)
-    ent_course_price = tk.Entry(master=newWindow, width=40)
+    ent_course_price = tk.Entry(master=new_window, width=40)
     ent_course_price.grid(row=4, column=1, sticky="w", ipadx=10, ipady=1)
 
-    btn_cancel_add = tk.Button(master=newWindow, text="Cancel", command=Cancel)
+    btn_cancel_add = tk.Button(master=new_window, text="Cancel", command=Cancel)
     btn_cancel_add.grid(row=5, column=0, sticky="w", ipadx=10, ipady=1)
 
-    btn_add_course = tk.Button(master=newWindow, text="Add Course", command = CourseToAdd)
+    btn_add_course = tk.Button(
+        master=new_window, text="Add Course", command=CourseToAdd
+    )
     btn_add_course.grid(row=5, column=1, sticky="e", ipadx=10, ipady=1)
+
 
 def EditCourse():
     print("Editing a new course")
     treerow = tree.item(tree.focus())
-    print(treerow['values'])
-    course = treerow['values']
-    print(type(treerow['values']))
+    print(treerow["values"])
+    course = treerow["values"]
+    print(type(treerow["values"]))
     coursename = course[0]
-    courseduration =  course[1]
+    courseduration = course[1]
     courselocation = course[2]
     courseprice = course[3]
     print(coursename)
@@ -142,7 +158,7 @@ def EditCourse():
 
     def Cancel():
         print("Cancel Clicked")
-        newWindow.destroy()
+        new_window.destroy()
 
     def CourseToUpdate():
         print("Updating a new course")
@@ -151,66 +167,76 @@ def EditCourse():
         print(ent_course_location.get())
         print(ent_course_price.get())
 
-        conn = sqlite3.connect('courses.db')
+        conn = sqlite3.connect("courses.db")
         with conn:
             cur = conn.cursor()
-            cur.execute("UPDATE courses SET duration=?, location=?, price=? WHERE name=? ",
-                        (ent_course_duration.get(), ent_course_location.get(),
-                         ent_course_price.get(), ent_course_name.get()))
+            cur.execute(
+                "UPDATE courses SET duration=?, location=?, price=? WHERE name=? ",
+                (
+                    ent_course_duration.get(),
+                    ent_course_location.get(),
+                    ent_course_price.get(),
+                    ent_course_name.get(),
+                ),
+            )
             conn.commit()
 
         print("Cancel Clicked")
-        newWindow.destroy()
+        new_window.destroy()
         LoadCourses()
 
     print("Showing edit course screen")
 
-    newWindow = Toplevel(mainWindow)
-    newWindow.title("Edit Course")
+    new_window = Toplevel(main_window)
+    new_window.title("Edit Course")
 
-    newWindow.geometry("500x200+500+200")
+    new_window.geometry("500x200+500+200")
 
-    newWindow.columnconfigure(0, minsize=150)
-    newWindow.rowconfigure([6, 0], minsize=25)
+    new_window.columnconfigure(0, minsize=150)
+    new_window.rowconfigure([6, 0], minsize=25)
 
-    lbl_form_title = tk.Label(master=newWindow, text="Add Course Details:")
-    lbl_form_title.config(font=("Arial", 12, 'bold'))
+    lbl_form_title = tk.Label(master=new_window, text="Add Course Details:")
+    lbl_form_title.config(font=("Arial", 12, "bold"))
     lbl_form_title.grid(row=0, column=0, sticky="w", ipadx=10, ipady=15)
 
-    lbl_course_name = tk.Label(master=newWindow, text="Course Name:")
+    lbl_course_name = tk.Label(master=new_window, text="Course Name:")
     lbl_course_name.grid(row=1, column=0, sticky="w", ipadx=10, ipady=1)
-    ent_course_name = tk.Entry(master=newWindow, width=40)
+    ent_course_name = tk.Entry(master=new_window, width=40)
     ent_course_name.insert(0, coursename)
     ent_course_name.grid(row=1, column=1, sticky="w", ipadx=10, ipady=1)
 
-    lbl_course_duration = tk.Label(master=newWindow, text="Course Duration:")
+    lbl_course_duration = tk.Label(master=new_window, text="Course Duration:")
     lbl_course_duration.grid(row=2, column=0, sticky="w", ipadx=10, ipady=1)
-    ent_course_duration = tk.Entry(master=newWindow, width=40)
+    ent_course_duration = tk.Entry(master=new_window, width=40)
     ent_course_duration.insert(0, courseduration)
     ent_course_duration.grid(row=2, column=1, sticky="w", ipadx=10, ipady=1)
 
-    lbl_course_location = tk.Label(master=newWindow, text="Course Location:")
+    lbl_course_location = tk.Label(master=new_window, text="Course Location:")
     lbl_course_location.grid(row=3, column=0, sticky="w", ipadx=10, ipady=1)
-    ent_course_location = tk.Entry(master=newWindow, width=40)
+    ent_course_location = tk.Entry(master=new_window, width=40)
     ent_course_location.insert(0, courselocation)
     ent_course_location.grid(row=3, column=1, sticky="w", ipadx=10, ipady=1)
 
-    lbl_course_price = tk.Label(master=newWindow, text="Course Price:")
+    lbl_course_price = tk.Label(master=new_window, text="Course Price:")
     lbl_course_price.grid(row=4, column=0, sticky="w", ipadx=10, ipady=1)
-    ent_course_price = tk.Entry(master=newWindow, width=40)
+    ent_course_price = tk.Entry(master=new_window, width=40)
     ent_course_price.insert(0, courseprice)
 
     ent_course_price.grid(row=4, column=1, sticky="w", ipadx=10, ipady=1)
 
-    btn_cancel_add = tk.Button(master=newWindow, text="Cancel", command=Cancel)
+    btn_cancel_add = tk.Button(master=new_window, text="Cancel", command=Cancel)
     btn_cancel_add.grid(row=5, column=0, sticky="w", ipadx=10, ipady=1)
 
-    btn_add_course = tk.Button(master=newWindow, text="Update Course", command=CourseToUpdate)
+    btn_add_course = tk.Button(
+        master=new_window, text="Update Course", command=CourseToUpdate
+    )
     btn_add_course.grid(row=5, column=1, sticky="e", ipadx=10, ipady=1)
+
 
 def ExitApplication():
     print("Exit application")
-    mainWindow.destroy()
+    main_window.destroy()
+
 
 def LoadCourses():
     con1 = sqlite3.connect("courses.db")
@@ -228,6 +254,7 @@ def LoadCourses():
         tree.insert("", tk.END, values=row)
     con1.close()
 
+
 def Clicked(event):
     print("Table Clicked")
     treerow = tree.item(tree.focus())
@@ -236,7 +263,7 @@ def Clicked(event):
     # duration = treerow.values[1]
     # location = treerow.values[2]
     # price = treerow.values[3]
-    print(treerow['values'])
+    print(treerow["values"])
     print(treerow.keys())
     print(treerow.values())
     print(type(treerow.values()))
@@ -245,26 +272,27 @@ def Clicked(event):
     # clicks = (rclicked, cclicked)
     # print('clicks:', clicks)
 
-menu = Menu(mainWindow)
+
+menu = Menu(main_window)
 
 filemenu = Menu(menu)
 coursemenu = Menu(menu)
 aboutmenu = Menu(menu)
 
-menu.add_cascade(label='File', menu=filemenu)
-filemenu.add_command(label='Open', command=OpenFile)
-filemenu.add_command(label='ReadCSV', command=ReadCourses)
+menu.add_cascade(label="File", menu=filemenu)
+filemenu.add_command(label="Open", command=OpenFile)
+filemenu.add_command(label="ReadCSV", command=ReadCourses)
 filemenu.add_separator()
-filemenu.add_command(label='Exit', command=ExitApplication)
+filemenu.add_command(label="Exit", command=ExitApplication)
 
-menu.add_cascade(label='Load', menu=coursemenu)
-coursemenu.add_command(label='LoadDB', command=LoadCourses)
-coursemenu.add_command(label='Add', command=AddCourse)
-coursemenu.add_command(label='Edit', command=EditCourse)
+menu.add_cascade(label="Load", menu=coursemenu)
+coursemenu.add_command(label="LoadDB", command=LoadCourses)
+coursemenu.add_command(label="Add", command=AddCourse)
+coursemenu.add_command(label="Edit", command=EditCourse)
 
-menu.add_cascade(label='About', menu=aboutmenu)
+menu.add_cascade(label="About", menu=aboutmenu)
 
-mainWindow.bind('<Button-1>', Clicked)
-mainWindow.config(menu=menu)
+main_window.bind("<Button-1>", Clicked)
+main_window.config(menu=menu)
 
-mainWindow.mainloop()
+main_window.mainloop()

@@ -1,5 +1,2 @@
 # A.py
 
-import B
-
-

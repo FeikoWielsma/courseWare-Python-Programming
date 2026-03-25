@@ -15,5 +15,5 @@ Tested environment:
 
 from PySide import QtGui
 
-fmts = [str(i) for i in QtGui.QImageReader.supportedImageFormats()]
+fmts = [str(i) for i in QtGui.QImageReader.supported_image_formats()]
 print fmts

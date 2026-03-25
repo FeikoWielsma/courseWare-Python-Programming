@@ -1,5 +1,5 @@
 import unittest
-import os, sys, io
+import io
 import shlex
 
 from test import support
@@ -134,12 +134,11 @@ foo#bar\nbaz|foo|baz|
 áéíóú|áéíóú|
 """
 
+
 class ShlexTest(unittest.TestCase):
     def setUp(self):
-        self.data = [x.split("|")[:-1]
-                     for x in data.splitlines()]
-        self.posix_data = [x.split("|")[:-1]
-                           for x in posix_data.splitlines()]
+        self.data = [x.split("|")[:-1] for x in data.splitlines()]
+        self.posix_data = [x.split("|")[:-1] for x in posix_data.splitlines()]
         for item in self.data:
             item[0] = item[0].replace(r"\n", "\n")
         for item in self.posix_data:
@@ -148,9 +147,9 @@ class ShlexTest(unittest.TestCase):
     def splitTest(self, data, comments):
         for i in range(len(data)):
             l = shlex.split(data[i][0], comments=comments)
-            self.assertEqual(l, data[i][1:],
-                             "%s: %s != %s" %
-                             (data[i][0], l, data[i][1:]))
+            self.assertEqual(
+                l, data[i][1:], "%s: %s != %s" % (data[i][0], l, data[i][1:])
+            )
 
     def oldSplit(self, s):
         ret = []
@@ -169,9 +168,12 @@ class ShlexTest(unittest.TestCase):
         """Test compatibility interface"""
         for i in range(len(self.data)):
             l = self.oldSplit(self.data[i][0])
-            self.assertEqual(l, self.data[i][1:],
-                             "%s: %s != %s" %
-                             (self.data[i][0], l, self.data[i][1:]))
+            self.assertEqual(
+                l,
+                self.data[i][1:],
+                "%s: %s != %s" % (self.data[i][0], l, self.data[i][1:]),
+            )
+
 
 # Allow this test to be used with old shlex.py
 if not getattr(shlex, "split", None):
@@ -179,8 +181,10 @@ if not getattr(shlex, "split", None):
         if methname.startswith("test") and methname != "testCompat":
             delattr(ShlexTest, methname)
 
+
 def test_main():
     support.run_unittest(ShlexTest)
+
 
 if __name__ == "__main__":
     test_main()

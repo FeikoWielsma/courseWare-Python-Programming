@@ -1,9 +1,12 @@
 from ctypes import *
-import unittest, sys
+import unittest
+import sys
+
 
 def callback_func(arg):
     42 / arg
     raise ValueError(arg)
+
 
 if sys.platform == "win32":
 
@@ -13,6 +16,7 @@ if sys.platform == "win32":
 
         def test(self):
             from _ctypes import call_function
+
             windll.kernel32.LoadLibraryA.restype = c_void_p
             windll.kernel32.GetProcAddress.argtypes = c_void_p, c_char_p
             windll.kernel32.GetProcAddress.restype = c_void_p
@@ -20,8 +24,10 @@ if sys.platform == "win32":
             hdll = windll.kernel32.LoadLibraryA(b"kernel32")
             funcaddr = windll.kernel32.GetProcAddress(hdll, b"GetModuleHandleA")
 
-            self.assertEqual(call_function(funcaddr, (None,)),
-                                 windll.kernel32.GetModuleHandleA(None))
+            self.assertEqual(
+                call_function(funcaddr, (None,)), windll.kernel32.GetModuleHandleA(None)
+            )
+
 
 class CallbackTracbackTestCase(unittest.TestCase):
     # When an exception is raised in a ctypes callback function, the C
@@ -38,6 +44,7 @@ class CallbackTracbackTestCase(unittest.TestCase):
     def capture_stderr(self, func, *args, **kw):
         # helper - call function 'func', and return the captured stderr
         import io
+
         old_stderr = sys.stderr
         logger = sys.stderr = io.StringIO()
         try:
@@ -49,27 +56,26 @@ class CallbackTracbackTestCase(unittest.TestCase):
     def test_ValueError(self):
         cb = CFUNCTYPE(c_int, c_int)(callback_func)
         out = self.capture_stderr(cb, 42)
-        self.assertEqual(out.splitlines()[-1],
-                             "ValueError: 42")
+        self.assertEqual(out.splitlines()[-1], "ValueError: 42")
 
     def test_IntegerDivisionError(self):
         cb = CFUNCTYPE(c_int, c_int)(callback_func)
         out = self.capture_stderr(cb, 0)
-        self.assertEqual(out.splitlines()[-1][:19],
-                             "ZeroDivisionError: ")
+        self.assertEqual(out.splitlines()[-1][:19], "ZeroDivisionError: ")
 
     def test_FloatDivisionError(self):
         cb = CFUNCTYPE(c_int, c_double)(callback_func)
         out = self.capture_stderr(cb, 0.0)
-        self.assertEqual(out.splitlines()[-1][:19],
-                             "ZeroDivisionError: ")
+        self.assertEqual(out.splitlines()[-1][:19], "ZeroDivisionError: ")
 
     def test_TypeErrorDivisionError(self):
         cb = CFUNCTYPE(c_int, c_char_p)(callback_func)
         out = self.capture_stderr(cb, b"spam")
-        self.assertEqual(out.splitlines()[-1],
-                             "TypeError: "
-                             "unsupported operand type(s) for /: 'int' and 'bytes'")
+        self.assertEqual(
+            out.splitlines()[-1],
+            "TypeError: unsupported operand type(s) for /: 'int' and 'bytes'",
+        )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

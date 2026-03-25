@@ -1,29 +1,31 @@
 #!/usr/bin/env python
-import findgtk        
-import gtk,gtk.glade
+import gtk
+import gtk.glade
 import pygtk
+
 pygtk.require("2.0")
 import gtk
 
+
 class ClickCountGUI:
     "When you click, it increments the label."
-    
-    CLICK_COUNT = 'Click count: %d'
+
+    CLICK_COUNT = "Click count: %d"
 
     def __init__(self):
         "Set up the window and the button within."
-        self.window=gtk.Window()        
-        self.button=gtk.Button(self.CLICK_COUNT % 0)
-        self.button.timesClicked = 0        
+        self.window = gtk.Window()
+        self.button = gtk.Button(self.CLICK_COUNT % 0)
+        self.button.timesClicked = 0
         self.window.add(self.button)
 
-        #Call the buttonClicked method when the button is clicked.
+        # Call the buttonClicked method when the button is clicked.
         self.button.connect("clicked", self.buttonClicked)
 
-        #Quit the program when the window is destroyed.
+        # Quit the program when the window is destroyed.
         self.window.connect("destroy", self.destroy)
 
-        #Show the GUI
+        # Show the GUI
         self.button.show()
         self.window.show()
 
@@ -37,6 +39,7 @@ class ClickCountGUI:
         window.hide()
         gtk.main_quit()
 
-if __name__ == '__main__':    
+
+if __name__ == "__main__":
     ClickCountGUI()
     gtk.main()

@@ -3,6 +3,7 @@ from ctypes import *
 
 _array_type = type(c_int * 3)
 
+
 def _other_endian(typ):
     """Return the type with the 'other' byte order.  Simple types like
     c_int and so on already have __ctype_be__ and __ctype_le__
@@ -16,6 +17,7 @@ def _other_endian(typ):
             return _other_endian(typ._type_) * typ._length_
         raise TypeError("This type does not support other endian: %s" % typ)
 
+
 class _swapped_meta(type(Structure)):
     def __setattr__(self, attrname, value):
         if attrname == "_fields_":
@@ -27,6 +29,7 @@ class _swapped_meta(type(Structure)):
                 fields.append((name, _other_endian(typ)) + rest)
             value = fields
         super().__setattr__(attrname, value)
+
 
 ################################################################
 
@@ -41,14 +44,17 @@ if sys.byteorder == "little":
 
     class BigEndianStructure(Structure, metaclass=_swapped_meta):
         """Structure with big endian byte order"""
+
         _swappedbytes_ = None
 
 elif sys.byteorder == "big":
     _OTHER_ENDIAN = "__ctype_le__"
 
     BigEndianStructure = Structure
+
     class LittleEndianStructure(Structure, metaclass=_swapped_meta):
         """Structure with little endian byte order"""
+
         _swappedbytes_ = None
 
 else:

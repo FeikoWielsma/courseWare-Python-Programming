@@ -14,9 +14,9 @@ Python 2.6 figure it out.
 """
 
 # Local imports
-from ..pgen2 import token
 from .. import fixer_base
 from ..fixer_util import Name, Call, ListComp, in_special_context
+
 
 class FixFilter(fixer_base.ConditionalFix):
     BM_compatible = True
@@ -55,16 +55,15 @@ class FixFilter(fixer_base.ConditionalFix):
             return
 
         if "filter_lambda" in results:
-            new = ListComp(results.get("fp").clone(),
-                           results.get("fp").clone(),
-                           results.get("it").clone(),
-                           results.get("xp").clone())
+            new = ListComp(
+                results.get("fp").clone(),
+                results.get("fp").clone(),
+                results.get("it").clone(),
+                results.get("xp").clone(),
+            )
 
         elif "none" in results:
-            new = ListComp(Name("_f"),
-                           Name("_f"),
-                           results["seq"].clone(),
-                           Name("_f"))
+            new = ListComp(Name("_f"), Name("_f"), results["seq"].clone(), Name("_f"))
 
         else:
             if in_special_context(node):

@@ -2,6 +2,7 @@ from test import support, seq_tests
 
 import gc
 
+
 class TupleTest(seq_tests.CommonTest):
     type2test = tuple
 
@@ -14,13 +15,13 @@ class TupleTest(seq_tests.CommonTest):
         self.assertTrue(t0_3 is t0_3_bis)
         self.assertEqual(tuple([]), ())
         self.assertEqual(tuple([0, 1, 2, 3]), (0, 1, 2, 3))
-        self.assertEqual(tuple(''), ())
-        self.assertEqual(tuple('spam'), ('s', 'p', 'a', 'm'))
+        self.assertEqual(tuple(""), ())
+        self.assertEqual(tuple("spam"), ("s", "p", "a", "m"))
 
     def test_truth(self):
         super().test_truth()
         self.assertTrue(not ())
-        self.assertTrue((42, ))
+        self.assertTrue((42,))
 
     def test_len(self):
         super().test_len()
@@ -47,6 +48,7 @@ class TupleTest(seq_tests.CommonTest):
         def f():
             for i in range(1000):
                 yield i
+
         self.assertEqual(list(tuple(f())), list(range(1000)))
 
     def test_hash(self):
@@ -65,11 +67,16 @@ class TupleTest(seq_tests.CommonTest):
         #      more than 15 collisions.  Any worse and the hash function
         #      is sorely suspect.
 
-        N=50
+        N = 50
         base = list(range(N))
         xp = [(i, j) for i in base for j in base]
-        inps = base + [(i, j) for i in base for j in xp] + \
-                     [(i, j) for i in xp for j in base] + xp + list(zip(base))
+        inps = (
+            base
+            + [(i, j) for i in base for j in xp]
+            + [(i, j) for i in xp for j in base]
+            + xp
+            + list(zip(base))
+        )
         collisions = len(inps) - len(set(map(hash, inps)))
         self.assertTrue(collisions <= 15)
 
@@ -147,6 +154,7 @@ class TupleTest(seq_tests.CommonTest):
         # Tuple subtypes must always be tracked
         class MyTuple(tuple):
             pass
+
         self.check_track_dynamic(MyTuple, True)
 
     @support.cpython_only
@@ -154,8 +162,10 @@ class TupleTest(seq_tests.CommonTest):
         # Trying to untrack an unfinished tuple could crash Python
         self._not_tracked(tuple(gc.collect() for i in range(101)))
 
+
 def test_main():
     support.run_unittest(TupleTest)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     test_main()

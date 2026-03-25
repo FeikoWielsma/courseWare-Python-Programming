@@ -21,9 +21,13 @@ expatreader -- Driver that allows use of the Expat parser with SAX.
 
 from .xmlreader import InputSource
 from .handler import ContentHandler, ErrorHandler
-from ._exceptions import SAXException, SAXNotRecognizedException, \
-                        SAXParseException, SAXNotSupportedException, \
-                        SAXReaderNotAvailable
+from ._exceptions import (
+    SAXException,
+    SAXNotRecognizedException,
+    SAXParseException,
+    SAXNotSupportedException,
+    SAXReaderNotAvailable,
+)
 
 
 def parse(source, handler, errorHandler=ErrorHandler()):
@@ -31,6 +35,7 @@ def parse(source, handler, errorHandler=ErrorHandler()):
     parser.setContentHandler(handler)
     parser.setErrorHandler(errorHandler)
     parser.parse(source)
+
 
 def parseString(string, handler, errorHandler=ErrorHandler()):
     from io import BytesIO
@@ -45,6 +50,7 @@ def parseString(string, handler, errorHandler=ErrorHandler()):
     inpsrc.setByteStream(BytesIO(string))
     parser.parse(inpsrc)
 
+
 # this is the parser list used by the make_parser function if no
 # alternatives are given as parameters to the function
 
@@ -55,7 +61,9 @@ _false = 0
 if _false:
     import xml.sax.expatreader
 
-import os, sys
+import os
+import sys
+
 if "PY_SAX_PARSER" in os.environ:
     default_parser_list = os.environ["PY_SAX_PARSER"].split(",")
 del os
@@ -65,7 +73,7 @@ if sys.platform[:4] == "java" and sys.registry.containsKey(_key):
     default_parser_list = sys.registry.getProperty(_key).split(",")
 
 
-def make_parser(parser_list = []):
+def make_parser(parser_list=[]):
     """Creates and returns a SAX parser.
 
     Creates the first parser it is able to instantiate of the ones
@@ -76,8 +84,9 @@ def make_parser(parser_list = []):
     for parser_name in parser_list + default_parser_list:
         try:
             return _create_parser(parser_name)
-        except ImportError as e:
+        except ImportError:
             import sys
+
             if parser_name in sys.modules:
                 # The parser module was found, but importing it
                 # failed unexpectedly, pass this exception through
@@ -89,17 +98,22 @@ def make_parser(parser_list = []):
 
     raise SAXReaderNotAvailable("No parsers found", None)
 
+
 # --- Internal utility methods used by make_parser
 
-if sys.platform[ : 4] == "java":
+if sys.platform[:4] == "java":
+
     def _create_parser(parser_name):
         from org.python.core import imp
+
         drv_module = imp.importName(parser_name, 0, globals())
         return drv_module.create_parser()
 
 else:
+
     def _create_parser(parser_name):
-        drv_module = __import__(parser_name,{},{},['create_parser'])
+        drv_module = __import__(parser_name, {}, {}, ["create_parser"])
         return drv_module.create_parser()
+
 
 del sys

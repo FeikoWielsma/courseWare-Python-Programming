@@ -1,8 +1,8 @@
 from tkinter import *
 
-mainWindow = Tk()
+main_window = Tk()
 # Width and Height with Location Setting
-mainWindow.geometry("500x200+500+300")
+main_window.geometry("500x200+500+300")
 
-mainWindow.title("TK Position Setting")
-mainWindow.mainloop()
+main_window.title("TK Position Setting")
+main_window.mainloop()

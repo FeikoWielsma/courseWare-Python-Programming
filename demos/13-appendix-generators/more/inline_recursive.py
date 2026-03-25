@@ -2,6 +2,7 @@
 #
 # Bizarre inline recursive example
 
+
 class Task:
     def __init__(self, gen):
         self._gen = gen
@@ -23,8 +24,9 @@ class Task:
         except Exception as exc:
             self.step(None, exc)
 
+
 # Example
-if __name__ == '__main__':
+if __name__ == "__main__":
     from concurrent.futures import ThreadPoolExecutor
     import time
 
@@ -32,7 +34,7 @@ if __name__ == '__main__':
 
     def recursive(n):
         yield pool.submit(time.sleep, 0.001)
-        print('Tick:', n)
-        Task(recursive(n+1)).step()
+        print("Tick:", n)
+        Task(recursive(n + 1)).step()
 
     Task(recursive(0)).step()

@@ -21,7 +21,7 @@ class Demo(QtGui.QMainWindow):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 100
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
 
         label1 = QtGui.QLabel('hello', self)
@@ -30,8 +30,8 @@ class Demo(QtGui.QMainWindow):
         label1.resize(200, 30)
 
 
-        text = str(label1.frameSize())
-        label1.setText(text)
+        text = str(label1.frame_size())
+        label1.set_text(text)
 
         # PySide.QtCore.QSize(200, 30) --> x, y
         print 'label1:', text
@@ -43,7 +43,7 @@ class Demo(QtGui.QMainWindow):
         label2.resize(300, 30)
 
         text = str(label2.geometry())
-        label2.setText(text)
+        label2.set_text(text)
 
         # PySide.QtCore.QRect(20, 40, 300, 30) --> x, y, w, h
         print 'label2:', text

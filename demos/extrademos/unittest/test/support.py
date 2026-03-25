@@ -16,6 +16,7 @@ class TestEquality(object):
             self.assertNotEqual(obj_1, obj_2)
             self.assertNotEqual(obj_2, obj_1)
 
+
 class TestHashing(object):
     """Used as a mixin for TestCase"""
 
@@ -33,8 +34,7 @@ class TestHashing(object):
         for obj_1, obj_2 in self.ne_pairs:
             try:
                 if hash(obj_1) == hash(obj_2):
-                    self.fail("%s and %s hash equal, but shouldn't" %
-                              (obj_1, obj_2))
+                    self.fail("%s and %s hash equal, but shouldn't" % (obj_1, obj_2))
             except KeyboardInterrupt:
                 raise
             except Exception as e:
@@ -47,43 +47,43 @@ class LoggingResult(unittest.TestResult):
         super().__init__()
 
     def startTest(self, test):
-        self._events.append('startTest')
+        self._events.append("startTest")
         super().startTest(test)
 
     def startTestRun(self):
-        self._events.append('startTestRun')
+        self._events.append("startTestRun")
         super(LoggingResult, self).startTestRun()
 
     def stopTest(self, test):
-        self._events.append('stopTest')
+        self._events.append("stopTest")
         super().stopTest(test)
 
     def stopTestRun(self):
-        self._events.append('stopTestRun')
+        self._events.append("stopTestRun")
         super(LoggingResult, self).stopTestRun()
 
     def addFailure(self, *args):
-        self._events.append('addFailure')
+        self._events.append("addFailure")
         super().addFailure(*args)
 
     def addSuccess(self, *args):
-        self._events.append('addSuccess')
+        self._events.append("addSuccess")
         super(LoggingResult, self).addSuccess(*args)
 
     def addError(self, *args):
-        self._events.append('addError')
+        self._events.append("addError")
         super().addError(*args)
 
     def addSkip(self, *args):
-        self._events.append('addSkip')
+        self._events.append("addSkip")
         super(LoggingResult, self).addSkip(*args)
 
     def addExpectedFailure(self, *args):
-        self._events.append('addExpectedFailure')
+        self._events.append("addExpectedFailure")
         super(LoggingResult, self).addExpectedFailure(*args)
 
     def addUnexpectedSuccess(self, *args):
-        self._events.append('addUnexpectedSuccess')
+        self._events.append("addUnexpectedSuccess")
         super(LoggingResult, self).addUnexpectedSuccess(*args)
 
 

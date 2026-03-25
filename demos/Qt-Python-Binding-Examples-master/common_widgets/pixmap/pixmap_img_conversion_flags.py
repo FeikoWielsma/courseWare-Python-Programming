@@ -1,12 +1,13 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
-QPixmap imageConversionFlags demo
+QPixmap image_conversion_flags demo
 
 Tested environment:
     Mac OS X 10.6.8
-    
+
 """
+
 import sys
 
 try:
@@ -22,15 +23,14 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
         path = "captcha.jpg"
-        pix = QtGui.QPixmap(path, flags = QtCore.Qt.MonoOnly)
+        pix = QtGui.QPixmap(path, flags=QtCore.Qt.MonoOnly)
 
         label = QtGui.QLabel("foo", self)
-        label.setPixmap(pix)
+        label.set_pixmap(pix)
         label.move(10, 10)
-
 
     def show_and_raise(self):
         self.show()

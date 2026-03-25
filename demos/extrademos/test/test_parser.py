@@ -10,8 +10,8 @@ from test import support
 #  of the parser module.
 #
 
-class RoundtripLegalSyntaxTestCase(unittest.TestCase):
 
+class RoundtripLegalSyntaxTestCase(unittest.TestCase):
     def roundtrip(self, f, s):
         st1 = f(s)
         t = st1.totuple()
@@ -20,8 +20,7 @@ class RoundtripLegalSyntaxTestCase(unittest.TestCase):
         except parser.ParserError as why:
             self.fail("could not roundtrip %r: %s" % (s, why))
 
-        self.assertEqual(t, st2.totuple(),
-                         "could not re-generate syntax tree")
+        self.assertEqual(t, st2.totuple(), "could not re-generate syntax tree")
 
     def check_expr(self, s):
         self.roundtrip(parser.expr, s)
@@ -50,12 +49,8 @@ class RoundtripLegalSyntaxTestCase(unittest.TestCase):
         self.check_suite("def f(): (yield 1)*2")
         self.check_suite("def f(): return; yield 1")
         self.check_suite("def f(): yield 1; return")
-        self.check_suite("def f():\n"
-                         "    for x in range(30):\n"
-                         "        yield x\n")
-        self.check_suite("def f():\n"
-                         "    if (yield):\n"
-                         "        yield x\n")
+        self.check_suite("def f():\n    for x in range(30):\n        yield x\n")
+        self.check_suite("def f():\n    if (yield):\n        yield x\n")
 
     def test_expressions(self):
         self.check_expr("foo(1)")
@@ -138,24 +133,16 @@ class RoundtripLegalSyntaxTestCase(unittest.TestCase):
         self.check_suite("def f(a, b, foo=bar, *args, **kw): pass")
         self.check_suite("def f(a, b, foo=bar, **kw): pass")
 
-        self.check_suite("@staticmethod\n"
-                         "def f(): pass")
-        self.check_suite("@staticmethod\n"
-                         "@funcattrs(x, y)\n"
-                         "def f(): pass")
-        self.check_suite("@funcattrs()\n"
-                         "def f(): pass")
+        self.check_suite("@staticmethod\ndef f(): pass")
+        self.check_suite("@staticmethod\n@funcattrs(x, y)\ndef f(): pass")
+        self.check_suite("@funcattrs()\ndef f(): pass")
 
     def test_class_defs(self):
         self.check_suite("class foo():pass")
         self.check_suite("class foo(object):pass")
-        self.check_suite("@class_decorator\n"
-                         "class foo():pass")
-        self.check_suite("@class_decorator(arg)\n"
-                         "class foo():pass")
-        self.check_suite("@decorator1\n"
-                         "@decorator2\n"
-                         "class foo():pass")
+        self.check_suite("@class_decorator\nclass foo():pass")
+        self.check_suite("@class_decorator(arg)\nclass foo():pass")
+        self.check_suite("@decorator1\n@decorator2\nclass foo():pass")
 
     def test_import_from_statement(self):
         self.check_suite("from sys.path import *")
@@ -168,18 +155,12 @@ class RoundtripLegalSyntaxTestCase(unittest.TestCase):
         self.check_suite("from sys.path import dirname, basename")
         self.check_suite("from sys.path import (dirname, basename)")
         self.check_suite("from sys.path import (dirname, basename,)")
-        self.check_suite(
-            "from sys.path import dirname as my_dirname, basename")
-        self.check_suite(
-            "from sys.path import (dirname as my_dirname, basename)")
-        self.check_suite(
-            "from sys.path import (dirname as my_dirname, basename,)")
-        self.check_suite(
-            "from sys.path import dirname, basename as my_basename")
-        self.check_suite(
-            "from sys.path import (dirname, basename as my_basename)")
-        self.check_suite(
-            "from sys.path import (dirname, basename as my_basename,)")
+        self.check_suite("from sys.path import dirname as my_dirname, basename")
+        self.check_suite("from sys.path import (dirname as my_dirname, basename)")
+        self.check_suite("from sys.path import (dirname as my_dirname, basename,)")
+        self.check_suite("from sys.path import dirname, basename as my_basename")
+        self.check_suite("from sys.path import (dirname, basename as my_basename)")
+        self.check_suite("from sys.path import (dirname, basename as my_basename,)")
         self.check_suite("from .bogus import x")
 
     def test_basic_import_statement(self):
@@ -202,8 +183,7 @@ class RoundtripLegalSyntaxTestCase(unittest.TestCase):
         self.check_suite("from ....pkg import name")
 
     def test_pep263(self):
-        self.check_suite("# -*- coding: iso-8859-1 -*-\n"
-                         "pass\n")
+        self.check_suite("# -*- coding: iso-8859-1 -*-\npass\n")
 
     def test_assert(self):
         self.check_suite("assert alo < ahi and blo < bhi\n")
@@ -217,11 +197,9 @@ class RoundtripLegalSyntaxTestCase(unittest.TestCase):
         self.check_suite("try: pass\nexcept: pass\n")
         self.check_suite("try: pass\nfinally: pass\n")
         self.check_suite("try: pass\nexcept A: pass\nfinally: pass\n")
-        self.check_suite("try: pass\nexcept A: pass\nexcept: pass\n"
-                         "finally: pass\n")
+        self.check_suite("try: pass\nexcept A: pass\nexcept: pass\nfinally: pass\n")
         self.check_suite("try: pass\nexcept: pass\nelse: pass\n")
-        self.check_suite("try: pass\nexcept: pass\nelse: pass\n"
-                         "finally: pass\n")
+        self.check_suite("try: pass\nexcept: pass\nelse: pass\nfinally: pass\n")
 
     def test_position(self):
         # An absolutely minimal test of position information.  Better
@@ -241,24 +219,27 @@ class RoundtripLegalSyntaxTestCase(unittest.TestCase):
                 yield tree
 
         terminals = list(walk(st2))
-        self.assertEqual([
-            (1, 'def', 1, 0),
-            (1, 'f', 1, 4),
-            (7, '(', 1, 5),
-            (1, 'x', 1, 6),
-            (8, ')', 1, 7),
-            (11, ':', 1, 8),
-            (4, '', 1, 9),
-            (5, '', 2, -1),
-            (1, 'return', 2, 4),
-            (1, 'x', 2, 11),
-            (14, '+', 2, 13),
-            (2, '1', 2, 15),
-            (4, '', 2, 16),
-            (6, '', 2, -1),
-            (4, '', 2, -1),
-            (0, '', 2, -1)],
-                         terminals)
+        self.assertEqual(
+            [
+                (1, "def", 1, 0),
+                (1, "f", 1, 4),
+                (7, "(", 1, 5),
+                (1, "x", 1, 6),
+                (8, ")", 1, 7),
+                (11, ":", 1, 8),
+                (4, "", 1, 9),
+                (5, "", 2, -1),
+                (1, "return", 2, 4),
+                (1, "x", 2, 11),
+                (14, "+", 2, 13),
+                (2, "1", 2, 15),
+                (4, "", 2, 16),
+                (6, "", 2, -1),
+                (4, "", 2, -1),
+                (0, "", 2, -1),
+            ],
+            terminals,
+        )
 
     def test_extended_unpacking(self):
         self.check_suite("*a = y")
@@ -272,8 +253,8 @@ class RoundtripLegalSyntaxTestCase(unittest.TestCase):
 #  rejections for them.
 #
 
-class IllegalSyntaxTestCase(unittest.TestCase):
 
+class IllegalSyntaxTestCase(unittest.TestCase):
     def check_bad_tree(self, tree, label):
         try:
             parser.sequence2st(tree)
@@ -288,227 +269,568 @@ class IllegalSyntaxTestCase(unittest.TestCase):
 
     def test_illegal_yield_1(self):
         # Illegal yield statement: def f(): return 1; yield 1
-        tree = \
-        (257,
-         (264,
-          (285,
-           (259,
-            (1, 'def'),
-            (1, 'f'),
-            (260, (7, '('), (8, ')')),
-            (11, ':'),
-            (291,
-             (4, ''),
-             (5, ''),
-             (264,
-              (265,
-               (266,
-                (272,
-                 (275,
-                  (1, 'return'),
-                  (313,
-                   (292,
-                    (293,
-                     (294,
-                      (295,
-                       (297,
-                        (298,
-                         (299,
-                          (300,
-                           (301,
-                            (302, (303, (304, (305, (2, '1')))))))))))))))))),
-               (264,
-                (265,
-                 (266,
-                  (272,
-                   (276,
-                    (1, 'yield'),
-                    (313,
-                     (292,
-                      (293,
-                       (294,
-                        (295,
-                         (297,
-                          (298,
-                           (299,
-                            (300,
-                             (301,
-                              (302,
-                               (303, (304, (305, (2, '1')))))))))))))))))),
-                 (4, ''))),
-               (6, ''))))),
-           (4, ''),
-           (0, ''))))
+        tree = (
+            257,
+            (
+                264,
+                (
+                    285,
+                    (
+                        259,
+                        (1, "def"),
+                        (1, "f"),
+                        (260, (7, "("), (8, ")")),
+                        (11, ":"),
+                        (
+                            291,
+                            (4, ""),
+                            (5, ""),
+                            (
+                                264,
+                                (
+                                    265,
+                                    (
+                                        266,
+                                        (
+                                            272,
+                                            (
+                                                275,
+                                                (1, "return"),
+                                                (
+                                                    313,
+                                                    (
+                                                        292,
+                                                        (
+                                                            293,
+                                                            (
+                                                                294,
+                                                                (
+                                                                    295,
+                                                                    (
+                                                                        297,
+                                                                        (
+                                                                            298,
+                                                                            (
+                                                                                299,
+                                                                                (
+                                                                                    300,
+                                                                                    (
+                                                                                        301,
+                                                                                        (
+                                                                                            302,
+                                                                                            (
+                                                                                                303,
+                                                                                                (
+                                                                                                    304,
+                                                                                                    (
+                                                                                                        305,
+                                                                                                        (
+                                                                                                            2,
+                                                                                                            "1",
+                                                                                                        ),
+                                                                                                    ),
+                                                                                                ),
+                                                                                            ),
+                                                                                        ),
+                                                                                    ),
+                                                                                ),
+                                                                            ),
+                                                                        ),
+                                                                    ),
+                                                                ),
+                                                            ),
+                                                        ),
+                                                    ),
+                                                ),
+                                            ),
+                                        ),
+                                    ),
+                                    (
+                                        264,
+                                        (
+                                            265,
+                                            (
+                                                266,
+                                                (
+                                                    272,
+                                                    (
+                                                        276,
+                                                        (1, "yield"),
+                                                        (
+                                                            313,
+                                                            (
+                                                                292,
+                                                                (
+                                                                    293,
+                                                                    (
+                                                                        294,
+                                                                        (
+                                                                            295,
+                                                                            (
+                                                                                297,
+                                                                                (
+                                                                                    298,
+                                                                                    (
+                                                                                        299,
+                                                                                        (
+                                                                                            300,
+                                                                                            (
+                                                                                                301,
+                                                                                                (
+                                                                                                    302,
+                                                                                                    (
+                                                                                                        303,
+                                                                                                        (
+                                                                                                            304,
+                                                                                                            (
+                                                                                                                305,
+                                                                                                                (
+                                                                                                                    2,
+                                                                                                                    "1",
+                                                                                                                ),
+                                                                                                            ),
+                                                                                                        ),
+                                                                                                    ),
+                                                                                                ),
+                                                                                            ),
+                                                                                        ),
+                                                                                    ),
+                                                                                ),
+                                                                            ),
+                                                                        ),
+                                                                    ),
+                                                                ),
+                                                            ),
+                                                        ),
+                                                    ),
+                                                ),
+                                            ),
+                                            (4, ""),
+                                        ),
+                                    ),
+                                    (6, ""),
+                                ),
+                            ),
+                        ),
+                    ),
+                    (4, ""),
+                    (0, ""),
+                ),
+            ),
+        )
         self.check_bad_tree(tree, "def f():\n  return 1\n  yield 1")
 
     def test_illegal_yield_2(self):
         # Illegal return in generator: def f(): return 1; yield 1
-        tree = \
-        (257,
-         (264,
-          (265,
-           (266,
-            (278,
-             (1, 'from'),
-             (281, (1, '__future__')),
-             (1, 'import'),
-             (279, (1, 'generators')))),
-           (4, ''))),
-         (264,
-          (285,
-           (259,
-            (1, 'def'),
-            (1, 'f'),
-            (260, (7, '('), (8, ')')),
-            (11, ':'),
-            (291,
-             (4, ''),
-             (5, ''),
-             (264,
-              (265,
-               (266,
-                (272,
-                 (275,
-                  (1, 'return'),
-                  (313,
-                   (292,
-                    (293,
-                     (294,
-                      (295,
-                       (297,
-                        (298,
-                         (299,
-                          (300,
-                           (301,
-                            (302, (303, (304, (305, (2, '1')))))))))))))))))),
-               (264,
-                (265,
-                 (266,
-                  (272,
-                   (276,
-                    (1, 'yield'),
-                    (313,
-                     (292,
-                      (293,
-                       (294,
-                        (295,
-                         (297,
-                          (298,
-                           (299,
-                            (300,
-                             (301,
-                              (302,
-                               (303, (304, (305, (2, '1')))))))))))))))))),
-                 (4, ''))),
-               (6, ''))))),
-           (4, ''),
-           (0, ''))))
+        tree = (
+            257,
+            (
+                264,
+                (
+                    265,
+                    (
+                        266,
+                        (
+                            278,
+                            (1, "from"),
+                            (281, (1, "__future__")),
+                            (1, "import"),
+                            (279, (1, "generators")),
+                        ),
+                    ),
+                    (4, ""),
+                ),
+            ),
+            (
+                264,
+                (
+                    285,
+                    (
+                        259,
+                        (1, "def"),
+                        (1, "f"),
+                        (260, (7, "("), (8, ")")),
+                        (11, ":"),
+                        (
+                            291,
+                            (4, ""),
+                            (5, ""),
+                            (
+                                264,
+                                (
+                                    265,
+                                    (
+                                        266,
+                                        (
+                                            272,
+                                            (
+                                                275,
+                                                (1, "return"),
+                                                (
+                                                    313,
+                                                    (
+                                                        292,
+                                                        (
+                                                            293,
+                                                            (
+                                                                294,
+                                                                (
+                                                                    295,
+                                                                    (
+                                                                        297,
+                                                                        (
+                                                                            298,
+                                                                            (
+                                                                                299,
+                                                                                (
+                                                                                    300,
+                                                                                    (
+                                                                                        301,
+                                                                                        (
+                                                                                            302,
+                                                                                            (
+                                                                                                303,
+                                                                                                (
+                                                                                                    304,
+                                                                                                    (
+                                                                                                        305,
+                                                                                                        (
+                                                                                                            2,
+                                                                                                            "1",
+                                                                                                        ),
+                                                                                                    ),
+                                                                                                ),
+                                                                                            ),
+                                                                                        ),
+                                                                                    ),
+                                                                                ),
+                                                                            ),
+                                                                        ),
+                                                                    ),
+                                                                ),
+                                                            ),
+                                                        ),
+                                                    ),
+                                                ),
+                                            ),
+                                        ),
+                                    ),
+                                    (
+                                        264,
+                                        (
+                                            265,
+                                            (
+                                                266,
+                                                (
+                                                    272,
+                                                    (
+                                                        276,
+                                                        (1, "yield"),
+                                                        (
+                                                            313,
+                                                            (
+                                                                292,
+                                                                (
+                                                                    293,
+                                                                    (
+                                                                        294,
+                                                                        (
+                                                                            295,
+                                                                            (
+                                                                                297,
+                                                                                (
+                                                                                    298,
+                                                                                    (
+                                                                                        299,
+                                                                                        (
+                                                                                            300,
+                                                                                            (
+                                                                                                301,
+                                                                                                (
+                                                                                                    302,
+                                                                                                    (
+                                                                                                        303,
+                                                                                                        (
+                                                                                                            304,
+                                                                                                            (
+                                                                                                                305,
+                                                                                                                (
+                                                                                                                    2,
+                                                                                                                    "1",
+                                                                                                                ),
+                                                                                                            ),
+                                                                                                        ),
+                                                                                                    ),
+                                                                                                ),
+                                                                                            ),
+                                                                                        ),
+                                                                                    ),
+                                                                                ),
+                                                                            ),
+                                                                        ),
+                                                                    ),
+                                                                ),
+                                                            ),
+                                                        ),
+                                                    ),
+                                                ),
+                                            ),
+                                            (4, ""),
+                                        ),
+                                    ),
+                                    (6, ""),
+                                ),
+                            ),
+                        ),
+                    ),
+                    (4, ""),
+                    (0, ""),
+                ),
+            ),
+        )
         self.check_bad_tree(tree, "def f():\n  return 1\n  yield 1")
 
     def test_a_comma_comma_c(self):
         # Illegal input: a,,c
-        tree = \
-        (258,
-         (311,
-          (290,
-           (291,
-            (292,
-             (293,
-              (295,
-               (296,
-                (297,
-                 (298, (299, (300, (301, (302, (303, (1, 'a')))))))))))))),
-          (12, ','),
-          (12, ','),
-          (290,
-           (291,
-            (292,
-             (293,
-              (295,
-               (296,
-                (297,
-                 (298, (299, (300, (301, (302, (303, (1, 'c'))))))))))))))),
-         (4, ''),
-         (0, ''))
+        tree = (
+            258,
+            (
+                311,
+                (
+                    290,
+                    (
+                        291,
+                        (
+                            292,
+                            (
+                                293,
+                                (
+                                    295,
+                                    (
+                                        296,
+                                        (
+                                            297,
+                                            (
+                                                298,
+                                                (
+                                                    299,
+                                                    (
+                                                        300,
+                                                        (301, (302, (303, (1, "a")))),
+                                                    ),
+                                                ),
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+                (12, ","),
+                (12, ","),
+                (
+                    290,
+                    (
+                        291,
+                        (
+                            292,
+                            (
+                                293,
+                                (
+                                    295,
+                                    (
+                                        296,
+                                        (
+                                            297,
+                                            (
+                                                298,
+                                                (
+                                                    299,
+                                                    (
+                                                        300,
+                                                        (301, (302, (303, (1, "c")))),
+                                                    ),
+                                                ),
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+            (4, ""),
+            (0, ""),
+        )
         self.check_bad_tree(tree, "a,,c")
 
     def test_illegal_operator(self):
         # Illegal input: a $= b
-        tree = \
-        (257,
-         (264,
-          (265,
-           (266,
-            (267,
-             (312,
-              (291,
-               (292,
-                (293,
-                 (294,
-                  (296,
-                   (297,
-                    (298,
-                     (299,
-                      (300, (301, (302, (303, (304, (1, 'a'))))))))))))))),
-             (268, (37, '$=')),
-             (312,
-              (291,
-               (292,
-                (293,
-                 (294,
-                  (296,
-                   (297,
-                    (298,
-                     (299,
-                      (300, (301, (302, (303, (304, (1, 'b'))))))))))))))))),
-           (4, ''))),
-         (0, ''))
+        tree = (
+            257,
+            (
+                264,
+                (
+                    265,
+                    (
+                        266,
+                        (
+                            267,
+                            (
+                                312,
+                                (
+                                    291,
+                                    (
+                                        292,
+                                        (
+                                            293,
+                                            (
+                                                294,
+                                                (
+                                                    296,
+                                                    (
+                                                        297,
+                                                        (
+                                                            298,
+                                                            (
+                                                                299,
+                                                                (
+                                                                    300,
+                                                                    (
+                                                                        301,
+                                                                        (
+                                                                            302,
+                                                                            (
+                                                                                303,
+                                                                                (
+                                                                                    304,
+                                                                                    (
+                                                                                        1,
+                                                                                        "a",
+                                                                                    ),
+                                                                                ),
+                                                                            ),
+                                                                        ),
+                                                                    ),
+                                                                ),
+                                                            ),
+                                                        ),
+                                                    ),
+                                                ),
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                            ),
+                            (268, (37, "$=")),
+                            (
+                                312,
+                                (
+                                    291,
+                                    (
+                                        292,
+                                        (
+                                            293,
+                                            (
+                                                294,
+                                                (
+                                                    296,
+                                                    (
+                                                        297,
+                                                        (
+                                                            298,
+                                                            (
+                                                                299,
+                                                                (
+                                                                    300,
+                                                                    (
+                                                                        301,
+                                                                        (
+                                                                            302,
+                                                                            (
+                                                                                303,
+                                                                                (
+                                                                                    304,
+                                                                                    (
+                                                                                        1,
+                                                                                        "b",
+                                                                                    ),
+                                                                                ),
+                                                                            ),
+                                                                        ),
+                                                                    ),
+                                                                ),
+                                                            ),
+                                                        ),
+                                                    ),
+                                                ),
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+                    (4, ""),
+                ),
+            ),
+            (0, ""),
+        )
         self.check_bad_tree(tree, "a $= b")
 
     def test_malformed_global(self):
-        #doesn't have global keyword in ast
-        tree = (257,
-                (264,
-                 (265,
-                  (266,
-                   (282, (1, 'foo'))), (4, ''))),
-                (4, ''),
-                (0, ''))
+        # doesn't have global keyword in ast
+        tree = (257, (264, (265, (266, (282, (1, "foo"))), (4, ""))), (4, ""), (0, ""))
         self.check_bad_tree(tree, "malformed global ast")
 
     def test_missing_import_source(self):
         # from import fred
-        tree = \
-            (257,
-             (268,
-              (269,
-               (270,
-                (282,
-                 (284, (1, 'from'), (1, 'import'),
-                  (287, (285, (1, 'fred')))))),
-               (4, ''))),
-             (4, ''), (0, ''))
+        tree = (
+            257,
+            (
+                268,
+                (
+                    269,
+                    (
+                        270,
+                        (
+                            282,
+                            (
+                                284,
+                                (1, "from"),
+                                (1, "import"),
+                                (287, (285, (1, "fred"))),
+                            ),
+                        ),
+                    ),
+                    (4, ""),
+                ),
+            ),
+            (4, ""),
+            (0, ""),
+        )
         self.check_bad_tree(tree, "from import fred")
 
 
 class CompileTestCase(unittest.TestCase):
-
     # These tests are very minimal. :-(
 
     def test_compile_expr(self):
-        st = parser.expr('2 + 3')
+        st = parser.expr("2 + 3")
         code = parser.compilest(st)
         self.assertEqual(eval(code), 5)
 
     def test_compile_suite(self):
-        st = parser.suite('x = 2; y = x + 3')
+        st = parser.suite("x = 2; y = x + 3")
         code = parser.compilest(st)
         globs = {}
         exec(code, globs)
-        self.assertEqual(globs['y'], 5)
+        self.assertEqual(globs["y"], 5)
 
     def test_compile_error(self):
-        st = parser.suite('1 = 3 + 4')
+        st = parser.suite("1 = 3 + 4")
         self.assertRaises(SyntaxError, parser.compilest, st)
 
     def test_compile_badunicode(self):
@@ -521,18 +843,20 @@ class CompileTestCase(unittest.TestCase):
         # Issue 9011: compilation of an unary minus expression changed
         # the meaning of the ST, so that a second compilation produced
         # incorrect results.
-        st = parser.expr('-3')
+        st = parser.expr("-3")
         code1 = parser.compilest(st)
         self.assertEqual(eval(code1), -3)
         code2 = parser.compilest(st)
         self.assertEqual(eval(code2), -3)
 
+
 class ParserStackLimitTestCase(unittest.TestCase):
     """try to push the parser to/over its limits.
     see http://bugs.python.org/issue1881 for a discussion
     """
+
     def _nested_expression(self, level):
-        return "["*level+"]"*level
+        return "[" * level + "]" * level
 
     def test_deeply_nested_list(self):
         # XXX used to be 99 levels in 2.x
@@ -542,22 +866,22 @@ class ParserStackLimitTestCase(unittest.TestCase):
 
     def test_trigger_memory_error(self):
         e = self._nested_expression(100)
-        print("Expecting 's_push: parser stack overflow' in next line",
-              file=sys.stderr)
+        print("Expecting 's_push: parser stack overflow' in next line", file=sys.stderr)
         sys.stderr.flush()
         self.assertRaises(MemoryError, parser.expr, e)
+
 
 class STObjectTestCase(unittest.TestCase):
     """Test operations on ST objects themselves"""
 
     def test_comparisons(self):
         # ST objects should support order and equality comparisons
-        st1 = parser.expr('2 + 3')
-        st2 = parser.suite('x = 2; y = x + 3')
-        st3 = parser.expr('list(x**3 for x in range(20))')
-        st1_copy = parser.expr('2 + 3')
-        st2_copy = parser.suite('x = 2; y = x + 3')
-        st3_copy = parser.expr('list(x**3 for x in range(20))')
+        st1 = parser.expr("2 + 3")
+        st2 = parser.suite("x = 2; y = x + 3")
+        st3 = parser.expr("list(x**3 for x in range(20))")
+        st1_copy = parser.expr("2 + 3")
+        st2_copy = parser.suite("x = 2; y = x + 3")
+        st3_copy = parser.expr("list(x**3 for x in range(20))")
 
         # exercise fast path for object identity
         self.assertEqual(st1 == st1, True)
@@ -605,12 +929,11 @@ class STObjectTestCase(unittest.TestCase):
         self.assertTrue(top <= top)
         # interaction with other types
         self.assertEqual(st1 == 1588.602459, False)
-        self.assertEqual('spanish armada' != st2, True)
+        self.assertEqual("spanish armada" != st2, True)
         self.assertRaises(TypeError, operator.ge, st3, None)
         self.assertRaises(TypeError, operator.le, False, st1)
         self.assertRaises(TypeError, operator.lt, st1, 1815)
-        self.assertRaises(TypeError, operator.gt, b'waterloo', st2)
-
+        self.assertRaises(TypeError, operator.gt, b"waterloo", st2)
 
     # XXX tests for pickling and unpickling of ST objects should go here
 

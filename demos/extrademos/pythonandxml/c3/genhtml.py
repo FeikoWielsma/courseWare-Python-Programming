@@ -4,7 +4,7 @@
 
 import sys
 
-from xml.sax  import make_parser
+from xml.sax import make_parser
 from handlers import PyXMLConversionHandler
 
 dh = PyXMLConversionHandler(sys.stdout)

@@ -8,11 +8,11 @@ j = 3.33
 i = int(j)
 print(i)
 
-i = int("255",10)
-print(i)    # 255
+i = int("255", 10)
+print(i)  # 255
 
-i = int("255",8)
-print(i)    # 173
+i = int("255", 8)
+print(i)  # 173
 
 i = bool(3)
 print(i)

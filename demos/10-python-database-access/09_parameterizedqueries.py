@@ -1,25 +1,26 @@
 import sqlite3
-uId = 1
-uPrice = 62300 
 
-con = sqlite3.connect('Cars.db')
+u_id = 1
+u_price = 62300
 
-with con:
-    cur = con.cursor()    
-
-    cur.execute("UPDATE Cars SET Price=? WHERE Id=?", (uPrice, uId))        
-    con.commit()
-    
-    print ("Number of rows updated: %d" % cur.rowcount)
-    
-
-uId = 4
+con = sqlite3.connect("Cars.db")
 
 with con:
-    cur = con.cursor()    
+    cur = con.cursor()
 
-    cur.execute("SELECT Name, Price FROM Cars WHERE Id=:Id", {"Id": uId})        
+    cur.execute("UPDATE Cars SET Price=? WHERE Id=?", (u_price, u_id))
     con.commit()
-    
+
+    print("Number of rows updated: %d" % cur.rowcount)
+
+
+u_id = 4
+
+with con:
+    cur = con.cursor()
+
+    cur.execute("SELECT Name, Price FROM Cars WHERE Id=:Id", {"Id": u_id})
+    con.commit()
+
     row = cur.fetchone()
-    print (row[0], row[1])
+    print(row[0], row[1])

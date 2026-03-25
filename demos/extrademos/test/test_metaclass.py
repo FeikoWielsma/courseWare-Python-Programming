@@ -246,12 +246,15 @@ Test failures in looking up the __prepare__ method work.
 
 """
 
-__test__ = {'doctests' : doctests}
+__test__ = {"doctests": doctests}
+
 
 def test_main(verbose=False):
     from test import support
     from test import test_metaclass
+
     support.run_doctest(test_metaclass, verbose)
+
 
 if __name__ == "__main__":
     test_main(verbose=True)

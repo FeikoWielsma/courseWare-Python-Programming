@@ -1,4 +1,4 @@
-summation = lambda arg1, arg2: arg1 + arg2;
+summation = lambda arg1, arg2: arg1 + arg2
 subtraction = lambda x, y: x - y
 
 print(summation(3, 7))

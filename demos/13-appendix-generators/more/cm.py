@@ -5,6 +5,7 @@
 
 import sys
 
+
 class GeneratorCM(object):
     def __init__(self, gen):
         self.gen = gen
@@ -22,16 +23,21 @@ class GeneratorCM(object):
         except StopIteration:
             return True
         except:
-            if sys.exc_info()[1] is not val: raise
+            if sys.exc_info()[1] is not val:
+                raise
+
 
 def contextmanager(func):
     def run(*args, **kwargs):
         return GeneratorCM(func(*args, **kwargs))
+
     return run
 
+
 # Simple Example
-if __name__ == '__main__':
+if __name__ == "__main__":
     import time
+
     @contextmanager
     def timethis():
         start = time.time()
@@ -39,11 +45,9 @@ if __name__ == '__main__':
             yield
         finally:
             end = time.time()
-            print(end-start)
+            print(end - start)
 
     with timethis():
         n = 1000000
         while n > 0:
             n -= 1
-
-    

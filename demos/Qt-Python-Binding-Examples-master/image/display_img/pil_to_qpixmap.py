@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
 QPixmap load image by PIL, pil2qpixmap
 
@@ -11,6 +11,7 @@ References
  - http://stackoverflow.com/questions/6756820/python-pil-image-tostring
  - http://qt-project.org/forums/viewthread/5866
 """
+
 import os
 import sys
 
@@ -25,14 +26,14 @@ file_path = os.path.join(IM_RES_PATH, "captcha.jpg")
 
 
 def pil2pixmap(file_path):
-    im = Image.open(fp = file_path)
+    im = Image.open(fp=file_path)
     if im.mode == "RGB":
         pass
     elif im.mode == "L":
         im = im.convert("RGBA")
-    data = im.tostring('raw', "RGBA")
+    data = im.tostring("raw", "RGBA")
     qim = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
-    pixmap = QtGui.QPixmap.fromImage(qim)
+    pixmap = QtGui.QPixmap.from_image(qim)
     return pixmap
 
 
@@ -40,10 +41,10 @@ app = QtGui.QApplication(sys.argv)
 
 x, y, w, h = 100, 100, 200, 200
 label = QtGui.QLabel()
-label.setGeometry(x, y, w, h)
+label.set_geometry(x, y, w, h)
 
 pixmap = pil2pixmap(file_path)
-label.setPixmap(pixmap)
+label.set_pixmap(pixmap)
 
 label.move(10, 10)
 label.show()

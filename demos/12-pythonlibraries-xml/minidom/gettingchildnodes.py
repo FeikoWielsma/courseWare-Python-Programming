@@ -1,13 +1,14 @@
-from xml.dom import minidom                                         
-xmldoc = minidom.parse('courses.xml') 
-print (xmldoc.childNodes)                                  
+from xml.dom import minidom
 
-print (xmldoc.childNodes[0])                               
+xmldoc = minidom.parse("courses.xml")
+print(xmldoc.child_nodes)
 
-grammarNode = xmldoc.firstChild 
-print (grammarNode.toxml())
+print(xmldoc.child_nodes[0])
+
+grammar_node = xmldoc.first_child
+print(grammar_node.toxml())
 
 
-rootNode = xmldoc.childNodes[1] 
+root_node = xmldoc.child_nodes[1]
 
-print (rootNode.toxml())
+print(root_node.toxml())

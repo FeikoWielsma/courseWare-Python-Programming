@@ -53,13 +53,14 @@ JSONDOCS = [
     # http://json.org/JSON_checker/test/fail24.json
     "['single quote']",
     # http://code.google.com/p/simplejson/issues/detail?id=3
-    '["A\u001FZ control characters in string"]',
+    '["A\u001fZ control characters in string"]',
 ]
 
 SKIPS = {
     1: "why not have a string payload?",
     18: "spec doesn't specify any nesting limitations",
 }
+
 
 class TestFail(TestCase):
     def test_failures(self):
@@ -76,10 +77,10 @@ class TestFail(TestCase):
                 self.fail("Expected failure for fail{0}.json: {1!r}".format(idx, doc))
 
     def test_non_string_keys_dict(self):
-        data = {'a' : 1, (1, 2) : 2}
+        data = {"a": 1, (1, 2): 2}
 
-        #This is for c encoder
+        # This is for c encoder
         self.assertRaises(TypeError, json.dumps, data)
 
-        #This is for python encoder
+        # This is for python encoder
         self.assertRaises(TypeError, json.dumps, data, indent=True)

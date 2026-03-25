@@ -19,8 +19,8 @@ from idlelib.WindowList import ListedToplevel
 from idlelib.TreeWidget import TreeNode, TreeItem, ScrolledCanvas
 from idlelib.configHandler import idleConf
 
-class ClassBrowser:
 
+class ClassBrowser:
     def __init__(self, flist, name, path):
         # XXX This API should change, if the file doesn't end in ".py"
         # XXX the code here is bogus!
@@ -43,8 +43,8 @@ class ClassBrowser:
         self.settitle()
         top.focus_set()
         # create scrolled canvas
-        theme = idleConf.GetOption('main','Theme','name')
-        background = idleConf.GetHighlight(theme, 'normal')['background']
+        theme = idleConf.GetOption("main", "Theme", "name")
+        background = idleConf.GetHighlight(theme, "normal")["background"]
         sc = ScrolledCanvas(top, bg=background, highlightthickness=0, takefocus=1)
         sc.frame.pack(expand=1, fill="both")
         item = self.rootnode()
@@ -59,8 +59,8 @@ class ClassBrowser:
     def rootnode(self):
         return ModuleBrowserTreeItem(self.file)
 
-class ModuleBrowserTreeItem(TreeItem):
 
+class ModuleBrowserTreeItem(TreeItem):
     def __init__(self, file):
         self.file = file
 
@@ -94,17 +94,17 @@ class ModuleBrowserTreeItem(TreeItem):
             return []
         try:
             dict = pyclbr.readmodule_ex(name, [dir] + sys.path)
-        except ImportError as msg:
+        except ImportError:
             return []
         items = []
         self.classes = {}
         for key, cl in dict.items():
             if cl.module == name:
                 s = key
-                if hasattr(cl, 'super') and cl.super:
+                if hasattr(cl, "super") and cl.super:
                     supers = []
                     for sup in cl.super:
-                        if type(sup) is type(''):
+                        if type(sup) is type(""):
                             sname = sup
                         else:
                             sname = sup.name
@@ -120,8 +120,8 @@ class ModuleBrowserTreeItem(TreeItem):
             list.append(s)
         return list
 
-class ClassBrowserTreeItem(TreeItem):
 
+class ClassBrowserTreeItem(TreeItem):
     def __init__(self, name, classes, file):
         self.name = name
         self.classes = classes
@@ -164,7 +164,7 @@ class ClassBrowserTreeItem(TreeItem):
         if not os.path.exists(self.file):
             return
         edit = PyShell.flist.open(self.file)
-        if hasattr(self.cl, 'lineno'):
+        if hasattr(self.cl, "lineno"):
             lineno = self.cl.lineno
             edit.gotoline(lineno)
 
@@ -180,8 +180,8 @@ class ClassBrowserTreeItem(TreeItem):
             list.append(name)
         return list
 
-class MethodBrowserTreeItem(TreeItem):
 
+class MethodBrowserTreeItem(TreeItem):
     def __init__(self, name, cl, file):
         self.name = name
         self.cl = cl
@@ -191,7 +191,7 @@ class MethodBrowserTreeItem(TreeItem):
         return "def " + self.name + "(...)"
 
     def GetIconName(self):
-        return "python" # XXX
+        return "python"  # XXX
 
     def IsExpandable(self):
         return 0
@@ -201,6 +201,7 @@ class MethodBrowserTreeItem(TreeItem):
             return
         edit = PyShell.flist.open(self.file)
         edit.gotoline(self.cl.methods[self.name])
+
 
 def main():
     try:
@@ -216,6 +217,7 @@ def main():
     ClassBrowser(PyShell.flist, name, [dir])
     if sys.stdin is sys.__stdin__:
         mainloop()
+
 
 if __name__ == "__main__":
     main()

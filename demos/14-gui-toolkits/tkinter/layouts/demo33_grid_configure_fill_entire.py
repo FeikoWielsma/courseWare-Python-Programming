@@ -1,9 +1,9 @@
 import tkinter as tk
 
-mainWindow = tk.Tk()
+main_window = tk.Tk()
 
-mainWindow.rowconfigure(0, minsize=50)
-mainWindow.columnconfigure([0, 1, 2, 3], minsize=50)
+main_window.rowconfigure(0, minsize=50)
+main_window.columnconfigure([0, 1, 2, 3], minsize=50)
 
 label1 = tk.Label(text="1", bg="black", fg="white")
 label2 = tk.Label(text="2", bg="black", fg="white")
@@ -15,4 +15,4 @@ label2.grid(row=0, column=1, sticky="ew")
 label3.grid(row=0, column=2, sticky="ns")
 label4.grid(row=0, column=3, sticky="nsew")
 
-mainWindow.mainloop()
+main_window.mainloop()

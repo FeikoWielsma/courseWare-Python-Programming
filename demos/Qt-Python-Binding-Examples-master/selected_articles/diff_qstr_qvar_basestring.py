@@ -24,23 +24,23 @@ txt = 'hello world'
 print QtCore.QString(txt) == txt
 print QtCore.QString(txt) == QtCore.QVariant(txt)
 print QtCore.QVariant(txt) == txt
-print QtCore.QVariant(txt).toString() == txt
+print QtCore.QVariant(txt).to_string() == txt
 
 txt = to_unicode_obj('hello world')
 print QtCore.QString(txt) == txt
 print QtCore.QString(txt) == QtCore.QVariant(txt)
 print QtCore.QVariant(txt) == txt
-print QtCore.QVariant(txt).toString() == txt
+print QtCore.QVariant(txt).to_string() == txt
 
 txt = '中文'
 print QtCore.QString(txt) == txt
 print QtCore.QString(txt) == QtCore.QVariant(txt)
 print QtCore.QVariant(txt) == txt
-print QtCore.QVariant(txt).toString() == txt
+print QtCore.QVariant(txt).to_string() == txt
 
 txt = to_unicode_obj('中文')
 print QtCore.QString(txt) == txt
 print QtCore.QString(txt) == QtCore.QVariant(txt)
 print QtCore.QVariant(txt) == txt
-print QtCore.QVariant(txt).toString() == txt
+print QtCore.QVariant(txt).to_string() == txt
 

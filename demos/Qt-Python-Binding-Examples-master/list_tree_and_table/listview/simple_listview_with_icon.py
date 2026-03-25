@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
 Custom QListView
 
@@ -15,6 +15,7 @@ Docs
  - http://www.pyside.org/docs/pyside/PySide/QtGui/QListView.html
  - http://doc.qt.nokia.com/latest/model-view-programming.html
 """
+
 import glob
 import os
 import sys
@@ -32,11 +33,11 @@ class ListModel(QtCore.QAbstractListModel):
         super(ListModel, self).__init__()
         self.os_list = os_list
 
-    def rowCount(self, parent):
+    def row_count(self, parent):
         return len(self.os_list)
 
-    def data(self, index, role = QtCore.Qt.DisplayRole):
-        if not index.isValid():
+    def data(self, index, role=QtCore.Qt.DisplayRole):
+        if not index.is_valid():
             return None
 
         os_name, os_logo_path = self.os_list[index.row()]
@@ -49,7 +50,7 @@ class ListModel(QtCore.QAbstractListModel):
 
 
 def create_data_source():
-    logos = glob.glob('*.png')
+    logos = glob.glob("*.png")
     return [(os.path.splitext(i)[0], i) for i in logos]
 
 
@@ -58,34 +59,33 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
-
+        self.set_geometry(x, y, w, h)
 
         self.list_view = QtGui.QListView(self)
         x, y, w, h = 5, 5, 290, 250
-        self.list_view.setGeometry(x, y, w, h)
+        self.list_view.set_geometry(x, y, w, h)
 
         self.data_sources = create_data_source()
         list_model = ListModel(self.data_sources)
-        self.list_view.setModel(list_model)
+        self.list_view.set_model(list_model)
 
         # size
-        self.list_view.setIconSize(QtCore.QSize(50, 50))
-        self.list_view.setSpacing(5)
-        self.list_view.setUniformItemSizes(True)
+        self.list_view.set_icon_size(QtCore.QSize(50, 50))
+        self.list_view.set_spacing(5)
+        self.list_view.set_uniform_item_sizes(True)
 
         # view mode
         # uncomment follow line, to construct a container for simple file manager(such as Finder/Explorer/Nautilus)
-#        self.list_view.setViewMode(QtGui.QListView.IconMode)
+        #        self.list_view.set_view_mode(QtGui.QListView.IconMode)
 
         # interactive
-#        self.list_view.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
-        self.list_view.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
-
+        #        self.list_view.set_selection_mode(QtGui.QAbstractItemView.MultiSelection)
+        self.list_view.set_selection_mode(QtGui.QAbstractItemView.ExtendedSelection)
 
     def show_and_raise(self):
         self.show()
         self.raise_()
+
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

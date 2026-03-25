@@ -5,29 +5,31 @@
 # if butttons are all fixed and uniform size;
 #######################################################
 
-import sys, math
+import sys
+import math
 from Tkinter import *
 from ImageTk import PhotoImage
 from viewer_thumbs import makeThumbs, ViewOne
+
 
 def viewer(imgdir, kind=Toplevel, cols=None):
     """
     custom version that uses gridding
     """
     win = kind()
-    win.title('Viewer: ' + imgdir)
+    win.title("Viewer: " + imgdir)
     thumbs = makeThumbs(imgdir)
-    if not cols: 
-        cols = int(math.ceil(math.sqrt(len(thumbs))))     # fixed or N x N
+    if not cols:
+        cols = int(math.ceil(math.sqrt(len(thumbs))))  # fixed or N x N
 
     rownum = 0
     savephotos = []
     while thumbs:
         thumbsrow, thumbs = thumbs[:cols], thumbs[cols:]
         colnum = 0
-        for (imgfile, imgobj) in thumbsrow:
-            photo   = PhotoImage(imgobj)
-            link    = Button(win, image=photo)
+        for imgfile, imgobj in thumbsrow:
+            photo = PhotoImage(imgobj)
+            link = Button(win, image=photo)
             handler = lambda savefile=imgfile: ViewOne(imgdir, savefile)
             link.config(command=handler)
             link.grid(row=rownum, column=colnum)
@@ -35,10 +37,11 @@ def viewer(imgdir, kind=Toplevel, cols=None):
             colnum += 1
         rownum += 1
 
-    Button(win, text='Quit', command=win.quit).grid(columnspan=cols, stick=EW)
+    Button(win, text="Quit", command=win.quit).grid(columnspan=cols, stick=EW)
     return win, savephotos
 
-if __name__ == '__main__':
-    imgdir = (len(sys.argv) > 1 and sys.argv[1]) or 'images'
+
+if __name__ == "__main__":
+    imgdir = (len(sys.argv) > 1 and sys.argv[1]) or "images"
     main, save = viewer(imgdir, kind=Tk)
     main.mainloop()

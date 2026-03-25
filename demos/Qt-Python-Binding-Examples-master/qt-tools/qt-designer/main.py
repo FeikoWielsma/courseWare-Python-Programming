@@ -10,14 +10,15 @@ from add_group import Ui_Form
 
 
 class Demo(QtGui.QWidget, Ui_Form):
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         super(Demo, self).__init__(parent)
 
-        self.setupUi(self)
+        self.setup_ui(self)
 
     def show_and_raise(self):
         self.show()
         self.raise_()
+
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

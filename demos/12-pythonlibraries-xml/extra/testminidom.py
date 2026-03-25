@@ -16,49 +16,59 @@ document = """\
 </slideshow>
 """
 
-dom = xml.dom.minidom.parseString(document)
+dom = xml.dom.minidom.parse_string(document)
 
-def getText(nodelist):
+
+def get_text(nodelist):
     rc = []
     for node in nodelist:
-        if node.nodeType == node.TEXT_NODE:
+        if node.node_type == node.TEXT_NODE:
             rc.append(node.data)
-    return ''.join(rc)
+    return "".join(rc)
 
-def handleSlideshow(slideshow):
+
+def handle_slideshow(slideshow):
     print("<html>")
-    handleSlideshowTitle(slideshow.getElementsByTagName("title")[0])
-    slides = slideshow.getElementsByTagName("slide")
-    handleToc(slides)
-    handleSlides(slides)
+    handle_slideshow_title(slideshow.get_elements_by_tag_name("title")[0])
+    slides = slideshow.get_elements_by_tag_name("slide")
+    handle_toc(slides)
+    handle_slides(slides)
     print("</html>")
 
-def handleSlides(slides):
+
+def handle_slides(slides):
     for slide in slides:
-        handleSlide(slide)
+        handle_slide(slide)
 
-def handleSlide(slide):
-    handleSlideTitle(slide.getElementsByTagName("title")[0])
-    handlePoints(slide.getElementsByTagName("point"))
 
-def handleSlideshowTitle(title):
-    print("<title>%s</title>" % getText(title.childNodes))
+def handle_slide(slide):
+    handle_slide_title(slide.get_elements_by_tag_name("title")[0])
+    handle_points(slide.get_elements_by_tag_name("point"))
 
-def handleSlideTitle(title):
-    print("<h2>%s</h2>" % getText(title.childNodes))
 
-def handlePoints(points):
+def handle_slideshow_title(title):
+    print("<title>%s</title>" % get_text(title.child_nodes))
+
+
+def handle_slide_title(title):
+    print("<h2>%s</h2>" % get_text(title.child_nodes))
+
+
+def handle_points(points):
     print("<ul>")
     for point in points:
-        handlePoint(point)
+        handle_point(point)
     print("</ul>")
 
-def handlePoint(point):
-    print("<li>%s</li>" % getText(point.childNodes))
 
-def handleToc(slides):
+def handle_point(point):
+    print("<li>%s</li>" % get_text(point.child_nodes))
+
+
+def handle_toc(slides):
     for slide in slides:
-        title = slide.getElementsByTagName("title")[0]
-        print("<p>%s</p>" % getText(title.childNodes))
+        title = slide.get_elements_by_tag_name("title")[0]
+        print("<p>%s</p>" % get_text(title.child_nodes))
 
-handleSlideshow(dom)
+
+handle_slideshow(dom)

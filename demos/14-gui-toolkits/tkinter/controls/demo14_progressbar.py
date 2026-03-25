@@ -2,23 +2,25 @@ from tkinter import *
 from tkinter.ttk import Progressbar
 from tkinter import ttk
 
-def clicked():
-    print(bar['value'])
-    bar['value'] += 10
 
-mainWindow = Tk()
-mainWindow.title("Progressbar Demo")
-mainWindow.geometry('500x200')
+def clicked():
+    print(bar["value"])
+    bar["value"] += 10
+
+
+main_window = Tk()
+main_window.title("Progressbar Demo")
+main_window.geometry("500x200")
 
 style = ttk.Style()
-style.theme_use('default')
-style.configure("black.Horizontal.TProgressbar", background='black')
+style.theme_use("default")
+style.configure("black.Horizontal.TProgressbar", background="black")
 
-bar = Progressbar(mainWindow, length=200, style='black.Horizontal.TProgressbar')
-bar['value'] = 20
+bar = Progressbar(main_window, length=200, style="black.Horizontal.TProgressbar")
+bar["value"] = 20
 bar.grid(column=0, row=0)
 
-btn = Button(mainWindow, text="Click Me", command=clicked)
+btn = Button(main_window, text="Click Me", command=clicked)
 btn.grid(column=1, row=0)
 
-mainWindow.mainloop()
+main_window.mainloop()

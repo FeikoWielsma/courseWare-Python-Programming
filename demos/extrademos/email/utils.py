@@ -5,30 +5,27 @@
 """Miscellaneous utilities."""
 
 __all__ = [
-    'collapse_rfc2231_value',
-    'decode_params',
-    'decode_rfc2231',
-    'encode_rfc2231',
-    'formataddr',
-    'formatdate',
-    'getaddresses',
-    'make_msgid',
-    'mktime_tz',
-    'parseaddr',
-    'parsedate',
-    'parsedate_tz',
-    'unquote',
-    ]
+    "collapse_rfc2231_value",
+    "decode_params",
+    "decode_rfc2231",
+    "encode_rfc2231",
+    "formataddr",
+    "formatdate",
+    "getaddresses",
+    "make_msgid",
+    "mktime_tz",
+    "parseaddr",
+    "parsedate",
+    "parsedate_tz",
+    "unquote",
+]
 
 import os
 import re
 import time
-import base64
 import random
 import socket
 import urllib.parse
-import warnings
-from io import StringIO
 
 from email._parseaddr import quote
 from email._parseaddr import AddressList as _AddressList
@@ -38,23 +35,21 @@ from email._parseaddr import mktime_tz
 from email._parseaddr import parsedate as _parsedate
 from email._parseaddr import parsedate_tz as _parsedate_tz
 
-from quopri import decodestring as _qdecode
 
 # Intrapackage imports
-from email.encoders import _bencode, _qencode
 
-COMMASPACE = ', '
-EMPTYSTRING = ''
-UEMPTYSTRING = ''
-CRLF = '\r\n'
+COMMASPACE = ", "
+EMPTYSTRING = ""
+UEMPTYSTRING = ""
+CRLF = "\r\n"
 TICK = "'"
 
 specialsre = re.compile(r'[][\\()<>@,:;".]')
 escapesre = re.compile(r'[][\\()"]')
 
 
-
 # Helpers
+
 
 def formataddr(pair):
     """The inverse of parseaddr(), this takes a 2-tuple of the form
@@ -66,13 +61,12 @@ def formataddr(pair):
     """
     name, address = pair
     if name:
-        quotes = ''
+        quotes = ""
         if specialsre.search(name):
             quotes = '"'
-        name = escapesre.sub(r'\\\g<0>', name)
-        return '%s%s%s <%s>' % (quotes, name, quotes, address)
+        name = escapesre.sub(r"\\\g<0>", name)
+        return "%s%s%s <%s>" % (quotes, name, quotes, address)
     return address
-
 
 
 def getaddresses(fieldvalues):
@@ -82,8 +76,8 @@ def getaddresses(fieldvalues):
     return a.addresslist
 
 
-
-ecre = re.compile(r'''
+ecre = re.compile(
+    r"""
   =\?                   # literal =?
   (?P<charset>[^?]*?)   # non-greedy up to the next ? is the charset
   \?                    # literal ?
@@ -91,8 +85,9 @@ ecre = re.compile(r'''
   \?                    # literal ?
   (?P<atom>.*?)         # non-greedy up to the next ?= is the atom
   \?=                   # literal ?=
-  ''', re.VERBOSE | re.IGNORECASE)
-
+  """,
+    re.VERBOSE | re.IGNORECASE,
+)
 
 
 def formatdate(timeval=None, localtime=False, usegmt=False):
@@ -127,25 +122,40 @@ def formatdate(timeval=None, localtime=False, usegmt=False):
         # Remember offset is in seconds west of UTC, but the timezone is in
         # minutes east of UTC, so the signs differ.
         if offset > 0:
-            sign = '-'
+            sign = "-"
         else:
-            sign = '+'
-        zone = '%s%02d%02d' % (sign, hours, minutes // 60)
+            sign = "+"
+        zone = "%s%02d%02d" % (sign, hours, minutes // 60)
     else:
         now = time.gmtime(timeval)
         # Timezone offset is always -0000
         if usegmt:
-            zone = 'GMT'
+            zone = "GMT"
         else:
-            zone = '-0000'
-    return '%s, %02d %s %04d %02d:%02d:%02d %s' % (
-        ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][now[6]],
+            zone = "-0000"
+    return "%s, %02d %s %04d %02d:%02d:%02d %s" % (
+        ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][now[6]],
         now[2],
-        ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][now[1] - 1],
-        now[0], now[3], now[4], now[5],
-        zone)
-
+        [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+        ][now[1] - 1],
+        now[0],
+        now[3],
+        now[4],
+        now[5],
+        zone,
+    )
 
 
 def make_msgid(idstring=None, domain=None):
@@ -159,18 +169,17 @@ def make_msgid(idstring=None, domain=None):
     defined hostname.
     """
     timeval = time.time()
-    utcdate = time.strftime('%Y%m%d%H%M%S', time.gmtime(timeval))
+    utcdate = time.strftime("%Y%m%d%H%M%S", time.gmtime(timeval))
     pid = os.getpid()
     randint = random.randrange(100000)
     if idstring is None:
-        idstring = ''
+        idstring = ""
     else:
-        idstring = '.' + idstring
+        idstring = "." + idstring
     if domain is None:
         domain = socket.getfqdn()
-    msgid = '<%s.%s.%s%s@%s>' % (utcdate, pid, randint, idstring, domain)
+    msgid = "<%s.%s.%s%s@%s>" % (utcdate, pid, randint, idstring, domain)
     return msgid
-
 
 
 # These functions are in the standalone mimelib version only because they've
@@ -191,7 +200,7 @@ def parsedate_tz(data):
 def parseaddr(addr):
     addrs = _AddressList(addr).addresslist
     if not addrs:
-        return '', ''
+        return "", ""
     return addrs[0]
 
 
@@ -200,11 +209,10 @@ def unquote(str):
     """Remove quotes from a string."""
     if len(str) > 1:
         if str.startswith('"') and str.endswith('"'):
-            return str[1:-1].replace('\\\\', '\\').replace('\\"', '"')
-        if str.startswith('<') and str.endswith('>'):
+            return str[1:-1].replace("\\\\", "\\").replace('\\"', '"')
+        if str.startswith("<") and str.endswith(">"):
             return str[1:-1]
     return str
-
 
 
 # RFC2231-related functions - parameter encoding and decoding
@@ -223,16 +231,16 @@ def encode_rfc2231(s, charset=None, language=None):
     charset is given but not language, the string is encoded using the empty
     string for language.
     """
-    s = urllib.parse.quote(s, safe='', encoding=charset or 'ascii')
+    s = urllib.parse.quote(s, safe="", encoding=charset or "ascii")
     if charset is None and language is None:
         return s
     if language is None:
-        language = ''
+        language = ""
     return "%s'%s'%s" % (charset, language, s)
 
 
-rfc2231_continuation = re.compile(r'^(?P<name>\w+)\*((?P<num>[0-9]+)\*?)?$',
-    re.ASCII)
+rfc2231_continuation = re.compile(r"^(?P<name>\w+)\*((?P<num>[0-9]+)\*?)?$", re.ASCII)
+
 
 def decode_params(params):
     """Decode parameters list according to RFC 2231.
@@ -250,14 +258,14 @@ def decode_params(params):
     new_params.append((name, value))
     while params:
         name, value = params.pop(0)
-        if name.endswith('*'):
+        if name.endswith("*"):
             encoded = True
         else:
             encoded = False
         value = unquote(value)
         mo = rfc2231_continuation.match(name)
         if mo:
-            name, num = mo.group('name', 'num')
+            name, num = mo.group("name", "num")
             if num is not None:
                 num = int(num)
             rfc2231_params.setdefault(name, []).append((num, value, encoded))
@@ -290,15 +298,15 @@ def decode_params(params):
                 new_params.append((name, '"%s"' % value))
     return new_params
 
-def collapse_rfc2231_value(value, errors='replace',
-                           fallback_charset='us-ascii'):
+
+def collapse_rfc2231_value(value, errors="replace", fallback_charset="us-ascii"):
     if not isinstance(value, tuple) or len(value) != 3:
         return unquote(value)
     # While value comes to us as a unicode string, we need it to be a bytes
     # object.  We do not want bytes() normal utf-8 decoder, we want a straight
     # interpretation of the string as character bytes.
     charset, language, text = value
-    rawbytes = bytes(text, 'raw-unicode-escape')
+    rawbytes = bytes(text, "raw-unicode-escape")
     try:
         return str(rawbytes, charset, errors)
     except LookupError:

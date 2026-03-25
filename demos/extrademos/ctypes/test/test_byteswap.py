@@ -1,10 +1,15 @@
-import sys, unittest, struct, math
+import sys
+import unittest
+import struct
+import math
 from binascii import hexlify
 
 from ctypes import *
 
+
 def bin(s):
     return hexlify(memoryview(s)).decode().upper()
+
 
 # Each *simple* type that supports different byte orders has an
 # __ctype_be__ attribute that specifies the same type in BIG ENDIAN
@@ -12,6 +17,7 @@ def bin(s):
 # LITTLE ENDIAN byte order.
 #
 # For Structures and Unions, these types are created on demand.
+
 
 class Test(unittest.TestCase):
     def X_test(self):
@@ -157,31 +163,35 @@ class Test(unittest.TestCase):
 
         class T(base):
             pass
-        _fields_ = [("a", c_ubyte),
-                    ("b", c_byte),
-                    ("c", c_short),
-                    ("d", c_ushort),
-                    ("e", c_int),
-                    ("f", c_uint),
-                    ("g", c_long),
-                    ("h", c_ulong),
-                    ("i", c_longlong),
-                    ("k", c_ulonglong),
-                    ("l", c_float),
-                    ("m", c_double),
-                    ("n", c_char),
 
-                    ("b1", c_byte, 3),
-                    ("b2", c_byte, 3),
-                    ("b3", c_byte, 2),
-                    ("a", c_int * 3 * 3 * 3)]
+        _fields_ = [
+            ("a", c_ubyte),
+            ("b", c_byte),
+            ("c", c_short),
+            ("d", c_ushort),
+            ("e", c_int),
+            ("f", c_uint),
+            ("g", c_long),
+            ("h", c_ulong),
+            ("i", c_longlong),
+            ("k", c_ulonglong),
+            ("l", c_float),
+            ("m", c_double),
+            ("n", c_char),
+            ("b1", c_byte, 3),
+            ("b2", c_byte, 3),
+            ("b3", c_byte, 2),
+            ("a", c_int * 3 * 3 * 3),
+        ]
         T._fields_ = _fields_
 
         # these fields do not support different byte order:
         for typ in c_wchar, c_void_p, POINTER(c_int):
             _fields_.append(("x", typ))
+
             class T(base):
                 pass
+
             self.assertRaises(TypeError, setattr, T, "_fields_", [("x", typ)])
 
     def test_struct_struct(self):
@@ -192,10 +202,11 @@ class Test(unittest.TestCase):
             base = LittleEndianStructure
 
         class T(Structure):
-            _fields_ = [("a", c_int),
-                        ("b", c_int)]
+            _fields_ = [("a", c_int), ("b", c_int)]
+
         class S(base):
             pass
+
         self.assertRaises(TypeError, setattr, S, "_fields_", [("s", T)])
 
     def test_struct_fields_2(self):
@@ -212,10 +223,7 @@ class Test(unittest.TestCase):
             fmt = "<bxhid"
 
         class S(base):
-            _fields_ = [("b", c_byte),
-                        ("h", c_short),
-                        ("i", c_int),
-                        ("d", c_double)]
+            _fields_ = [("b", c_byte), ("h", c_short), ("i", c_int), ("d", c_double)]
 
         s1 = S(0x12, 0x1234, 0x12345678, 3.14)
         s2 = struct.pack(fmt, 0x12, 0x1234, 0x12345678, 3.14)
@@ -231,15 +239,14 @@ class Test(unittest.TestCase):
 
         class S(base):
             _pack_ = 1
-            _fields_ = [("b", c_byte),
-
-                        ("h", c_short),
-
-                        ("_1", c_byte),
-                        ("i", c_int),
-
-                        ("_2", c_byte),
-                        ("d", c_double)]
+            _fields_ = [
+                ("b", c_byte),
+                ("h", c_short),
+                ("_1", c_byte),
+                ("i", c_int),
+                ("_2", c_byte),
+                ("d", c_double),
+            ]
 
         s1 = S()
         s1.b = 0x12
@@ -258,15 +265,14 @@ class Test(unittest.TestCase):
 
         class S(Structure):
             _pack_ = 1
-            _fields_ = [("b", c_byte),
-
-                        ("h", c_short),
-
-                        ("_1", c_byte),
-                        ("i", c_int),
-
-                        ("_2", c_byte),
-                        ("d", c_double)]
+            _fields_ = [
+                ("b", c_byte),
+                ("h", c_short),
+                ("_1", c_byte),
+                ("i", c_int),
+                ("_2", c_byte),
+                ("d", c_double),
+            ]
 
         s1 = S()
         s1.b = 0x12
@@ -275,6 +281,7 @@ class Test(unittest.TestCase):
         s1.d = 3.14
         s2 = struct.pack(fmt, 0x12, 0x1234, 0x12345678, 3.14)
         self.assertEqual(bin(s1), bin(s2))
+
 
 if __name__ == "__main__":
     unittest.main()

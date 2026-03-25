@@ -4,6 +4,7 @@ Tests assume the initial paths in sys.path once the interpreter has begun
 executing have not been removed.
 
 """
+
 import unittest
 from test.support import run_unittest, TESTFN, EnvironmentVarGuard
 from test.support import captured_stderr
@@ -29,9 +30,9 @@ if not os.path.isdir(site.USER_SITE):
     os.makedirs(site.USER_SITE)
     site.addsitedir(site.USER_SITE)
 
+
 class HelperFunctionsTests(unittest.TestCase):
-    """Tests for helper functions.
-    """
+    """Tests for helper functions."""
 
     def setUp(self):
         """Save a copy of sys.path"""
@@ -64,16 +65,21 @@ class HelperFunctionsTests(unittest.TestCase):
 
     def test_init_pathinfo(self):
         dir_set = site._init_pathinfo()
-        for entry in [site.makepath(path)[1] for path in sys.path
-                        if path and os.path.isdir(path)]:
-            self.assertIn(entry, dir_set,
-                          "%s from sys.path not found in set returned "
-                          "by _init_pathinfo(): %s" % (entry, dir_set))
+        for entry in [
+            site.makepath(path)[1] for path in sys.path if path and os.path.isdir(path)
+        ]:
+            self.assertIn(
+                entry,
+                dir_set,
+                "%s from sys.path not found in set returned "
+                "by _init_pathinfo(): %s" % (entry, dir_set),
+            )
 
     def pth_file_tests(self, pth_file):
         """Contain common code for testing results of reading a .pth file"""
-        self.assertIn(pth_file.imported, sys.modules,
-                      "%s not in sys.modules" % pth_file.imported)
+        self.assertIn(
+            pth_file.imported, sys.modules, "%s not in sys.modules" % pth_file.imported
+        )
         self.assertIn(site.makepath(pth_file.good_dir_path)[0], sys.path)
         self.assertFalse(os.path.exists(pth_file.bad_dir_path))
 
@@ -84,7 +90,7 @@ class HelperFunctionsTests(unittest.TestCase):
         # file resides; invalid directories are not added
         pth_file = PthFile()
         pth_file.cleanup(prep=True)  # to make sure that nothing is
-                                      # pre-existing that shouldn't be
+        # pre-existing that shouldn't be
         try:
             pth_file.create()
             site.addpackage(pth_file.base_dir, pth_file.filename, set())
@@ -92,12 +98,12 @@ class HelperFunctionsTests(unittest.TestCase):
         finally:
             pth_file.cleanup()
 
-    def make_pth(self, contents, pth_dir='.', pth_name=TESTFN):
+    def make_pth(self, contents, pth_dir=".", pth_name=TESTFN):
         # Create a .pth file and return its (abspath, basename).
         pth_dir = os.path.abspath(pth_dir)
-        pth_basename = pth_name + '.pth'
+        pth_basename = pth_name + ".pth"
         pth_fn = os.path.join(pth_dir, pth_basename)
-        pth_file = open(pth_fn, 'w', encoding='utf-8')
+        pth_file = open(pth_fn, "w", encoding="utf-8")
         self.addCleanup(lambda: os.remove(pth_fn))
         pth_file.write(contents)
         pth_file.close()
@@ -109,14 +115,13 @@ class HelperFunctionsTests(unittest.TestCase):
         with captured_stderr() as err_out:
             site.addpackage(pth_dir, pth_fn, set())
         self.assertRegex(err_out.getvalue(), "line 1")
-        self.assertRegex(err_out.getvalue(),
-            re.escape(os.path.join(pth_dir, pth_fn)))
+        self.assertRegex(err_out.getvalue(), re.escape(os.path.join(pth_dir, pth_fn)))
         # XXX: the previous two should be independent checks so that the
         # order doesn't matter.  The next three could be a single check
         # but my regex foo isn't good enough to write it.
-        self.assertRegex(err_out.getvalue(), 'Traceback')
-        self.assertRegex(err_out.getvalue(), r'import bad\)syntax')
-        self.assertRegex(err_out.getvalue(), 'SyntaxError')
+        self.assertRegex(err_out.getvalue(), "Traceback")
+        self.assertRegex(err_out.getvalue(), r"import bad\)syntax")
+        self.assertRegex(err_out.getvalue(), "SyntaxError")
 
     def test_addpackage_import_bad_exec(self):
         # Issue 10642
@@ -124,32 +129,32 @@ class HelperFunctionsTests(unittest.TestCase):
         with captured_stderr() as err_out:
             site.addpackage(pth_dir, pth_fn, set())
         self.assertRegex(err_out.getvalue(), "line 2")
-        self.assertRegex(err_out.getvalue(),
-            re.escape(os.path.join(pth_dir, pth_fn)))
+        self.assertRegex(err_out.getvalue(), re.escape(os.path.join(pth_dir, pth_fn)))
         # XXX: ditto previous XXX comment.
-        self.assertRegex(err_out.getvalue(), 'Traceback')
-        self.assertRegex(err_out.getvalue(), 'ImportError')
+        self.assertRegex(err_out.getvalue(), "Traceback")
+        self.assertRegex(err_out.getvalue(), "ImportError")
 
-    @unittest.skipIf(sys.platform == "win32", "Windows does not raise an "
-                      "error for file paths containing null characters")
+    @unittest.skipIf(
+        sys.platform == "win32",
+        "Windows does not raise an error for file paths containing null characters",
+    )
     def test_addpackage_import_bad_pth_file(self):
         # Issue 5258
         pth_dir, pth_fn = self.make_pth("abc\x00def\n")
         with captured_stderr() as err_out:
             site.addpackage(pth_dir, pth_fn, set())
         self.assertRegex(err_out.getvalue(), "line 1")
-        self.assertRegex(err_out.getvalue(),
-            re.escape(os.path.join(pth_dir, pth_fn)))
+        self.assertRegex(err_out.getvalue(), re.escape(os.path.join(pth_dir, pth_fn)))
         # XXX: ditto previous XXX comment.
-        self.assertRegex(err_out.getvalue(), 'Traceback')
-        self.assertRegex(err_out.getvalue(), 'TypeError')
+        self.assertRegex(err_out.getvalue(), "Traceback")
+        self.assertRegex(err_out.getvalue(), "TypeError")
 
     def test_addsitedir(self):
         # Same tests for test_addpackage since addsitedir() essentially just
         # calls addpackage() for every .pth file in the directory
         pth_file = PthFile()
-        pth_file.cleanup(prep=True) # Make sure that nothing is pre-existing
-                                    # that is tested for
+        pth_file.cleanup(prep=True)  # Make sure that nothing is pre-existing
+        # that is tested for
         try:
             pth_file.create()
             site.addsitedir(pth_file.base_dir, set())
@@ -162,29 +167,42 @@ class HelperFunctionsTests(unittest.TestCase):
         self.assertIn(usersite, sys.path)
 
         env = os.environ.copy()
-        rc = subprocess.call([sys.executable, '-c',
-            'import sys; sys.exit(%r in sys.path)' % usersite],
-            env=env)
+        rc = subprocess.call(
+            [sys.executable, "-c", "import sys; sys.exit(%r in sys.path)" % usersite],
+            env=env,
+        )
         self.assertEqual(rc, 1)
 
         env = os.environ.copy()
-        rc = subprocess.call([sys.executable, '-s', '-c',
-            'import sys; sys.exit(%r in sys.path)' % usersite],
-            env=env)
+        rc = subprocess.call(
+            [
+                sys.executable,
+                "-s",
+                "-c",
+                "import sys; sys.exit(%r in sys.path)" % usersite,
+            ],
+            env=env,
+        )
         self.assertEqual(rc, 0)
 
         env = os.environ.copy()
         env["PYTHONNOUSERSITE"] = "1"
-        rc = subprocess.call([sys.executable, '-c',
-            'import sys; sys.exit(%r in sys.path)' % usersite],
-            env=env)
+        rc = subprocess.call(
+            [sys.executable, "-c", "import sys; sys.exit(%r in sys.path)" % usersite],
+            env=env,
+        )
         self.assertEqual(rc, 0)
 
         env = os.environ.copy()
         env["PYTHONUSERBASE"] = "/tmp"
-        rc = subprocess.call([sys.executable, '-c',
-            'import sys, site; sys.exit(site.USER_BASE.startswith("/tmp"))'],
-            env=env)
+        rc = subprocess.call(
+            [
+                sys.executable,
+                "-c",
+                'import sys, site; sys.exit(site.USER_BASE.startswith("/tmp"))',
+            ],
+            env=env,
+        )
         self.assertEqual(rc, 1)
 
     def test_getuserbase(self):
@@ -197,12 +215,12 @@ class HelperFunctionsTests(unittest.TestCase):
         # let's set PYTHONUSERBASE and see if it uses it
         site.USER_BASE = None
         import sysconfig
+
         sysconfig._CONFIG_VARS = None
 
         with EnvironmentVarGuard() as environ:
-            environ['PYTHONUSERBASE'] = 'xoxo'
-            self.assertTrue(site.getuserbase().startswith('xoxo'),
-                            site.getuserbase())
+            environ["PYTHONUSERBASE"] = "xoxo"
+            self.assertTrue(site.getuserbase().startswith("xoxo"), site.getuserbase())
 
     def test_getusersitepackages(self):
         site.USER_SITE = None
@@ -214,44 +232,51 @@ class HelperFunctionsTests(unittest.TestCase):
         self.assertTrue(user_site.startswith(site.USER_BASE), user_site)
 
     def test_getsitepackages(self):
-        site.PREFIXES = ['xoxo']
+        site.PREFIXES = ["xoxo"]
         dirs = site.getsitepackages()
 
-        if sys.platform in ('os2emx', 'riscos'):
+        if sys.platform in ("os2emx", "riscos"):
             self.assertEqual(len(dirs), 1)
-            wanted = os.path.join('xoxo', 'Lib', 'site-packages')
+            wanted = os.path.join("xoxo", "Lib", "site-packages")
             self.assertEqual(dirs[0], wanted)
-        elif os.sep == '/':
+        elif os.sep == "/":
             self.assertEqual(len(dirs), 2)
-            wanted = os.path.join('xoxo', 'lib', 'python' + sys.version[:3],
-                                  'site-packages')
+            wanted = os.path.join(
+                "xoxo", "lib", "python" + sys.version[:3], "site-packages"
+            )
             self.assertEqual(dirs[0], wanted)
-            wanted = os.path.join('xoxo', 'lib', 'site-python')
+            wanted = os.path.join("xoxo", "lib", "site-python")
             self.assertEqual(dirs[1], wanted)
         else:
             self.assertEqual(len(dirs), 2)
-            self.assertEqual(dirs[0], 'xoxo')
-            wanted = os.path.join('xoxo', 'lib', 'site-packages')
+            self.assertEqual(dirs[0], "xoxo")
+            wanted = os.path.join("xoxo", "lib", "site-packages")
             self.assertEqual(dirs[1], wanted)
 
         # let's try the specific Apple location
-        if (sys.platform == "darwin" and
-            sysconfig.get_config_var("PYTHONFRAMEWORK")):
-            site.PREFIXES = ['Python.framework']
+        if sys.platform == "darwin" and sysconfig.get_config_var("PYTHONFRAMEWORK"):
+            site.PREFIXES = ["Python.framework"]
             dirs = site.getsitepackages()
             self.assertEqual(len(dirs), 3)
-            wanted = os.path.join('/Library', 'Python', sys.version[:3],
-                                  'site-packages')
+            wanted = os.path.join(
+                "/Library", "Python", sys.version[:3], "site-packages"
+            )
             self.assertEqual(dirs[2], wanted)
+
 
 class PthFile(object):
     """Helper class for handling testing of .pth files"""
 
-    def __init__(self, filename_base=TESTFN, imported="time",
-                    good_dirname="__testdir__", bad_dirname="__bad"):
+    def __init__(
+        self,
+        filename_base=TESTFN,
+        imported="time",
+        good_dirname="__testdir__",
+        bad_dirname="__bad",
+    ):
         """Initialize instance variables"""
         self.filename = filename_base + ".pth"
-        self.base_dir = os.path.abspath('')
+        self.base_dir = os.path.abspath("")
         self.file_path = os.path.join(self.base_dir, self.filename)
         self.imported = imported
         self.good_dirname = good_dirname
@@ -270,7 +295,7 @@ class PthFile(object):
         Make sure to call self.cleanup() to undo anything done by this method.
 
         """
-        FILE = open(self.file_path, 'w')
+        FILE = open(self.file_path, "w")
         try:
             print("#import @bad module name", file=FILE)
             print("\n", file=FILE)
@@ -299,6 +324,7 @@ class PthFile(object):
         if os.path.exists(self.bad_dir_path):
             os.rmdir(self.bad_dir_path)
 
+
 class ImportSideEffectTests(unittest.TestCase):
     """Test side-effects from importing 'site'."""
 
@@ -319,19 +345,21 @@ class ImportSideEffectTests(unittest.TestCase):
         # __file__ or __cached__ because they are built-in.
         parent = os.path.relpath(os.path.dirname(os.__file__))
         env = os.environ.copy()
-        env['PYTHONPATH'] = parent
-        code = ('import os, sys',
+        env["PYTHONPATH"] = parent
+        code = (
+            "import os, sys",
             # use ASCII to avoid locale issues with non-ASCII directories
             'os_file = os.__file__.encode("ascii", "backslashreplace")',
             r'sys.stdout.buffer.write(os_file + b"\n")',
             'os_cached = os.__cached__.encode("ascii", "backslashreplace")',
-            r'sys.stdout.buffer.write(os_cached + b"\n")')
-        command = '\n'.join(code)
+            r'sys.stdout.buffer.write(os_cached + b"\n")',
+        )
+        command = "\n".join(code)
         # First, prove that with -S (no 'import site'), the paths are
         # relative.
-        proc = subprocess.Popen([sys.executable, '-S', '-c', command],
-                                env=env,
-                                stdout=subprocess.PIPE)
+        proc = subprocess.Popen(
+            [sys.executable, "-S", "-c", command], env=env, stdout=subprocess.PIPE
+        )
         stdout, stderr = proc.communicate()
 
         self.assertEqual(proc.returncode, 0)
@@ -339,9 +367,9 @@ class ImportSideEffectTests(unittest.TestCase):
         self.assertFalse(os.path.isabs(os__file__))
         self.assertFalse(os.path.isabs(os__cached__))
         # Now, with 'import site', it works.
-        proc = subprocess.Popen([sys.executable, '-c', command],
-                                env=env,
-                                stdout=subprocess.PIPE)
+        proc = subprocess.Popen(
+            [sys.executable, "-c", command], env=env, stdout=subprocess.PIPE
+        )
         stdout, stderr = proc.communicate()
         self.assertEqual(proc.returncode, 0)
         os__file__, os__cached__ = stdout.splitlines()[:2]
@@ -380,7 +408,8 @@ class ImportSideEffectTests(unittest.TestCase):
     def test_aliasing_mbcs(self):
         if sys.platform == "win32":
             import locale
-            if locale.getdefaultlocale()[1].startswith('cp'):
+
+            if locale.getdefaultlocale()[1].startswith("cp"):
                 for value in encodings.aliases.aliases.values():
                     if value == "mbcs":
                         break
@@ -397,8 +426,10 @@ class ImportSideEffectTests(unittest.TestCase):
             else:
                 self.fail("sitecustomize not imported automatically")
 
+
 def test_main():
     run_unittest(HelperFunctionsTests, ImportSideEffectTests)
+
 
 if __name__ == "__main__":
     test_main()

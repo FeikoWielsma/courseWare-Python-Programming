@@ -2,12 +2,12 @@ import unittest
 from test import support
 import time
 
-resource = support.import_module('resource')
+resource = support.import_module("resource")
 
 # This test is checking a few specific problem spots with the resource module.
 
-class ResourceTest(unittest.TestCase):
 
+class ResourceTest(unittest.TestCase):
     def test_args(self):
         self.assertRaises(TypeError, resource.getrlimit)
         self.assertRaises(TypeError, resource.getrlimit, 42, 42)
@@ -59,7 +59,7 @@ class ResourceTest(unittest.TestCase):
                         # an attempt to ensure the file is really synced and
                         # the exception raised.
                         for i in range(5):
-                            time.sleep(.1)
+                            time.sleep(0.1)
                             f.flush()
                     except IOError:
                         if not limit_set:
@@ -107,8 +107,10 @@ class ResourceTest(unittest.TestCase):
         except (ValueError, AttributeError):
             pass
 
+
 def test_main(verbose=None):
     support.run_unittest(ResourceTest)
+
 
 if __name__ == "__main__":
     test_main()

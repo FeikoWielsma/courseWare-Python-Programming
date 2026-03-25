@@ -1,7 +1,7 @@
 from tkinter import *
 
-class SearchDialogBase:
 
+class SearchDialogBase:
     title = "Search Dialog"
     icon = "Search"
     needwrapbutton = 1
@@ -19,8 +19,8 @@ class SearchDialogBase:
             self.top.deiconify()
             self.top.tkraise()
         if searchphrase:
-            self.ent.delete(0,"end")
-            self.ent.insert("end",searchphrase)
+            self.ent.delete(0, "end")
+            self.ent.insert("end", searchphrase)
         self.ent.focus_set()
         self.ent.selection_range(0, "end")
         self.ent.icursor(0)
@@ -57,7 +57,7 @@ class SearchDialogBase:
         self.row = self.row + 1
         return e
 
-    def make_frame(self,labeltext=None):
+    def make_frame(self, labeltext=None):
         if labeltext:
             l = Label(self.top, text=labeltext)
             l.grid(row=self.row, column=0, sticky="nw")
@@ -67,12 +67,15 @@ class SearchDialogBase:
         return f
 
     def make_button(self, label, command, isdef=0):
-        b = Button(self.buttonframe,
-                   text=label, command=command,
-                   default=isdef and "active" or "normal")
-        cols,rows=self.buttonframe.grid_size()
-        b.grid(pady=1,row=rows,column=0,sticky="ew")
-        self.buttonframe.grid(rowspan=rows+1)
+        b = Button(
+            self.buttonframe,
+            text=label,
+            command=command,
+            default=isdef and "active" or "normal",
+        )
+        cols, rows = self.buttonframe.grid_size()
+        b.grid(pady=1, row=rows, column=0, sticky="ew")
+        self.buttonframe.grid(rowspan=rows + 1)
         return b
 
     def create_entries(self):
@@ -81,31 +84,31 @@ class SearchDialogBase:
     def create_option_buttons(self):
         f = self.make_frame("Options")
 
-        btn = Checkbutton(f, anchor="w",
-                variable=self.engine.revar,
-                text="Regular expression")
+        btn = Checkbutton(
+            f, anchor="w", variable=self.engine.revar, text="Regular expression"
+        )
         btn.pack(side="left", fill="both")
         if self.engine.isre():
             btn.select()
 
-        btn = Checkbutton(f, anchor="w",
-                variable=self.engine.casevar,
-                text="Match case")
+        btn = Checkbutton(
+            f, anchor="w", variable=self.engine.casevar, text="Match case"
+        )
         btn.pack(side="left", fill="both")
         if self.engine.iscase():
             btn.select()
 
-        btn = Checkbutton(f, anchor="w",
-                variable=self.engine.wordvar,
-                text="Whole word")
+        btn = Checkbutton(
+            f, anchor="w", variable=self.engine.wordvar, text="Whole word"
+        )
         btn.pack(side="left", fill="both")
         if self.engine.isword():
             btn.select()
 
         if self.needwrapbutton:
-            btn = Checkbutton(f, anchor="w",
-                    variable=self.engine.wrapvar,
-                    text="Wrap around")
+            btn = Checkbutton(
+                f, anchor="w", variable=self.engine.wrapvar, text="Wrap around"
+            )
             btn.pack(side="left", fill="both")
             if self.engine.iswrap():
                 btn.select()
@@ -113,19 +116,19 @@ class SearchDialogBase:
     def create_other_buttons(self):
         f = self.make_frame("Direction")
 
-        #lbl = Label(f, text="Direction: ")
-        #lbl.pack(side="left")
+        # lbl = Label(f, text="Direction: ")
+        # lbl.pack(side="left")
 
-        btn = Radiobutton(f, anchor="w",
-                variable=self.engine.backvar, value=1,
-                text="Up")
+        btn = Radiobutton(
+            f, anchor="w", variable=self.engine.backvar, value=1, text="Up"
+        )
         btn.pack(side="left", fill="both")
         if self.engine.isback():
             btn.select()
 
-        btn = Radiobutton(f, anchor="w",
-                variable=self.engine.backvar, value=0,
-                text="Down")
+        btn = Radiobutton(
+            f, anchor="w", variable=self.engine.backvar, value=0, text="Down"
+        )
         btn.pack(side="left", fill="both")
         if not self.engine.isback():
             btn.select()
@@ -134,7 +137,7 @@ class SearchDialogBase:
         #
         # place button frame on the right
         f = self.buttonframe = Frame(self.top)
-        f.grid(row=0,column=2,padx=2,pady=2,ipadx=2,ipady=2)
+        f.grid(row=0, column=2, padx=2, pady=2, ipadx=2, ipady=2)
 
         b = self.make_button("close", self.close)
         b.lower()

@@ -1,12 +1,14 @@
 import tkinter as tk
 
-mainWindow = tk.Tk()
+main_window = tk.Tk()
+
 
 def handle_keypress(event):
     """Print the character associated to the key pressed"""
     print(event.char)
 
-# Bind keypress event to handle_keypress()
-mainWindow.bind("<Key>", handle_keypress)
 
-mainWindow.mainloop()
+# Bind keypress event to handle_keypress()
+main_window.bind("<Key>", handle_keypress)
+
+main_window.mainloop()

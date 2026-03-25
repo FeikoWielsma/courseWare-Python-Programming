@@ -1,17 +1,18 @@
 import unittest
 
+
 class TestBasic2(unittest.TestCase):
     "Show setup and teardown"
 
-    def setUp(self):
+    def set_up(self):
         self.a = 1
 
-    def tearDown(self):
+    def tear_down(self):
         del self.a
 
     def test_basic1(self):
         "Basic with setup"
-        self.assertNotEqual(self.a, 2)
+        self.assert_not_equal(self.a, 2)
 
     def test_basic2(self):
         "Basic2 with setup"

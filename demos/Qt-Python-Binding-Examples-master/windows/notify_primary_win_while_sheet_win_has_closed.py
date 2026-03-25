@@ -21,7 +21,7 @@ class SheetWin(QtGui.QWidget):
     def __init__(self, parent = None):
         super(SheetWin, self).__init__(parent)
 
-        self.setWindowFlags(QtCore.Qt.Sheet)
+        self.set_window_flags(QtCore.Qt.Sheet)
 
 
         btn = QtGui.QPushButton("close", self)
@@ -30,12 +30,12 @@ class SheetWin(QtGui.QWidget):
 
         self._settings = {"name" : "a", "age" : "b"}
 
-    def closeEvent(self, evt):
-        print "closeEvent"
+    def close_event(self, evt):
+        print "close_event"
 
         self.emit(QtCore.SIGNAL("sheet_win_close( QWidget * )"), self)
 
-        return super(SheetWin, self).closeEvent(evt)
+        return super(SheetWin, self).close_event(evt)
 
 
 class Demo(QtGui.QWidget):
@@ -43,7 +43,7 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
+        self.set_geometry(x, y, w, h)
 
         btn = QtGui.QPushButton("btn", self)
         btn.clicked.connect(self.btn_cb)

@@ -1,19 +1,19 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
 layout in nest
 
 Tested environment:
     Mac OS X 10.6.8
-    
+
 """
+
 import sys
 
 try:
     from PySide import QtCore
     from PySide import QtGui
 except ImportError:
-    from PyQt4 import QtCore
     from PyQt4 import QtGui
 
 
@@ -21,20 +21,20 @@ class BeNestWidget(QtGui.QWidget):
     def __init__(self, container):
         super(BeNestWidget, self).__init__()
 
-        container.addWidget(self)
+        container.add_widget(self)
 
         hbox = QtGui.QHBoxLayout(self)
 
         a_btn = QtGui.QPushButton("d", self)
-        hbox.addWidget(a_btn)
+        hbox.add_widget(a_btn)
 
         b_tn = QtGui.QPushButton("e", self)
-        hbox.addWidget(b_tn)
+        hbox.add_widget(b_tn)
 
         c_btn = QtGui.QPushButton("f", self)
-        hbox.addWidget(c_btn)
+        hbox.add_widget(c_btn)
 
-        self.setLayout(hbox)
+        self.set_layout(hbox)
 
 
 class Demo(QtGui.QWidget):
@@ -42,24 +42,22 @@ class Demo(QtGui.QWidget):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
-
+        self.set_geometry(x, y, w, h)
 
         vbox = QtGui.QVBoxLayout(self)
 
         a_btn = QtGui.QPushButton("a", self)
-        vbox.addWidget(a_btn)
+        vbox.add_widget(a_btn)
 
         b_tn = QtGui.QPushButton("b", self)
-        vbox.addWidget(b_tn)
+        vbox.add_widget(b_tn)
 
         c_btn = QtGui.QPushButton("c", self)
-        vbox.addWidget(c_btn)
+        vbox.add_widget(c_btn)
 
-        self.bn_widget = BeNestWidget(container = vbox)
+        self.bn_widget = BeNestWidget(container=vbox)
 
-
-        self.setLayout(vbox)
+        self.set_layout(vbox)
 
     def show_and_raise(self):
         self.show()

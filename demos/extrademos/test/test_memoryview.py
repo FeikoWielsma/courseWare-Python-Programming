@@ -61,8 +61,10 @@ class AbstractMemoryTests:
         b = self.ro_type(self._source)
         oldrefcount = sys.getrefcount(b)
         m = self._view(b)
+
         def setitem(value):
             m[0] = value
+
         self.assertRaises(TypeError, setitem, b"a")
         self.assertRaises(TypeError, setitem, 65)
         self.assertRaises(TypeError, setitem, memoryview(b"a"))
@@ -94,6 +96,7 @@ class AbstractMemoryTests:
 
         def setitem(key, value):
             m[key] = tp(value)
+
         # Bounds checking
         self.assertRaises(IndexError, setitem, 6, b"a")
         self.assertRaises(IndexError, setitem, -7, b"a")
@@ -106,8 +109,8 @@ class AbstractMemoryTests:
         # Trying to resize the memory object
         self.assertRaises(ValueError, setitem, 0, b"")
         self.assertRaises(ValueError, setitem, 0, b"ab")
-        self.assertRaises(ValueError, setitem, slice(1,1), b"a")
-        self.assertRaises(ValueError, setitem, slice(0,2), b"a")
+        self.assertRaises(ValueError, setitem, slice(1, 1), b"a")
+        self.assertRaises(ValueError, setitem, slice(0, 2), b"a")
 
         m = None
         self.assertEqual(sys.getrefcount(b), oldrefcount)
@@ -126,8 +129,7 @@ class AbstractMemoryTests:
             m = self._view(tp(self._source))
             b = m.tobytes()
             # This calls self.getitem_type() on each separate byte of b"abcdef"
-            expected = b"".join(
-                self.getitem_type(bytes([c])) for c in b"abcdef")
+            expected = b"".join(self.getitem_type(bytes([c])) for c in b"abcdef")
             self.assertEqual(b, expected)
             self.assertIsInstance(b, bytes)
 
@@ -211,11 +213,12 @@ class AbstractMemoryTests:
 
             class MySource(tp):
                 pass
+
             class MyObject:
                 pass
 
             # Create a reference cycle through a memoryview object
-            b = MySource(tp(b'abc'))
+            b = MySource(tp(b"abc"))
             m = self._view(b)
             o = MyObject()
             b.m = m
@@ -228,18 +231,30 @@ class AbstractMemoryTests:
 
     def _check_released(self, m, tp):
         check = self.assertRaisesRegex(ValueError, "released")
-        with check: bytes(m)
-        with check: m.tobytes()
-        with check: m.tolist()
-        with check: m[0]
-        with check: m[0] = b'x'
-        with check: len(m)
-        with check: m.format
-        with check: m.itemsize
-        with check: m.ndim
-        with check: m.readonly
-        with check: m.shape
-        with check: m.strides
+        with check:
+            bytes(m)
+        with check:
+            m.tobytes()
+        with check:
+            m.tolist()
+        with check:
+            m[0]
+        with check:
+            m[0] = b"x"
+        with check:
+            len(m)
+        with check:
+            m.format
+        with check:
+            m.itemsize
+        with check:
+            m.ndim
+        with check:
+            m.readonly
+        with check:
+            m.shape
+        with check:
+            m.strides
         with check:
             with m:
                 pass
@@ -280,26 +295,29 @@ class AbstractMemoryTests:
             return
         b = tp(self._source)
         m = self._view(b)
-        i = io.BytesIO(b'ZZZZ')
+        i = io.BytesIO(b"ZZZZ")
         self.assertRaises(TypeError, i.readinto, m)
+
 
 # Variations on source objects for the buffer: bytes-like objects, then arrays
 # with itemsize > 1.
 # NOTE: support for multi-dimensional objects is unimplemented.
+
 
 class BaseBytesMemoryTests(AbstractMemoryTests):
     ro_type = bytes
     rw_type = bytearray
     getitem_type = bytes
     itemsize = 1
-    format = 'B'
+    format = "B"
+
 
 class BaseArrayMemoryTests(AbstractMemoryTests):
     ro_type = None
-    rw_type = lambda self, b: array.array('i', list(b))
-    getitem_type = lambda self, b: array.array('i', list(b)).tobytes()
-    itemsize = array.array('i').itemsize
-    format = 'i'
+    rw_type = lambda self, b: array.array("i", list(b))
+    getitem_type = lambda self, b: array.array("i", list(b)).tobytes()
+    itemsize = array.array("i").itemsize
+    format = "i"
 
     def test_getbuffer(self):
         # XXX Test should be adapted for non-byte buffers
@@ -314,12 +332,14 @@ class BaseArrayMemoryTests(AbstractMemoryTests):
 # slice of slice of memoryview.
 # This is important to test allocation subtleties.
 
+
 class BaseMemoryviewTests:
     def _view(self, obj):
         return memoryview(obj)
 
     def _check_contents(self, tp, obj, contents):
         self.assertEqual(obj, tp(contents))
+
 
 class BaseMemorySliceTests:
     source_bytes = b"XabcdefY"
@@ -338,6 +358,7 @@ class BaseMemorySliceTests:
             m[1:2]
             self.assertEqual(sys.getrefcount(m), oldrefcount)
 
+
 class BaseMemorySliceSliceTests:
     source_bytes = b"XabcdefY"
 
@@ -351,9 +372,8 @@ class BaseMemorySliceSliceTests:
 
 # Concrete test classes
 
-class BytesMemoryviewTest(unittest.TestCase,
-    BaseMemoryviewTests, BaseBytesMemoryTests):
 
+class BytesMemoryviewTest(unittest.TestCase, BaseMemoryviewTests, BaseBytesMemoryTests):
     def test_constructor(self):
         for tp in self._types:
             ob = tp(self._source)
@@ -364,37 +384,44 @@ class BytesMemoryviewTest(unittest.TestCase,
             self.assertRaises(TypeError, memoryview, argument=ob)
             self.assertRaises(TypeError, memoryview, ob, argument=True)
 
-class ArrayMemoryviewTest(unittest.TestCase,
-    BaseMemoryviewTests, BaseArrayMemoryTests):
 
+class ArrayMemoryviewTest(unittest.TestCase, BaseMemoryviewTests, BaseArrayMemoryTests):
     def test_array_assign(self):
         # Issue #4569: segfault when mutating a memoryview with itemsize != 1
-        a = array.array('i', range(10))
+        a = array.array("i", range(10))
         m = memoryview(a)
-        new_a = array.array('i', range(9, -1, -1))
+        new_a = array.array("i", range(9, -1, -1))
         m[:] = new_a
         self.assertEqual(a, new_a)
 
 
-class BytesMemorySliceTest(unittest.TestCase,
-    BaseMemorySliceTests, BaseBytesMemoryTests):
+class BytesMemorySliceTest(
+    unittest.TestCase, BaseMemorySliceTests, BaseBytesMemoryTests
+):
     pass
 
-class ArrayMemorySliceTest(unittest.TestCase,
-    BaseMemorySliceTests, BaseArrayMemoryTests):
+
+class ArrayMemorySliceTest(
+    unittest.TestCase, BaseMemorySliceTests, BaseArrayMemoryTests
+):
     pass
 
-class BytesMemorySliceSliceTest(unittest.TestCase,
-    BaseMemorySliceSliceTests, BaseBytesMemoryTests):
+
+class BytesMemorySliceSliceTest(
+    unittest.TestCase, BaseMemorySliceSliceTests, BaseBytesMemoryTests
+):
     pass
 
-class ArrayMemorySliceSliceTest(unittest.TestCase,
-    BaseMemorySliceSliceTests, BaseArrayMemoryTests):
+
+class ArrayMemorySliceSliceTest(
+    unittest.TestCase, BaseMemorySliceSliceTests, BaseArrayMemoryTests
+):
     pass
 
 
 def test_main():
     test.support.run_unittest(__name__)
+
 
 if __name__ == "__main__":
     test_main()

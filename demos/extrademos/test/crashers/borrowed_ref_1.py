@@ -3,13 +3,16 @@ _PyType_Lookup() returns a borrowed reference.
 This attacks the call in dictobject.c.
 """
 
+
 class A(object):
     pass
 
+
 class B(object):
     def __del__(self):
-        print('hi')
+        print("hi")
         del D.__missing__
+
 
 class D(dict):
     class __missing__:

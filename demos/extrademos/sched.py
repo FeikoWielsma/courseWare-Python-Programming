@@ -33,13 +33,26 @@ from collections import namedtuple
 
 __all__ = ["scheduler"]
 
-class Event(namedtuple('Event', 'time, priority, action, argument')):
-    def __eq__(s, o): return (s.time, s.priority) == (o.time, o.priority)
-    def __ne__(s, o): return (s.time, s.priority) != (o.time, o.priority)
-    def __lt__(s, o): return (s.time, s.priority) <  (o.time, o.priority)
-    def __le__(s, o): return (s.time, s.priority) <= (o.time, o.priority)
-    def __gt__(s, o): return (s.time, s.priority) >  (o.time, o.priority)
-    def __ge__(s, o): return (s.time, s.priority) >= (o.time, o.priority)
+
+class Event(namedtuple("Event", "time, priority, action, argument")):
+    def __eq__(s, o):
+        return (s.time, s.priority) == (o.time, o.priority)
+
+    def __ne__(s, o):
+        return (s.time, s.priority) != (o.time, o.priority)
+
+    def __lt__(s, o):
+        return (s.time, s.priority) < (o.time, o.priority)
+
+    def __le__(s, o):
+        return (s.time, s.priority) <= (o.time, o.priority)
+
+    def __gt__(s, o):
+        return (s.time, s.priority) > (o.time, o.priority)
+
+    def __ge__(s, o):
+        return (s.time, s.priority) >= (o.time, o.priority)
+
 
 class scheduler:
     def __init__(self, timefunc, delayfunc):
@@ -58,7 +71,7 @@ class scheduler:
         """
         event = Event(time, priority, action, argument)
         heapq.heappush(self._queue, event)
-        return event # The ID
+        return event  # The ID
 
     def enter(self, delay, priority, action, argument):
         """A variant that specifies the time as a relative time.
@@ -121,7 +134,7 @@ class scheduler:
                 # by another thread after we last looked at q[0].
                 if event is checked_event:
                     action(*argument)
-                    delayfunc(0)   # Let other threads run
+                    delayfunc(0)  # Let other threads run
                 else:
                     heapq.heappush(q, event)
 
@@ -137,4 +150,4 @@ class scheduler:
         # With heapq, two events scheduled at the same time will show in
         # the actual order they would be retrieved.
         events = self._queue[:]
-        return map(heapq.heappop, [events]*len(events))
+        return map(heapq.heappop, [events] * len(events))

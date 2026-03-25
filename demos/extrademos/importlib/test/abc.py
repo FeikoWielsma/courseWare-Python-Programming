@@ -3,7 +3,6 @@ import unittest
 
 
 class FinderTests(unittest.TestCase, metaclass=abc.ABCMeta):
-
     """Basic tests for a finder to pass."""
 
     @abc.abstractmethod
@@ -40,7 +39,6 @@ class FinderTests(unittest.TestCase, metaclass=abc.ABCMeta):
 
 
 class LoaderTests(unittest.TestCase, metaclass=abc.ABCMeta):
-
     @abc.abstractmethod
     def test_module(self):
         """A module should load without issue.

@@ -2,10 +2,10 @@ import sys
 import unittest
 from test import support
 
-pwd = support.import_module('pwd')
+pwd = support.import_module("pwd")
+
 
 class PwdTest(unittest.TestCase):
-
     def test_values(self):
         entries = pwd.getpwall()
         entriesbyname = {}
@@ -42,8 +42,8 @@ class PwdTest(unittest.TestCase):
         # check whether the entry returned by getpwuid()
         # for each uid is among those from getpwall() for this uid
         for e in entries:
-            if not e[0] or e[0] == '+':
-                continue # skip NIS entries etc.
+            if not e[0] or e[0] == "+":
+                continue  # skip NIS entries etc.
             self.assertIn(pwd.getpwnam(e.pw_name), entriesbyname[e.pw_name])
             self.assertIn(pwd.getpwuid(e.pw_uid), entriesbyuid[e.pw_uid])
 
@@ -55,7 +55,7 @@ class PwdTest(unittest.TestCase):
         # try to get some errors
         bynames = {}
         byuids = {}
-        for (n, p, u, g, gecos, d, s) in pwd.getpwall():
+        for n, p, u, g, gecos, d, s in pwd.getpwall():
             bynames[n] = u
             byuids[u] = n
 
@@ -65,10 +65,10 @@ class PwdTest(unittest.TestCase):
         while fakename in bynames:
             chars = list(fakename)
             for i in range(len(chars)):
-                if chars[i] == 'z':
-                    chars[i] = 'A'
+                if chars[i] == "z":
+                    chars[i] = "A"
                     break
-                elif chars[i] == 'Z':
+                elif chars[i] == "Z":
                     continue
                 else:
                     chars[i] = chr(ord(chars[i]) + 1)
@@ -80,7 +80,7 @@ class PwdTest(unittest.TestCase):
                 except IndexError:
                     # should never happen... if so, just forget it
                     break
-            fakename = ''.join(chars)
+            fakename = "".join(chars)
 
         self.assertRaises(KeyError, pwd.getpwnam, fakename)
 
@@ -93,8 +93,10 @@ class PwdTest(unittest.TestCase):
         self.assertNotIn(fakeuid, byuids)
         self.assertRaises(KeyError, pwd.getpwuid, fakeuid)
 
+
 def test_main():
     support.run_unittest(PwdTest)
+
 
 if __name__ == "__main__":
     test_main()

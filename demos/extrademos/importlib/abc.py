@@ -1,20 +1,15 @@
 """Abstract base classes related to import."""
+
 from . import _bootstrap
 from . import machinery
-from . import util
 import abc
 import imp
-import io
 import marshal
-import os.path
 import sys
-import tokenize
-import types
 import warnings
 
 
 class Loader(metaclass=abc.ABCMeta):
-
     """Abstract base class for import loaders."""
 
     @abc.abstractmethod
@@ -25,7 +20,6 @@ class Loader(metaclass=abc.ABCMeta):
 
 
 class Finder(metaclass=abc.ABCMeta):
-
     """Abstract base class for import finders."""
 
     @abc.abstractmethod
@@ -36,13 +30,13 @@ class Finder(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
+
 Finder.register(machinery.BuiltinImporter)
 Finder.register(machinery.FrozenImporter)
 Finder.register(machinery.PathFinder)
 
 
 class ResourceLoader(Loader):
-
     """Abstract base class for loaders which can return data from their
     back-end storage.
 
@@ -58,7 +52,6 @@ class ResourceLoader(Loader):
 
 
 class InspectLoader(Loader):
-
     """Abstract base class for loaders which support inspection about the
     modules they can load.
 
@@ -84,12 +77,12 @@ class InspectLoader(Loader):
         module.  The fullname is a str.  Returns a str."""
         raise NotImplementedError
 
+
 InspectLoader.register(machinery.BuiltinImporter)
 InspectLoader.register(machinery.FrozenImporter)
 
 
 class ExecutionLoader(InspectLoader):
-
     """Abstract base class for loaders that wish to support the execution of
     modules as scripts.
 
@@ -105,7 +98,6 @@ class ExecutionLoader(InspectLoader):
 
 
 class SourceLoader(_bootstrap.SourceLoader, ResourceLoader, ExecutionLoader):
-
     """Abstract base class for loading source code (and optionally any
     corresponding bytecode).
 
@@ -139,7 +131,6 @@ class SourceLoader(_bootstrap.SourceLoader, ResourceLoader, ExecutionLoader):
 
 
 class PyLoader(SourceLoader):
-
     """Implement the deprecated PyLoader ABC in terms of SourceLoader.
 
     This class has been deprecated! It is slated for removal in Python 3.4.
@@ -190,12 +181,14 @@ class PyLoader(SourceLoader):
         None.
 
         """
-        warnings.warn("importlib.abc.PyLoader is deprecated and is "
-                            "slated for removal in Python 3.4; "
-                            "use SourceLoader instead. "
-                            "See the importlib documentation on how to be "
-                            "compatible with Python 3.1 onwards.",
-                        PendingDeprecationWarning)
+        warnings.warn(
+            "importlib.abc.PyLoader is deprecated and is "
+            "slated for removal in Python 3.4; "
+            "use SourceLoader instead. "
+            "See the importlib documentation on how to be "
+            "compatible with Python 3.1 onwards.",
+            PendingDeprecationWarning,
+        )
         path = self.source_path(fullname)
         if path is None:
             raise ImportError
@@ -204,7 +197,6 @@ class PyLoader(SourceLoader):
 
 
 class PyPycLoader(PyLoader):
-
     """Abstract base class to assist in loading source and bytecode by
     requiring only back-end storage methods to be implemented.
 
@@ -225,16 +217,19 @@ class PyPycLoader(PyLoader):
         path = self.bytecode_path(fullname)
         if path is not None:
             return path
-        raise ImportError("no source or bytecode path available for "
-                            "{0!r}".format(fullname))
+        raise ImportError(
+            "no source or bytecode path available for {0!r}".format(fullname)
+        )
 
     def get_code(self, fullname):
         """Get a code object from source or bytecode."""
-        warnings.warn("importlib.abc.PyPycLoader is deprecated and slated for "
-                            "removal in Python 3.4; use SourceLoader instead. "
-                            "If Python 3.1 compatibility is required, see the "
-                            "latest documentation for PyLoader.",
-                        PendingDeprecationWarning)
+        warnings.warn(
+            "importlib.abc.PyPycLoader is deprecated and slated for "
+            "removal in Python 3.4; use SourceLoader instead. "
+            "If Python 3.1 compatibility is required, see the "
+            "latest documentation for PyLoader.",
+            PendingDeprecationWarning,
+        )
         source_timestamp = self.source_mtime(fullname)
         # Try to use bytecode if it is available.
         bytecode_path = self.bytecode_path(fullname)
@@ -267,15 +262,17 @@ class PyPycLoader(PyLoader):
                 # Bytecode seems fine, so try to use it.
                 return marshal.loads(bytecode)
         elif source_timestamp is None:
-            raise ImportError("no source or bytecode available to create code "
-                                "object for {0!r}".format(fullname))
+            raise ImportError(
+                "no source or bytecode available to create code "
+                "object for {0!r}".format(fullname)
+            )
         # Use the source.
         source_path = self.source_path(fullname)
         if source_path is None:
             message = "a source path must exist to load {0}".format(fullname)
             raise ImportError(message)
         source = self.get_data(source_path)
-        code_object = compile(source, source_path, 'exec', dont_inherit=True)
+        code_object = compile(source, source_path, "exec", dont_inherit=True)
         # Generate bytecode and write it out.
         if not sys.dont_write_bytecode:
             data = bytearray(imp.get_magic())

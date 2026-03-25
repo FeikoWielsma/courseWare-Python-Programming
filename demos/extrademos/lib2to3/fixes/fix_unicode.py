@@ -1,13 +1,12 @@
-"""Fixer that changes unicode to str, unichr to chr, and u"..." into "...".
-
-"""
+"""Fixer that changes unicode to str, unichr to chr, and u"..." into "..."."""
 
 import re
 from ..pgen2 import token
 from .. import fixer_base
 
-_mapping = {"unichr" : "chr", "unicode" : "str"}
+_mapping = {"unichr": "chr", "unicode": "str"}
 _literal_re = re.compile(r"[uU][rR]?[\'\"]")
+
 
 class FixUnicode(fixer_base.BaseFix):
     BM_compatible = True

@@ -3,7 +3,7 @@
 
 import sys
 
-from xml.sax   import make_parser
+from xml.sax import make_parser
 from saxthumbs import SAXThumbs
 
 # Main

@@ -2,25 +2,26 @@ import re
 from tkinter import *
 import tkinter.messagebox as tkMessageBox
 
+
 def get(root):
     if not hasattr(root, "_searchengine"):
         root._searchengine = SearchEngine(root)
         # XXX This will never garbage-collect -- who cares
     return root._searchengine
 
-class SearchEngine:
 
+class SearchEngine:
     def __init__(self, root):
         self.root = root
         # State shared by search, replace, and grep;
         # the search dialogs bind these to UI elements.
-        self.patvar = StringVar(root)           # search pattern
-        self.revar = BooleanVar(root)           # regular expression?
-        self.casevar = BooleanVar(root)         # match case?
-        self.wordvar = BooleanVar(root)         # match whole word?
-        self.wrapvar = BooleanVar(root)         # wrap around buffer?
-        self.wrapvar.set(1)                     # (on by default)
-        self.backvar = BooleanVar(root)         # search backwards?
+        self.patvar = StringVar(root)  # search pattern
+        self.revar = BooleanVar(root)  # regular expression?
+        self.casevar = BooleanVar(root)  # match case?
+        self.wordvar = BooleanVar(root)  # match whole word?
+        self.wrapvar = BooleanVar(root)  # wrap around buffer?
+        self.wrapvar.set(1)  # (on by default)
+        self.backvar = BooleanVar(root)  # search backwards?
 
     # Access methods
 
@@ -83,8 +84,7 @@ class SearchEngine:
             msg = msg + "\np\Pattern: " + str(pat)
         if col >= 0:
             msg = msg + "\nOffset: " + str(col)
-        tkMessageBox.showerror("Regular expression error",
-                               msg, master=self.root)
+        tkMessageBox.showerror("Regular expression error", msg, master=self.root)
 
     def setcookedpat(self, pat):
         if self.isre():
@@ -114,7 +114,7 @@ class SearchEngine:
         if not prog:
             prog = self.getprog()
             if not prog:
-                return None # Compilation failed -- stop
+                return None  # Compilation failed -- stop
         wrap = self.wrapvar.get()
         first, last = get_selection(text)
         if self.isback():
@@ -136,7 +136,7 @@ class SearchEngine:
     def search_forward(self, text, prog, line, col, wrap, ok=0):
         wrapped = 0
         startline = line
-        chars = text.get("%d.0" % line, "%d.0" % (line+1))
+        chars = text.get("%d.0" % line, "%d.0" % (line + 1))
         while chars:
             m = prog.search(chars[:-1], col)
             if m:
@@ -147,7 +147,7 @@ class SearchEngine:
                 break
             col = 0
             ok = 1
-            chars = text.get("%d.0" % line, "%d.0" % (line+1))
+            chars = text.get("%d.0" % line, "%d.0" % (line + 1))
             if not chars and wrap:
                 wrapped = 1
                 wrap = 0
@@ -158,7 +158,7 @@ class SearchEngine:
     def search_backward(self, text, prog, line, col, wrap, ok=0):
         wrapped = 0
         startline = line
-        chars = text.get("%d.0" % line, "%d.0" % (line+1))
+        chars = text.get("%d.0" % line, "%d.0" % (line + 1))
         while 1:
             m = search_reverse(prog, chars[:-1], col)
             if m:
@@ -175,12 +175,14 @@ class SearchEngine:
                 wrap = 0
                 pos = text.index("end-1c")
                 line, col = map(int, pos.split("."))
-            chars = text.get("%d.0" % line, "%d.0" % (line+1))
+            chars = text.get("%d.0" % line, "%d.0" % (line + 1))
             col = len(chars) - 1
         return None
 
+
 # Helper to search backwards in a string.
 # (Optimized for the case where the pattern isn't found.)
+
 
 def search_reverse(prog, chars, col):
     m = prog.search(chars)
@@ -191,15 +193,17 @@ def search_reverse(prog, chars, col):
     while i < col and j <= col:
         found = m
         if i == j:
-            j = j+1
+            j = j + 1
         m = prog.search(chars, j)
         if not m:
             break
         i, j = m.span()
     return found
 
+
 # Helper to get selection end points, defaulting to insert mark.
 # Return a tuple of indices ("line.col" strings).
+
 
 def get_selection(text):
     try:
@@ -213,8 +217,10 @@ def get_selection(text):
         last = first
     return first, last
 
+
 # Helper to parse a text index into a (line, col) tuple.
 
+
 def get_line_col(index):
-    line, col = map(int, index.split(".")) # Fails on invalid index
+    line, col = map(int, index.split("."))  # Fails on invalid index
     return line, col

@@ -1,4 +1,3 @@
-import functools
 import importlib
 import importlib._bootstrap
 import unittest
@@ -22,8 +21,10 @@ def importlib_only(fxn):
 
 def mock_path_hook(*entries, importer):
     """A mock sys.path_hooks entry."""
+
     def hook(entry):
         if entry not in entries:
             raise ImportError
         return importer
+
     return hook

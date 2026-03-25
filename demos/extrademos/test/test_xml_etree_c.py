@@ -1,13 +1,13 @@
 # xml.etree test for cElementTree
 
 from test import support
-from test.support import precisionbigmemtest, _2G
 import unittest
 
-cET = support.import_module('xml.etree.cElementTree')
+cET = support.import_module("xml.etree.cElementTree")
 
 
 # cElementTree specific tests
+
 
 def sanity():
     r"""
@@ -39,7 +39,7 @@ class MiscTests(unittest.TestCase):
     def test_length_overflow(self, size):
         if size < support._2G + 100:
             self.skipTest("not enough free memory, need at least 2 GB")
-        data = b'x' * size
+        data = b"x" * size
         parser = cET.XMLParser()
         try:
             self.assertRaises(OverflowError, parser.feed, data)
@@ -60,14 +60,15 @@ def test_main():
     pyET = test_xml_etree.ET
     py__name__ = test_xml_etree.__name__
     test_xml_etree.ET = cET
-    if __name__ != '__main__':
+    if __name__ != "__main__":
         test_xml_etree.__name__ = __name__
     try:
         # Run the same test suite as xml.etree.ElementTree
-        test_xml_etree.test_main(module_name='xml.etree.cElementTree')
+        test_xml_etree.test_main(module_name="xml.etree.cElementTree")
     finally:
         test_xml_etree.ET = pyET
         test_xml_etree.__name__ = py__name__
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test_main()

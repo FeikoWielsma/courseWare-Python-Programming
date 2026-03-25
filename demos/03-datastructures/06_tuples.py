@@ -1,4 +1,4 @@
-tup1 = ('physics', 'chemistry', 'biology', 'computer science')
+tup1 = ("physics", "chemistry", "biology", "computer science")
 
 t = ()
 print(t)
@@ -10,18 +10,7 @@ print(tup1[1])
 print(tup1[2])
 print(tup1[3])
 
-singleton = ('hello',)   # <-- note trailing comma
+singleton = ("hello",)  # <-- note trailing comma
 
-print(len(singleton))    # 1
-print(singleton)         #('hello',)
-
-
-
-
-
-
-
-
-
-
-
+print(len(singleton))  # 1
+print(singleton)  # ('hello',)

@@ -1,7 +1,7 @@
 """Tests for distutils.sysconfig."""
+
 import os
 import shutil
-import test
 import unittest
 
 from distutils import sysconfig
@@ -9,8 +9,8 @@ from distutils.ccompiler import get_default_compiler
 from distutils.tests import support
 from test.support import TESTFN, run_unittest
 
-class SysconfigTestCase(support.EnvironGuard,
-                        unittest.TestCase):
+
+class SysconfigTestCase(support.EnvironGuard, unittest.TestCase):
     def setUp(self):
         super(SysconfigTestCase, self).setUp()
         self.makefile = None
@@ -34,10 +34,11 @@ class SysconfigTestCase(support.EnvironGuard,
     def test_get_python_lib(self):
         lib_dir = sysconfig.get_python_lib()
         # XXX doesn't work on Linux when Python was never installed before
-        #self.assertTrue(os.path.isdir(lib_dir), lib_dir)
+        # self.assertTrue(os.path.isdir(lib_dir), lib_dir)
         # test for pythonxx.lib?
-        self.assertNotEqual(sysconfig.get_python_lib(),
-                            sysconfig.get_python_lib(prefix=TESTFN))
+        self.assertNotEqual(
+            sysconfig.get_python_lib(), sysconfig.get_python_lib(prefix=TESTFN)
+        )
 
     def test_get_python_inc(self):
         inc_dir = sysconfig.get_python_inc()
@@ -54,57 +55,68 @@ class SysconfigTestCase(support.EnvironGuard,
         self.assertTrue(cvars)
 
     def test_customize_compiler(self):
-
         # not testing if default compiler is not unix
-        if get_default_compiler() != 'unix':
+        if get_default_compiler() != "unix":
             return
 
-        os.environ['AR'] = 'my_ar'
-        os.environ['ARFLAGS'] = '-arflags'
+        os.environ["AR"] = "my_ar"
+        os.environ["ARFLAGS"] = "-arflags"
 
         # make sure AR gets caught
         class compiler:
-            compiler_type = 'unix'
+            compiler_type = "unix"
 
             def set_executables(self, **kw):
                 self.exes = kw
 
         comp = compiler()
         sysconfig.customize_compiler(comp)
-        self.assertEqual(comp.exes['archiver'], 'my_ar -arflags')
+        self.assertEqual(comp.exes["archiver"], "my_ar -arflags")
 
     def test_parse_makefile_base(self):
         self.makefile = TESTFN
-        fd = open(self.makefile, 'w')
+        fd = open(self.makefile, "w")
         try:
-            fd.write(r"CONFIG_ARGS=  '--arg1=optarg1' 'ENV=LIB'" '\n')
-            fd.write('VAR=$OTHER\nOTHER=foo')
+            fd.write(r"CONFIG_ARGS=  '--arg1=optarg1' 'ENV=LIB'" "\n")
+            fd.write("VAR=$OTHER\nOTHER=foo")
         finally:
             fd.close()
         d = sysconfig.parse_makefile(self.makefile)
-        self.assertEqual(d, {'CONFIG_ARGS': "'--arg1=optarg1' 'ENV=LIB'",
-                             'OTHER': 'foo'})
+        self.assertEqual(
+            d, {"CONFIG_ARGS": "'--arg1=optarg1' 'ENV=LIB'", "OTHER": "foo"}
+        )
 
     def test_parse_makefile_literal_dollar(self):
         self.makefile = TESTFN
-        fd = open(self.makefile, 'w')
+        fd = open(self.makefile, "w")
         try:
-            fd.write(r"CONFIG_ARGS=  '--arg1=optarg1' 'ENV=\$$LIB'" '\n')
-            fd.write('VAR=$OTHER\nOTHER=foo')
+            fd.write(r"CONFIG_ARGS=  '--arg1=optarg1' 'ENV=\$$LIB'" "\n")
+            fd.write("VAR=$OTHER\nOTHER=foo")
         finally:
             fd.close()
         d = sysconfig.parse_makefile(self.makefile)
-        self.assertEqual(d, {'CONFIG_ARGS': r"'--arg1=optarg1' 'ENV=\$LIB'",
-                             'OTHER': 'foo'})
-
+        self.assertEqual(
+            d, {"CONFIG_ARGS": r"'--arg1=optarg1' 'ENV=\$LIB'", "OTHER": "foo"}
+        )
 
     def test_sysconfig_module(self):
         import sysconfig as global_sysconfig
-        self.assertEqual(global_sysconfig.get_config_var('CFLAGS'), sysconfig.get_config_var('CFLAGS'))
-        self.assertEqual(global_sysconfig.get_config_var('LDFLAGS'), sysconfig.get_config_var('LDFLAGS'))
-        self.assertEqual(global_sysconfig.get_config_var('LDSHARED'),sysconfig.get_config_var('LDSHARED'))
-        self.assertEqual(global_sysconfig.get_config_var('CC'), sysconfig.get_config_var('CC'))
 
+        self.assertEqual(
+            global_sysconfig.get_config_var("CFLAGS"),
+            sysconfig.get_config_var("CFLAGS"),
+        )
+        self.assertEqual(
+            global_sysconfig.get_config_var("LDFLAGS"),
+            sysconfig.get_config_var("LDFLAGS"),
+        )
+        self.assertEqual(
+            global_sysconfig.get_config_var("LDSHARED"),
+            sysconfig.get_config_var("LDSHARED"),
+        )
+        self.assertEqual(
+            global_sysconfig.get_config_var("CC"), sysconfig.get_config_var("CC")
+        )
 
 
 def test_suite():
@@ -113,5 +125,5 @@ def test_suite():
     return suite
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run_unittest(test_suite())

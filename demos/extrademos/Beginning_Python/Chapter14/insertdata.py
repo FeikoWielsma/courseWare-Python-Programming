@@ -2,7 +2,7 @@
 
 import gadfly.dbapi20
 
-connection = gadfly.dbapi20.connect('pydb', 'db')
+connection = gadfly.dbapi20.connect("pydb", "db")
 
 cursor = connection.cursor()
 
@@ -47,7 +47,7 @@ values (3,'bunny',3)""")
 
 connection.commit()
 
-   
+
 cursor.close()
 
 connection.close()

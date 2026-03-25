@@ -3,13 +3,13 @@ import unittest
 
 import xdrlib
 
-class XDRTest(unittest.TestCase):
 
+class XDRTest(unittest.TestCase):
     def test_xdr(self):
         p = xdrlib.Packer()
 
-        s = b'hello world'
-        a = [b'what', b'is', b'hapnin', b'doctor']
+        s = b"hello world"
+        a = [b"what", b"is", b"hapnin", b"doctor"]
 
         p.pack_int(42)
         p.pack_uint(9)
@@ -49,8 +49,10 @@ class XDRTest(unittest.TestCase):
         up.done()
         self.assertRaises(EOFError, up.unpack_uint)
 
+
 def test_main():
     support.run_unittest(XDRTest)
+
 
 if __name__ == "__main__":
     test_main()

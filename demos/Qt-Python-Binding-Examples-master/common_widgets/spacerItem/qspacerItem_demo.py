@@ -1,18 +1,18 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
 QSpacerItem demo
 
 Tested environment:
     Mac OS X 10.6.8
 """
+
 import sys
 
 try:
     from PySide import QtCore
     from PySide import QtGui
 except ImportError:
-    from PyQt4 import QtCore
     from PyQt4 import QtGui
 
 
@@ -21,31 +21,31 @@ class Demo(QtGui.QDialog):
         super(Demo, self).__init__()
 
         x, y, w, h = 500, 200, 300, 400
-        self.setGeometry(x, y, w, h)
-        
-        okBtn = QtGui.QPushButton('ok')
-        cancelBtn = QtGui.QPushButton('cancel') 
+        self.set_geometry(x, y, w, h)
 
-        btnLayout = QtGui.QHBoxLayout()
+        ok_btn = QtGui.QPushButton("ok")
+        cancel_btn = QtGui.QPushButton("cancel")
 
-        btnLayout.addWidget(okBtn)
+        btn_layout = QtGui.QHBoxLayout()
 
-        btnLayout.addSpacerItem(QtGui.QSpacerItem(50, 50))
+        btn_layout.add_widget(ok_btn)
 
-        btnLayout.addWidget(cancelBtn)
-        
+        btn_layout.add_spacer_item(QtGui.QSpacerItem(50, 50))
+
+        btn_layout.add_widget(cancel_btn)
+
         layout = QtGui.QGridLayout()
 
-#        layout.addLayout(btnLayout, int row, int column, int rowSpan, int columnSpan, alignment = 0)
-        layout.addLayout(btnLayout, 2, 0, 1, 3)
-        
-        self.setLayout(layout)
-        
+        #        layout.add_layout(btn_layout, int row, int column, int row_span, int column_span, alignment = 0)
+        layout.add_layout(btn_layout, 2, 0, 1, 3)
+
+        self.set_layout(layout)
+
     def show_and_raise(self):
         self.show()
         self.raise_()
 
-        
+
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
 
@@ -53,4 +53,3 @@ if __name__ == "__main__":
     demo.show()
 
     app.exec_()
-

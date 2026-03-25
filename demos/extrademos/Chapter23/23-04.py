@@ -1,12 +1,15 @@
 # squish.py
-import os, sys, pygame
+import os
+import sys
+import pygame
 from pygame.locals import *
-import objects, config
+import objects
+import config
 
 "This module contains the main game logic of the Squish game."
 
-class State:
 
+class State:
     """
     A generic game state class that can handle events and display
     itself on a given surface.
@@ -39,7 +42,6 @@ class State:
 
 
 class Level(State):
-
     """
     A game level. Takes care of counting how many weights have been
     dropped, moving the sprites around, and other tasks relating to
@@ -53,12 +55,12 @@ class Level(State):
 
         speed = config.drop_speed
         # One speed_increase added for each level above 1:
-        speed += (self.number-1) * config.speed_increase
+        speed += (self.number - 1) * config.speed_increase
 
         # Create the weight and banana:
         self.weight = weight = objects.Weight(speed)
         self.banana = banana = objects.Banana()
-        both = self.weight, self.banana # This could contain more sprites...
+        both = self.weight, self.banana  # This could contain more sprites...
         self.sprites = pygame.sprite.RenderUpdates(both)
 
     def update(self, game):
@@ -91,7 +93,6 @@ class Level(State):
 
 
 class Paused(State):
-
     """
     A simple, paused game state, which may be broken out of by pressing
     either a keyboard key or the mouse button.
@@ -99,7 +100,7 @@ class Paused(State):
 
     finished = 0  # Has the user ended the pause?
     image = None  # Set this to a file name if you want an image
-    text = ''     # Set this to some informative text
+    text = ""  # Set this to some informative text
 
     def handle(self, event):
         """
@@ -158,7 +159,7 @@ class Paused(State):
             # blit the image to the screen:
             screen.blit(image, r)
 
-        antialias = 1    # Smooth the text
+        antialias = 1  # Smooth the text
         black = 0, 0, 0  # Render it as black
 
         # Render all the lines, starting at the calculated top, and
@@ -175,23 +176,21 @@ class Paused(State):
 
 
 class Info(Paused):
-
     """
     A simple paused state that displays some information about the
     game. It is followed by a Level state (the first level).
     """
 
     nextState = Level
-    text = '''
+    text = """
     In this game you are a banana,
     trying to survive a course in
     self-defense against fruit, where the
     participants will "defend" themselves
-    against you with a 16 ton weight.'''
+    against you with a 16 ton weight."""
 
 
 class StartUp(Paused):
-
     """
     A paused state that displays a splash image and a welcome
     message. It is followed by an Info state.
@@ -199,13 +198,12 @@ class StartUp(Paused):
 
     nextState = Info
     image = config.splash_image
-    text = '''
+    text = """
     Welcome to Squish,
-    the game of Fruit Self-Defense'''
+    the game of Fruit Self-Defense"""
 
 
 class LevelCleared(Paused):
-
     """
     A paused state that informs the user that he or she has cleared a
     given level.  It is followed by the next level state.
@@ -213,28 +211,29 @@ class LevelCleared(Paused):
 
     def __init__(self, number):
         self.number = number
-        self.text = '''Level %i cleared
-        Click to start next level''' % self.number
+        self.text = (
+            """Level %i cleared
+        Click to start next level"""
+            % self.number
+        )
 
     def nextState(self):
-        return Level(self.number+1)
+        return Level(self.number + 1)
 
 
 class GameOver(Paused):
-
     """
     A state that informs the user that he or she has lost the
     game. It is followed by the first level.
     """
 
     nextState = Level
-    text = '''
+    text = """
     Game Over
-    Click to Restart, Esc to Quit'''
+    Click to Restart, Esc to Quit"""
 
 
 class Game:
-
     """
     A game object that takes care of the main event loop, including
     changing between the different game states.
@@ -257,17 +256,17 @@ class Game:
         This method sets things in motion. It performs some vital
         initialization tasks, and enters the main event loop.
         """
-        pygame.init() # This is needed to initialize all the pygame modules
+        pygame.init()  # This is needed to initialize all the pygame modules
 
         # Decide whether to display the game in a window or to use the
         # full screen:
-        flag = 0                  # Default (window) mode
+        flag = 0  # Default (window) mode
         if config.full_screen:
-            flag = FULLSCREEN     # Full screen mode
+            flag = FULLSCREEN  # Full screen mode
         screen_size = config.screen_size
         screen = pygame.display.set_mode(screen_size, flag)
 
-        pygame.display.set_caption('Fruit Self Defense')
+        pygame.display.set_caption("Fruit Self Defense")
         pygame.mouse.set_visible(0)
 
         # The main loop:
@@ -286,6 +285,6 @@ class Game:
             self.state.display(screen)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     game = Game(*sys.argv)
     game.run()

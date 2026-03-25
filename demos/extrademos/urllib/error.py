@@ -17,6 +17,7 @@ import urllib.response
 # make sure all of the IOError stuff is overridden.  we just want to be
 # subtypes.
 
+
 class URLError(IOError):
     # URLError is a sub-type of IOError, but it doesn't share any of
     # the implementation.  need to override __init__ and __str__.
@@ -24,16 +25,18 @@ class URLError(IOError):
     # subclasses, but args doesn't have the typical format with errno in
     # slot 0 and strerror in slot 1.  This may be better than nothing.
     def __init__(self, reason, filename=None):
-        self.args = reason,
+        self.args = (reason,)
         self.reason = reason
         if filename is not None:
             self.filename = filename
 
     def __str__(self):
-        return '<urlopen error %s>' % self.reason
+        return "<urlopen error %s>" % self.reason
+
 
 class HTTPError(URLError, urllib.response.addinfourl):
     """Raised when HTTP error occurs, but also acts like non-error return"""
+
     __super_init = urllib.response.addinfourl.__init__
 
     def __init__(self, url, code, msg, hdrs, fp):
@@ -50,7 +53,8 @@ class HTTPError(URLError, urllib.response.addinfourl):
             self.__super_init(fp, hdrs, url, code)
 
     def __str__(self):
-        return 'HTTP Error %s: %s' % (self.code, self.msg)
+        return "HTTP Error %s: %s" % (self.code, self.msg)
+
 
 # exception raised when downloaded size does not match content-length
 class ContentTooShortError(URLError):

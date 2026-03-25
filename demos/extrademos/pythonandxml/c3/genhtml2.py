@@ -5,7 +5,7 @@ genhtml2.py - generates HTML from pyxml.xml
 import sys
 
 from xml.parsers import expat
-from handlers    import PyXMLConversionHandler
+from handlers import PyXMLConversionHandler
 
 dh = PyXMLConversionHandler(sys.stdout)
 parser = expat.ParserCreate()

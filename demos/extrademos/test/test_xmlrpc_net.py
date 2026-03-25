@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
 
 import collections
-import errno
 import socket
-import sys
 import unittest
 from test import support
 
 import xmlrpc.client as xmlrpclib
 
-class CurrentTimeTest(unittest.TestCase):
 
+class CurrentTimeTest(unittest.TestCase):
     def test_current_time(self):
         # Get the current time from xmlrpc.com.  This code exercises
         # the minimal HTTP functionality in xmlrpclib.
@@ -55,6 +53,7 @@ class CurrentTimeTest(unittest.TestCase):
 def test_main():
     support.requires("network")
     support.run_unittest(CurrentTimeTest)
+
 
 if __name__ == "__main__":
     test_main()

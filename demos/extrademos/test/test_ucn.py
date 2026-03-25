@@ -1,18 +1,18 @@
-""" Test script for the Unicode implementation.
+"""Test script for the Unicode implementation.
 
 Written by Bill Tutt.
 Modified for Python 2.0 by Fredrik Lundh (fredrik@pythonware.com)
 
 (c) Copyright CNRI, All Rights Reserved. NO WARRANTY.
 
-"""#"
+"""  # "
 
 import unittest
 
 from test import support
 
-class UnicodeNamesTest(unittest.TestCase):
 
+class UnicodeNamesTest(unittest.TestCase):
     def checkletter(self, name, code):
         # Helper that put all \N escapes inside eval'd raw strings,
         # to make sure this script runs even if the compiler
@@ -49,13 +49,12 @@ class UnicodeNamesTest(unittest.TestCase):
             "LATIN small LETTER e",
             "LATIN small LETTER e",
             "LATIN SMALL LETTER P",
-            "FULL STOP"
+            "FULL STOP",
         ]
         string = "The rEd fOx ate the sheep."
 
         self.assertEqual(
-            "".join([self.checkletter(*args) for args in zip(chars, string)]),
-            string
+            "".join([self.checkletter(*args) for args in zip(chars, string)]), string
         )
 
     def test_ascii_letters(self):
@@ -82,22 +81,24 @@ class UnicodeNamesTest(unittest.TestCase):
         self.checkletter("HANGUL SYLLABLE HIH", "\ud7a3")
 
         import unicodedata
+
         self.assertRaises(ValueError, unicodedata.name, "\ud7a4")
 
     def test_cjk_unified_ideographs(self):
         self.checkletter("CJK UNIFIED IDEOGRAPH-3400", "\u3400")
         self.checkletter("CJK UNIFIED IDEOGRAPH-4DB5", "\u4db5")
         self.checkletter("CJK UNIFIED IDEOGRAPH-4E00", "\u4e00")
-        self.checkletter("CJK UNIFIED IDEOGRAPH-9FCB", "\u9fCB")
+        self.checkletter("CJK UNIFIED IDEOGRAPH-9FCB", "\u9fcb")
         self.checkletter("CJK UNIFIED IDEOGRAPH-20000", "\U00020000")
         self.checkletter("CJK UNIFIED IDEOGRAPH-2A6D6", "\U0002a6d6")
-        self.checkletter("CJK UNIFIED IDEOGRAPH-2A700", "\U0002A700")
-        self.checkletter("CJK UNIFIED IDEOGRAPH-2B734", "\U0002B734")
-        self.checkletter("CJK UNIFIED IDEOGRAPH-2B740", "\U0002B740")
-        self.checkletter("CJK UNIFIED IDEOGRAPH-2B81D", "\U0002B81D")
+        self.checkletter("CJK UNIFIED IDEOGRAPH-2A700", "\U0002a700")
+        self.checkletter("CJK UNIFIED IDEOGRAPH-2B734", "\U0002b734")
+        self.checkletter("CJK UNIFIED IDEOGRAPH-2B740", "\U0002b740")
+        self.checkletter("CJK UNIFIED IDEOGRAPH-2B81D", "\U0002b81d")
 
     def test_bmp_characters(self):
         import unicodedata
+
         count = 0
         for code in range(0x10000):
             char = chr(code)
@@ -108,41 +109,38 @@ class UnicodeNamesTest(unittest.TestCase):
 
     def test_misc_symbols(self):
         self.checkletter("PILCROW SIGN", "\u00b6")
-        self.checkletter("REPLACEMENT CHARACTER", "\uFFFD")
-        self.checkletter("HALFWIDTH KATAKANA SEMI-VOICED SOUND MARK", "\uFF9F")
-        self.checkletter("FULLWIDTH LATIN SMALL LETTER A", "\uFF41")
+        self.checkletter("REPLACEMENT CHARACTER", "\ufffd")
+        self.checkletter("HALFWIDTH KATAKANA SEMI-VOICED SOUND MARK", "\uff9f")
+        self.checkletter("FULLWIDTH LATIN SMALL LETTER A", "\uff41")
 
     def test_errors(self):
         import unicodedata
+
         self.assertRaises(TypeError, unicodedata.name)
-        self.assertRaises(TypeError, unicodedata.name, 'xx')
+        self.assertRaises(TypeError, unicodedata.name, "xx")
         self.assertRaises(TypeError, unicodedata.lookup)
-        self.assertRaises(KeyError, unicodedata.lookup, 'unknown')
+        self.assertRaises(KeyError, unicodedata.lookup, "unknown")
 
     def test_strict_error_handling(self):
         # bogus character name
-        self.assertRaises(
-            UnicodeError,
-            str, b"\\N{blah}", 'unicode-escape', 'strict'
-        )
+        self.assertRaises(UnicodeError, str, b"\\N{blah}", "unicode-escape", "strict")
         # long bogus character name
         self.assertRaises(
             UnicodeError,
-            str, bytes("\\N{%s}" % ("x" * 100000), "ascii"), 'unicode-escape', 'strict'
+            str,
+            bytes("\\N{%s}" % ("x" * 100000), "ascii"),
+            "unicode-escape",
+            "strict",
         )
         # missing closing brace
-        self.assertRaises(
-            UnicodeError,
-            str, b"\\N{SPACE", 'unicode-escape', 'strict'
-        )
+        self.assertRaises(UnicodeError, str, b"\\N{SPACE", "unicode-escape", "strict")
         # missing opening brace
-        self.assertRaises(
-            UnicodeError,
-            str, b"\\NSPACE", 'unicode-escape', 'strict'
-        )
+        self.assertRaises(UnicodeError, str, b"\\NSPACE", "unicode-escape", "strict")
+
 
 def test_main():
     support.run_unittest(UnicodeNamesTest)
+
 
 if __name__ == "__main__":
     test_main()

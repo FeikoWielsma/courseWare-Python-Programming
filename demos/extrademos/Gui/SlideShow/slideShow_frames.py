@@ -5,7 +5,7 @@ from slideShow import SlideShow
 if len(sys.argv) == 2:
     picdir = sys.argv[1]
 else:
-    picdir = '../gifs'
+    picdir = "../gifs"
 
 root = Tk()
 Label(root, text="Two embedded slide shows: Frames").pack()

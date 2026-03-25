@@ -2,15 +2,15 @@
 # PyMailGui 2.1 - A Python/Tkinter email client.
 # A client-side Tkinter-based GUI interface for sending and receiving email.
 #
-# See the help string in PyMailGuiHelp2.py for usage details, and a list of 
+# See the help string in PyMailGuiHelp2.py for usage details, and a list of
 # enhancements in this version.  Version 2.0 is a major rewrite.  The changes
 # from 2.0 (July '05) to 2.1 (Jan '06) were quick-access part buttons on View
 # windows, threaded loads and deletes of local save-mail files, and checks for
 # and recovery from message numbers out-of-synch with mail server inbox on
 # deletes, index loads, and message loads.
 #
-# This file implements the top-level windows and interface.  PyMailGui uses 
-# a number of modules that know nothing about this GUI, but perform related 
+# This file implements the top-level windows and interface.  PyMailGui uses
+# a number of modules that know nothing about this GUI, but perform related
 # tasks, some of which are developed in other sections of the book.  The
 # mailconfig module is expanded for this program.
 #
@@ -50,7 +50,8 @@
 #    main, top-level file (run this), with main window types
 ###############################################################################
 
-import mailconfig, sys
+import mailconfig
+import sys
 from SharedNames import appname, windows
 from ListWindows import PyMailServer, PyMailFile
 
@@ -65,22 +66,26 @@ from ListWindows import PyMailServer, PyMailFile
 ###############################################################################
 
 # uses icon file in cwd or default in tools dir
-srvrname = mailconfig.popservername or 'Server'
+srvrname = mailconfig.popservername or "Server"
+
 
 class PyMailServerWindow(PyMailServer, windows.MainWindow):
     def __init__(self):
         windows.MainWindow.__init__(self, appname, srvrname)
         PyMailServer.__init__(self)
 
+
 class PyMailServerPopup(PyMailServer, windows.PopupWindow):
     def __init__(self):
         windows.PopupWindow.__init__(self, appname, srvrnane)
         PyMailServer.__init__(self)
 
+
 class PyMailServerComponent(PyMailServer, windows.ComponentWindow):
     def __init__(self):
         windows.ComponentWindow.__init__(self)
         PyMailServer.__init__(self)
+
 
 class PyMailFileWindow(PyMailFile, windows.PopupWindow):
     def __init__(self, filename):
@@ -92,10 +97,10 @@ class PyMailFileWindow(PyMailFile, windows.PopupWindow):
 # when run as a top-level program: create main mail-server list window
 ###############################################################################
 
-if __name__ == '__main__':
-    rootwin = PyMailServerWindow()              # open server window
+if __name__ == "__main__":
+    rootwin = PyMailServerWindow()  # open server window
     if sys.argv > 1:
         for savename in sys.argv[1:]:
-            rootwin.onOpenMailFile(savename)    # open save file windows (demo)
-        rootwin.lift()                          # save files loaded in threads
+            rootwin.onOpenMailFile(savename)  # open save file windows (demo)
+        rootwin.lift()  # save files loaded in threads
     rootwin.mainloop()
