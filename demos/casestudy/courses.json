@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Java",
+        "duration": 5,
+        "location": "Rotterdam",
+        "price": 2450
+    },
+    {
+        "name": "Python",
+        "duration": 4,
+        "location": "Amsterdam",
+        "price": 1750
+    }
+]

@@ -1,0 +1,12 @@
+Java Programming
+5
+Amsterdam
+1000
+Python Programming
+4
+Eindhoven
+2000
+JavaScript Programming
+3
+Houten
+500

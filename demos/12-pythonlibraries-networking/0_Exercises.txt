@@ -1,0 +1,158 @@
+EXERCISES
+
+This directory contains a few pieces of code that might be useful
+during the hands-on sessions, and to help you expand your
+understanding after the tutorial. All the servers offer a simple
+"translate to upper case" service, to keep the code simple. All
+you need to do to provide something a little more imaginative is
+to replace
+
+	data.upper()
+			
+	with
+			
+	f(data)
+				
+where f is some function you have defined. You can also try other
+string methods if you want - Python strings are first-class objects
+that have many methods, including:
+
+	s.expandtabs([tabsize]) - changes tabs to spaces
+	s.strip() - removes leading & trailing whitespace
+	s.lower() - converts to lower case
+	s.replace(s1, s2) - replaces substrings
+
+These exercises have been designed to be run during the class to
+consolidate your knowledge of Python network programming with short
+periods of hands-on experience. They are also intended to provide
+you with some code you can take away with you and study with some
+introductory Python textbook to guide you further.
+
+
+1. Simple UDP Client and Server
+
+Open two windows and in each window change to the directory where
+you've located the sample code . In one window run
+
+	udpserv1.py
+
+In the other window, repeatedly run
+
+	udpcli1.py
+
+Each time you run the client program it will ask you to enter a
+string, send that string off to the server and print the server's
+reply, which will be the same string converted to upper case (unless
+you've modified the server).
+
+Observe in the server window that the server reports each connection,
+and that typically each connection comes from a different port
+number.
+
+You can also try replacing the '127.0.0.1' localhost address with an
+empty string in your server. This binds the program to any available
+interface. Once you have done this your classmates can put your
+system's address in their client, and they should see responses from
+your server.
+
+You are encouraged to repeat these variations with the other pieces of
+sample code provided.
+
+2. Demonstration of Mr. Creosote
+
+This is a module that can be useful in many network debugging
+situations. The advantage is that you can insert client calls into
+your application code, which continues to run whether or not you have
+a server listening to pick up the debug output.
+
+Use the same two windows you used in exercise 1 (or open two new ones
+and change to the right working directory). In one window start the
+server
+
+	creosote.py
+
+In the other window, use the creosote module to log a message:
+
+	creosote.py Hello world
+
+Observe that the server module receives and logs the messages from
+your client.
+
+You could also change the port number used by the client program from
+the last exercise, and creosote should log its messages too.
+
+The creosoteplus.py module adds a few fancy features. First, it uses
+object-oriented language features to define a listener class called
+bucket. If the program is called without arguments then it creates a
+bucket instance, which listens on port 7739 and logs incoming
+packets. It also refines the logging task slightly by adding
+timestamps and doing linewrapping to keep the logs readable and more
+helpful.
+
+3. Simple TCP Client and Server
+
+Because TCP is connection-oriented the simplest client and server are
+just a little more complicated than their UDP equivalents. They still
+merit the adjective "simple", though. In this case, in the first window
+you should run
+
+	tcpserv1.py
+
+and in the second
+
+	tcpcli1.py
+
+Rather than the server detecting the client's closure of the socket,
+it uses the protocol to decide when the client is done - it assumes
+this is so when the client sends only a carriage return and line feed
+(which it does when you just hit RETURN to the client's input prompt).
+
+Again there is no error checking, so in this case you will find that
+you can hang either the client or the server by aborting the other
+while the two are connected.
+
+You should also see that the connection-oriented nature of TCP means
+that the simple server can only handle one client at a time. You
+might want to try opening a third window in the same directory and
+running a second client program. If you do try to run a second client
+it will appear to connect, but in fact the connection remains queued
+in the server's transport layer. When the first client connection is
+closed you will (usually) see the server immediately respond to the
+second client.
+
+Obviously this is far from satisfactory in the case of general network
+services, so we need to be a little more sophisticated about handling
+multiple connections.
+
+4. SocketServer-based Servers
+
+Run this exercise using the same clients as before, but this time
+against SockServerUDP.py and SockServerTCP.py. The results should be
+pretty much the same as before, so you might wonder why we are doing
+this.
+
+The answer is that the SocketServer module is designed to be easily
+extensible into asynchronous services, which will allow you to handle
+multiple requests at the same time with very little modification to
+your code (unlike the earlier servers).
+
+This is usually more important for TCP services, given their nature -
+a UDP-based service will typically give a fast response to a short
+message, so asynchrony is usually unnecessary. This is not always so,
+however - consider a DNS server in a recursive query, for example. It
+may have to request results from one or more other servers before it
+can reply to a request, so even UDP services can benefit from the
+ability to run asynchronously sometimes.
+
+5. Asynchronous TCP Server
+
+For this exercise you probably want to open at least one further window
+so that you can see several clients interacting with the same server.
+Remember how in Exercise 3 a second client would hang until the first
+client disconnected? With a Threading server (or, for that matter, with
+a Forking server) this limitation is gone.
+
+Given the notorious difficulty of implementing forked or threaded
+processes, the benefit of the SocketServer framework becomes much more
+marked when asynchronous services are considered.
+

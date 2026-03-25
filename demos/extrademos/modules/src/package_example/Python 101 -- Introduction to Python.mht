@@ -1,0 +1,3570 @@
+From: <Saved by Microsoft Internet Explorer 5>
+Subject: Python 101 -- Introduction to Python
+Date: Wed, 9 May 2007 15:09:36 +0200
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----=_NextPart_000_0000_01C7924C.0EDF3F30"
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.2180
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0000_01C7924C.0EDF3F30
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.rexx.com/~dkuhlman/python_101/python_101.html
+
+=EF=BB=BF<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Python 101 -- Introduction to Python</TITLE><LINK=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.css" =
+type=3Dtext/css=20
+rel=3DSTYLESHEET><LINK href=3D"../icons/pyfav.gif" type=3Dimage/gif=20
+rel=3D"SHORTCUT ICON"><LINK title=3D"Python 101 -- introduction to =
+Python"=20
+href=3D"python_101.html" rel=3Dfirst><LINK title=3DContents =
+href=3D"python_101.html"=20
+rel=3Dcontents><LINK title=3D"About this document..." =
+href=3D"about.html"=20
+rel=3Dlast><LINK title=3D"About this document..." href=3D"about.html" =
+rel=3Dhelp>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8">
+<META content=3Dinformation name=3Daesop>
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV class=3Dnavigation>
+<DIV id=3Dtop-navigation-panel xml:id=3D"top-navigation-panel">
+<TABLE cellSpacing=3D2 cellPadding=3D0 width=3D"100%" align=3Dcenter>
+  <TBODY>
+  <TR>
+    <TD class=3Donline-navigation><IMG height=3D32 alt=3D"Previous Page" =
+src=3D""=20
+      width=3D32 border=3D0></TD>
+    <TD class=3Donline-navigation><IMG height=3D32 alt=3D"Up one Level" =
+src=3D""=20
+      width=3D32 border=3D0></TD>
+    <TD class=3Donline-navigation><IMG height=3D32 alt=3D"Next Page" =
+src=3D"" width=3D32=20
+      border=3D0></TD>
+    <TD align=3Dmiddle width=3D"100%">Python 101 -- Introduction to =
+Python</TD>
+    <TD class=3Donline-navigation><IMG height=3D32 alt=3D"" src=3D"" =
+width=3D32=20
+    border=3D0></TD>
+    <TD class=3Donline-navigation><IMG height=3D32 alt=3D"" src=3D"" =
+width=3D32=20
+    border=3D0></TD>
+    <TD class=3Donline-navigation><IMG height=3D32 alt=3D"" src=3D"" =
+width=3D32=20
+    border=3D0></TD></TR></TBODY></TABLE>
+<DIV class=3Donline-navigation></DIV>
+<HR>
+</DIV></DIV><!--End of Navigation Panel-->
+<DIV class=3Dtitlepage>
+<DIV class=3Dcenter>
+<H1>Python 101 -- Introduction to Python</H1>
+<P><B><FONT size=3D+2>Dave Kuhlman</FONT></B></P>
+<P><A class=3Durl=20
+href=3D"http://www.rexx.com/~dkuhlman">http://www.rexx.com/~dkuhlman</A> =
+
+<BR>Email: <SPAN class=3Demail>dkuhlman@rexx.com</SPAN> </P>
+<P><STRONG>Release 1.01</STRONG><BR><STRONG>August 7, 2008</STRONG></P>
+<P></P></DIV></DIV>
+<P>
+<H1><A name=3DSECTION001000000000000000000></A><A =
+name=3Dfront></A><BR>Front Matter=20
+</H1>
+<P>Copyright (c) 2003 Dave Kuhlman=20
+<P>Permission is hereby granted, free of charge, to any person obtaining =
+a copy=20
+of this software and associated documentation files (the "Software"), to =
+deal in=20
+the Software without restriction, including without limitation the =
+rights to=20
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell =
+copies of=20
+the Software, and to permit persons to whom the Software is furnished to =
+do so,=20
+subject to the following conditions:=20
+<P>The above copyright notice and this permission notice shall be =
+included in=20
+all copies or substantial portions of the Software.=20
+<P>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, =
+EXPRESS OR=20
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, =
+FITNESS=20
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE =
+AUTHORS OR=20
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, =
+WHETHER=20
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN=20
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE =
+SOFTWARE.=20
+<P>
+<H3>Abstract:</H3>
+<DIV class=3DABSTRACT>This document is a syllabus for a first course in =
+Python=20
+programming. This course contains an introduction to the Python =
+language,=20
+instruction in the important and commonly used features of the language, =
+and=20
+practical excercises in the use of those features. </DIV>
+<P>
+<P><BR>
+<H2><A name=3DSECTION002000000000000000000>Contents</A> </H2><!--Table =
+of Contents-->
+<UL class=3DTofC>
+  <LI><A=20
+  =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+03000000000000000000">1.=20
+  Python 101 -- Introduction to Python</A>=20
+  <UL>
+    <LI><A=20
+    =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+03100000000000000000">1.1=20
+    Important Features of Python</A>=20
+    <LI><A=20
+    =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+03200000000000000000">1.2=20
+    Where to Go For Additional help</A> </LI></UL>
+  <LI><A=20
+  =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04000000000000000000">2.=20
+  Python -- Feature by Feature</A>=20
+  <UL>
+    <LI><A=20
+    =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04100000000000000000">2.1=20
+    Interactive Python</A>=20
+    <LI><A=20
+    =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04200000000000000000">2.2=20
+    Data Types</A>=20
+    <UL>
+      <LI><A=20
+      =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04210000000000000000">2.2.1=20
+      Strings</A>=20
+      <LI><A=20
+      =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04220000000000000000">2.2.2=20
+      Sequences</A>=20
+      <LI><A=20
+      =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04230000000000000000">2.2.3=20
+      Dictionaries</A> </LI></UL>
+    <LI><A=20
+    =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04300000000000000000">2.3=20
+    Simple Statements</A>=20
+    <UL>
+      <LI><A=20
+      =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04310000000000000000">2.3.1=20
+      print</A>=20
+      <LI><A=20
+      =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04320000000000000000">2.3.2=20
+      import</A>=20
+      <LI><A=20
+      =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04330000000000000000">2.3.3=20
+      assert</A>=20
+      <LI><A=20
+      =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04340000000000000000">2.3.4=20
+      global</A> </LI></UL>
+    <LI><A=20
+    =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04400000000000000000">2.4=20
+    Control Structures</A>=20
+    <UL>
+      <LI><A=20
+      =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04410000000000000000">2.4.1=20
+      if</A>=20
+      <LI><A=20
+      =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04420000000000000000">2.4.2=20
+      for</A>=20
+      <LI><A=20
+      =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04430000000000000000">2.4.3=20
+      while</A>=20
+      <LI><A=20
+      =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04440000000000000000">2.4.4=20
+      try-except and raise -- Exceptions</A>=20
+      <LI><A=20
+      =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04450000000000000000">2.4.5=20
+      Reading Text Files</A>=20
+      <LI><A=20
+      =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04460000000000000000">2.4.6=20
+      Iterator objects</A> </LI></UL>
+    <LI><A=20
+    =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04500000000000000000">2.5=20
+    Organization</A>=20
+    <UL>
+      <LI><A=20
+      =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04510000000000000000">2.5.1=20
+      Functions</A>=20
+      <LI><A=20
+      =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04520000000000000000">2.5.2=20
+      Classes and Instances</A>=20
+      <LI><A=20
+      =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04530000000000000000">2.5.3=20
+      Modules</A>=20
+      <LI><A=20
+      =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101.html#SECTION0=
+04540000000000000000">2.5.4=20
+      Packages</A> </LI></UL></LI></UL></LI></UL><!--End of Table of =
+Contents-->
+<P>
+<H1><A name=3DSECTION003000000000000000000></A><A =
+name=3Dintro></A><BR>1. Python 101=20
+-- Introduction to Python </H1>
+<P>Python is a high-level general purpose programming language. Because =
+code is=20
+automatically compiled to byte code and executed, Python is suitable for =
+use as=20
+a scripting language, Web application implementation language, etc. =
+Because=20
+Python can be extended in C and C++, Python can provide the speed needed =
+for=20
+even compute intensive tasks.=20
+<P>
+<H1><A name=3DSECTION003100000000000000000>1.1 Important Features of =
+Python</A>=20
+</H1>
+<P>
+<UL>
+  <LI>Built-in high level data types: strings, lists, dictionaries, etc. =
+
+  <P></P>
+  <LI>The usual control structures: if, if-else, if-elif-else, while, =
+plus a=20
+  powerful collection iterator (for).=20
+  <P></P>
+  <LI>Multiple levels of organizational structure: functions, classes, =
+modules,=20
+  and packages. These assist in organizing code. An excellent and large =
+example=20
+  is the Python standard library.=20
+  <P></P>
+  <LI>Compile on the fly to byte code -- Source code is compiled to byte =
+code=20
+  without a separate compile step. Source code modules can also be=20
+  "pre-compiled" to byte code files.=20
+  <P></P>
+  <LI>Extensions in C and C++ -- Extension modules and extension types =
+can be=20
+  written by hand. There are also tools that help with this, for =
+example, <B=20
+  class=3Dprogram>SWIG</B>, <B class=3Dprogram>sip</B>, <B =
+class=3Dprogram>Pyrex</B>.=20
+  <P></P></LI></UL>
+<P>Some things you will need to know:=20
+<P>
+<UL>
+  <LI>Python uses indentation to show block structure. Indent one level =
+to show=20
+  the beginning of a block. Out-dent one level to show the end of a =
+block. As an=20
+  example, the following C-style code:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>if (x)
+{
+    if (y)
+    {
+        f1()
+    }
+    f2()
+}
+</PRE></DIV>
+  <P>in Python would be:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>if x:
+    if y:
+        f1()
+    f2()
+</PRE></DIV>
+  <P>And, the convention is to use four spaces (and no tabs) for each =
+level of=20
+  indentation.=20
+  <P></P></LI></UL>
+<P>
+<H1><A name=3DSECTION003200000000000000000>1.2 Where to Go For =
+Additional help</A>=20
+</H1>
+<P>
+<UL>
+  <LI>The standard Python documentation set -- It contains a tutorial, a =
+
+  language reference, the standard library reference, and documents on =
+extending=20
+  Python in C/C++.=20
+  <P></P>
+  <LI>Other Python tutorials -- See especially:=20
+  <P>
+  <UL>
+    <LI><A class=3Dulink=20
+    href=3D"http://wiki.python.org/moin/BeginnersGuide">Beginner's Guide =
+to Python=20
+    - http://wiki.python.org/moin/BeginnersGuide</A>=20
+    <P></P></LI></UL>
+  <P></P>
+  <LI>Other Python resources -- See especially:=20
+  <P>
+  <UL>
+    <LI><A class=3Dulink href=3D"http://www.python.org/doc/">Python =
+documentation -=20
+    http://www.python.org/doc/</A>=20
+    <P></P>
+    <LI><A class=3Dulink href=3D"http://www.python.org/">the Python home =
+Web site -=20
+    http://www.python.org/</A>=20
+    <P></P>
+    <LI><A class=3Dulink href=3D"http://www.python.org/doc/FAQ.html">The =
+whole=20
+    Python FAQ - http://www.python.org/doc/FAQ.html</A>=20
+    <P></P></LI></UL>
+  <P></P></LI></UL>
+<P>
+<H1><A name=3DSECTION004000000000000000000></A><A =
+name=3Dfeature></A><BR>2. Python=20
+-- Feature by Feature </H1>
+<P>
+<H1><A name=3DSECTION004100000000000000000>2.1 Interactive Python</A> =
+</H1>
+<P>If you execute Python from the command line with no script, Python =
+gives you=20
+an interactive prompt. This is an excellent facility for learning Python =
+and for=20
+trying small snippets of code. Many of the examples that follow were =
+developed=20
+using the Python interactive prompt.=20
+<P>In addition, there are tools that will give you a more powerful and =
+fancy=20
+Python interactive mode. One example is IPython, which is available at =
+<A=20
+class=3Durl =
+href=3D"http://ipython.scipy.org/">http://ipython.scipy.org/</A>. You=20
+may also want to consider using IDLE. IDLE is a graphical integrated =
+development=20
+environment for Python; it contains a Python shell. You will find a =
+script to=20
+start up IDLE in the <SPAN class=3Dfile>Tools/scripts</SPAN> directory =
+of your=20
+Python distribution. IDLE requires Tkinter.=20
+<P>
+<H1><A name=3DSECTION004200000000000000000>2.2 Data Types</A> </H1>
+<P>
+<H2><A name=3DSECTION004210000000000000000>2.2.1 Strings</A> </H2>
+<P>
+<H3><A name=3DSECTION004211000000000000000>2.2.1.1 What</A> </H3>
+<P>In Python, strings are immutable sequences of characters. They are =
+immutable=20
+in that in order to modify a string, you must produce a new string.=20
+<P>
+<H3><A name=3DSECTION004212000000000000000>2.2.1.2 When</A> </H3>
+<P>Any text information.=20
+<P>
+<H3><A name=3DSECTION004213000000000000000>2.2.1.3 How</A> </H3>
+<P>Create a new string from a constant:=20
+<P>
+<DIV class=3Dverbatim><PRE>s1 =3D 'abce'
+s2 =3D "xyz"
+s3 =3D """A
+multi-line
+string.
+"""
+</PRE></DIV>
+<P>Use any of the string methods, for example:=20
+<P>
+<DIV class=3Dverbatim><PRE>&gt;&gt;&gt; 'The happy cat ran =
+home.'.upper()
+'THE HAPPY CAT RAN HOME.'
+&gt;&gt;&gt; 'The happy cat ran home.'.find('cat')
+10
+&gt;&gt;&gt; 'The happy cat ran home.'.find('kitten')
+-1
+&gt;&gt;&gt; 'The happy cat ran home.'.replace('cat', 'dog')
+'The happy dog ran home.'
+</PRE></DIV>
+<P>Type "<TT class=3Dsamp>help(str)</TT>" or see <A class=3Durl=20
+href=3D"http://www.python.org/doc/current/lib/string-methods.html">http:/=
+/www.python.org/doc/current/lib/string-methods.html</A>=20
+for more information on string methods.=20
+<P>You can also use the equivalent functions from the <TT=20
+class=3Dmodule>string</TT> module. For example:=20
+<P>
+<DIV class=3Dverbatim><PRE>&gt;&gt;&gt; import string
+&gt;&gt;&gt; s1 =3D 'The happy cat ran home.'
+&gt;&gt;&gt; string.find(s1, 'happy')
+4
+</PRE></DIV>
+<P>See <A class=3Durl=20
+href=3D"http://www.python.org/doc/current/lib/module-string.html">http://=
+www.python.org/doc/current/lib/module-string.html</A>for=20
+more information on the string module.=20
+<P>There is also a string formatting operator: "<TT =
+class=3Dsamp>%</TT>".=20
+<P>
+<DIV class=3Dverbatim><PRE>&gt;&gt;&gt; state =3D 'California'
+&gt;&gt;&gt; 'It never rains in sunny %s.' % state
+'It never rains in sunny California.'
+</PRE></DIV>
+<P>You can use any of the following formatting characters:=20
+<P>
+<DIV class=3Dcenter>
+<TABLE class=3Drealtable>
+  <THEAD>
+  <TR>
+    <TH class=3Dcenter>Conversion</TH>
+    <TH class=3Dleft>Meaning</TH>
+    <TH class=3Dcenter>Notes</TH></TR></THEAD>
+  <TBODY>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>d</TT></TD>
+    <TD class=3Dleft>Signed integer decimal.</TD>
+    <TD class=3Dcenter></TD></TR>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>i</TT></TD>
+    <TD class=3Dleft>Signed integer decimal.</TD>
+    <TD class=3Dcenter></TD></TR>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>o</TT></TD>
+    <TD class=3Dleft>Unsigned octal.</TD>
+    <TD class=3Dcenter>(1)</TD></TR>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>u</TT></TD>
+    <TD class=3Dleft>Unsigned decimal.</TD>
+    <TD class=3Dcenter></TD></TR>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>x</TT></TD>
+    <TD class=3Dleft>Unsigned hexidecimal (lowercase).</TD>
+    <TD class=3Dcenter>(2)</TD></TR>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>X</TT></TD>
+    <TD class=3Dleft>Unsigned hexidecimal (uppercase).</TD>
+    <TD class=3Dcenter>(2)</TD></TR>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>e</TT></TD>
+    <TD class=3Dleft>Floating point exponential format (lowercase).</TD>
+    <TD class=3Dcenter></TD></TR>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>E</TT></TD>
+    <TD class=3Dleft>Floating point exponential format (uppercase).</TD>
+    <TD class=3Dcenter></TD></TR>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>f</TT></TD>
+    <TD class=3Dleft>Floating point decimal format.</TD>
+    <TD class=3Dcenter></TD></TR>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>F</TT></TD>
+    <TD class=3Dleft>Floating point decimal format.</TD>
+    <TD class=3Dcenter></TD></TR>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>g</TT></TD>
+    <TD class=3Dleft>Same as "<TT class=3Dcharacter>e</TT>" if exponent =
+is greater=20
+      than -4 or less than precision, "<TT class=3Dcharacter>f</TT>" =
+otherwise.</TD>
+    <TD class=3Dcenter></TD></TR>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>G</TT></TD>
+    <TD class=3Dleft>Same as "<TT class=3Dcharacter>E</TT>" if exponent =
+is greater=20
+      than -4 or less than precision, "<TT class=3Dcharacter>F</TT>" =
+otherwise.</TD>
+    <TD class=3Dcenter></TD></TR>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>c</TT></TD>
+    <TD class=3Dleft>Single character (accepts integer or single =
+character=20
+      string).</TD>
+    <TD class=3Dcenter></TD></TR>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>r</TT></TD>
+    <TD class=3Dleft>String (converts any python object using <TT=20
+      class=3Dfunction>repr()</TT>).</TD>
+    <TD class=3Dcenter>(3)</TD></TR>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>s</TT></TD>
+    <TD class=3Dleft>String (converts any python object using <TT=20
+      class=3Dfunction>str()</TT>).</TD>
+    <TD class=3Dcenter>(4)</TD></TR>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>%</TT></TD>
+    <TD class=3Dleft>No argument is converted, results in a "<TT=20
+      class=3Dcharacter>%</TT>" character in the result.</TD>
+    <TD class=3Dcenter></TD></TR></TBODY></TABLE></DIV>
+<P>And these flags:=20
+<P>
+<DIV class=3Dcenter>
+<TABLE class=3Drealtable>
+  <THEAD>
+  <TR>
+    <TH class=3Dcenter>Flag</TH>
+    <TH class=3Dleft>Meaning</TH></TR></THEAD>
+  <TBODY>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>#</TT></TD>
+    <TD class=3Dleft>The value conversion will use the ``alternate =
+form'' (where=20
+      defined below).</TD></TR>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>0</TT></TD>
+    <TD class=3Dleft>The conversion will be zero padded for numeric=20
+values.</TD></TR>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>-</TT></TD>
+    <TD class=3Dleft>The converted value is left adjusted (overrides the =
+"<TT=20
+      class=3Dcharacter>0</TT>" conversion if both are given).</TD></TR>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>&nbsp;</TT></TD>
+    <TD class=3Dleft>(a space) A blank should be left before a positive =
+number=20
+      (or empty string) produced by a signed conversion.</TD></TR>
+  <TR>
+    <TD class=3Dcenter vAlign=3Dbaseline><TT =
+class=3Dcharacter>+</TT></TD>
+    <TD class=3Dleft>A sign character ("<TT class=3Dcharacter>+</TT>" or =
+"<TT=20
+      class=3Dcharacter>-</TT>") will precede the conversion (overrides =
+a "space"=20
+      flag).</TD></TR></TBODY></TABLE></DIV>
+<P>See <A class=3Durl=20
+href=3D"http://www.python.org/doc/current/lib/typesseq-strings.html">http=
+://www.python.org/doc/current/lib/typesseq-strings.html</A>for=20
+more information on string formatting.=20
+<P>You can also write strings to a file and read them from a file. Here =
+are some=20
+examples:=20
+<P>
+<UL>
+  <LI>Writing - For example:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; outfile =3D file('tmp.txt', =
+'w')
+&gt;&gt;&gt; outfile.write('This is line #1\n')
+&gt;&gt;&gt; outfile.write('This is line #2\n')
+&gt;&gt;&gt; outfile.write('This is line #3\n')
+&gt;&gt;&gt; outfile.close()
+</PRE></DIV>
+  <P>Notes:=20
+  <P>
+  <UL>
+    <LI>Note the end-of-line character at the end of each string.=20
+    <P></P>
+    <LI>The <TT class=3Dfunction>file</TT> constructor creates a file =
+object. It=20
+    takes as arguments (1) the file name and (2) a mode. Commonly used =
+modes are=20
+    "<TT class=3Dsamp>r</TT>" (read), "<TT class=3Dsamp>w</TT>" (write), =
+and "<TT=20
+    class=3Dsamp>a</TT>"(append). See <A class=3Durl=20
+    =
+href=3D"http://www.python.org/doc/current/lib/built-in-funcs.html">http:/=
+/www.python.org/doc/current/lib/built-in-funcs.html</A>for=20
+    more modes and more on <TT class=3Dfunction>file</TT>.=20
+    <P></P></LI></UL>
+  <P></P>
+  <LI>Reading an entire file:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; infile =3D file('tmp.txt', =
+'r')
+&gt;&gt;&gt; content =3D infile.read()
+&gt;&gt;&gt; print content
+This is line #1
+This is line #2
+This is line #3
+
+&gt;&gt;&gt; infile.close()
+</PRE></DIV>
+  <P></P>
+  <LI>Reading a file one line at a time:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; infile =3D file('tmp.txt', =
+'r')
+&gt;&gt;&gt; for line in infile.readlines():
+...     print 'Line:', line
+...
+Line: This is line #1
+
+Line: This is line #2
+
+Line: This is line #3
+
+&gt;&gt;&gt; infile.close()
+</PRE></DIV>
+  <P>Notes:=20
+  <P>
+  <UL>
+    <LI>"<TT class=3Dsamp>infile.readlines()</TT>" returns a list of =
+lines in the=20
+    file. For large files use the file object itself or "<TT=20
+    class=3Dsamp>infile.xreadlines()</TT>", both of which are iterators =
+for the=20
+    lines in the file.=20
+    <P></P>
+    <LI>Newer Pythons allow you to use infile (or iter(infile)) in the =
+same way=20
+    that you could use infile.xreadlines() in earlier versions of =
+Python. In=20
+    effect, the file object is an iterable and produces an iterator. For =
+
+    example:=20
+    <P>
+    <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; infile =3D file('tmp.txt', =
+'r')
+&gt;&gt;&gt; for line in infile:
+...     print 'Line:', line
+...
+</PRE></DIV>
+    <P></P></LI></UL>
+  <P></P></LI></UL>
+<P>A few additional comments about strings:=20
+<P>
+<UL>
+  <LI>A string is a special kind of sequence. So, you can index into the =
+
+  characters of a string and you can iterate over the characters in a =
+string.=20
+  For example:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; s1 =3D 'abcd'
+&gt;&gt;&gt; s1[1]
+'b'
+&gt;&gt;&gt; s1[2]
+'c'
+&gt;&gt;&gt; for ch in s1:
+...   print ch
+...
+a
+b
+c
+d
+</PRE></DIV>
+  <P></P>
+  <LI>If you need to do fast or complex string searches, there is a =
+regular=20
+  expression module in the standard library: <TT class=3Dmodule>re</TT>. =
+
+  <P></P>
+  <LI>An interesting feature of string formatting is the ability to use=20
+  dictionaries to supply the values that are inserted. Here is an =
+example:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>names =3D {'tree': 'sycamore', 'flower': =
+'poppy', 'herb': 'arugula'}
+
+print 'The tree is %(tree)s' % names
+print 'The flower is %(flower)s' % names
+print 'The herb is %(herb)s' % names
+</PRE></DIV>
+  <P></P></LI></UL>
+<P>
+<H2><A name=3DSECTION004220000000000000000>2.2.2 Sequences</A> </H2>
+<P>
+<H3><A name=3DSECTION004221000000000000000>2.2.2.1 What</A> </H3>
+<P>There are several types of sequences in Python. We've already =
+discussed=20
+strings. In this section we will describe lists and tuples. See <A =
+class=3Durl=20
+href=3D"http://www.python.org/doc/current/lib/typesseq.html">http://www.p=
+ython.org/doc/current/lib/typesseq.html</A>=20
+for a description of the other sequence types (e.g. buffers and xrange =
+objects).=20
+
+<P>Lists are dynamic arrays. They are arrays in the sense that you can =
+index=20
+items in a list (for example "<TT class=3Dsamp>mylist[3]</TT>") and you =
+can select=20
+sub-ranges (for example "<TT class=3Dsamp>mylist[2:4]</TT>"). They are =
+dynamic in=20
+the sense that you can add and remove items after the list is created.=20
+<P>Tuples are light-weight lists, but differ from lists in that they are =
+
+immutable. That is, once a tuple has been created, you <EM>cannot</EM> =
+modify=20
+it. You can, of course, modify any (modifiable) objects that the tuple =
+refers=20
+to.=20
+<P>Capabilities of lists:=20
+<P>
+<UL>
+  <LI>Append items.=20
+  <P></P>
+  <LI>Insert items.=20
+  <P></P>
+  <LI>Add a list of items.=20
+  <P></P></LI></UL>
+<P>Capabilities of lists and tuples:=20
+<P>
+<UL>
+  <LI>Index items.=20
+  <P></P>
+  <LI>Select a subsequence of items (also known as a slice).=20
+  <P></P>
+  <LI>Iterate over the items in the list or tuple.=20
+  <P></P></LI></UL>
+<P>
+<H3><A name=3DSECTION004222000000000000000>2.2.2.2 When</A> </H3>
+<P>
+<UL>
+  <LI>Whenever you want to process a colletion of items.=20
+  <P></P>
+  <LI>Whenever you want to iterate over a collection of items.=20
+  <P></P>
+  <LI>Whenever you want to <EM>index</EM> into a collection of items.=20
+  <P></P></LI></UL>
+<P>
+<H3><A name=3DSECTION004223000000000000000>2.2.2.3 How</A> </H3>
+<P>To create a list use:=20
+<P>
+<DIV class=3Dverbatim><PRE>&gt;&gt;&gt; items =3D [111, 222, 333]
+&gt;&gt;&gt; items
+[111, 222, 333]
+</PRE></DIV>
+<P>To add an item to the end of a list, use:=20
+<P>
+<DIV class=3Dverbatim><PRE>&gt;&gt;&gt; items.append(444)
+&gt;&gt;&gt; items
+[111, 222, 333, 444]
+</PRE></DIV>
+<P>To insert an item into a list, use:=20
+<P>
+<DIV class=3Dverbatim><PRE>&gt;&gt;&gt; items.insert(0, -1)
+&gt;&gt;&gt; items
+[-1, 111, 222, 333, 444]
+</PRE></DIV>
+<P>You can also push items onto the right end of a list and pop items =
+off the=20
+right end of a list with <TT class=3Dmethod>append</TT> and <TT=20
+class=3Dmethod>pop</TT>.=20
+<P>
+<DIV class=3Dverbatim><PRE>&gt;&gt;&gt; items.append(555)
+&gt;&gt;&gt; items
+[-1, 111, 222, 333, 444, 555]
+&gt;&gt;&gt; items.pop()
+555
+&gt;&gt;&gt; items
+[-1, 111, 222, 333, 444]
+</PRE></DIV>
+<P>And, you can iterate over the items in a list with the =
+<CODE>for</CODE>=20
+statement:=20
+<P>
+<DIV class=3Dverbatim><PRE>&gt;&gt;&gt; for item in items:
+...   print 'item:', item
+...
+item: -1
+item: 111
+item: 222
+item: 333
+item: 444
+</PRE></DIV>
+<P>
+<H2><A name=3DSECTION004230000000000000000>2.2.3 Dictionaries</A> </H2>
+<P>
+<H3><A name=3DSECTION004231000000000000000>2.2.3.1 What</A> </H3>
+<P>Associative arrays.=20
+<P>Capabilities:=20
+<P>
+<UL>
+  <LI>Ability to iterate over keys or values.=20
+  <P></P>
+  <LI>Ability to add key-value pairs dynamically.=20
+  <P></P>
+  <LI>Look-up by key.=20
+  <P></P></LI></UL>
+<P>For help on dictionaries, type:=20
+<P>
+<DIV class=3Dverbatim><PRE>&gt;&gt;&gt; help dict
+</PRE></DIV>
+<P>at Python's interactive prompt, or:=20
+<P>
+<DIV class=3Dverbatim><PRE>$ pydoc help
+</PRE></DIV>
+<P>at the command line.=20
+<P>
+<H3><A name=3DSECTION004232000000000000000>2.2.3.2 When</A> </H3>
+<P>
+<UL>
+  <LI>When you need look-up by key.=20
+  <P></P>
+  <LI>When you need a "structured" lite-weight object or an object with =
+named=20
+  fields. (But, don't forget classes.)=20
+  <P></P>
+  <LI>When you need to map a name or label to any kind of object, even =
+an=20
+  executable one such as a function.=20
+  <P></P></LI></UL>
+<P>
+<H3><A name=3DSECTION004233000000000000000>2.2.3.3 How</A> </H3>
+<P>Create a dictionary with:=20
+<P>
+<DIV class=3Dverbatim><PRE>&gt;&gt;&gt; lookup =3D {}
+&gt;&gt;&gt; lookup
+{}
+</PRE></DIV>
+<P>or:=20
+<P>
+<DIV class=3Dverbatim><PRE>&gt;&gt;&gt; def fruitfunc():
+...    print "I'm a fruit."
+&gt;&gt;&gt; def vegetablefunc():
+...    print "I'm a vegetable."
+&gt;&gt;&gt;
+&gt;&gt;&gt; lookup =3D {'fruit': fruitfunc, 'vegetable': vegetablefunc}
+&gt;&gt;&gt; lookup
+{'vegetable': &lt;function vegetablefunc at 0x4028980c&gt;,
+'fruit': &lt;function fruitfunc at 0x4028e614&gt;}
+&gt;&gt;&gt; lookup['fruit']()
+I'm a fruit.
+&gt;&gt;&gt; lookup['vegetable']()
+I'm a vegetable.
+</PRE></DIV>
+<P>or:=20
+<P>
+<DIV class=3Dverbatim><PRE>&gt;&gt;&gt; lookup =3D dict((('aa', 11), =
+('bb', 22), ('cc', 33)))
+&gt;&gt;&gt; lookup
+{'aa': 11, 'cc': 33, 'bb': 22}
+&gt;&gt;&gt;
+</PRE></DIV>
+<P>Test for the existence of a key with:=20
+<P>
+<DIV class=3Dverbatim><PRE>&gt;&gt;&gt; if lookup.has_key('fruit'):
+...   print 'contains key "fruit"'
+...
+contains key "fruit"
+&gt;&gt;&gt;
+</PRE></DIV>
+<P>or:=20
+<P>
+<DIV class=3Dverbatim><PRE>&gt;&gt;&gt; if 'fruit' in lookup:
+...   print 'contains key "fruit"'
+...
+contains key "fruit"
+&gt;&gt;&gt;
+</PRE></DIV>
+<P>Access the value of a key as follows:=20
+<P>
+<DIV class=3Dverbatim><PRE>&gt;&gt;&gt; print lookup['fruit']
+&lt;function fruitfunc at 0x4028e614&gt;
+&gt;&gt;&gt;
+</PRE></DIV>
+<P>
+<DIV class=3Dverbatim><PRE>&gt;&gt;&gt; for key in lookup:
+...     print 'key: %s' % key
+...     lookup[key]()
+...
+key: vegetable
+I'm a vegetable.
+key: fruit
+I'm a fruit.
+&gt;&gt;&gt;
+</PRE></DIV>
+<P>
+<DIV class=3Dverbatim><PRE></PRE></DIV>
+<P>And, remember that you can sub-class dictionaries. Here are two =
+versions of=20
+the same example. The keyword arguments in the second version require =
+Python 2.3=20
+or later:=20
+<P>
+<DIV class=3Dverbatim><PRE>#
+# This example works with Python 2.2.
+class MyDict_for_python_22(dict):
+    def __init__(self, **kw):
+        for key in kw.keys():
+            self[key] =3D kw[key]
+    def show(self):
+        print 'Showing example for Python 2.2 ...'
+        for key in self.keys():
+            print 'key: %s  value: %s' % (key, self[key])
+
+def test_for_python_22():
+    d =3D MyDict_for_python_22(one=3D11, two=3D22, three=3D33)
+    d.show()
+
+test_for_python_22()
+
+#
+# This example works with Python 2.3.
+#   Keyword support, when subclassing dictionaries, seems to have
+#   been enhanced in Python 2.3.
+class MyDict(dict):
+    def show(self):
+        print 'Showing example for Python 2.3 ...'
+        for key in self.keys():
+            print 'key: %s  value: %s' % (key, self[key])
+
+def test():
+    d =3D MyDict(one=3D11, two=3D22, three=3D33)
+    d.show()
+
+test()
+</PRE>
+<DIV class=3Dfooter><A=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_dict_example_=
+1.txt"=20
+type=3Dtext/plain>Download as text (original file name: <SPAN=20
+class=3Dfile>Examples/python_101_dict_example_1.py</SPAN>).</A> =
+</DIV></DIV>
+<P>Running this example produces:=20
+<P>
+<DIV class=3Dverbatim><PRE>Showing example for Python 2.2 ...
+key: one  value: 11
+key: three  value: 33
+key: two  value: 22
+Showing example for Python 2.3 ...
+key: three  value: 33
+key: two  value: 22
+key: one  value: 11
+</PRE></DIV>
+<P>A few comments about this example:=20
+<P>
+<UL>
+  <LI>The class <TT class=3Dclass>MyDict</TT> does not define a =
+constructor (<TT=20
+  class=3Dmethod>__init__</TT>). This enables us to re-use the =
+contructor from <TT=20
+  class=3Dclass>dict</TT> and any of its forms. Type "<TT =
+class=3Dsamp>help=20
+  dict</TT>" at the Python interactive prompt to learn about the various =
+ways to=20
+  call the <TT class=3Dclass>dict</TT> constructor.=20
+  <P></P>
+  <LI>The <TT class=3Dmethod>show</TT> method is the specialization =
+added to our=20
+  sub-class.=20
+  <P></P>
+  <LI>In our sub-class, we can refer to any methods in the super-class =
+(<TT=20
+  class=3Dclass>dict</TT>). For example: "<TT =
+class=3Dsamp>self.keys()</TT>".=20
+  <P></P>
+  <LI>In our sub-class, we can refer the dictionary itself. For example: =
+"<TT=20
+  class=3Dsamp>self[key]</TT>".=20
+  <P></P></LI></UL>
+<P>
+<H1><A name=3DSECTION004300000000000000000>2.3 Simple Statements</A> =
+</H1>
+<P>
+<H2><A name=3DSECTION004310000000000000000>2.3.1 print</A> </H2>
+<P>The <CODE>print</CODE> statement sends output to <CODE>stdout</CODE>. =
+
+<P>Here are a few examples:=20
+<P>
+<DIV class=3Dverbatim><PRE>print obj
+print obj1, obj2, obj3
+print "My name is %s" % name
+</PRE></DIV>
+<P>Notes:=20
+<P>
+<UL>
+  <LI>To print multiple items, separate them with commas. The =
+<CODE>print</CODE>=20
+  statement inserts a blank between objects.=20
+  <P></P>
+  <LI>The <CODE>print</CODE> statement automatically appends a newline =
+to=20
+  output. To print without a newline, add a comma after the last object, =
+or use=20
+  "<TT class=3Dsamp>sys.stdout</TT>", for example:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>print 'Output with no newline',
+</PRE></DIV>
+  <P>which will append a blank, or:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>import sys
+sys.stdout.write("Some output")
+</PRE></DIV>
+  <P></P>
+  <LI>To re-define the destination of output from the <CODE>print</CODE> =
+
+  statement, replace <TT class=3Dmember>sys.stdout</TT> with an instance =
+of a=20
+  class that supports the <TT class=3Dmethod>write</TT> method. For =
+example:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>import sys
+
+class Writer:
+    def __init__(self, filename):
+        self.filename =3D filename
+    def write(self, msg):
+        f =3D file(self.filename, 'a')
+        f.write(msg)
+        f.close()
+
+sys.stdout =3D Writer('tmp.log')
+print 'Log message #1'
+print 'Log message #2'
+print 'Log message #3'
+</PRE>
+  <DIV class=3Dfooter><A=20
+  =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_print_sysstdo=
+ut.txt"=20
+  type=3Dtext/plain>Download as text (original file name: <SPAN=20
+  class=3Dfile>Examples/python_101_print_sysstdout.py</SPAN>).</A> =
+</DIV></DIV>
+  <P></P></LI></UL>
+<P>More information on the <CODE>print</CODE> statement is at <A =
+class=3Durl=20
+href=3D"http://www.python.org/doc/current/ref/print.html">http://www.pyth=
+on.org/doc/current/ref/print.html</A>.=20
+
+<P><SPAN class=3Dnote><B class=3Dlabel>Note:</B> Note to Jython users - =
+Jython does=20
+not appear to support the <TT class=3Dfunction>file</TT> constructor for =
+files. In=20
+the above example, replace <TT class=3Dfunction>file</TT> with <TT=20
+class=3Dfunction>open</TT>.</SPAN>=20
+<P>
+<H2><A name=3DSECTION004320000000000000000>2.3.2 import</A> </H2>
+<P>The <CODE>import</CODE> statement makes a module and its contents =
+available=20
+for use.=20
+<P>Here are several forms of the import statement:=20
+<P>
+<DL>
+  <DT><STRONG>import test</STRONG>=20
+  <DD>Import module <TT class=3Dmodule>test</TT>. Refer to <VAR>x</VAR> =
+in <TT=20
+  class=3Dmodule>test</TT> with "<TT class=3Dsamp>test.x</TT>".=20
+  <P></P>
+  <DT><STRONG>from test import x</STRONG>=20
+  <DD>Import <VAR>x</VAR> from <TT class=3Dmodule>test</TT>. Refer to =
+<VAR>x</VAR>=20
+  in <TT class=3Dmodule>test</TT> with "<TT class=3Dsamp>x</TT>".=20
+  <P></P>
+  <DT><STRONG>from test import *</STRONG>=20
+  <DD>Import all objects from <TT class=3Dmodule>test</TT>. Refer to =
+<VAR>x</VAR>=20
+  in <TT class=3Dmodule>test</TT> with "<TT class=3Dsamp>x</TT>". This =
+form of=20
+  import is usually <EM>not</EM> recommended.=20
+  <P></P>
+  <DT><STRONG>import test as theTest</STRONG>=20
+  <DD>Import <TT class=3Dmodule>test</TT>; make it available as <TT=20
+  class=3Dmodule>theTest</TT>. Refer to object <VAR>x</VAR> with "<TT=20
+  class=3Dsamp>theTest.x</TT>".=20
+  <P></P></DD></DL>
+<P>A few comments about <CODE>import</CODE>:=20
+<P>
+<UL>
+  <LI>The <CODE>import</CODE> statement also evaluates the code in the =
+imported=20
+  module.=20
+  <P></P>
+  <LI>But, the code in a module is only evaluated the first time it is =
+imported=20
+  in a program. So, for example, if a module <SPAN =
+class=3Dfile>mymodule.py</SPAN>=20
+  is imported from two other modules in a program, the statements in <TT =
+
+  class=3Dmodule>mymodule</TT> will be evaluated only the first time it =
+is=20
+  imported.=20
+  <P></P>
+  <LI>If you need even <EM>more</EM> variety that the =
+<CODE>import</CODE>=20
+  statement offers, see the <TT class=3Dmodule>imp</TT> module. =
+Documentation at=20
+  <A class=3Durl=20
+  =
+href=3D"http://www.python.org/doc/current/lib/module-imp.html">http://www=
+.python.org/doc/current/lib/module-imp.html</A>.=20
+  Also see the <CODE>__import__</CODE> built-in function. Documentation =
+at <A=20
+  class=3Durl=20
+  =
+href=3D"http://www.python.org/doc/current/lib/built-in-funcs.html">http:/=
+/www.python.org/doc/current/lib/built-in-funcs.html</A>.=20
+
+  <P></P></LI></UL>
+<P>More information on <CODE>import</CODE> at <A class=3Durl=20
+href=3D"http://www.python.org/doc/current/ref/import.html">http://www.pyt=
+hon.org/doc/current/ref/import.html</A>.=20
+
+<P>
+<H2><A name=3DSECTION004330000000000000000>2.3.3 assert</A> </H2>
+<P>Use the <CODE>assert</CODE> statement to place error checking =
+statements in=20
+you code. Here is an example:=20
+<P>
+<DIV class=3Dverbatim><PRE>def test(arg1, arg2):
+    arg1 =3D float(arg1)
+    arg2 =3D float(arg2)
+    assert arg2 !=3D 0, 'Bad dividend -- arg1: %f arg2: %f' % (arg1, =
+arg2)
+    ratio =3D arg1 / arg2
+    print 'ratio:', ratio
+</PRE></DIV>
+<P>When <VAR>arg2</VAR> is zero, running this code will produce =
+something like=20
+the following:=20
+<P>
+<DIV class=3Dverbatim><PRE>Traceback (most recent call last):
+  File "tmp.py", line 22, in ?
+    main()
+  File "tmp.py", line 18, in main
+    test(args[0], args[1])
+  File "tmp.py", line 8, in test
+    assert arg2 !=3D 0, 'Bad dividend -- arg1: %f arg2: %f' % (arg1, =
+arg2)
+AssertionError: Bad dividend -- arg1: 2.000000 arg2: 0.000000
+</PRE></DIV>
+<P>A few comments:=20
+<P>
+<UL>
+  <LI>Notice that the trace-back identifies the file and line where the =
+test is=20
+  made and shows the test itself.=20
+  <P></P>
+  <LI>If you run python with the optimize options (<B =
+class=3Dprogramopt>-O</B>=20
+  and <B class=3Dprogramopt>-OO</B>), the assertion test is not =
+performed.=20
+  <P></P>
+  <LI>The second argument to assert is optional.=20
+  <P></P></LI></UL>
+<P>
+<H2><A name=3DSECTION004340000000000000000>2.3.4 global</A> </H2>
+<P>The problem -- Imagine a global variable <VAR>NAME</VAR>. If, in a =
+function,=20
+the first mention of that variable is "<TT class=3Dsamp>name =3D =
+NAME</TT>", then=20
+I'll get the value of the the global variable <VAR>NAME</VAR>. But, if, =
+in a=20
+function, my first mention of that variable is an assignment <EM>to</EM> =
+that=20
+variable, then I will create a new <EM>local</EM> variable, and will not =
+refer=20
+to the global variable at all. Consider:=20
+<P>
+<DIV class=3Dverbatim><PRE>NAME =3D "Peach"
+
+def show_global():
+    name =3D NAME
+    print '(show_global) name: %s' % name
+
+def set_global():
+    NAME =3D 'Nectarine'
+    name =3D NAME
+    print '(set_global) name: %s' % name
+
+show_global()
+set_global()
+show_global()
+</PRE>
+<DIV class=3Dfooter><A=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_global_1.txt"=
+=20
+type=3Dtext/plain>Download as text (original file name: <SPAN=20
+class=3Dfile>Examples/python_101_global_1.py</SPAN>).</A> </DIV></DIV>
+<P>Running this code produces:=20
+<P>
+<DIV class=3Dverbatim><PRE>(show_global) name: Peach
+(set_global) name: Nectarine
+(show_global) name: Peach
+</PRE></DIV>
+<P>The <TT class=3Dfunction>set_global</TT> modifies a local variable =
+and=20
+<EM>not</EM> the global variable as I might have intended.=20
+<P>The solution -- How can I fix that? Here is how:=20
+<P>
+<DIV class=3Dverbatim><PRE>NAME =3D "Peach"
+
+def show_global():
+    name =3D NAME
+    print '(show_global) name: %s' % name
+
+def set_global():
+    global NAME
+    NAME =3D 'Nectarine'
+    name =3D NAME
+    print '(set_global) name: %s' % name
+
+show_global()
+set_global()
+show_global()
+</PRE>
+<DIV class=3Dfooter><A=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_global_2.txt"=
+=20
+type=3Dtext/plain>Download as text (original file name: <SPAN=20
+class=3Dfile>Examples/python_101_global_2.py</SPAN>).</A> </DIV></DIV>
+<P>Notice the <CODE>global</CODE> statement in function <TT=20
+class=3Dfunction>set_global</TT>. Running this code does modify the =
+global=20
+variable <VAR>NAME</VAR>, and produces the following output:=20
+<P>
+<DIV class=3Dverbatim><PRE>(show_global) name: Peach
+(set_global) name: Nectarine
+(show_global) name: Nectarine
+</PRE></DIV>
+<P>Comments:=20
+<P>
+<UL>
+  <LI>You can list more than one veriable in the <CODE>global</CODE> =
+statement.=20
+  For example:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>global NAME1, NAME2, NAME3
+</PRE></DIV>
+  <P></P></LI></UL>
+<P>
+<H1><A name=3DSECTION004400000000000000000>2.4 Control Structures</A> =
+</H1>
+<P>
+<H2><A name=3DSECTION004410000000000000000>2.4.1 if</A> </H2>
+<P>The <CODE>if</CODE> statement enables us to execute code (or not) =
+depending=20
+on a condition.=20
+<P>
+<UL>
+  <LI>"<TT class=3Dsamp>if condition: ...</TT>"=20
+  <P></P>
+  <LI>"<TT class=3Dsamp>if condition: ... else: ...</TT>"=20
+  <P></P>
+  <LI>"<TT class=3Dsamp>if condition1: ... elif condition2: ... else: =
+...</TT>"=20
+  <P></P></LI></UL>
+<P>Here is an example:=20
+<P>
+<DIV class=3Dverbatim><PRE>&gt;&gt;&gt; y =3D 25
+&gt;&gt;&gt;
+&gt;&gt;&gt; if y &gt; 15:
+...     print 'y is large'
+... else:
+...     print 'y is small'
+...
+y is large
+</PRE></DIV>
+<P>A few notes:=20
+<P>
+<UL>
+  <LI>The condition can be any expression, i.e. something that returns a =
+value.=20
+  A detailed description of expressions can be found at <A class=3Durl=20
+  =
+href=3D"http://www.python.org/doc/current/ref/expressions.html">http://ww=
+w.python.org/doc/current/ref/expressions.html</A>.=20
+
+  <P></P>
+  <LI>Parentheses are <EM>not</EM> needed around the condition. Use =
+parentheses=20
+  to group sub-expressions and control order of evaluation when the =
+natural=20
+  operator precedence is not what you want. Python's operator=20
+  precedences&nbsp;are described at <A class=3Durl=20
+  =
+href=3D"http://www.python.org/doc/current/ref/summary.html">http://www.py=
+thon.org/doc/current/ref/summary.html</A>.=20
+
+  <P></P>
+  <LI>Python has no <CODE>switch</CODE> statement. Use =
+<CODE>if-elif</CODE>. Or=20
+  consider using a dictionary, for example:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>def function1():
+    print "Hi. I'm function1."
+def function2():
+    print "Hi. I'm function2."
+def function3():
+    print "Hi. I'm function3."
+
+mapper =3D {'one': function1, 'two': function2, 'three': function3}
+
+while 1:
+    code =3D raw_input('Enter "one", "two", "three", or "quit": ')
+    if code =3D=3D 'quit':
+        break
+    if code not in mapper:
+        continue
+    mapper[code]()
+</PRE>
+  <DIV class=3Dfooter><A=20
+  =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_if_switch.txt=
+"=20
+  type=3Dtext/plain>Download as text (original file name: <SPAN=20
+  class=3Dfile>Examples/python_101_if_switch.py</SPAN>).</A> =
+</DIV></DIV>
+  <P></P></LI></UL>
+<P>
+<H2><A name=3DSECTION004420000000000000000>2.4.2 for</A> </H2>
+<P>The <CODE>for</CODE> statement enables us to iterate over =
+collections. It=20
+enables us to repeat a set of lines of code once for each item in a =
+collection.=20
+Collections are things like strings (arrays of characters), lists, =
+tuples, and=20
+dictionaries.=20
+<P>Here is an example:=20
+<P>
+<DIV class=3Dverbatim><PRE>&gt;&gt;&gt; collection =3D [111,222,333]
+&gt;&gt;&gt; for item in collection:
+...     print 'item:', item
+...
+item: 111
+item: 222
+item: 333
+</PRE></DIV>
+<P>Comments:=20
+<P>
+<UL>
+  <LI>You can iterate over strings, lists, and tuples.=20
+  <P></P>
+  <LI>Iterate over the keys or values in a dictionary with "<TT=20
+  class=3Dsamp>aDict.keys()</TT>" and "<TT =
+class=3Dsamp>aDict.values()</TT>". Here=20
+  is an example:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; aDict =3D {'cat': 'furry and =
+cute', 'dog': 'friendly and smart'}
+&gt;&gt;&gt; aDict.keys()
+['dog', 'cat']
+&gt;&gt;&gt; aDict.values()
+['friendly and smart', 'furry and cute']
+&gt;&gt;&gt; for key in aDict.keys():
+...     print 'A %s is %s.' % (key, aDict[key])
+...
+A dog is friendly and smart.
+A cat is furry and cute.
+</PRE></DIV>
+  <P></P>
+  <LI>In recent versions of Python, a dictionary itself is an iterator =
+for its=20
+  keys. Therefore, you can also do the following:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; for key in aDict:
+...     print 'A %s is %s.' % (key, aDict[key])
+...
+A dog is friendly and smart.
+A cat is furry and cute.
+</PRE></DIV>
+  <P></P>
+  <LI>And, in recent versions of Python, a file is also an iterator over =
+the=20
+  lines in the file. Therefore, you can do the following:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; infile =3D file('tmp.txt', =
+'r')
+&gt;&gt;&gt; for line in infile:
+...       print line,
+...=20
+This is line #1
+This is line #2
+This is line #3
+&gt;&gt;&gt; infile.close()
+</PRE></DIV>
+  <P></P>
+  <LI>There are other kinds of iterations. For example, the built-in <TT =
+
+  class=3Dfunction>iter</TT> will produce an iterator from a collection. =
+Here is=20
+  an example:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; anIter =3D iter([11,22,33])
+&gt;&gt;&gt; for item in anIter:
+...     print 'item:', item
+...
+item: 11
+item: 22
+item: 33
+</PRE></DIV>
+  <P></P>
+  <LI>You can also implement iterators of your own. To do so, define a =
+function=20
+  that returns values with <CODE>yield</CODE> (instead of with=20
+  <CODE>return</CODE>). Here is an example:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; def t(collection):
+...     icollection =3D iter(collection)
+...     for item in icollection:
+...         yield '||%s||' % item
+...
+&gt;&gt;&gt; for x in t(collection): print x
+...
+||111||
+||222||
+||333||
+</PRE></DIV>
+  <P></P></LI></UL>
+<P>
+<H2><A name=3DSECTION004430000000000000000>2.4.3 while</A> </H2>
+<P><CODE>while</CODE> is another repeating statement. It executes a =
+block of=20
+code until a condition is false.=20
+<P>Here is an example:=20
+<P>
+<DIV class=3Dverbatim><PRE>&gt;&gt;&gt; reply =3D 'repeat'
+&gt;&gt;&gt; while reply =3D=3D 'repeat':
+...     print 'Hello'
+...     reply =3D raw_input('Enter "repeat" to do it again: ')
+...
+Hello
+Enter "repeat" to do it again: repeat
+Hello
+Enter "repeat" to do it again: bye
+</PRE></DIV>
+<P>Comments:=20
+<P>
+<UL>
+  <LI>Use the <CODE>break</CODE> statement to exit from a loop. This =
+works for=20
+  both <CODE>for</CODE> and <CODE>while</CODE>. Here is an example that =
+uses=20
+  <CODE>break</CODE> in a <CODE>for</CODE> statement:=20
+  <P>
+  <DIV class=3Dverbatim><PRE># for_break.py
+"""Count lines until a line that begins with a double #.
+"""
+
+import sys
+
+def countLines(infilename):
+    infile =3D file(infilename, 'r')
+    count =3D 0
+    for line in infile.readlines():
+        line =3D line.strip()
+        if line[:2] =3D=3D '##':
+            break
+        count +=3D 1
+    return count
+
+def usage():
+    print 'Usage: python python_101_for_break.py &lt;infilename&gt;'
+    sys.exit(-1)
+
+def main():
+    args =3D sys.argv[1:]
+    if len(args) !=3D 1:
+        usage()
+    count =3D countLines(args[0])
+    print 'count:', count
+
+if __name__ =3D=3D '__main__':
+    main()
+</PRE>
+  <DIV class=3Dfooter><A=20
+  =
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_for_break.txt=
+"=20
+  type=3Dtext/plain>Download as text (original file name: <SPAN=20
+  class=3Dfile>Examples/python_101_for_break.py</SPAN>).</A> =
+</DIV></DIV>
+  <P></P>
+  <LI>Use the <CODE>continue</CODE> statement to skip the remainder of =
+the code=20
+  block in a <CODE>for</CODE> or <CODE>while</CODE>. A =
+<CODE>continue</CODE> is=20
+  a short-circuit which, in effect, branches back to the top of the=20
+  <CODE>for</CODE> or <CODE>while</CODE> (or if you prefer, to the end =
+of the=20
+  block).=20
+  <P></P>
+  <LI>The test "<TT class=3Dsamp>if __name__ =3D=3D '__main__':</TT>" is =
+used to=20
+  enable the script to both be (1) imported and (2) run from the command =
+line.=20
+  That condition is true only when the script is run, but not imported. =
+This is=20
+  a common Python idiom, which you should consider including at the end =
+of your=20
+  scripts, whether (1) to give your users a demonstration of what your =
+script=20
+  does and how to use it or (2) to provide a test of the script.=20
+  <P></P></LI></UL>
+<P>
+<H2><A name=3DSECTION004440000000000000000>2.4.4 try-except and raise -- =
+
+Exceptions</A> </H2>
+<P>Use a <CODE>try:except:</CODE> block to catch an exception.=20
+<P>Use <CODE>raise</CODE> to raise an exception.=20
+<P>Comments and hints:=20
+<P>
+<UL>
+  <LI>Catch all exceptions with a "bare" <CODE>except:</CODE>. For =
+example:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; try:
+...     x =3D y
+... except:
+...     print 'y not defined'
+...
+y not defined
+</PRE></DIV>
+  <P>Note, however, that it is usually better to catch specific =
+exceptions.=20
+  <P></P>
+  <LI>Catch a specific error by refering to an exception class in the=20
+  <CODE>except:</CODE>. To determine what error or exception you want to =
+catch,=20
+  generate it and try it. Because Python reports errors with a walk-back =
+that=20
+  ends with reporting the exception, you can learn which exception to =
+catch. For=20
+  example, suppose I want to learn which exception is thrown when a =
+Python can't=20
+  open a file. I can try the following from the interactive prompt:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; myfile =3D =
+file('amissingfile.py', 'r')
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in ?
+IOError: [Errno 2] No such file or directory: 'amissingfile.py'
+</PRE></DIV>
+  <P>So, now I know that I can do:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; try:
+...     myfile =3D file('amissingfile.py', 'r')
+... except IOError:
+...     print 'amissingfile.py is missing'
+...
+amissingfile.py is missing
+</PRE></DIV>
+  <P></P>
+  <LI>Catch any one of several execption type. Example:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>try:
+    #f =3D open('abcdexyz.txt', 'r')
+    d =3D {}
+    x =3D d['name']
+except (IOError, KeyError), e:
+    print 'The error is --', e
+</PRE></DIV>
+  <P>Note that multiple exceptions to be caught by a single =
+<CODE>except:</CODE>=20
+  clause are in parentheses; they are a tuple.=20
+  <P></P>
+  <LI>You can customize your error handling still further by passing an =
+object=20
+  on the <CODE>raise</CODE> and catching that object in the=20
+  <CODE>except:</CODE>. By doing so, you can pass information up from =
+the=20
+  <CODE>raise</CODE> statement to an exception handler. One way of doing =
+this is=20
+  to pass an object. A reasonable strategy is to define a sub-class of a =
+
+  standard exception. For example:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; class E(RuntimeError):
+...   def __init__(self, msg):
+...     self.msg =3D msg
+...   def getMsg(self):
+...     return self.msg
+...
+&gt;&gt;&gt;
+&gt;&gt;&gt; try:
+...   raise E('my test error')
+... except E, obj:
+...   print 'Msg:', obj.getMsg()
+...
+Msg: my test error
+</PRE></DIV>
+  <P></P>
+  <LI>If you catch an exception using <CODE>try:except:</CODE>, but then =
+find=20
+  that you do <EM>not</EM> want to handle the exception at that =
+location, you=20
+  can "re-raise" the <EM>same</EM> exception (with the same arguments) =
+by using=20
+  <CODE>raise</CODE> with no arguments. An example:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>class GeneralException(Exception):
+    pass
+class SimpleException(GeneralException):
+    pass
+class ComplexException(GeneralException):
+    pass
+
+def some_func_that_throws_exceptions():
+    #raise SimpleException, 'this is a simple error'
+    raise ComplexException, 'this is a complex error'
+
+def test():
+    try:
+        some_func_that_throws_exceptions()
+    except GeneralException, e:
+        if isinstance(e, SimpleException):
+            print e
+        else:
+            raise
+
+test()
+</PRE></DIV>
+  <P></P></LI></UL>
+<P>
+<H2><A name=3DSECTION004450000000000000000>2.4.5 Reading Text Files</A> =
+</H2>
+<P>To read a text file, first create a file object. Here is an example:=20
+<P>
+<DIV class=3Dverbatim><PRE>inFile =3D file('messages.log', 'r')
+</PRE></DIV>
+<P>Then use one or more of the file object's methods to process the =
+contents of=20
+the file. Here are a few strategies:=20
+<P>
+<UL>
+  <LI>Use "<TT class=3Dsamp>inFile.read()</TT>" to get the entire =
+contents of the=20
+  file (a string). Example:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; inFile =3D file('tmp.txt', =
+'r')
+&gt;&gt;&gt; content =3D inFile.read()
+&gt;&gt;&gt; inFile.close()
+&gt;&gt;&gt; print content
+aaa bbb ccc
+ddd eee fff
+ggg hhh iii
+
+&gt;&gt;&gt; words =3D content.split()
+&gt;&gt;&gt; print words
+['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg', 'hhh', 'iii']
+&gt;&gt;&gt; for word in words:
+...     print word
+...
+aaa
+bbb
+ccc
+ddd
+eee
+fff
+ggg
+hhh
+iii
+</PRE></DIV>
+  <P></P>
+  <LI>Use "<TT class=3Dsamp>for line in inFile:</TT>" to process one =
+line at a=20
+  time. You can do this because (at least since Python 2.3) file objects =
+obey=20
+  the iterator protocol, that is they support methods <TT=20
+  class=3Dmethod>__iter__</TT> and <TT class=3Dmethod>next</TT>. For =
+more on the=20
+  iterator protocol see <A class=3Durl=20
+  =
+href=3D"http://www.python.org/doc/current/lib/typeiter.html">http://www.p=
+ython.org/doc/current/lib/typeiter.html</A>.=20
+
+  <P>Example:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; inFile =3D file('tmp.txt', =
+'r')
+&gt;&gt;&gt; for line in inFile:
+...     print 'Line:', line,
+...
+Line: aaaaa
+Line: bbbbb
+Line: ccccc
+Line: ddddd
+Line: eeeee
+&gt;&gt;&gt; inFile.close()
+</PRE></DIV>
+  <P></P>
+  <LI>For earlier versions of Python, use "<TT=20
+  class=3Dsamp>inFile.readlines()</TT>" or "<TT=20
+  class=3Dsamp>inFile.xreadlines()</TT>".=20
+  <P></P>
+  <LI>If your want to get the contents of an entire text file as a =
+collection of=20
+  lines, use <TT class=3Dfunction>readlines</TT>. Example:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; inFile =3D file('tmp.txt', =
+'r')
+&gt;&gt;&gt; lines =3D inFile.readlines()
+&gt;&gt;&gt; print lines
+['aaaaa\n', 'bbbbb\n', 'ccccc\n', 'ddddd\n', 'eeeee\n']
+&gt;&gt;&gt; print lines[2]
+ccccc
+
+&gt;&gt;&gt; inFile.close()
+</PRE></DIV>
+  <P></P></LI></UL>
+<P>
+<H2><A name=3DSECTION004460000000000000000>2.4.6 Iterator objects</A> =
+</H2>
+<P><SPAN class=3Dnote><B class=3Dlabel>Note:</B> You will need a =
+sufficiently recent=20
+version of Python in order to use iterators and generators. I believe =
+that they=20
+were introduced in Python 2.2.</SPAN>=20
+<P>Goals for this section:=20
+<P>
+<UL>
+  <LI>Learn how to implement a generator function, that is, a function =
+which,=20
+  when called, returns an iterator.=20
+  <P></P>
+  <LI>Learn how to implement a class containing a generator method, that =
+is, a=20
+  method which, when called, returns an iterator.=20
+  <P></P>
+  <LI>Learn the iterator protocol, specifically what methods an iterator =
+must=20
+  support and what those methods must do.=20
+  <P></P>
+  <LI>Learn how to implement an iterator class, that is, a class whose =
+instances=20
+  are iterator objects.=20
+  <P></P>
+  <LI>Learn how to implement recursive iterator generators, that is, an =
+iterator=20
+  generator which recursively produces iterator generators.=20
+  <P></P>
+  <LI>Learn that your implementation of an iterator object (an iterator =
+class)=20
+  can "refresh" itself and learn at least one way to do this.=20
+  <P></P></LI></UL>
+<P>Definitions:=20
+<P>
+<UL>
+  <LI><EM>Iterator</EM> - And iterator is an object that satisfies =
+(implements)=20
+  the iterator protocol.=20
+  <P></P>
+  <LI><EM>Iterator protocol</EM> - An object implements the iterator =
+protocol if=20
+  it implements both a <CODE>next</CODE> and a <CODE>__iter__</CODE> =
+method=20
+  which satisfy these rules: (1) the <CODE>__iter__</CODE> method must =
+return=20
+  the iterator; (2) the <CODE>next</CODE> method should return each of =
+the items=20
+  to be iterated over and when finished should raise the=20
+  <CODE>StopIteration</CODE> exception. The iterator protocol is =
+described in <A=20
+  class=3Dulink =
+href=3D"http://www.python.org/doc/current/lib/typeiter.html">2.3.5=20
+  Iterator Types</A>.=20
+  <P></P>
+  <LI><EM>Iterator class</EM> - A class that implements (satisfies) the =
+iterator=20
+  protocol. In particular, the class implements <CODE>next</CODE> and=20
+  <CODE>__iter__</CODE> methods as described above and in <A =
+class=3Dulink=20
+  href=3D"http://www.python.org/doc/current/lib/typeiter.html">2.3.5 =
+Iterator=20
+  Types</A>.=20
+  <P></P>
+  <LI><EM>(Iterator) generator function</EM> - A function (or method) =
+which,=20
+  when called, returns an iterator object, that is, an object that =
+satisfies the=20
+  iterator protocol. A function containing a <CODE>yield</CODE> =
+statement=20
+  automatically becomes a generator.=20
+  <P></P>
+  <LI><EM>Generator expression</EM> - An expression which produces an =
+iterator=20
+  object. Generator expressions have a form similar to an list =
+comprehension,=20
+  but are enclosed in parentheses rather than square brackets. See =
+example=20
+  below.=20
+  <P></P></LI></UL>
+<P>A few additional basic points:=20
+<P>
+<UL>
+  <LI>A function that contains a <CODE>yield</CODE> statement is a =
+generator=20
+  function. When called, it returns an iterator, that is, an object that =
+
+  provides <CODE>next</CODE> and <CODE>__iter__</CODE> methods.=20
+  <P></P>
+  <LI>A class that defines both a <CODE>next</CODE> method and a=20
+  <CODE>__iter__</CODE> method satisfies the iterator protocol. So, =
+instances of=20
+  such a class will be iterators.=20
+  <P></P>
+  <LI>Python provides a variety of ways to produce iterators. This =
+section=20
+  describes a few of those ways. You should also look at the <TT=20
+  class=3Dfunction>iter</TT> built-in function, which is described in <A =
+
+  class=3Dulink =
+href=3D"http://docs.python.org/lib/built-in-funcs.html">2.1 Built-in=20
+  Functions</A>.=20
+  <P></P>
+  <LI>An iterator can be used in an iterator context, for example in a=20
+  <CODE>for</CODE> statement, in a list comprehension, and in a =
+generator=20
+  expression. When an iterator is used in an iterator context, the =
+iterator=20
+  produces its values.=20
+  <P></P></LI></UL>
+<P>This section attempts to provide examples that illustrate the=20
+generator/iterator pattern.=20
+<P>Why is this important?=20
+<P>
+<UL>
+  <LI>Once mastered, it is a simple, convenient, and powerful =
+programming=20
+  pattern.=20
+  <P></P>
+  <LI>It has many and pervasive uses.=20
+  <P></P>
+  <LI>It helps to lexically separate the producer code from the consumer =
+code.=20
+  Doing so makes it easier to locate problems and to modify or fix code =
+in a way=20
+  that is localized and does not have unwanted side-effects.=20
+  <P></P>
+  <LI>Implementing your own iterators (and generators) enables you to =
+define=20
+  your own <EM>abstract</EM> sequences, that is, sequences whose =
+composition are=20
+  defined by your computations rather than by their presence in a =
+container. In=20
+  fact, your iterator can calculate or retrieve values as each one is =
+requested.=20
+
+  <P></P></LI></UL>
+<P>Examples - The remainder of this section provides a set of examples.=20
+<P>
+<H3><A name=3DSECTION004461000000000000000>2.4.6.1 Example - A generator =
+
+function</A> </H3>
+<P>This function contains a <CODE>yield</CODE> statement. Therefore, =
+when we=20
+call it, it produces an iterator.=20
+<P>
+<DIV class=3Dverbatim><PRE>def generateItems(seq):
+    for item in seq:
+        yield 'item: %s' % item
+
+anIter =3D generateItems([])
+print 'dir(anIter):', dir(anIter)
+anIter =3D generateItems([111,222,333])
+for x in anIter:
+    print x
+anIter =3D generateItems(['aaa', 'bbb', 'ccc'])
+print anIter.next()
+print anIter.next()
+print anIter.next()
+print anIter.next()
+</PRE>
+<DIV class=3Dfooter><A=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_iterator_gene=
+rator.txt"=20
+type=3Dtext/plain>Download as text (original file name: <SPAN=20
+class=3Dfile>Examples/python_101_iterator_generator.py</SPAN>).</A> =
+</DIV></DIV>
+<P>Running this example produces the following output:=20
+<P>
+<DIV class=3Dverbatim><PRE>dir(anIter): ['__class__', '__delattr__', =
+'__doc__', '__getattribute__',
+'__hash__', '__init__', '__iter__', '__new__', '__reduce__',
+'__reduce_ex__', '__repr__', '__setattr__', '__str__', 'gi_frame',
+'gi_running', 'next']
+item: 111
+item: 222
+item: 333
+item: aaa
+item: bbb
+item: ccc
+Traceback (most recent call last):
+  File "iterator_generator.py", line 14, in ?
+    print anIter.next()
+StopIteration
+</PRE></DIV>
+<P>Notes and explanation:=20
+<P>
+<UL>
+  <LI>The value returned by the call to the generator (function) is an =
+iterator.=20
+  It obeys the iterator protocol. That is, "<TT =
+class=3Dsamp>dir(anIter)</TT>"=20
+  shows that it has both <TT class=3Dmethod>__iter__</TT> and <TT=20
+  class=3Dmethod>next</TT> methods.=20
+  <P></P>
+  <LI>Because this object is an iterator, we can use a <CODE>for</CODE>=20
+  statement to iterate over the values returned by the generator.=20
+  <P></P>
+  <LI>We can also get its values by repeatedly calling the <TT=20
+  class=3Dmethod>next</TT> method, until it raises the =
+<CODE>StopIteration</CODE>=20
+  exception. This ability to call the <TT class=3Dmethod>next</TT> =
+method enables=20
+  us to pass the iterator object around and get values at different =
+locations in=20
+  our code.=20
+  <P></P>
+  <LI>Once we have obtained all the values from an iterator, it is, in =
+effect,=20
+  "empty" or "exhausted". The iterator protocol, in fact, specifies that =
+once an=20
+  iterator raises the <CODE>StopIteration</CODE> exception, it should =
+continue=20
+  to do so. Another way to say this is that there is no "rewind" =
+operation. But,=20
+  you can call the the generator function again to get a "fresh" =
+iterator.=20
+  <P></P></LI></UL>
+<P>
+<H3><A name=3DSECTION004462000000000000000>2.4.6.2 Example - A class =
+containing a=20
+generator method</A> </H3>
+<P>Each time this method is called, it produces a (new) iterator object. =
+This=20
+method is analogous to the <TT class=3Dmethod>iterkeys</TT> and <TT=20
+class=3Dmethod>itervalues</TT> methods in the dictionary built-in =
+object.=20
+<P>
+<DIV class=3Dverbatim><PRE>#
+# A class that provides an iterator generator method.
+#
+class Node:
+    def __init__(self, name=3D'&lt;noname&gt;', =
+value=3D'&lt;novalue&gt;', children=3DNone):
+        self.name =3D name
+        self.value =3D value
+        self.children =3D children
+        if children is None:
+            self.children =3D []
+        else:
+            self.children =3D children
+    def set_name(self, name): self.name =3D name
+    def get_name(self): return self.name
+    def set_value(self, value): self.value =3D value
+    def get_value(self): return self.value
+    def iterchildren(self):
+        for child in self.children:
+            yield child
+    #
+    # Print information on this node and walk over all children and
+    #   grandchildren ...
+    def walk(self, level=3D0):
+        print '%sname: %s  value: %s' % (
+            get_filler(level), self.get_name(), self.get_value(), )
+        for child in self.iterchildren():
+            child.walk(level + 1)
+
+#
+# An function that is the equivalent of the walk() method in
+#   class Node.
+#
+def walk(node, level=3D0):
+    print '%sname: %s  value: %s' % (
+        get_filler(level), node.get_name(), node.get_value(), )
+    for child in node.iterchildren():
+        walk(child, level + 1)
+
+def get_filler(level):
+    return '    ' * level
+
+def test():
+    a7 =3D Node('gilbert', '777')
+    a6 =3D Node('fred', '666')
+    a5 =3D Node('ellie', '555')
+    a4 =3D Node('daniel', '444')
+    a3 =3D Node('carl', '333', [a4, a5])
+    a2 =3D Node('bill', '222', [a6, a7])
+    a1 =3D Node('alice', '111', [a2, a3])
+    # Use the walk method to walk the entire tree.
+    print 'Using the method:'
+    a1.walk()
+    print '=3D' * 30
+    # Use the walk function to walk the entire tree.
+    print 'Using the function:'
+    walk(a1)
+
+test()
+
+</PRE>
+<DIV class=3Dfooter><A=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_classgenerato=
+r.txt"=20
+type=3Dtext/plain>Download as text (original file name: <SPAN=20
+class=3Dfile>Examples/python_101_classgenerator.py</SPAN>).</A> =
+</DIV></DIV>
+<P>Running this example produces the following output:=20
+<P>
+<DIV class=3Dverbatim><PRE>Using the method:
+name: alice  value: 111
+    name: bill  value: 222
+        name: fred  value: 666
+        name: gilbert  value: 777
+    name: carl  value: 333
+        name: daniel  value: 444
+        name: ellie  value: 555
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+Using the function:
+name: alice  value: 111
+    name: bill  value: 222
+        name: fred  value: 666
+        name: gilbert  value: 777
+    name: carl  value: 333
+        name: daniel  value: 444
+        name: ellie  value: 555
+</PRE></DIV>
+<P>Notes and explanation:=20
+<P>
+<UL>
+  <LI>This class contains a method <TT class=3Dmethod>iterchildren</TT> =
+which,=20
+  when called, returns an iterator.=20
+  <P></P>
+  <LI>The <CODE>yield</CODE> statement in the method <TT=20
+  class=3Dmethod>iterchildren</TT> makes it into a generator.=20
+  <P></P>
+  <LI>The <CODE>yield</CODE> statement returns one item each time it is =
+reached.=20
+  The next time the iterator object is "called" it resumes immediately =
+after the=20
+  <CODE>yield</CODE> statement.=20
+  <P></P>
+  <LI>A function may have any number of <CODE>yield</CODE> statements.=20
+  <P></P>
+  <LI>A <CODE>for</CODE> statement will iterate over all the items =
+produced by=20
+  an iterator object.=20
+  <P></P>
+  <LI>This example shows two ways to use the generator, specifically: =
+(1) the=20
+  <TT class=3Dmethod>walk</TT> method in the class <TT =
+class=3Dclass>Node</TT> and=20
+  (2) the <TT class=3Dfunction>walk</TT> function. Both call the =
+generator <TT=20
+  class=3Dmethod>iterchildren</TT> and both do pretty much the same =
+thing.=20
+  <P></P></LI></UL>
+<P>
+<H3><A name=3DSECTION004463000000000000000>2.4.6.3 Example - An iterator =
+class</A>=20
+</H3>
+<P>This class implements the iterator protocol. Therefore, instances of =
+this=20
+class are iterators. The presence of the <TT class=3Dmethod>next</TT> =
+and <TT=20
+class=3Dmethod>__iter__</TT> methods means that this class implements =
+the iterator=20
+protocol and makes instances of this class iterators.=20
+<P>Note that when an iterator is "exhausted" it, normally, cannot be =
+reused to=20
+iterate over the sequence. However, in this example, we provide a <TT=20
+class=3Dmethod>refresh</TT> method which enables us to "rewind" and =
+reuse the=20
+iterator instance.=20
+<P>
+<DIV class=3Dverbatim><PRE>#
+# An iterator class that does *not* use ``yield``.
+#   This iterator produces every other item in a sequence.
+#
+class IteratorExample:
+    def __init__(self, seq):
+        self.seq =3D seq
+        self.idx =3D 0
+    def next(self):
+        self.idx +=3D 1
+        if self.idx &gt;=3D len(self.seq):
+            raise StopIteration
+        value =3D self.seq[self.idx]
+        self.idx +=3D 1
+        return value
+    def __iter__(self):
+        return self
+    def refresh(self):
+        self.idx =3D 0
+
+def test_iteratorexample():
+    a =3D IteratorExample('edcba')
+    for x in a:
+        print x
+    print '----------'
+    a.refresh()
+    for x in a:
+        print x
+    print '=3D' * 30
+    a =3D IteratorExample('abcde')
+    try:
+        print a.next()
+        print a.next()
+        print a.next()
+        print a.next()
+        print a.next()
+        print a.next()
+    except StopIteration, e:
+        print 'stopping', e
+</PRE>
+<DIV class=3Dfooter><A=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_iterclass.txt=
+"=20
+type=3Dtext/plain>Download as text (original file name: <SPAN=20
+class=3Dfile>Examples/python_101_iterclass.py</SPAN>).</A> </DIV></DIV>
+<P>Running this example produces the following output:=20
+<P>
+<DIV class=3Dverbatim><PRE>d
+b
+----------
+d
+b
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+b
+d
+stopping
+</PRE></DIV>
+<P>Notes and explanation:=20
+<P>
+<UL>
+  <LI>The <TT class=3Dmethod>next</TT> method must keep track of where =
+it is and=20
+  what item it should produce next.=20
+  <P></P></LI></UL>
+<P>
+<H3><A name=3DSECTION004464000000000000000>2.4.6.4 Example - An iterator =
+class=20
+that uses yield</A> </H3>
+<P>There may be times when the <TT class=3Dmethod>next</TT> method is =
+easier and=20
+more straight-forward to implement using yield. If so, then this class =
+might=20
+serve as an model. If you do not feel the need to do this, then you =
+should=20
+ignore this example.=20
+<P>
+<DIV class=3Dverbatim><PRE>#
+# An iterator class that uses ``yield``.
+#   This iterator produces every other item in a sequence.
+#
+class YieldIteratorExample:
+    def __init__(self, seq):
+        self.seq =3D seq
+        self.iterator =3D self._next()
+        self.next =3D self.iterator.next
+    def _next(self):
+        flag =3D 0
+        for x in self.seq:
+            if flag:
+                flag =3D 0
+                yield x
+            else:
+                flag =3D 1
+    def __iter__(self):
+        return self.iterator
+    def refresh(self):
+        self.iterator =3D self._next()
+        self.next =3D self.iterator.next
+
+def test_yielditeratorexample():
+    a =3D YieldIteratorExample('edcba')
+    for x in a:
+        print x
+    print '----------'
+    a.refresh()
+    for x in a:
+        print x
+    print '=3D' * 30
+    a =3D YieldIteratorExample('abcde')
+    try:
+        print a.next()
+        print a.next()
+        print a.next()
+        print a.next()
+        print a.next()
+        print a.next()
+    except StopIteration, e:
+        print 'stopping', e
+
+test_yielditeratorexample()
+</PRE>
+<DIV class=3Dfooter><A=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_yielditerclas=
+s.txt"=20
+type=3Dtext/plain>Download as text (original file name: <SPAN=20
+class=3Dfile>Examples/python_101_yielditerclass.py</SPAN>).</A> =
+</DIV></DIV>
+<P>Running this example produces the following output:=20
+<P>
+<DIV class=3Dverbatim><PRE>d
+b
+----------
+d
+b
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+b
+d
+stopping
+</PRE></DIV>
+<P>Notes and explanation:=20
+<P>
+<UL>
+  <LI>Because the <TT class=3Dmethod>_next</TT> method uses =
+<CODE>yield</CODE>,=20
+  calling it (actually, calling the iterator object it produces) in an =
+iterator=20
+  context causes it to be "resumed" immediately after the =
+<CODE>yield</CODE>=20
+  statement. This reduces bookkeeping a bit.=20
+  <P></P>
+  <LI>However, with this style, we must explicitly produce an iterator. =
+We do=20
+  this by calling the <TT class=3Dmethod>_next</TT> method, which =
+contains a=20
+  <CODE>yield</CODE> statement, and is therefore a generator. The =
+following code=20
+  in our constructor (<TT class=3Dmethod>__init__</TT>) completes the =
+set-up of=20
+  our class as an iterator class:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>self.iterator =3D self._next()
+self.next =3D self.iterator.next
+</PRE></DIV>
+  <P>Remember that we need both <TT class=3Dmethod>__iter__</TT> and <TT =
+
+  class=3Dmethod>next</TT> methods in order to satisfy the iterator =
+protocol. The=20
+  <TT class=3Dmethod>__iter__</TT> is already there and the above code =
+in the=20
+  constructor creates the <TT class=3Dmethod>next</TT> method.=20
+  <P></P></LI></UL>
+<P>
+<H3><A name=3DSECTION004465000000000000000>2.4.6.5 Example - A list=20
+comprehension</A> </H3>
+<P>A list comprehension looks a bit like an iterator, but it produces a =
+list.=20
+<P>See <A class=3Dulink =
+href=3D"http://docs.python.org/ref/lists.html">5.2.4 List=20
+displays</A> for more on list comprehensions.=20
+<P>Here is an example:=20
+<P>
+<DIV class=3Dverbatim><PRE>In [4]: def f(x):
+   ...:     return x * 3
+   ...:
+In [5]: list1 =3D [11, 22, 33]
+In [6]: list2 =3D [f(x) for x in list1]
+In [7]: print list2
+[33, 66, 99]
+</PRE></DIV>
+<P>
+<H3><A name=3DSECTION004466000000000000000>2.4.6.6 Example - A generator =
+
+expression</A> </H3>
+<P>A generator expression looks quite similar to a list comprehension, =
+but is=20
+enclosed in parentheses rather than square brackets. Unlike a list=20
+comprehension, a generator expression does <EM>not</EM> produce a list; =
+it=20
+produces an iterator object.=20
+<P>For more on generator expressions, see <A class=3Dulink=20
+href=3D"http://docs.python.org/ref/genexpr.html">5.2.5 Generator =
+expressions</A>.=20
+<P>The following example uses a generator expression to produce an =
+iterator.=20
+<P>
+<DIV class=3Dverbatim><PRE>mylist =3D range(10)
+
+def f(x):
+    return x*3
+
+genexpr =3D (f(x) for x in mylist)
+
+for x in genexpr:
+    print x
+</PRE></DIV>
+<P>Notes and explanation:=20
+<P>
+<UL>
+  <LI>The generator expression <CODE>(f(x) for x in mylist)</CODE> =
+produces an=20
+  iterator object.=20
+  <P></P>
+  <LI>Notice that we can use the iterator object later in our code, can =
+save it=20
+  in a data structure, and can pass it to a function.=20
+  <P></P></LI></UL>
+<P>
+<H1><A name=3DSECTION004500000000000000000>2.5 Organization</A> </H1>
+<P>This section describes Python features that you can use to organize =
+and=20
+structure your code.=20
+<P>
+<H2><A name=3DSECTION004510000000000000000>2.5.1 Functions</A> </H2>
+<P>
+<H3><A name=3DSECTION004511000000000000000>2.5.1.1 A basic function</A> =
+</H3>
+<P>Use <CODE>def</CODE> to define a function. Here is a simple example:=20
+<P>
+<DIV class=3Dverbatim><PRE>def test(msg, count):
+    for idx in range(count):
+        print '%s %d' % (msg, idx)
+
+test('Test #', 4)
+</PRE></DIV>
+<P>Comments:=20
+<P>
+<UL>
+  <LI>After evaluation <CODE>def</CODE> creates a function object.=20
+  <P></P>
+  <LI>Call the function using the parentheses function call notation, in =
+this=20
+  case "<TT class=3Dsamp>test('Test #', 4)</TT>".=20
+  <P></P>
+  <LI>As with other Python objects, you can stuff a function object into =
+other=20
+  structures such as tuples, lists, and dictionaries. Here is an =
+example:=20
+  <P>
+  <DIV class=3Dverbatim><PRE># Create a tuple:
+val =3D (test, 'A label:', 5)
+
+# Call the function:
+val[0](val[1], val[2])
+</PRE></DIV>
+  <P></P></LI></UL>
+<P>
+<H3><A name=3DSECTION004512000000000000000>2.5.1.2 A function with =
+default=20
+arguments</A> </H3>
+<P>Providing default arguments allows the caller to omit some arguments. =
+Here is=20
+an example:=20
+<P>
+<DIV class=3Dverbatim><PRE>def testDefaultArgs(arg1=3D'default1', =
+arg2=3D'default2'):
+    print 'arg1:', arg1
+    print 'arg2:', arg2
+
+testDefaultArgs('Explicit value')
+</PRE></DIV>
+<P>The above example prints:=20
+<P>
+<DIV class=3Dverbatim><PRE>arg1: Explicit value
+arg2: default2
+</PRE></DIV>
+<P>
+<H3><A name=3DSECTION004513000000000000000>2.5.1.3 Argument lists and =
+keyword=20
+argument lists</A> </H3>
+<P>Here is an example:=20
+<P>
+<DIV class=3Dverbatim><PRE>def testArgLists_1(*args, **kwargs):
+    print 'args:', args
+    print 'kwargs:', kwargs
+           =20
+testArgLists_1('aaa', 'bbb', arg1=3D'ccc', arg2=3D'ddd')
+
+def testArgLists_2(arg0, *args, **kwargs):
+    print 'arg0: "%s"' % arg0
+    print 'args:', args
+    print 'kwargs:', kwargs
+           =20
+print '=3D' * 40
+testArgLists_2('a first argument', 'aaa', 'bbb', arg1=3D'ccc', =
+arg2=3D'ddd')
+</PRE>
+<DIV class=3Dfooter><A=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_function_argl=
+ist.txt"=20
+type=3Dtext/plain>Download as text (original file name: <SPAN=20
+class=3Dfile>Examples/python_101_function_arglist.py</SPAN>).</A> =
+</DIV></DIV>
+<P>Running this example displays:=20
+<P>
+<DIV class=3Dverbatim><PRE>args: ('aaa', 'bbb')
+kwargs: {'arg1': 'ccc', 'arg2': 'ddd'}
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+arg0: "a first argument"
+args: ('aaa', 'bbb')
+kwargs: {'arg1': 'ccc', 'arg2': 'ddd'}
+</PRE></DIV>
+<P>A little guidance:=20
+<P>
+<UL>
+  <LI>Positional arguments must proceed all keyword arguments when you =
+call the=20
+  function.=20
+  <P></P>
+  <LI>You can also have "normal" arguments in the function definition. =
+For=20
+  example: "<TT class=3Dsamp>def test(arg0, *args, **kwargs):</TT>". See =
+the=20
+  second example above.=20
+  <P></P>
+  <LI>The keyword argument parameter is a dictionary, so you can do =
+anything=20
+  with it that you do with a normal dictionary.=20
+  <P></P></LI></UL>
+<P>
+<H2><A name=3DSECTION004520000000000000000>2.5.2 Classes and =
+Instances</A> </H2>
+<P>
+<H3><A name=3DSECTION004521000000000000000>2.5.2.1 A basic class</A> =
+</H3>
+<P>Define a basic class as follows:=20
+<P>
+<DIV class=3Dverbatim><PRE>class Basic:
+    def __init__(self, name):
+        self.name =3D name
+    def show(self):
+        print 'Basic -- name: %s' % self.name
+
+obj1 =3D Basic('Apricot')
+obj1.show()
+</PRE>
+<DIV class=3Dfooter><A=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_class_basic_1=
+.txt"=20
+type=3Dtext/plain>Download as text (original file name: <SPAN=20
+class=3Dfile>Examples/python_101_class_basic_1.py</SPAN>).</A> =
+</DIV></DIV>
+<P>Running the above example produces the following:=20
+<P>
+<DIV class=3Dverbatim><PRE>Basic -- name: Apricot
+</PRE></DIV>
+<P>Explanation:=20
+<P>
+<UL>
+  <LI>Methods are added to the class with <CODE>def</CODE>. The first =
+argument=20
+  to a method is the class instance. By convention it is spelled "self". =
+
+  <P></P>
+  <LI>The constructor for a class is a method named "__init__".=20
+  <P></P>
+  <LI>The <VAR>self</VAR> variable must be explicitly listed as the =
+first=20
+  argument to a method. You could spell it differently from "self", but =
+don't do=20
+  so.=20
+  <P></P>
+  <LI>Instance variables are referred to with "self.XXX". Notice how in =
+our=20
+  example an argument to the constructor is saved as an instance =
+variable.=20
+  <P></P>
+  <LI>An instance is created by <EM>calling</EM> the class. For example: =
+"<TT=20
+  class=3Dsamp>obj =3D Basic('Apricot')</TT>".=20
+  <P></P>
+  <LI>In addition to <CODE>__init__</CODE> there are other special =
+method names=20
+  of the form "__XXX__", which are used to customize classes and their=20
+  instances. These are described at <A class=3Durl=20
+  =
+href=3D"http://www.python.org/doc/current/ref/specialnames.html">http://w=
+ww.python.org/doc/current/ref/specialnames.html</A>.=20
+
+  <P></P></LI></UL>
+<P>A few more notes on <VAR>self</VAR>:=20
+<P>
+<UL>
+  <LI><VAR>self</VAR> is a reference to the instance. Think of it (in =
+part) as a=20
+  reference to the container for the data or state for the object.=20
+  <P></P>
+  <LI>In many object-oriented programming languages, the instance is =
+hidden in=20
+  the method definitions. These languages typically explain this by =
+saying=20
+  something like "The instance is passed as an implicit first argument =
+to the=20
+  method."=20
+  <P></P>
+  <LI>In Python, the instance is visible and <EM>explicit</EM> in method =
+
+  definitions. You must explicitly declare the instance as the first =
+parameter=20
+  of each (instance) method. This first parameter is (almost) always =
+spelled=20
+  "self".=20
+  <P></P></LI></UL>
+<P>
+<H3><A name=3DSECTION004522000000000000000>2.5.2.2 Inheritance</A> </H3>
+<P>Define a class <CODE>Special</CODE> that inherits from a super-class=20
+<CODE>Basic</CODE> as follows:=20
+<P>
+<DIV class=3Dverbatim><PRE>class Basic:
+    def __init__(self, name):
+        self.name =3D name
+    def show(self):
+        print 'Basic -- name: %s' % self.name
+
+class Special(Basic):
+    def __init__(self, name, edible):
+        Basic.__init__(self, name)
+        self.upper =3D name.upper()
+        self.edible =3D edible
+    def show(self):
+        Basic.show(self)
+        print 'Special -- upper name: %s.' % self.upper,
+        if self.edible:
+            print "It's edible."
+        else:
+            print "It's not edible."
+    def edible(self):
+        return self.edible
+
+obj1 =3D Basic('Apricot')
+obj1.show()
+print '=3D' * 30
+obj2 =3D Special('Peach', 1)
+obj2.show()
+</PRE>
+<DIV class=3Dfooter><A=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_class_basic_2=
+.txt"=20
+type=3Dtext/plain>Download as text (original file name: <SPAN=20
+class=3Dfile>Examples/python_101_class_basic_2.py</SPAN>).</A> =
+</DIV></DIV>
+<P>Running this example produces the following:=20
+<P>
+<DIV class=3Dverbatim><PRE>Basic -- name: Apricot
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+Basic -- name: Peach
+Special -- upper name: PEACH. It's edible.
+</PRE></DIV>
+<P>Comments:=20
+<P>
+<UL>
+  <LI>The super-class is named after the class name in parentheses. For =
+multiple=20
+  inheritence, separate the super-classes with commas.=20
+  <P></P>
+  <LI>Call a method in the super-class, by-passing the method with the =
+same name=20
+  in the sub-class, from the sub-class by using the super-class name. =
+For=20
+  example: "<TT class=3Dsamp>Basic.__init__(self, name)</TT>"and "<TT=20
+  class=3Dsamp>Basic.show(self)</TT>".=20
+  <P></P>
+  <LI>In our example (above), the sub-class (<TT =
+class=3Dclass>Special</TT>)=20
+  specializes the super-class (<TT class=3Dclass>Basic</TT>) by adding =
+additional=20
+  member variables (<VAR>self.upper</VAR> and <VAR>self.edible</VAR>) =
+and by=20
+  adding an additional method (<TT class=3Dmethod>edible</TT>).=20
+  <P></P></LI></UL>
+<P>
+<H3><A name=3DSECTION004523000000000000000>2.5.2.3 Class data</A> </H3>
+<P>A class data member is a member that has only one value for the class =
+and all=20
+its instances. Here is an example from the Python FAQ at <A class=3Durl=20
+href=3D"http://www.python.org/doc/FAQ.html">http://www.python.org/doc/FAQ=
+.html</A>:=20
+
+<P>
+<DIV class=3Dverbatim><PRE>class C:
+    count =3D 0   # number of times C.__init__ called
+    def __init__(self):
+        C.count =3D C.count + 1
+    def getcount(self):
+        return C.count  # or return self.count
+
+c1 =3D C()
+print 'Current count:', c1.getcount()
+c2 =3D C()
+print  'Current count:', c2.getcount()
+</PRE>
+<DIV class=3Dfooter><A=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_class_advance=
+d_1.txt"=20
+type=3Dtext/plain>Download as text (original file name: <SPAN=20
+class=3Dfile>Examples/python_101_class_advanced_1.py</SPAN>).</A> =
+</DIV></DIV>
+<P>Running this example produces:=20
+<P>
+<DIV class=3Dverbatim><PRE>Current count: 1
+Current count: 2
+</PRE></DIV>
+<P>
+<H3><A name=3DSECTION004524000000000000000></A><A=20
+name=3DStatic_methods_and_class_methods></A><BR>2.5.2.4 Static methods =
+and class=20
+methods </H3>
+<P>New-style classes can have static methods and class methods.=20
+<P>A new-style class is a class that inherits directly or indirectly =
+from <TT=20
+class=3Dclass>object</TT> or from a built-in type.=20
+<P>Here is an example that shows how to define static methods and class =
+methods:=20
+
+<P>
+<DIV class=3Dverbatim><PRE>class Advanced(object):
+    def __init__(self, name):
+        self.name =3D name
+    def Description():
+        return 'This is an advanced class.'
+    def ClassDescription(cls):
+        return 'This is advanced class: %s' % repr(cls)
+    Description =3D staticmethod(Description)
+    ClassDescription =3D classmethod(ClassDescription)
+
+obj1 =3D Advanced('Nectarine')
+print obj1.Description()
+print obj1.ClassDescription()
+print '=3D' * 30
+print Advanced.Description()
+print  Advanced.ClassDescription()
+</PRE>
+<DIV class=3Dfooter><A=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_class_advance=
+d_2.txt"=20
+type=3Dtext/plain>Download as text (original file name: <SPAN=20
+class=3Dfile>Examples/python_101_class_advanced_2.py</SPAN>).</A> =
+</DIV></DIV>
+<P>Running the above produces the following output:=20
+<P>
+<DIV class=3Dverbatim><PRE>This is an advanced class.
+This is advanced class: &lt;class __main__.Advanced at 0x401c926c&gt;
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+This is an advanced class.
+This is advanced class: &lt;class __main__.Advanced at 0x401c926c&gt;
+</PRE></DIV>
+<P>Notes:=20
+<P>
+<UL>
+  <LI>The class inherits from class <TT class=3Dclass>object</TT>, which =
+makes it=20
+  a new-style class.=20
+  <P></P>
+  <LI>Create a static method with "<TT class=3Dsamp>x =3D =
+staticmethod(y)</TT>",=20
+  where <VAR>y</VAR> is a normal method but without the =
+<VAR>self</VAR>/first=20
+  parameter.=20
+  <P></P>
+  <LI>Create a class method with "<TT class=3Dsamp>x =3D =
+classmethod(y)</TT>", where=20
+  <VAR>y</VAR> is a normal method.=20
+  <P></P>
+  <LI>The difference between static and class methods is that a class =
+method=20
+  receives the class (not the instance) as its first argument. A =
+summary:=20
+  <P>
+  <UL>
+    <LI>A normal/standard method always receives an instance as its =
+first=20
+    argument.=20
+    <P></P>
+    <LI>A class method always receives the class as its first argument.=20
+    <P></P>
+    <LI>A static method does not (autoatically) receive either the =
+instance or=20
+    the class as the first argument.=20
+    <P></P></LI></UL>
+  <P></P>
+  <LI>You can call static and class methods using either an instance or =
+a class.=20
+  In our example either "<TT class=3Dsamp>obj1.Description()</TT>" or =
+"<TT=20
+  class=3Dsamp>Advanced.Description()</TT>" will work.=20
+  <P></P></LI></UL>
+<P>You should also review the relevant standard Python documentation =
+which you=20
+can find at <A class=3Dulink=20
+href=3D"http://www.python.org/doc/current/lib/built-in-funcs.html">Python=
+ Library=20
+Reference - 2.1 Built-in Functions</A>.=20
+<P>By now, you are likely to be asking: "Why and when should I use class =
+methods=20
+and static methods?" Here is a bit of guidance, though=20
+<P>
+<UL>
+  <LI>Most of the time, almost always, implement plain <EM>instance</EM> =
+
+  methods. Implement an instance method whenever the method needs access =
+to the=20
+  values that are specific to the instance or needs to call other =
+methods that=20
+  have access to instance specific values. If the method needs =
+<VAR>self</VAR>,=20
+  then you probably need an instance method.=20
+  <P></P>
+  <LI>Implement a <EM>class</EM> method (1) when the method does =
+<EM>not</EM>=20
+  need access to instance variables and (2) when you do not want to =
+require the=20
+  caller of the method to create an instance and (3) when the method =
+needs=20
+  access to class variables. A class method may be called on either an =
+instance=20
+  or the class. A class method gets the class as a first argument, =
+whether it is=20
+  called on the class or the instance. If the method needs access to the =
+class=20
+  but does not need self, then think class method.=20
+  <P></P>
+  <LI>Implement a <EM>static</EM> method if you merely want to put the =
+code of=20
+  the method within the scope of the class, perhaps for purposes of =
+organizing=20
+  your code, but the method needs access to neither class nor instance =
+variables=20
+  (though you can access class variables through the class itself). A =
+static=20
+  method may be called on either an instance or the class. A static =
+method gets=20
+  neither the class nor the instance as an argument.=20
+  <P></P></LI></UL>
+<P>To summarize:=20
+<P>
+<UL>
+  <LI>Implement an instance method, unless ...=20
+  <P></P>
+  <LI>... the method needs access to class variables but not instance =
+variables,=20
+  then implement a class method, unless ...=20
+  <P></P>
+  <LI>... the method needs access to neither instance variables nor =
+class=20
+  variables and you still want to include it within the class =
+definition, then=20
+  implement a static method.=20
+  <P></P>
+  <LI>Above all, write clear, plain code that will be understandable to =
+your=20
+  readers. Do <EM>not</EM> use a more confusing language feature and do=20
+  <EM>not</EM> force your readers to learn a new language feature unles =
+you have=20
+  a good reason.=20
+  <P></P></LI></UL>
+<P>
+<H3><A name=3DSECTION004525000000000000000>2.5.2.5 Properties</A> </H3>
+<P>A new-style class can have <EM>properties</EM>. A property is an =
+attribute of=20
+a class that is associated with a getter and a setter function.=20
+<P>Declare the property and its getter and setter functions with <TT=20
+class=3Dfunction>property()</TT>.=20
+<P>Here is an example:=20
+<P>
+<DIV class=3Dverbatim><PRE>class A(object):
+    count =3D 0
+    def __init__(self, name):
+        self.name =3D name
+    def set_name(self, name):
+        print 'setting name: %s' % name
+        self.name =3D name
+    def get_name(self):
+        print 'getting name: %s' % self.name
+        return self.name
+    objname =3D property(get_name, set_name)
+
+def test():
+    a =3D A('apple')
+    print 'name: %s' % a.objname
+    a.objname =3D 'banana'
+    print 'name: %s' % a.objname
+
+test()
+
+</PRE>
+<DIV class=3Dfooter><A=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_properties.tx=
+t"=20
+type=3Dtext/plain>Download as text (original file name: <SPAN=20
+class=3Dfile>Examples/python_101_properties.py</SPAN>).</A> </DIV></DIV>
+<P>Running the above produces the following output:=20
+<P>
+<DIV class=3Dverbatim><PRE>getting name: apple
+name: apple
+setting name: banana
+getting name: banana
+name: banana
+</PRE></DIV>
+<P>Notes:=20
+<P>
+<UL>
+  <LI>The class inherits from class <TT class=3Dclass>object</TT>, which =
+makes it=20
+  a new-style class.=20
+  <P></P>
+  <LI>When a value is assigned to a property, the setter method is =
+called.=20
+  <P></P>
+  <LI>When the value of a property is accessed, the getter method is =
+called.=20
+  <P></P>
+  <LI>You can also define a delete method and a documentation attribute =
+for a=20
+  property. For more information, visit <A class=3Dulink=20
+  href=3D"http://docs.python.org/lib/built-in-funcs.html">2.1 Built-in=20
+  Functions</A> and look for <TT class=3Dfunction>property</TT>.=20
+  <P></P></LI></UL>
+<P>
+<H2><A name=3DSECTION004530000000000000000>2.5.3 Modules</A> </H2>
+<P>You can use a module to organize a number of Python definitions in a =
+single=20
+file. Here is an example:=20
+<P>
+<DIV class=3Dverbatim><PRE># python_101_module_simple.py
+
+"""
+This simple module contains definitions of a class and several=20
+functions.
+"""
+
+LABEL =3D '=3D=3D=3D=3D=3D Testing a simple module =3D=3D=3D=3D=3D'
+
+class Person:
+    """Sample of a simple class definition.
+    """
+    def __init__(self, name, description):
+        self.name =3D name
+        self.description =3D description
+    def show(self):
+        print 'Person -- name: %s  description: %s' % (self.name, =
+self.description)
+
+def test(msg, count):
+    """A sample of a simple function.
+    """
+    for idx in range(count):
+        print '%s %d' % (msg, idx)
+
+def testDefaultArgs(arg1=3D'default1', arg2=3D'default2'):
+    """A function with default arguments.
+    """
+    print 'arg1:', arg1
+    print 'arg2:', arg2
+
+def testArgLists(*args, **kwargs):
+    """
+    A function which references the argument list and keyword arguments.
+    """
+    print 'args:', args
+    print 'kwargs:', kwargs
+
+def main():
+    """
+    A test harness for this module.
+    """
+    print LABEL
+    person =3D Person('Herman', 'A cute guy')
+    person.show()
+    print '=3D' * 30
+    test('Test #', 4)
+    print '=3D' * 30
+    testDefaultArgs('Explicit value')
+    print '=3D' * 30
+    testArgLists('aaa', 'bbb', arg1=3D'ccc', arg2=3D'ddd')
+
+if __name__ =3D=3D '__main__':
+    main()
+</PRE>
+<DIV class=3Dfooter><A=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_module_simple=
+.txt"=20
+type=3Dtext/plain>Download as text (original file name: <SPAN=20
+class=3Dfile>Examples/python_101_module_simple.py</SPAN>).</A> =
+</DIV></DIV>
+<P>Running the above produces the following output:=20
+<P>
+<DIV class=3Dverbatim><PRE>=3D=3D=3D=3D=3D Testing a simple module =
+=3D=3D=3D=3D=3D
+Person -- name: Herman  description: A cute guy
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+Test # 0
+Test # 1
+Test # 2
+Test # 3
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+arg1: Explicit value
+arg2: default2
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+args: ('aaa', 'bbb')
+kwargs: {'arg1': 'ccc', 'arg2': 'ddd'}
+</PRE></DIV>
+<P>Comments:=20
+<P>
+<UL>
+  <LI>The string definitions at the beginning of each of the module, =
+class=20
+  definitions, and function definitions serve as documentation for these =
+items.=20
+  You can show this documentation with the following from the =
+command-line:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>$ pydoc python_101_module_simple
+</PRE></DIV>
+  <P>Or this, from the Python interactive prompt:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; import =
+python_101_module_simple
+&gt;&gt;&gt; help(python_101_module_simple)
+</PRE></DIV>
+  <P></P>
+  <LI>It is common and it is a good practice to include a test harness =
+for the=20
+  module at the end of the source file. Note that the test "<TT =
+class=3Dsamp>if=20
+  __name__ =3D=3D '__main__':</TT>" will be true only when the file is =
+run (e.g.=20
+  from the command-line with "<TT class=3Dsamp>$ python=20
+  python_101_module_simple.py</TT>"), but <EM>not</EM> when the module =
+is=20
+  imported.=20
+  <P></P>
+  <LI>Remember that the code in module is only evaluated the first time =
+it is=20
+  imported in a program. So, for example, global variables in a module =
+cause=20
+  behavior that users of the module might not expect.=20
+  <P></P>
+  <LI>Constants, on the other hand, are safe. A constant, in Python, is =
+a=20
+  variable whose value is initialized but not changed. An example is=20
+  <VAR>LABEL</VAR>, above.=20
+  <P></P></LI></UL>
+<P>
+<H2><A name=3DSECTION004540000000000000000>2.5.4 Packages</A> </H2>
+<P>A package is a way to organize a number of modules together as a =
+unit. Python=20
+packages can also contain other packages.=20
+<P>To give us an example to talk about, consider the follow package =
+structure:=20
+<P>
+<DIV class=3Dverbatim><PRE>package_example/
+package_example/__init__.py
+package_example/module1.py
+package_example/module2.py
+package_example/A.py
+package_example/B.py
+</PRE></DIV>
+<P>And, here are the contents:=20
+<P>
+<DIV class=3Dverbatim><PRE># __init__.py
+
+# Expose definitions from modules in this package.
+from module1 import class1
+from module2 import class2
+</PRE>
+<DIV class=3Dfooter><A=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/__init__.txt"=20
+type=3Dtext/plain>Download as text (original file name: <SPAN=20
+class=3Dfile>Examples/package_example/__init__.py</SPAN>).</A> =
+</DIV></DIV>
+<DIV class=3Dverbatim><PRE># module1.py
+
+class class1:
+    def __init__(self):
+        self.description =3D 'class #1'
+    def show(self):
+        print self.description
+</PRE>
+<DIV class=3Dfooter><A=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_module1.txt" =
+
+type=3Dtext/plain>Download as text (original file name: <SPAN=20
+class=3Dfile>Examples/package_example/python_101_module1.py</SPAN>).</A> =
+
+</DIV></DIV>
+<DIV class=3Dverbatim><PRE># module2.py
+
+class class2:
+    def __init__(self):
+        self.description =3D 'class #2'
+    def show(self):
+        print self.description
+</PRE>
+<DIV class=3Dfooter><A=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_module2.txt" =
+
+type=3Dtext/plain>Download as text (original file name: <SPAN=20
+class=3Dfile>Examples/package_example/python_101_module2.py</SPAN>).</A> =
+
+</DIV></DIV>
+<DIV class=3Dverbatim><PRE># A.py
+
+import B
+</PRE>
+<DIV class=3Dfooter><A=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_A.txt"=20
+type=3Dtext/plain>Download as text (original file name: <SPAN=20
+class=3Dfile>Examples/package_example/python_101_A.py</SPAN>).</A> =
+</DIV></DIV>
+<DIV class=3Dverbatim><PRE># B.py
+
+def function_b():
+    print 'Hello from function_b'
+</PRE>
+<DIV class=3Dfooter><A=20
+href=3D"http://www.rexx.com/~dkuhlman/python_101/python_101_B.txt"=20
+type=3Dtext/plain>Download as text (original file name: <SPAN=20
+class=3Dfile>Examples/package_example/python_101_B.py</SPAN>).</A> =
+</DIV></DIV>
+<P>In order to be used as a Python package (e.g. so that modules can be =
+imported=20
+from it) a directory must contain a file whose name is <SPAN=20
+class=3Dfile>__init__.py</SPAN>. The code in this module is evaluated =
+the first=20
+time a module is imported from the package.=20
+<P>In order to import modules from a package, you may either add the =
+package=20
+directory to <CODE>sys.path</CODE> or, if the parent directory is on=20
+<CODE>sys.path</CODE>, use dot-notation to explicitly specify the path. =
+In our=20
+example, you might use: "<TT class=3Dsamp>import =
+package_example.module1</TT>".=20
+<P>A module in a package can import another module from the same package =
+
+directly without using the path to the package. For example, the module =
+<TT=20
+class=3Dmodule>A</TT> in our sample package <TT =
+class=3Dmodule>package_example</TT>=20
+can import module <TT class=3Dmodule>B</TT> in the same package with =
+"<TT=20
+class=3Dsamp>import B</TT>". Module <TT class=3Dmodule>A</TT> does =
+<EM>not</EM> need=20
+to use "<TT class=3Dsamp>import package_example.B</TT>".=20
+<P>You can find additional information on packages at <A class=3Durl=20
+href=3D"http://www.python.org/doc/essays/packages.html">http://www.python=
+.org/doc/essays/packages.html</A>.=20
+
+<P>Suggested techniques:=20
+<P>
+<UL>
+  <LI>In the <SPAN class=3Dfile>__init__.py</SPAN> file, import and make =
+available=20
+  objects defined in modules in the package. Our sample package <TT=20
+  class=3Dmodule>package_example</TT> does this. Then, you can use "<TT=20
+  class=3Dsamp>from package_example import *</TT>" to import the package =
+and its=20
+  contents. For example:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; from package_example import *
+&gt;&gt;&gt; dir()
+['__builtins__', '__doc__', '__file__', '__name__',
+'atexit', 'class1', 'class2', 'module1', 'module2',
+'readline', 'rlcompleter', 'sl', 'sys']
+&gt;&gt;&gt;
+&gt;&gt;&gt; c1 =3D class1()
+&gt;&gt;&gt; c2 =3D class2()
+&gt;&gt;&gt; c1.show()
+class #1
+&gt;&gt;&gt; c2.show()
+class #2
+</PRE></DIV>
+  <P></P></LI></UL>
+<P>A few additional notes:=20
+<P>
+<UL>
+  <LI>With Python 2.3, you can collect the modules in a package into a =
+Zip file=20
+  by using <TT class=3Dmodule>PyZipFile</TT> from the Python standard =
+library. See=20
+  <A class=3Durl=20
+  =
+href=3D"http://www.python.org/doc/current/lib/pyzipfile-objects.html">htt=
+p://www.python.org/doc/current/lib/pyzipfile-objects.html</A>.=20
+
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; import zipfile
+&gt;&gt;&gt; a =3D zipfile.PyZipFile('mypackage.zip', 'w', =
+zipfile.ZIP_DEFLATED)
+&gt;&gt;&gt; a.writepy('Examples')
+&gt;&gt;&gt; a.close()
+</PRE></DIV>
+  <P>Then you can import and use this archive by inserting its path in=20
+  <VAR>sys.path</VAR>. In the following example, <TT=20
+  class=3Dmodule>class_basic_1</TT> is a module within package <TT=20
+  class=3Dmodule>mypackage</TT>:=20
+  <P>
+  <DIV class=3Dverbatim><PRE>&gt;&gt;&gt; import sys
+&gt;&gt;&gt; sys.path.insert(0, '/w2/Txt/Training/mypackage.zip')
+&gt;&gt;&gt; import class_basic_1
+Basic -- name: Apricot
+&gt;&gt;&gt; obj =3D class_basic_1.Basic('Wilma')
+&gt;&gt;&gt; obj.show()
+Basic -- name: Wilma
+</PRE></DIV>
+  <P></P></LI></UL>
+<P>
+<H1><A name=3DSECTION005000000000000000000></A><A name=3Dend></A><BR>End =
+Matter=20
+</H1>
+<P>
+<H1><A name=3DSECTION005100000000000000000>Acknowledgements and =
+Thanks</A> </H1>
+<P>Thanks to the implementors of <B class=3Dprogram>Python</B> for =
+producing an=20
+exceptionally usable and enjoyable programming language.=20
+<P>
+<DIV class=3Dseealso>
+<P class=3Dheading>See Also:</P>
+<P>
+<DL class=3Dseetitle compact>
+  <DT><EM class=3Dcitetitle><A href=3D"http://www.python.org/">The main =
+Python Web=20
+  Site</A></EM>=20
+  <DD>for more information on Python </DD></DL>
+<P>
+<DL class=3Dseetitle compact>
+  <DT><EM class=3Dcitetitle><A href=3D"http://www.python.org/doc">Python =
+
+  Documentation</A></EM>=20
+  <DD>for lots of documentation on Python </DD></DL>
+<P>
+<DL class=3Dseetitle compact>
+  <DT><EM class=3Dcitetitle><A =
+href=3D"http://www.python.org/sigs/xml-sig/">The=20
+  Python XML Special Interest Group</A></EM>=20
+  <DD>for more information on processing XML with Python </DD></DL>
+<P>
+<DL class=3Dseetitle compact>
+  <DT><EM class=3Dcitetitle><A =
+href=3D"http://www.rexx.com/~dkuhlman/">Dave's Web=20
+  Site</A></EM>=20
+  <DD>for more software and information on using Python for XML and the =
+Web=20
+</DD></DL>
+<P></P></DIV>
+<P>
+<H1><A name=3DSECTION006000000000000000000>About this document ...</A>=20
+</H1><STRONG>Python 101 -- Introduction to Python</STRONG>, August 7, =
+2008,=20
+Release 1.01=20
+<P>This document was generated using the <A=20
+href=3D"http://saftsack.fs.uni-bayreuth.de/~latex2ht/"><STRONG>LaTeX</STR=
+ONG>2<TT>HTML</TT></A>=20
+translator. </P>
+<P><A=20
+href=3D"http://saftsack.fs.uni-bayreuth.de/~latex2ht/"><STRONG>LaTeX</STR=
+ONG>2<TT>HTML</TT></A>=20
+is Copyright =C2=A9 1993, 1994, 1995, 1996, 1997, <A=20
+href=3D"http://cbl.leeds.ac.uk/nikos/personal.html">Nikos Drakos</A>, =
+Computer=20
+Based Learning Unit, University of Leeds, and Copyright =C2=A9 1997, =
+1998, <A=20
+href=3D"http://www.maths.mq.edu.au/~ross/">Ross Moore</A>, Mathematics =
+Department,=20
+Macquarie University, Sydney. </P>
+<P>The application of <A=20
+href=3D"http://saftsack.fs.uni-bayreuth.de/~latex2ht/"><STRONG>LaTeX</STR=
+ONG>2<TT>HTML</TT></A>=20
+to the Python documentation has been heavily tailored by Fred L. Drake, =
+Jr.=20
+Original navigation icons were contributed by Christopher Petrilli. </P>
+<DIV class=3Dnavigation>
+<DIV class=3Donline-navigation>
+<P></P>
+<HR>
+
+<TABLE cellSpacing=3D2 cellPadding=3D0 width=3D"100%" align=3Dcenter>
+  <TBODY>
+  <TR>
+    <TD class=3Donline-navigation><IMG height=3D32 alt=3D"Previous Page" =
+src=3D""=20
+      width=3D32 border=3D0></TD>
+    <TD class=3Donline-navigation><IMG height=3D32 alt=3D"Up one Level" =
+src=3D""=20
+      width=3D32 border=3D0></TD>
+    <TD class=3Donline-navigation><IMG height=3D32 alt=3D"Next Page" =
+src=3D"" width=3D32=20
+      border=3D0></TD>
+    <TD align=3Dmiddle width=3D"100%">Python 101 -- Introduction to =
+Python</TD>
+    <TD class=3Donline-navigation><IMG height=3D32 alt=3D"" src=3D"" =
+width=3D32=20
+    border=3D0></TD>
+    <TD class=3Donline-navigation><IMG height=3D32 alt=3D"" src=3D"" =
+width=3D32=20
+    border=3D0></TD>
+    <TD class=3Donline-navigation><IMG height=3D32 alt=3D"" src=3D"" =
+width=3D32=20
+    border=3D0></TD></TR></TBODY></TABLE>
+<DIV class=3Donline-navigation></DIV></DIV>
+<HR>
+<SPAN class=3Drelease-info>Release 1.01, documentation updated on August =
+7,=20
+2008.</SPAN> </DIV><!--End of Navigation Panel--></BODY></HTML>
+
+------=_NextPart_000_0000_01C7924C.0EDF3F30
+Content-Type: text/css;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.rexx.com/~dkuhlman/python_101/python_101.css
+
+.math {
+	FONT-FAMILY: "Century Schoolbook", serif
+}
+.math I {
+	FONT-WEIGHT: bold; FONT-FAMILY: "Century Schoolbook", serif
+}
+.boldmath {
+	FONT-WEIGHT: bold; FONT-FAMILY: "Century Schoolbook", serif
+}
+SMALL.xtiny {
+	FONT-SIZE: xx-small
+}
+SMALL.tiny {
+	FONT-SIZE: x-small
+}
+SMALL.scriptsize {
+	FONT-SIZE: smaller
+}
+SMALL.footnotesize {
+	FONT-SIZE: small
+}
+BIG.xlarge {
+	FONT-SIZE: large
+}
+BIG.xxlarge {
+	FONT-SIZE: x-large
+}
+BIG.huge {
+	FONT-SIZE: larger
+}
+BIG.xhuge {
+	FONT-SIZE: xx-large
+}
+BODY {
+	COLOR: #000000; BACKGROUND-COLOR: #ffffff
+}
+A:active {
+	COLOR: #ff0000
+}
+A:hover {
+	BACKGROUND-COLOR: #bbeeff
+}
+A:hover {
+	BACKGROUND-COLOR: #bbeeff
+}
+A:visited {
+	COLOR: #551a8b
+}
+A:link {
+	COLOR: #0000bb
+}
+H1 {
+	FONT-WEIGHT: bold; FONT-FAMILY: avantgarde, sans-serif
+}
+H2 {
+	FONT-WEIGHT: bold; FONT-FAMILY: avantgarde, sans-serif
+}
+H3 {
+	FONT-WEIGHT: bold; FONT-FAMILY: avantgarde, sans-serif
+}
+H4 {
+	FONT-WEIGHT: bold; FONT-FAMILY: avantgarde, sans-serif
+}
+H5 {
+	FONT-WEIGHT: bold; FONT-FAMILY: avantgarde, sans-serif
+}
+H6 {
+	FONT-WEIGHT: bold; FONT-FAMILY: avantgarde, sans-serif
+}
+H1 {
+	FONT-SIZE: 180%
+}
+H2 {
+	FONT-SIZE: 150%
+}
+H3 {
+	FONT-SIZE: 120%
+}
+H4 {
+	FONT-SIZE: 120%
+}
+.sectref {
+	FONT-FAMILY: avantgarde, sans-serif
+}
+.navlabel {
+	FONT-SIZE: 85%
+}
+UNKNOWN {
+	DISPLAY: none
+}
+CODE {
+	FONT-FAMILY: "lucida typewriter", lucidatypewriter,=0A=
+                                       monospace
+}
+TT {
+	FONT-FAMILY: "lucida typewriter", lucidatypewriter,=0A=
+                                       monospace
+}
+VAR {
+	FONT-WEIGHT: normal; FONT-STYLE: italic; FONT-FAMILY: times, serif
+}
+.Unix {
+	FONT-VARIANT: small-caps
+}
+.typelabel {
+	FONT-FAMILY: lucida, sans-serif
+}
+.navigation TD {
+	FONT-WEIGHT: bold; FONT-SIZE: 110%; FONT-FAMILY: avantgarde, =
+sans-serif; BACKGROUND-COLOR: #99ccff
+}
+DIV.warning {
+	BORDER-RIGHT: black thin solid; PADDING-RIGHT: 1em; BORDER-TOP: black =
+thin solid; PADDING-LEFT: 1em; PADDING-BOTTOM: 1em; MARGIN-LEFT: 2em; =
+BORDER-LEFT: black thin solid; MARGIN-RIGHT: 2em; PADDING-TOP: 1em; =
+BORDER-BOTTOM: black thin solid; BACKGROUND-COLOR: #fffaf0
+}
+DIV.warning .label {
+	FONT-SIZE: 110%; MARGIN-RIGHT: 0.5em; FONT-FAMILY: sans-serif
+}
+DIV.note {
+	BORDER-RIGHT: black thin solid; PADDING-RIGHT: 1em; BORDER-TOP: black =
+thin solid; PADDING-LEFT: 1em; PADDING-BOTTOM: 1em; MARGIN-LEFT: 2em; =
+BORDER-LEFT: black thin solid; MARGIN-RIGHT: 2em; PADDING-TOP: 1em; =
+BORDER-BOTTOM: black thin solid; BACKGROUND-COLOR: #fffaf0
+}
+DIV.note .label {
+	MARGIN-RIGHT: 0.5em; FONT-FAMILY: sans-serif
+}
+ADDRESS {
+	FONT-SIZE: 80%
+}
+.release-info {
+	FONT-SIZE: 80%; FONT-STYLE: italic
+}
+.titlegraphic {
+	VERTICAL-ALIGN: top
+}
+.verbatim PRE {
+	FONT-SIZE: 90%; COLOR: #00008b; FONT-FAMILY: "lucida typewriter", =
+lucidatypewriter,=0A=
+                                       monospace
+}
+.verbatim {
+	MARGIN-LEFT: 2em
+}
+.verbatim .footer {
+	PADDING-RIGHT: 0.05in; PADDING-LEFT: 0.05in; FONT-SIZE: 85%; =
+PADDING-BOTTOM: 0.05in; MARGIN-RIGHT: 0.5in; PADDING-TOP: 0.05in; =
+BACKGROUND-COLOR: #99ccff
+}
+.grammar {
+	PADDING-RIGHT: 0.05in; PADDING-LEFT: 0.05in; PADDING-BOTTOM: 0.05in; =
+MARGIN-RIGHT: 0.5in; PADDING-TOP: 0.05in; BACKGROUND-COLOR: #99ccff
+}
+.grammar-footer {
+	PADDING-RIGHT: 0.05in; PADDING-LEFT: 0.05in; FONT-SIZE: 85%; =
+PADDING-BOTTOM: 0.05in; PADDING-TOP: 0.05in
+}
+.grammartoken {
+	FONT-FAMILY: "lucida typewriter", lucidatypewriter,=0A=
+                                       monospace
+}
+.productions {
+	BACKGROUND-COLOR: #bbeeff
+}
+.productions A:active {
+	COLOR: #ff0000
+}
+.productions A:hover {
+	BACKGROUND-COLOR: #99ccff
+}
+.productions A:hover {
+	BACKGROUND-COLOR: #99ccff
+}
+.productions A:visited {
+	COLOR: #551a8b
+}
+.productions A:link {
+	COLOR: #0000bb
+}
+.productions TABLE {
+	VERTICAL-ALIGN: baseline; empty-cells: show
+}
+UNKNOWN {
+	PADDING-RIGHT: 2px; PADDING-LEFT: 2px; PADDING-BOTTOM: 2px; =
+PADDING-TOP: 2px
+}
+UNKNOWN {
+	FONT-FAMILY: "lucida typewriter",=0A=
+                                             lucidatypewriter,=0A=
+                                             monospace
+}
+UNKNOWN {
+	VERTICAL-ALIGN: baseline; FONT-FAMILY: "lucida typewriter",=0A=
+                                             lucidatypewriter,=0A=
+                                             monospace
+}
+UNKNOWN {
+	PADDING-RIGHT: 1em; PADDING-LEFT: 1em
+}
+UNKNOWN {
+	VERTICAL-ALIGN: baseline
+}
+.email {
+	FONT-FAMILY: avantgarde, sans-serif
+}
+.mailheader {
+	FONT-FAMILY: avantgarde, sans-serif
+}
+.mimetype {
+	FONT-FAMILY: avantgarde, sans-serif
+}
+.newsgroup {
+	FONT-FAMILY: avantgarde, sans-serif
+}
+.url {
+	FONT-FAMILY: avantgarde, sans-serif
+}
+.file {
+	FONT-FAMILY: avantgarde, sans-serif
+}
+.guilabel {
+	FONT-FAMILY: avantgarde, sans-serif
+}
+.realtable {
+	BORDER-RIGHT: black 0px solid; PADDING-RIGHT: 0.4em; BORDER-TOP: black =
+0px solid; PADDING-LEFT: 0.4em; MARGIN-LEFT: auto; BORDER-LEFT: black =
+0px solid; MARGIN-RIGHT: auto; BORDER-BOTTOM: black 2px solid; =
+BORDER-COLLAPSE: collapse; empty-cells: show
+}
+.realtable TBODY {
+	VERTICAL-ALIGN: baseline
+}
+.realtable TFOOT {
+	DISPLAY: table-footer-group
+}
+.realtable THEAD {
+	BORDER-TOP-WIDTH: 0px; DISPLAY: table-header-group; FONT-WEIGHT: bold; =
+BORDER-LEFT-WIDTH: 1px; BORDER-BOTTOM-WIDTH: 2px; VERTICAL-ALIGN: =
+baseline; FONT-FAMILY: avantgarde, sans-serif; BACKGROUND-COLOR: =
+#99ccff; BORDER-RIGHT-WIDTH: 0px
+}
+.realtable THEAD :unknown {
+	BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: =
+2px; BORDER-RIGHT-WIDTH: 0px
+}
+.realtable THEAD TH {
+	BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 1px; BORDER-BOTTOM-WIDTH: =
+2px; BORDER-RIGHT-WIDTH: 0px
+}
+.realtable TD {
+	BORDER-RIGHT: black 0px solid; PADDING-RIGHT: 0.4em; BORDER-TOP: black =
+0px solid; PADDING-LEFT: 0.4em; BORDER-LEFT: black 1px solid; =
+BORDER-BOTTOM: black 1px solid
+}
+.realtable TH {
+	BORDER-RIGHT: black 0px solid; PADDING-RIGHT: 0.4em; BORDER-TOP: black =
+0px solid; PADDING-LEFT: 0.4em; BORDER-LEFT: black 1px solid; =
+BORDER-BOTTOM: black 1px solid
+}
+.realtable TD:unknown {
+	BORDER-LEFT-WIDTH: 0px; VERTICAL-ALIGN: baseline
+}
+.realtable TH:unknown {
+	BORDER-LEFT-WIDTH: 0px; VERTICAL-ALIGN: baseline
+}
+.center {
+	TEXT-ALIGN: center
+}
+.left {
+	TEXT-ALIGN: left
+}
+.right {
+	TEXT-ALIGN: right
+}
+.refcount-info {
+	FONT-STYLE: italic
+}
+.refcount-info .value {
+	FONT-WEIGHT: bold; COLOR: #006600
+}
+.seealso {
+	BORDER-RIGHT: black thin solid; PADDING-RIGHT: 1em; BORDER-TOP: black =
+thin solid; PADDING-LEFT: 1em; PADDING-BOTTOM: 4pt; BORDER-LEFT: black =
+thin solid; PADDING-TOP: 0pt; BORDER-BOTTOM: black thin solid; =
+BACKGROUND-COLOR: #fffaf0
+}
+UNKNOWN {
+	FONT-WEIGHT: bold; FONT-SIZE: 110%
+}
+.availability .platform {
+	FONT-WEIGHT: bold
+}
+.du-command {
+	FONT-FAMILY: monospace
+}
+.du-option {
+	FONT-FAMILY: avantgarde, sans-serif
+}
+.du-filevar {
+	FONT-STYLE: italic; FONT-FAMILY: avantgarde, sans-serif
+}
+.du-xxx:unknown {
+	FONT-WEIGHT: bold; content: "** "
+}
+.du-xxx:unknown {
+	FONT-WEIGHT: bold; content: " **"
+}
+
+@media Print   =20
+{
+.online-navigation {
+	DISPLAY: none
+}
+
+}
+
+------=_NextPart_000_0000_01C7924C.0EDF3F30--

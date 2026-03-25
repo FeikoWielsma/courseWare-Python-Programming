@@ -1,0 +1,10 @@
+<doc>
+    <branch foo="bar" hash="1cdf045c" name="testing">
+        text,source
+    </branch>
+    <branch hash="f200013e" name="release01">
+        <sub-branch name="subrelease01">
+            xml,sgml
+        </sub-branch>
+    </branch>
+    </doc>

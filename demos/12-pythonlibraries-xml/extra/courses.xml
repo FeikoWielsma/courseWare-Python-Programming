@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<courses>
+	<course duration="1" id="a1">
+		<code>XML100</code>
+		<title>XML Overview</title>
+		<price currency="Euro">450</price>
+		<vendor>Twice</vendor>
+	</course>
+	<course duration="5" id="a2">
+		<code>MOC2124</code>
+		<title>C# Programming</title>
+		<price currency="Euro">1745</price>
+		<vendor>Microsoft</vendor>
+	</course>
+	<course duration="3" id="a3">
+		<code>INT503</code>
+		<title>PHP Programming</title>
+		<price currency="Dollar">995</price>
+		<vendor>Twice</vendor>
+	</course>
+	<course duration="5" id="a4">
+		<code>JAV210</code>
+		<title>Java Programming</title>
+		<price currency="Dollar">2345</price>
+		<vendor>Twice</vendor>
+	</course>
+	<course duration="1" id="a5">
+		<code>ANO401</code>
+		<title>Object Orientation</title>
+		<price currency="Euro">400</price>
+		<vendor>Twice</vendor>
+	</course>
+	<course duration="3" id="a6">
+		<code>MOC2389</code>
+		<title>Programming with ADO.NET</title>
+		<price currency="Euro">1095</price>
+		<vendor>Microsoft</vendor>
+	</course>
+	<course duration="5" id="a7">
+		<code>MOC2840</code>
+		<title>Implementing Security for Applications</title>
+		<price currency="Dollar">2195</price>
+		<vendor>Microsoft</vendor>
+	</course>
+	<course duration="2" id="a8">
+		<code>INT101</code>
+		<title>Internet and Intranet Concepts</title>
+		<price currency="Dollar">1400</price>
+		<vendor>Twice</vendor>
+	</course>
+	<course duration="3" id="a9">
+		<code>JSF</code>
+		<title>Javascript Fundamentals</title>
+		<price currency="Euro">1150</price>
+		<vendor>Prosoft</vendor>
+	</course>
+	<course duration="5" id="a10">
+		<code>JAV481</code>
+		<title>Java EE Web Applications</title>
+		<price currency="Euro">2345</price>
+		<vendor>Twice</vendor>
+	</course>
+	<course duration="3" id="a11">
+		<code>PERL</code>
+		<title>Perl Fundamentals</title>
+		<price currency="Dollar">1095</price>
+		<vendor>Prosoft</vendor>
+	</course>
+	<course duration="5" id="a12">
+		<code>MOC2310</code>
+		<title>Developing ASP.NET Web Applications</title>
+		<price currency="Dollar">1745</price>
+		<vendor>Microsoft</vendor>
+	</course>
+	<course duration="2" id="a13">
+		<code>JAV809</code>
+		<title>Java Management Extensions</title>
+		<price currency="Euro">945</price>
+		<vendor>Twice</vendor>
+	</course>
+	<course duration="3" id="a14">
+		<code>INT801</code>
+		<title>Ajax Programming</title>
+		<price currency="Euro">1495</price>
+		<vendor>Twice</vendor>
+	</course>
+	<course duration="5" id="a15">
+		<code>MOC2349</code>
+		<title>Programming the.NET Framework</title>
+		<price currency="Dollar">1795</price>
+		<vendor>Microsoft</vendor>
+	</course>
+</courses>
+

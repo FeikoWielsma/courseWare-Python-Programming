@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClientInfo xmlns="http://fourthought.com/timelog"
+           xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <dc:Description>
+    Fourthought, Inc
+  </dc:Description>
+  <dc:Title>
+    Management Subcontracting
+  </dc:Title>
+  <MinIncrement>0.25</MinIncrement>
+  <InvoiceNumber>7777</InvoiceNumber>
+</ClientInfo> 

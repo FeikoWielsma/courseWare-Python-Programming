@@ -1,0 +1,16 @@
+time,latitude,longitude,depth,mag,magType,nst,gap,dmin,rms,net,id,updated,place,type,horizontalError,depthError,magError,magNst,status,locationSource,magSource
+2019-09-12T20:01:51.220Z,62.567,-151.5067,0,2,ml,,,,0.97,ak,ak019bq1yhow,2019-09-12T20:09:04.263Z,"77km WNW of Talkeetna, Alaska",earthquake,,0.3,,,automatic,ak,ak
+2019-09-12T19:51:09.160Z,35.831665,-117.6593323,6.91,0.96,ml,15,63,0.0527,0.09,ci,ci38830711,2019-09-12T19:53:13.537Z,"24km N of Ridgecrest, CA",earthquake,0.39,1.01,0.06,2,automatic,ci,ci
+2019-09-12T19:50:31.380Z,35.9385,-117.483,0.41,1.93,ml,31,47,0.09637,0.17,ci,ci38830703,2019-09-12T20:01:00.660Z,"20km NNW of Searles Valley, CA",earthquake,0.24,0.41,0.111,26,automatic,ci,ci
+2019-09-12T19:47:57.530Z,35.7166667,-117.5223333,4.11,0.96,ml,17,118,0.09536,0.27,ci,ci38830695,2019-09-12T19:51:32.528Z,"12km WSW of Searles Valley, CA",earthquake,0.56,1.28,0.19,13,automatic,ci,ci
+2019-09-12T19:43:02.450Z,35.8463333,-117.6546667,11.63,0.64,ml,10,98,0.05558,0.2,ci,ci38830679,2019-09-12T19:46:37.343Z,"24km WNW of Searles Valley, CA",earthquake,0.76,1.42,0.155,6,automatic,ci,ci
+2019-09-12T19:39:07.330Z,36.052,-117.6738333,-0.19,0.87,ml,9,152,0.07878,0.17,ci,ci38830671,2019-09-12T19:42:41.831Z,"25km ENE of Little Lake, CA",earthquake,0.42,31.61,0.216,8,automatic,ci,ci
+2019-09-12T19:37:02.740Z,35.6153333,-117.465,7.81,0.81,ml,15,66,0.02747,0.17,ci,ci38830663,2019-09-12T19:40:46.306Z,"18km SSW of Searles Valley, CA",earthquake,0.4,0.58,0.154,7,automatic,ci,ci
+2019-09-12T19:31:32.930Z,38.8115005,-122.7891693,3.44,0.55,md,14,97,0.00595,0.03,nc,nc73269855,2019-09-12T19:41:02.288Z,"5km NW of The Geysers, CA",earthquake,0.35,0.67,0.03,3,automatic,nc,nc
+2019-09-12T19:31:25.780Z,45.563,-111.8625,8.39,2,ml,21,45,0.167,0.18,mb,mb80360509,2019-09-12T19:57:48.890Z,"30km NNE of Virginia City, Montana",earthquake,0.33,1.79,0.086,7,reviewed,mb,mb
+2019-09-12T19:29:21.000Z,35.7113333,-117.483,1.62,0.98,ml,18,127,0.06677,0.2,ci,ci38830631,2019-09-12T19:32:57.246Z,"10km SW of Searles Valley, CA",earthquake,0.43,0.53,0.202,12,automatic,ci,ci
+2019-09-12T19:24:42.760Z,36.6696663,-121.3081665,5.74,1.98,md,21,97,0.05308,0.19,nc,nc73269845,2019-09-12T19:33:05.402Z,"13km S of Tres Pinos, CA",earthquake,0.51,1.36,0.2,19,automatic,nc,nc
+2019-09-12T19:24:38.400Z,46.9473333,-112.5058333,13.39,1.1,ml,11,136,0.103,0.1,mb,mb80360504,2019-09-12T20:04:36.510Z,"13km E of Lincoln, Montana",earthquake,0.55,0.44,0.048,2,reviewed,mb,mb
+2019-09-12T19:24:26.640Z,35.6923333,-117.4631667,4.08,1.18,ml,24,128,0.04208,0.18,ci,ci38830615,2019-09-12T19:28:03.994Z,"10km SSW of Searles Valley, CA",earthquake,0.35,0.79,0.1,16,automatic,ci,ci
+2019-09-12T19:14:40.710Z,35.6811676,-117.5413361,7.37,0.98,ml,12,131,0.1144,0.09,ci,ci38830591,2019-09-12T19:18:20.050Z,"14km ENE of Ridgecrest, CA",earthquake,0.44,1.25,0.072,4,automatic,ci,ci
+2019-09-12T19:09:44.960Z,19.1998329,-155.3851624,31.59,1.97,md,37,170,0.03924,0.12,hv,hv71139092,2019-09-12T19:12:50.880Z,"9km E of Pahala, Hawaii",earthquake,0.65,0.73,0.15,5,automatic,hv,hv

@@ -1,0 +1,22 @@
+import sqlite3
+
+conn = sqlite3.connect('c:/pythoncourse/demo.db', isolation_level=None)
+
+c = conn.cursor()
+
+symbol = 'IBM'
+# Never do this -- insecure!
+#c.execute("... where symbol = '%s'" % symbol)
+
+# Do this instead
+t = (symbol,)
+c.execute('select * from stocks where symbol=?', t)
+
+# Larger example
+for t in [('2006-03-28', 'BUY', 'IBM', 1000, 45.00),
+          ('2006-04-05', 'BUY', 'MSOFT', 1000, 72.00),
+          ('2006-04-06', 'SELL', 'IBM', 500, 53.00),
+         ]:
+    c.execute('insert into stocks values (?,?,?,?,?)', t)
+    
+c.close()

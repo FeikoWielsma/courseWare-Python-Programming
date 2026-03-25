@@ -1,0 +1,60 @@
+﻿# Recursive patterns for all project types
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Visual Studio / C++ / C#
+**/.vs/
+**/[Bb]in/
+**/[Oo]bj/
+**/[Xx]64/
+**/[Xx]86/
+**/[Dd]ebug/
+**/[Rr]elease/
+**/*.exe
+**/*.pdb
+**/*.suo
+**/*.user
+**/*.userosscache
+**/*.sln.doccache
+**/packages/
+**/*.nupkg
+
+# Java / Eclipse / IntelliJ / VS Code
+**/*.class
+**/*.jar
+**/*.war
+**/*.ear
+**/.project
+**/.classpath
+**/.settings/
+**/.idea/
+**/.vscode/
+
+# Python
+**/__pycache__/
+**/*.py[cod]
+**/*$py.class
+**/.venv/
+**/venv/
+**/env/
+**/.env
+
+# Rust
+**/target/
+
+# Node
+**/node_modules/
+
+# Database / System
+**/WiredTiger*
+**/journal/
+**/*.db-journal
+
+# Archives (Only if users want them ignored - let's be aggressive for now)
+**/*.zip
+**/*.rar
+**/*.7z
+**/*.gz
+**/*.tar
+

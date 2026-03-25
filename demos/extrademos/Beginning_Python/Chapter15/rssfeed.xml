@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rss PUBLIC "-//Netscape Communications//DTD RSS 0.91//EN" "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91"><channel><title>My Daily Blog</title><link>http://server.mydomain.tld</link><description>This is my blog.  There are others like it, but this one is mine.</description><item>
+
+<title>Really Big Corp to buy Slightly Smaller Corp</title>
+
+<description>
+Really Big Corp announced it's intent today to buy Slightly Smaller Corp.  Slightly Smaller Corp is the world's foremost producer of lime green widgets.  This will clearly impact the world's widget supply.
+</description>
+<link>
+http://server.mydomain.tld/myblog.html#autogen4</link></item><item>
+
+<title>Python Code now easier than ever</title>
+
+<description>
+Writing Python has become easier than ever with the release of the new book, Beginning Python, from Wrox Press.
+</description>
+<link>
+http://server.mydomain.tld/myblog.html#autogen3</link></item><item>
+
+<title>Really Famous Author to speak at quirky little bookstore</title>
+
+<description>
+A really good author will be speaking tomorrow night at a charming little bookstore in my home town.  It's a can't miss event.
+</description>
+<link>
+http://server.mydomain.tld/myblog.html#autogen2</link></item><item>
+
+<title>Blogging more popular than ever</title>
+
+<description>
+More people are blogging now than ever before, leading to an explosion of opinions and timely content on the internet.  It's hard to say if this is good or bad, but it's certainly a new method of communication.
+</description>
+<link>
+http://server.mydomain.tld/myblog.html#autogen1</link></item></channel></rss>

@@ -1,0 +1,4 @@
+from employees.employee import Employee
+from employees.wageemployee import WageEmployee
+from employees.manageremployee import ManagerEmployee
+from employees.programmeremployee import ProgrammerEmployee

@@ -1,0 +1,18 @@
+<Directory />
+    Options FollowSymLinks
+    AllowOverride All
+    Order allow,deny
+    Allow from all
+</Directory>
+
+<Directory c:/apache2.2python/htdocs/publisher/>
+       AddHandler mod_python .py
+       PythonHandler mod_python.publisher
+       PythonDebug On
+</Directory>
+
+<Directory c:/apache2.2python/htdocs/psp/>
+   AddHandler mod_python .psp .psp_
+   PythonHandler mod_python.psp
+   PythonDebug On
+</Directory>

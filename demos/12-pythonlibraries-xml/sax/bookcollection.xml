@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collection>
+   <book>
+      <title>The Once and Future King</title>
+      <author>T.H. White</author>
+      <genre>Fantasy</genre>
+   </book>
+   <book>
+      <title>The Curse of Chalion</title>
+      <author>Lois McMaster Bujold</author>
+      <genre>Fantasy</genre>
+   </book>
+   <book>
+      <title>Paladin of Souls</title>
+      <author>Lois McMaster Bujold</author>
+      <genre>Fantasy</genre>
+   </book>
+   <book>
+      <title>Alas, Babylon</title>
+      <author>Pat Frank</author>
+      <genre>Fiction</genre>
+   </book>
+   <book>
+      <title>Rifles for Wattie</title>
+      <author>Harold Keith</author>
+      <genre>Fiction</genre>
+   </book>
+</collection>
+

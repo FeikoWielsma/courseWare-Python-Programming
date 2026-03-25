@@ -1,0 +1,7 @@
+README.md
+setup.py
+calculator_pkg/__init__.py
+calculator_pkg_spiraltrain.egg-info/PKG-INFO
+calculator_pkg_spiraltrain.egg-info/SOURCES.txt
+calculator_pkg_spiraltrain.egg-info/dependency_links.txt
+calculator_pkg_spiraltrain.egg-info/top_level.txt

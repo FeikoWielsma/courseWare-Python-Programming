@@ -1,0 +1,18 @@
+import re
+
+line = "Cats are smarter than dogs";
+
+matchObj = re.search( r'(.*) are (.*)', line, re.M|re.I)
+
+if matchObj:
+    print ("matchObj.group() : ", matchObj.group())
+    print ("matchObj.group(1) : ", matchObj.group(1))
+    print ("matchObj.group(2) : ", matchObj.group(2))
+else:
+    print ("No match!!")
+    
+matchObj = re.search("o", "dog") # Match as search() looks everywhere in the string.
+if matchObj:
+    print ("matchObj.group() : ", matchObj.group())
+else:
+    print ("No match!!")
