@@ -58,3 +58,10 @@ Desktop.ini
 **/*.gz
 **/*.tar
 
+
+# Presentation-as-Code build outputs
+build/dist/
+build/.mermaid-cache/
+build/spiraltrain-logo.png
+node_modules/
+__pycache__/

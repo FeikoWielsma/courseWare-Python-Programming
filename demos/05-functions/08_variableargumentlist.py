@@ -1,7 +1,7 @@
-def test_arg_lists(arg, *argtuple, **kwargs):
+def test_arg_lists(arg, *arg_tuple, **kwargs):
     """Function referencing argument, argument list and keyword arguments"""
     print("arg:", arg)
-    print("args:", argtuple)
+    print("args:", arg_tuple)
     print("kwargs:", kwargs)
 
 
