@@ -523,7 +523,7 @@ print (dict[['Albert']])
   - Set is mutable and `frozenset` is immutable
 - Dictionaries are comparable to associative arrays :
 
-> `exercise · Data Structures`
+> `exercise03 · Data Structures`
 
   - Pairs of keys and values separated by comma , and colon :
   - Enclosed by curly braces `{ },` values access with square brackets `[]`

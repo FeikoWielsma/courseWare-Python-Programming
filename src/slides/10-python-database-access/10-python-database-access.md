@@ -386,6 +386,6 @@ if con:
   - Changes are automatically committed
 - DB API supports transactions if database supports them :
 
-> `exercise · Python Database Access`
+> `exercise10 · Python Database Access`
 
   - Via methods on the connection object

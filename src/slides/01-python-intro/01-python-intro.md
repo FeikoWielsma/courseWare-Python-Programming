@@ -8,6 +8,8 @@ footer: Python Intro
 
 # What is Python?
 
+<!-- NOTES: For Perl students: Python is also interpreted like Perl, but with enforced indentation instead of braces. No sigils ($, @, %), no 'my' declarations. Think of it as Perl with training wheels removed and readability enforced. -->
+
 - Python is a general purpose high-level scripting language :
   - Supports many applications from text processing to WWW browsers and games
 - Python is Beginner's Language :

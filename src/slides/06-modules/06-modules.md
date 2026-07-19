@@ -8,7 +8,9 @@ footer: Modules
 
 # Modules
 
-- Used to organize number of Python definitions in single file :
+<!-- NOTES: Perl comparison: 'use Module;' or 'require Module;' becomes 'import module'. Python modules are just .py files (like Perl packages but simpler). 'from module import func' is like 'use Module qw(func)'. __name__ == '__main__' is like Perl's 'unless caller' idiom. No @INC manipulation needed — Python uses sys.path. -->
+
+- A module
   - Used to logically organize your Python code
   - Can be bind and referenced
 - Module is a file consisting of Python code :
@@ -387,28 +389,26 @@ if __name__ == '__main__' :
 # Installing Packages
 
 - From PyPI or from VCS, other indexes, local archives
-- On Linux or OS X :
-  - `pip install -U pip setuptools`
-- On Windows :
-  - `python -m pip install -U pip setuptools`
-- Common usage of `pip` :
-  - Install from the Python Package Index using a requirement specifier
+- We use `uv` as our package manager (fast, modern, replaces pip) :
+  - `uv add package` : install and add to pyproject.toml
+  - `uv remove package` : uninstall
+  - `uv sync` : install everything from pyproject.toml
+- Common usage of `uv` :
 
-```python
-pip install package
-pip install package==1.3
-pip install package~=1.3
-pip install package>1.3
-pip install –-upgrade package
+```bash
+uv add requests
+uv add "requests>=2.28,<3"
+uv add --dev pytest
+uv run python script.py
 ```
 
-- Requirements file contains lists of packages to install :
+- The `pyproject.toml` file tracks your dependencies :
+  - Replaces `requirements.txt` and `setup.py`
+  - Commit it to version control
 
-```python
-pip install -r requirements.txt
-pip list # list all packages installed
-pip freeze > requirements.txt # reads packages installed and saves versions in file
-pip uninstall package
+```bash
+uv lock          # generate/update uv.lock
+uv export > requirements.txt   # for legacy tools
 ```
 
 ---
@@ -420,17 +420,19 @@ pip uninstall package
   - Handles different apps requiring different versions of package
 - Applications won't break by subsequent library updates :
   - Makes it easier to create distributions
-- Create virtual environment as follows :
+- With `uv`, virtual environments are automatic :
 
-```python
-python -m pip install virtualenv
-virtualenv c:\temp\myenv
+```bash
+uv init myproject     # creates pyproject.toml + .venv
+cd myproject
+uv add requests       # installs into .venv automatically
+uv run python app.py  # runs with the venv activated
 ```
 
-- Or : `python -m venv myenv c:\temp\myenv (>Python3.4)`
-- Switching Environment :
-  - Run `activate` from Scripts directory of virtual environment to set path and change prompt
-  - Run `deactivate` to return to standard Python environment
+- Manual venv (if you ever need it without uv) :
+  - `python -m venv .venv`
+  - Activate : `.venv\Scripts\activate` (Windows) or `source .venv/bin/activate`
+  - Deactivate : `deactivate`
 
 ---
 

@@ -396,7 +396,7 @@ except Networkerror as e:
   - `IOError, ArithmeticError, KeyError, IndentationError`
 - Exceptions can be raised with the `raise` statement
 
-> `exercise · Exception Handling`
+> `exercise08 · Exception Handling`
 
 - It is possible to create User Defined Exceptions :
   - By deriving classes from standard built-in exceptions

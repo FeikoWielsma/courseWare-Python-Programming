@@ -8,7 +8,9 @@ footer: Variables and Data Types
 
 # Variables
 
-- Variables represent memory locations to store values :
+<!-- NOTES: Perl comparison: 'my $x = 5' becomes 'x = 5'. No sigils, no 'my'. Python is dynamically typed like Perl, but variable names are bare identifiers. Type hints (x: int = 5) are optional annotations, not enforced at runtime. -->
+
+- Variables are
   - When a variable is created memory space is reserved
 - Variables can have different data types like integers, decimal or string :
   - Based on the data type of a variable, the interpreter allocates memory

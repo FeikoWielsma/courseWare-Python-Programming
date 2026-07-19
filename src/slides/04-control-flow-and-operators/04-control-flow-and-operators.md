@@ -518,7 +518,7 @@ print("Good bye!")
 - Pythons `break` and `continue` statements :
   - Used to terminate current iteration and pass control elsewhere
 
-> `exercise · Control Flow and Operators`
+> `exercise04 · Control Flow and Operators`
 
 - Python supports the following operators :
   - Arithmetic, Comparison, Logical, Assignment and Conditional Operators

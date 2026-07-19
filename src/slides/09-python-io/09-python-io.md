@@ -466,6 +466,6 @@ os.getcwd()
 - Python also has OS Object Methods to manipulate directories :
   - Creating and deleting directories
 
-> `exercise · Python IO`
+> `exercise09 · Python IO`
 
   - Changing and displaying the current directory

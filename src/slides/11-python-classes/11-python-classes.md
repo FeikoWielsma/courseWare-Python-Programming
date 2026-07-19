@@ -501,6 +501,6 @@ str(obj)
   - Can be accessed through a scrambled name
 - Static methods and properties bound to class not to object :
 
-> `exercise · Python Classes`
+> `exercise11 · Python Classes`
 
   - Static data only exists once per class rather than per instance

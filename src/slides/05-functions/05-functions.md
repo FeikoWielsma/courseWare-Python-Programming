@@ -8,7 +8,9 @@ footer: Functions
 
 # Functions
 
-- Blocks of reusable code performing some action :
+<!-- NOTES: Perl comparison: 'sub name { my ($a, $b) = @_; ... }' becomes 'def name(a, b): ...'. No @_ array — parameters are named directly. Return is implicit (last expression) or explicit 'return'. Python has no prototypes. Default args: def f(x=10). *args/**kwargs are like Perl's @_ but structured. -->
+
+- A function
   - Python has many built-in functions like `print(),input(),len()` etc.
   - It is also possible to create user-defined functions
 - Functions have the following benefits :
@@ -29,7 +31,7 @@ footer: Functions
 
 - First statement of function can be documentation string of function :
   - docstrings are picked up by documentation tool `pdoc`
-  - Installed by `pip3 install pdoc3` and used with `pdoc –html <function of module>`
+  - Installed by `uv add pdoc3` and used with `pdoc --html <module>`
 
 ```python
 def functionname( parameters ):

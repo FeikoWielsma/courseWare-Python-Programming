@@ -451,6 +451,6 @@ print (my_set4) #{32, 1, 2, 4, 8, 64, 128, 256, 16, 512}
   - Constructs a dictionary instead of a list
 - Set comprehensions have similar syntax as dictionaries :
 
-> `exercise · Comprehensions`
+> `exercise07 · Comprehensions`
 
   - Difference is that sets have values instead of `key:value` pairs
