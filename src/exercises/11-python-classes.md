@@ -11,7 +11,7 @@ Make an `Employee` class representing some employee working in a company in the 
 Add a constructor to the `Employee` class which sets the attributes when they are passed. Make a simple program which declares an `Employee` object and displays the values of the attributes of the `Employee` object by accessing the attributes directly :
 
 ```python
-class Employee(object):
+class Employee:
     def __init__(self, name):
         print ("Calling Employee constructor")
         self.name = name

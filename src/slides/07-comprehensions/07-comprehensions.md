@@ -53,8 +53,6 @@ print (some_list)
 ```
 
 - Output : `[100, 144, 196, 256, 324]`
-
-
 - More Pythonic are list comprehensions
 
 > `demo01 · map_and_filter_functions`
@@ -133,7 +131,7 @@ print (new_list)
     - Calculates a new value using expression
   - Collects these new values into a list which is return value of list comprehension
 
-```python
+```text
 li = [3, 6, 2, 7]
 li_new = [elem*2 for elem in li] => [6, 12, 4, 14]
 ```
@@ -165,7 +163,7 @@ print (new_list) # ['2', '4', '6', '8', '10']
 
 - Pythonic syntax using list comprehension :
 
-```python
+```text
 new_list = [str(x) for x in slist if (x % 2) == 0]
 print (new_list) => ['2', '4', '6', '8', '10']
 ```
@@ -229,7 +227,7 @@ print (list_c)
 
 - Produces :
 
-```python
+```text
 [['AC', 'BC'], ['AD', 'BD']]
 ```
 
@@ -421,8 +419,6 @@ print (my_set3) #{0, 8, 2, 4, 6}
 ```
 
 - Set comprehensions do not have to take set as input :
-
-
   - They can take any sequence
 
 ```python
@@ -450,7 +446,6 @@ print (my_set4) #{32, 1, 2, 4, 8, 64, 128, 256, 16, 512}
 - Dictionary comprehension is like a list comprehension :
   - Constructs a dictionary instead of a list
 - Set comprehensions have similar syntax as dictionaries :
+  - Difference is that sets have values instead of `key:value` pairs
 
 > `exercise07 · Comprehensions`
-
-  - Difference is that sets have values instead of `key:value` pairs

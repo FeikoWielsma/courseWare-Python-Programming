@@ -8,9 +8,7 @@ footer: Modules
 
 # Modules
 
-<!-- NOTES: Perl comparison: 'use Module;' or 'require Module;' becomes 'import module'. Python modules are just .py files (like Perl packages but simpler). 'from module import func' is like 'use Module qw(func)'. __name__ == '__main__' is like Perl's 'unless caller' idiom. No @INC manipulation needed — Python uses sys.path. -->
-
-- A module
+- Used to organize number of Python definitions in single file :
   - Used to logically organize your Python code
   - Can be bind and referenced
 - Module is a file consisting of Python code :
@@ -38,7 +36,7 @@ def print_func( par ):
   - Makes functions and classes from module available for use in file issuing `import` statement
 - `import` has the following syntax :
 
-```python
+```text
 import module1[, module2[,... moduleN]
 ```
 
@@ -60,7 +58,7 @@ test.print_func('pipo') # Hello : pipo
 
 ```python
 import test as t
-t.print_func('pipo’) # Hello : pipo
+t.print_func('pipo') # Hello : pipo
 ```
 
 > `demo01 · importmodule`
@@ -72,7 +70,7 @@ t.print_func('pipo’) # Hello : pipo
 
 - `from...import` makes specific names from module accessible:
 
-```python
+```text
 from modname import name1[, name2[, ... nameN]]
 ```
 
@@ -97,8 +95,6 @@ from modname import *
 ```
 
 - Statement should be used sparingly :
-
-
   - More names are then visible which can give rise to name conflicts
 
 > `demo02 · usingfromimport`
@@ -120,14 +116,14 @@ from modname import *
   - Syntax of `PYTHONPATH` is same as that of the shell variable `PATH`
 - Typical `PYTHONPATH` from Windows system :
 
-```python
+```bash
 set PYTHONPATH=c:\python37\lib;
 ```
 
 - Typical `PYTHONPATH` from UNIX system :
 
 
-```python
+```bash
 set PYTHONPATH=/usr/local/lib/python
 ```
 
@@ -165,7 +161,6 @@ print(version)
 ```
 
 - Modules contain :
-
   - Variables, functions, classes and potentially executable code
 
 > `demo04 · usingmodules`
@@ -188,7 +183,7 @@ print(content)
 
 - Result :
 
-```python
+```text
 ['__doc__', '__name__', '__package__', 'acos', 'acosh', 'asin', 'asinh', 'atan',
 'atan2', 'atanh', 'ceil', 'copysign', 'cos', 'cosh', 'degrees', 'e', 'erf',
 'erfc', 'exp', 'expm1', 'fabs', 'factorial', 'floor', 'fmod', 'frexp', 'fsum',
@@ -198,8 +193,6 @@ print(content)
 ```
 
 - `__name__` is module's name
-
-
 - `__package__` is package name of module
 
 > `demo05 · usingdir`
@@ -287,12 +280,6 @@ cameras.LeikaInfo()
 ```python
 from cameras import NikonInfo, CanonInfo, LeikaInfo
 NikonInfo()
-```
-
-
-
-
-```python
 CanonInfo()
 LeikaInfo()
 ```
@@ -347,14 +334,8 @@ x = 1
 def f() :
      y = 1
      print("Globals from f")
-     print(globals().keys()) # dict_keys(['__name__', '__doc__’, … 'x', 'f'])
+     print(globals().keys()) # dict_keys(['__name__', '__doc__', ..., 'x', 'f'])
      print("Locals from f")
-```
-
-
-
-
-```python
 print(locals().keys()) # dict_keys(['y'])
 ```
 
@@ -424,15 +405,21 @@ uv export > requirements.txt   # for legacy tools
 
 ```bash
 uv init myproject     # creates pyproject.toml + .venv
-cd myproject
 uv add requests       # installs into .venv automatically
 uv run python app.py  # runs with the venv activated
 ```
 
-- Manual venv (if you ever need it without uv) :
-  - `python -m venv .venv`
-  - Activate : `.venv\Scripts\activate` (Windows) or `source .venv/bin/activate`
-  - Deactivate : `deactivate`
+- The environment is a directory beside the project files :
+
+```text
+myproject/
+├─ pyproject.toml   dependencies this project declares
+└─ .venv/
+   ├─ Scripts/      the interpreter and installed commands
+   └─ Lib/          the installed packages
+```
+
+- Without `uv` the same directory is made by `python -m venv .venv`
 
 ---
 
@@ -452,4 +439,6 @@ uv run python app.py  # runs with the venv activated
 - Package defines a single Python application environment :
   - Has a hierarchical file directory structure
 - Virtual environments allow to install packages in separate location :
-  - Not shared globally and each environment has its own Python binaryExercise 6
+  - Not shared globally and each environment has its own Python binary
+
+> `exercise06 · Modules`

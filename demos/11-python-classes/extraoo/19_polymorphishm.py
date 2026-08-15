@@ -47,17 +47,17 @@ for member in members:
     member.tell()  # works for both Teachers and Students
 
 
-class A(object):
+class A:
     def show(self, msg):
         print('class A -- msg: "%s"' % (msg,))
 
 
-class B(object):
+class B:
     def show(self, msg):
         print('class B -- msg: "%s"' % (msg,))
 
 
-class C(object):
+class C:
     def show(self, msg):
         print('class C -- msg: "%s"' % (msg,))
 

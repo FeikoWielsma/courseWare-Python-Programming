@@ -128,8 +128,6 @@ emp1 = Employee("Albert", 2000)
   - Instance variables are referred to with " `self.XXX` “
 - `self` is a reference to the instance :
   - Reference to the container for state of object
-
-
   - In many OO languages, instance is hidden in method definitions
   - In Python, instance is visible and explicit in method definitions
 
@@ -164,15 +162,9 @@ print("Total Employee %d" % Employee.empCount)
 
 - Result :
 
-```python
+```text
 Name : Albert ,Salary: 2000
 Name : Werner ,Salary: 5000
-```
-
-
-
-
-```python
 Total Employee 2
 ```
 
@@ -213,7 +205,7 @@ delattr(empl, 'age') # Delete attribute 'age'
   - Allow set function to have side effect such as a value check
 
 ```python
-class SquareGetterSetter(object):
+class SquareGetterSetter:
      def get_length(self): # Java-style
           return self._length
      def set_length(self, length): # Java-style
@@ -225,7 +217,7 @@ class SquareGetterSetter(object):
   - May be added after class is used by clients without breaking them
 
 ```python
-class SquarePropertySyntax(object):
+class SquarePropertySyntax:
      def get_length(self):
           return self._length
      def set_length(self, length):
@@ -269,7 +261,7 @@ print ("Employee.__dict__:", Employee.__dict__)
 
 - Result :
 
-```python
+```text
 Employee.__doc__: Common base class for all employees
 Employee.__name__: Employee
 Employee.__module__: __main__
@@ -327,7 +319,7 @@ del pt3
 
 - Result :
 
-```python
+```text
 3083401324 3083401324 3083401324
 Point destroyed
 ```
@@ -439,7 +431,7 @@ print (s.__secretCount)
 
 - Result :
 
-```python
+```text
 Traceback (most recent call last):
   File "", line 21, in <module>
      print (s.__secretCount)
@@ -500,7 +492,6 @@ str(obj)
   - `private` instance variables have double underscores `__var__`
   - Can be accessed through a scrambled name
 - Static methods and properties bound to class not to object :
+  - Static data only exists once per class rather than per instance
 
 > `exercise11 · Python Classes`
-
-  - Static data only exists once per class rather than per instance

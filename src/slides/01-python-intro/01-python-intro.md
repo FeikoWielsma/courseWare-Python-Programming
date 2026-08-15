@@ -8,8 +8,6 @@ footer: Python Intro
 
 # What is Python?
 
-<!-- NOTES: For Perl students: Python is also interpreted like Perl, but with enforced indentation instead of braces. No sigils ($, @, %), no 'my' declarations. Think of it as Perl with training wheels removed and readability enforced. -->
-
 - Python is a general purpose high-level scripting language :
   - Supports many applications from text processing to WWW browsers and games
 - Python is Beginner's Language :
@@ -97,15 +95,15 @@ footer: Python Intro
 - Setting PATH in Linux :
   - In the bash shell type :
 
-```python
-export PATH="$PATH:/usr/local/bin/python" and press Enter
+```bash
+export PATH="$PATH:/usr/local/bin/python"
 ```
 
 - Setting PATH in Windows :
   - At a command prompt type :
 
-```python
-PATH=%PATH%;C:\Python and press Enter
+```bash
+PATH=%PATH%;C:\Python
 ```
 
   - Or use the environment variables tab under System Properties
@@ -119,15 +117,15 @@ PATH=%PATH%;C:\Python and press Enter
 - Invoke Python interpreter from any particular directory :
   - Add the Python directory to your path
 - Interactive Interpreter :
-  - Start the Python interactive interpreter from command line by entering `python` :
+  - Start the Python interactive interpreter from command line by entering `python`
   - You will get `$python` in Linux and `>>>` in Windows or Anaconda prompt with `IPython`
-  - Script can be parameterized with command line arguments `C:\ python -h` :
+  - Script can be parameterized with command line arguments `C:\ python -h`
 - Script from Command Line :
   - A Python script can be executed at command line by invoking the interpreter
 
-```python
-$ python script.py in Linux
- C:> python script.py in Windows
+```text
+$ python script.py      # Linux
+C:> python script.py    # Windows
 ```
 
 - Integrated Development Environment :
@@ -143,19 +141,19 @@ $ python script.py in Linux
 - Python language has many similarities to Perl, C, and Java :
   - There are some definite differences between the languages
 - Start with Hello World Python program in interactive mode :
-  - Invoking interpreter by typing `python` in a command prompt :
-- Type following right of the `python` prompt and press Enter :
+  - Invoke the interpreter by typing `python` in a command prompt
 
-```python
->>> print ("Hello, Python!")
-```
-
-- This will produce following result :
-
-```python
+```text
+C:\> python
+Python 3.14.0 (main, Oct  7 2025, 10:12:33) [MSC v.1942 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> print("Hello, Python!")
 Hello, Python!
+>>>
 ```
 
+- Type the statement right of the `>>>` prompt and press Enter :
+  - The interpreter evaluates it and prints the result immediately
 - Separate multiple statements with a semicolon ;
 
 ---
@@ -174,19 +172,19 @@ print ("Hello, Python!")
 
 - Run the script as follows :
 
-```python
+```text
 C:\ python test.py
 ```
 
 - In a Unix environment make file executable with `:`
 
-```python
+```bash
 $ chmod +x test.py # set execute permission
 ```
 
 - This will produce following result :
 
-```python
+```text
 Hello, Python!
 ```
 
@@ -224,7 +222,7 @@ Hello, Python!
 
 - May not be used as constant or variable or other identifier name
 
-```python
+```text
 and exec not
 assert finally or
 break for pass
@@ -252,7 +250,7 @@ print ("Hello, Python!") # second comment
 
 - Will produce following result :
 
-```python
+```text
 Hello, Python!
 ```
 
@@ -370,5 +368,7 @@ paragraph = """This is a paragraph. It is made up of
   - No braces for blocks of code for class and function definitions or flow control
 - Python allows the use of the line continuation character (\) :
   - Denote that the line should continue
-- Python uses quotes to denote string literals :Exercise 1
+- Python uses quotes to denote string literals :
   - single ('), double (") and triple (''' or """)
+
+> `exercise01 · Python Intro`

@@ -1,4 +1,4 @@
-class SquareGetterSetter(object):
+class SquareGetterSetter:
     def __init__(self, length):
         self._length = length
 
@@ -15,7 +15,7 @@ r.set_length(6)
 print(r.get_length())
 
 
-class SquarePropertySyntax(object):
+class SquarePropertySyntax:
     def __init__(self, length):
         self._length = length
 
@@ -37,7 +37,7 @@ r.length = 16  # automatically calls setter
 print(r.length)
 
 
-class SquarePropertyDecorator(object):
+class SquarePropertyDecorator:
     def __init__(self, length):
         self._length = length
 

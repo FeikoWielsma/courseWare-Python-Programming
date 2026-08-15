@@ -65,7 +65,7 @@ print ("Good bye!")
 
 - Result :
 
-```python
+```text
 1 - Got a true expression value
 100
 Good bye!
@@ -103,13 +103,7 @@ name = input('What is your name? ')
 if name.endswith('Gumby'):
      print ('Hello, Mr. Gumby')
 else:
-```
-
-
-
-
-```python
-print ('Hello, stranger')
+     print ('Hello, stranger')
 ```
 
 > `demo02 · else`
@@ -125,7 +119,7 @@ print ('Hello, stranger')
   - Arbitrary number of `elif` statements may be following an `if`
 - Syntax of the `if...elif` statement :
 
-```python
+```text
 if expression1:
     statement(s)
 elif expression2:
@@ -149,7 +143,7 @@ else:
   - Allows checking another condition after condition resolves to true
 - Syntax nested `if...elif...else` :
 
-```python
+```text
 if expression1:
     statement(s)
     if expression2:
@@ -215,7 +209,7 @@ print("Good bye!")
 
 - Result :
 
-```python
+```text
 Enter a number :20
 You entered: 20
 Enter a number :3
@@ -227,8 +221,6 @@ KeyboardInterrupt
 ```
 
 - Above example will go in an infinite loop :
-
-
   - Use CTRL+C to stop the program
 
 > `demo06 · infinitewhile`
@@ -259,12 +251,6 @@ for word in words:
      print(word , end=' ')
 print('')
 list1 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-```
-
-
-
-
-```python
 for number in list1:
      print(number)
 ```
@@ -287,7 +273,7 @@ print("Lift off!")
 
 - Result :
 
-```python
+```text
 Current planet : venus
 Current planet : mars
 Current planet : jupiter
@@ -348,7 +334,7 @@ for n in range(99, 80, -1):
      print(root)
      print(int(root))
      if root == int(root):
-        print("Perfect square is %d" % (n)))
+        print("Perfect square is %d" % n)
         break
 else:
     print("Didn't find it!")
@@ -376,12 +362,6 @@ for letter in 'Python':
        pass
        print('This is pass block')
     print('Current Letter :', letter)
-```
-
-
-
-
-```python
 print("Good bye!")
 ```
 
@@ -394,13 +374,13 @@ print("Good bye!")
 
 - Operators perform operations on the operands :
 
-```python
+```text
 4 + 5 = 9
 ```
 
 - Here 4 and 5 are called operands and `+` is called operator
 
-```python
+```text
 3 ** 2 = 9
 ```
 
@@ -517,8 +497,7 @@ print("Good bye!")
   - Nothing happens when it executes
 - Pythons `break` and `continue` statements :
   - Used to terminate current iteration and pass control elsewhere
-
-> `exercise04 · Control Flow and Operators`
-
 - Python supports the following operators :
   - Arithmetic, Comparison, Logical, Assignment and Conditional Operators
+
+> `exercise04 · Control Flow and Operators`

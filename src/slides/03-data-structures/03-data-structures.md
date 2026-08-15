@@ -44,8 +44,7 @@ footer: Data Structures
 list1 = [ 'abcd', 786 , 2.23, 'john', True ]
 print(list1) # Prints complete list
 print(list1[0]) # Prints first element of the list
-                                                                          th
-print(list1[1:3]) # Prints elements starting from 2nd to 4
+print(list1[1:3]) # Prints elements starting from 2nd to 4th
 print(list1 * 2) # Prints list two times
 print(list1[::-1]) # Prints complete list in reverse order
 ```
@@ -241,12 +240,6 @@ tuple[2] = 1000 # Invalid syntax with tuple
 tup1 = (12, 34.56)
 tup2 = ('abc', 'xyz')
 tup3 = tup1 + tup2
-```
-
-
-
-
-```python
 print(tup3) # (12, 34.56, 'abc', 'xyz')
 ```
 - Tuples can have other tuples or lists as elements
@@ -263,7 +256,7 @@ print(tup3) # (12, 34.56, 'abc', 'xyz')
 
 ```python
 tup1 = ('physics', 'chemistry', 'biology', 'computer science')
-print(tup) # ('physics', 'chemistry', 'biology', 'computer science’)
+print(tup) # ('physics', 'chemistry', 'biology', 'computer science')
 del tup
 print("After deleting tup : ")
 print(tup)
@@ -271,10 +264,10 @@ print(tup)
 
 - Result after deleting tup :
 
-```python
+```text
 Traceback (most recent call last):
   File "test.py", line 9, in <module>
-     print tup;
+     print(tup)
 NameError: name 'tup' is not defined
 ```
 
@@ -300,12 +293,6 @@ NameError: name 'tup' is not defined
 t = ('Albert', 'Einstein')
 print(t) # ('Albert', 'Einstein')
 v, s = t
-```
-
-
-
-
-```python
 print(v) # 'Albert'
 print(s) # 'Einstein'
 ```
@@ -354,8 +341,6 @@ print (str2) # ABCD
 
 - Bytearray object is mutable array created `bytearray()` constructor :
   - Has same interface as immutable bytes objects
-
-
 - Extension modules `array` and `collections` :09_bytesandbytearrays
   - Provide additional mutable sequence examples
 
@@ -522,8 +507,7 @@ print (dict[['Albert']])
   - Support mathematical operations like union and intersection
   - Set is mutable and `frozenset` is immutable
 - Dictionaries are comparable to associative arrays :
-
-> `exercise03 · Data Structures`
-
   - Pairs of keys and values separated by comma , and colon :
   - Enclosed by curly braces `{ },` values access with square brackets `[]`
+
+> `exercise03 · Data Structures`

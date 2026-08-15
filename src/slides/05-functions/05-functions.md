@@ -8,9 +8,7 @@ footer: Functions
 
 # Functions
 
-<!-- NOTES: Perl comparison: 'sub name { my ($a, $b) = @_; ... }' becomes 'def name(a, b): ...'. No @_ array — parameters are named directly. Return is implicit (last expression) or explicit 'return'. Python has no prototypes. Default args: def f(x=10). *args/**kwargs are like Perl's @_ but structured. -->
-
-- A function
+- Blocks of reusable code performing some action :
   - Python has many built-in functions like `print(),input(),len()` etc.
   - It is also possible to create user-defined functions
 - Functions have the following benefits :
@@ -71,17 +69,11 @@ showmessage() # results in error
 
 - Result :
 
-```python
+```text
 First call to user defined function!
 Again second call to the same function
 Traceback (most recent call last):
   File "01_showmessage.py", line 8, in <module>
-```
-
-
-
-
-```python
 showmessage()
 TypeError: showmessage() takes exactly 1 argument (0 given)
 ```
@@ -115,14 +107,8 @@ print("List outside the function: ", mylistouter)
 
 - Reference of passed object is used to append values :
 
-```python
+```text
 List inside the function changeme1: [10, 20, 30, 40]
-```
-
-
-
-
-```python
 List outside the function: [10, 20, 30, 40]
 ```
 
@@ -146,12 +132,6 @@ def changeme(mylist):
 
 ```python
 mylistouter = [10,20,30]
-```
-
-
-
-
-```python
 changeme(mylistouter)
 print("Values outside the function: ", mylistouter)
 ```
@@ -160,13 +140,12 @@ print("Values outside the function: ", mylistouter)
   - Changing `mylist` within the function does not affect `mylistouter`
   - Function does nothing to original list and finally this would produce following result :
 
-```python
+```text
 Values inside the function: [1, 2, 3, 4]
 Values outside the function: [10, 20, 30]
 ```
 
 - Changing immutable references :
-
   - Always results in new objects and is true for Strings and Numbers
 
 > `demo03 · overwritingreferences`
@@ -191,8 +170,6 @@ Values outside the function: [10, 20, 30]
   - Sometimes more arguments must be processed than specified in function definition
   - These are called variable-length arguments and are not named in function definition
 - Python does not support function overloading :
-
-
   - Defining same method with different parameters
   - Python is dynamically typed and supports optional arguments
 
@@ -288,13 +265,7 @@ def testArgLists(arg, *argtuple, **kwargs):
 ```python
 testArgLists(1, 2, 3, 4, 5, x=1, y=2)
 testArgLists(33, x=8, y=9)
-```
-
-
-
-
-```python
-testArgLists(44)08_variable_argumentlist
+testArgLists(44)
 ```
 
 > `demo08 · variableargumentlist`
@@ -323,7 +294,7 @@ testArgLists(44)08_variable_argumentlist
 
 - Lambda functions contain only a single statement :
 
-```python
+```text
 lambda [arg1 [,arg2,.....argn]]:expression
 ```
 
@@ -342,7 +313,7 @@ print("Value of total : ", summation( 20, 20 ))
 
 - Result :
 
-```python
+```text
 Value of total : 30
 Value of total : 40
 ```
@@ -379,7 +350,7 @@ print("Outside the function : ", total )
 
 
 
-```python
+```text
 Inside the function : 30
 Outside the function : 30
 ```
@@ -435,12 +406,6 @@ def func3():
 func1() # prints 2
 print('x is still', x) # prints 50
 func2() # prints 50
-```
-
-
-
-
-```python
 print('x is still', x) # prints 50
 func3() # prints 2
 print('Value of y is', y) # prints 2
@@ -464,5 +429,7 @@ print('Value of y is', y) # prints 2
   - Return value as an expression, cannot contain commands or multiple expressions
 - Local variables :
   - Variables defined inside a function body have a local scope
-- Global variables :Exercise 5
+- Global variables :
   - Variables defined outside functions have a global scope
+
+> `exercise05 · Functions`

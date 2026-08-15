@@ -61,6 +61,14 @@ jobs:
             demos/12-pythonlibraries-unittesting \
             solutions
 
+      # Gating. Extracts every ```python fence from the slides and the exercise
+      # guides and checks it for the defects the PDF conversion leaves behind :
+      # a footer glued onto a line of code, a Python 2 print statement, a smart
+      # quote or ellipsis sitting inside code.
+      - name: Check the slide code fences
+        shell: bash
+        run: uv run --with ruff --no-project python build/check-fences.py
+
       # Informational for now. The courseware carries roughly 950 findings
       # inside the ruff.toml scope; clearing them and promoting this step to
       # gating is tracked in build/tasks.md.

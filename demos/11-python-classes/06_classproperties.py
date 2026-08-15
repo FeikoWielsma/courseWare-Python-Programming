@@ -1,4 +1,4 @@
-class A(object):
+class A:
     count = 0
 
     def __init__(self, name):

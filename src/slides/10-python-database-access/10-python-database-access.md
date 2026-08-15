@@ -197,13 +197,19 @@ with con:
 
 - `fetchall()` gets all records and returns a result set :
   - Actually the result set is a list of tuples
+
+```text
+(1, 'Audi', 52643)
+(2, 'Mercedes', 57127)
+(3, 'Skoda', 9000)
+```
+
 - Other `fetch*()` methods read data from result set :
 
 ```python
-cursor.execute('select * from testtable')
-first_row = cursor.fetchone()
-next_10_rows = cursor.fetchmany(10)
-all_remaining_rows = cursors.fetchall()
+first_row = cur.fetchone()
+next_10_rows = cur.fetchmany(10)
+all_remaining_rows = cur.fetchall()
 ```
 
 > `demo06 · retrievingdata`
@@ -300,9 +306,15 @@ with con:
           print (d[0], d[1], d[2])
 ```
 
+```text
+0 Id INT
+1 Name TEXT
+2 Price INT
+```
+
 - Metadata in SQLite can be obtained using `PRAGMA` command :
   - SQLite objects may have attributes, which are metadata
-  - Obtain specific metatada from querying the SQLite system sqlite_master table
+  - Obtain specific metadata from querying the SQLite system `sqlite_master` table
 
 > `demo10 · metadata`
 
@@ -356,14 +368,8 @@ except sqlite3.Error as e:
      print ("Error %s:" % e.args[0])
      sys.exit(1)
 finally:
-```
-
-
-
-
-```python
-if con:
-    con.close()
+     if con:
+          con.close()
 ```
 
 > `demo11 · transactions`
@@ -385,7 +391,6 @@ if con:
 - Using `with` Python automatically releases the resources :
   - Changes are automatically committed
 - DB API supports transactions if database supports them :
+  - Via methods on the connection object
 
 > `exercise10 · Python Database Access`
-
-  - Via methods on the connection object

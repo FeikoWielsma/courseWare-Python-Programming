@@ -1,4 +1,4 @@
-class Employee(object) : 
+class Employee: 
     empCount = 0  
     def __init__(self, name):
         print ("Calling Employee constructor")

@@ -1,4 +1,4 @@
-class A(object):
+class A:
     def __init__(self):
         print("Constructor A was called")
 

@@ -6,27 +6,57 @@ Checklist for the work described in `build/plan.md`. Tick as you go.
 
 ## Phase 1 : Content repairs
 
-- [ ] `02 · Format Method` : rebuild the format-field diagram as inline SVG
-- [ ] `09 · Result of Calling open` : restore the transcript and the wrapper-stack SVG
-- [ ] `02-variables-and-data-types.md:13` : restore `- Variables represent memory locations to store values :`
-- [ ] `05-functions.md:13` : restore `- Blocks of reusable code performing some action :`
-- [ ] `06-modules.md:13` : restore `- Used to organize number of Python definitions in single file :`
-- [ ] Remove the four Perl-comparison NOTES blocks (modules 01, 02, 05, 06)
-- [ ] `01 · Python in Interactive Mode` : add the transcript as a text fence
-- [ ] `06 · Virtual Environments` : add the `.venv` directory tree as HTML
-- [ ] `10 · Retrieving Data` : add the result set as a text fence
-- [ ] `10 · Metadata` : add the `PRAGMA table_info` output as a text fence
-- [ ] Add `> \`exercise02 · Variables and Data Types\`` to the module 02 summary
-- [ ] Add `> \`exercise05 · Functions\`` to the module 05 summary
-- [ ] Add `> \`exercise06 · Modules\`` to the module 06 summary
+- [x] `02 · Format Method` : rebuild the format-field diagram as inline SVG
+- [x] `09 · Result of Calling open` : restore the transcript and the wrapper-stack SVG
+- [x] `02-variables-and-data-types.md` : restore `- Variables represent memory locations to store values :`
+- [x] `05-functions.md` : restore `- Blocks of reusable code performing some action :`
+- [x] `06-modules.md` : restore `- Used to organize number of Python definitions in single file :`
+- [x] Remove the four Perl-comparison NOTES blocks (modules 01, 02, 05, 06)
+- [x] `01 · Python in Interactive Mode` : add the transcript as a text fence
+- [x] `06 · Virtual Environments` : add the `.venv` directory tree (text fence, not
+      HTML : a fence carries the same information and stays theme-safe)
+- [x] `10 · Retrieving Data` : add the result set as a text fence
+- [x] `10 · Metadata` : add the `PRAGMA table_info` output as a text fence
+- [x] Exercise pills on every module summary
+
+Found while doing the above, not in the original inventory :
+
+- [x] Seven exercise pills sat **mid-list** on the summary slides of modules 03, 04,
+      07, 08, 09, 10 and 11, orphaning the trailing bullets. Moved to the end.
+- [x] Three summary slides had the exercise cloud text glued onto a bullet :
+      `...converted valueExercise 2`, `- Global variables :Exercise 5`,
+      `...its own Python binaryExercise 6`, plus `...string literals :Exercise 1`
+- [x] 19 code fences were a single block split in two by the conversion, separated
+      by four blank lines. Merged.
+- [x] 31 stray blank lines inside bullet lists, which broke one list into several
+- [x] `04 · else Statement` and `10 · Committing Data` : the merge exposed bodies
+      that had lost their indentation, so the code did not parse
+- [x] `04 · Loop with else Combination` : `print("..." % (n)))`, unbalanced parenthesis
+- [x] `05 · Variable Length Arguments` : `testArgLists(44)08_variable_argumentlist`,
+      a demo filename glued onto the call
+- [x] `03 · Lists` : a `th` from `4th` stranded on its own line inside a fence
+- [x] `03`, `06` : smart quotes and an ellipsis inside code
+- [x] `03 · Delete Tuple Elements` : Python 2 `print tup;` in the traceback
+- [x] `08 · Exception Handling` : a stray leading space made the second `try` invalid
+- [x] `09 · Writing Text Files` : the Polish sample was double-encoded mojibake, on
+      the slide and in `demos/09-python-io/textfilepolish.txt`
+- [x] `class X(object)` dropped in module 11 slides, exercise and demos, and in
+      `solutions/` (Python 2 residue on the slides that teach how to write a class)
 
 ## Phase 2 : Fence hygiene
 
-- [ ] Retag output and traceback fences as ```` ```text ```` (~30 sites, modules 01, 04, 05, 06, 09)
-- [ ] Retag grammar skeletons as ```` ```text ```` (module 08 try/except forms, module 05 lambda form)
-- [ ] Retag shell fences as ```` ```bash ```` where any remain tagged `python`
-- [ ] Port `build/check-fences.py` from Advanced-Python and retarget its paths
-- [ ] `uv run python build/check-fences.py` passes clean
+- [x] Retag output, transcript and traceback fences as ```` ```text ````
+- [x] Retag grammar skeletons as ```` ```text ```` (module 08 try/except forms,
+      module 05 lambda form, module 06 import forms, the `=>` pseudo-notation)
+- [x] Retag shell fences as ```` ```bash ````, and lift the prose that had been
+      glued inside them (`export PATH=... and press Enter`)
+- [x] 47 fences retagged in total
+- [x] Port `build/check-fences.py` from Advanced-Python
+      - it now reconfigures stdout to UTF-8, because the findings quote characters
+        a Windows console cannot encode and the script died on the first one.
+        Worth pushing back to Advanced-Python, which has the same latent bug.
+- [x] `uv run --with ruff --no-project python build/check-fences.py` passes clean
+- [x] Wire it into CI as a gating step
 
 ## Phase 3 : Diagrams
 
@@ -111,8 +141,13 @@ Repairs are tracked in Phase 1. New diagrams :
 
 ## Follow-up, not this round
 
-- [ ] Clear the ~950 ruff findings inside the `ruff.toml` scope
+- [ ] Clear the ~944 ruff findings inside the `ruff.toml` scope
 - [ ] Promote `ruff check .` from informational to gating in CI
+- [ ] Modernise percent formatting to f-strings in modules 04, 10 and 11 and in
+      `src/exercises/02`, together with their demo files. `UP031` is ignored in
+      `build/check-fences.py` for now because the string-formatting slide in
+      module 02 teaches percent formatting on purpose; once the incidental uses
+      are gone that ignore can be narrowed.
 - [ ] Triage `demos/*/extra/` : 16 files are Python 2 and do not compile, so the
       whole `extra/` tree is excluded from the student bundle and from the
       `compileall` gate. Port them or delete them, then drop the exclusion.

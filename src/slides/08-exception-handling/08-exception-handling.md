@@ -39,7 +39,7 @@ try :
      z = x/y # ZeroDivisionError
 except:
      print('Cannot divide by zero')
- try :
+try :
      fh = open("somefile", "r") # IOError
 except:
      print('Cannot open file')
@@ -48,7 +48,6 @@ except:
 
 
 - After handling exception in `except` statement :
-
   - Normal program flow continues
 
 > `demo02 · exceptionhandling`
@@ -92,7 +91,7 @@ except TypeError :
 - After `except` clause(s) `else` clause can be included :
   - Executes if the code in the `try:` block does not raise an exception
 
-```python
+```text
 try:
     Do you operations here
 except:
@@ -121,7 +120,7 @@ else:
 
 - Same `except` clause may also handle multiple exceptions :
 
-```python
+```text
 try:
     Do you operations here;
 except(Exception1[, Exception2[,...ExceptionN]]]):
@@ -199,7 +198,7 @@ for value in (None, "Hi!"):
   - Whether or not the try-block raised an exception
 - Syntax of the `try-finally` :
 
-```python
+```text
 try:
     Do you operations here;
     Due to any exception, this may be skipped
@@ -227,7 +226,7 @@ finally:
 
 - Result without permission to open the file in writing mode :
 
-```python
+```text
 Error: can't find file or read data
 ```
 
@@ -240,12 +239,6 @@ try:
        fh.write("This is my test file for exception handling!!")
     finally:
        fh.close()
-```
-
-
-
-
-```python
 except IOError:
     print ("Error: can\'t find file or read data")
 ```
@@ -262,7 +255,7 @@ except IOError:
   - Contents of the argument vary by exception
 - Capture argument by supplying a variable in `except` clause :
 
-```python
+```text
 try:
     Do you operations here;
 except ExceptionType as Argument:
@@ -295,7 +288,7 @@ temp_convert("xyz");
 
 - Result :
 
-```python
+```text
 The argument does not contain numbers
 invalid literal for int() with base 10: 'xyz'
 ```
@@ -309,7 +302,7 @@ invalid literal for int() with base 10: 'xyz'
 
 - Exceptions can be raised with the `raise` statement :
 
-```python
+```text
 raise [Exception [, args [, traceback]]]
 ```
 
@@ -395,8 +388,7 @@ except Networkerror as e:
 - Python has a number of predefined exceptions like :
   - `IOError, ArithmeticError, KeyError, IndentationError`
 - Exceptions can be raised with the `raise` statement
-
-> `exercise08 · Exception Handling`
-
 - It is possible to create User Defined Exceptions :
   - By deriving classes from standard built-in exceptions
+
+> `exercise08 · Exception Handling`

@@ -88,12 +88,54 @@ file_object = open(file ,mode=r, buffering=-1, Encoding=None )
 
 # Result of Calling open
 
-- Varies depending on file mode and buffering
-- Carefully study output of this for an existing file `"test.txt"` :
-- Result of opening a "text" file :
+- The object returned varies with the file mode and the buffering :
 
+```text
+>>> open("test.txt", "rt")
+<_io.TextIOWrapper name='test.txt' mode='rt' encoding='utf-8'>
+>>> open("test.txt", "rb")
+<_io.BufferedReader name='test.txt'>
+>>> open("test.txt", "rb", buffering=0)
+<_io.FileIO name='test.txt' mode='rb'>
+```
 
-- This is very different from Python 2
+- Opening a text file stacks three objects, and you are handed the outermost :
+
+<svg viewBox="0 0 960 140" width="100%" style="width:100%;height:auto;display:block;margin:10px 0 4px" role="img" aria-label="Opening a text file layers TextIOWrapper over BufferedReader over FileIO">
+<defs>
+<marker id="io-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+</marker>
+</defs>
+<g fill="none" stroke="currentColor" stroke-width="2">
+<rect x="230" y="42" width="196" height="46" rx="4"/>
+<rect x="466" y="42" width="196" height="46" rx="4"/>
+<rect x="702" y="42" width="130" height="46" rx="4"/>
+</g>
+<g fill="none" stroke="currentColor" stroke-width="1.8" marker-end="url(#io-arrow)">
+<path d="M 196 65 L 224 65"/>
+<path d="M 426 65 L 460 65"/>
+<path d="M 662 65 L 696 65"/>
+<path d="M 832 65 L 900 65"/>
+</g>
+<g fill="currentColor" font-size="20" text-anchor="middle">
+<text x="328" y="72">TextIOWrapper</text>
+<text x="564" y="72">BufferedReader</text>
+<text x="767" y="72">FileIO</text>
+</g>
+<g fill="currentColor" font-size="17" text-anchor="middle" opacity="0.75">
+<text x="328" y="30">"rt"</text>
+<text x="564" y="30">"rb"</text>
+<text x="767" y="30">buffering=0</text>
+<text x="328" y="112">text and bytes</text>
+<text x="564" y="112">buffered bytes</text>
+<text x="767" y="112">raw bytes</text>
+</g>
+<g fill="currentColor" font-size="19">
+<text x="20" y="72">open(...)</text>
+<text x="908" y="72">disk</text>
+</g>
+</svg>
 
 > `demo02 · openfile`
 
@@ -118,15 +160,9 @@ print("Opening mode : ", fo.mode)
 
 - Result :
 
-```python
+```text
 Name of the file: test.txt
 Closed or not : False
-```
-
-
-
-
-```python
 Opening mode : wb
 ```
 
@@ -146,19 +182,13 @@ Opening mode : wb
   - `tell` moves file pointer to the beginning of the file
   - `seek` moves file pointer to a certain position in the file
 
-```python
+```text
 fr = open('trilobyte.jpg', mode='rb')
 fr.tell()
 data = fr.read(3) => read three bytes
 print(type(data)) => type is bytes
 fr.tell()
 fr.seek(0)
-```
-
-
-
-
-```python
 data = fr.read()
 print(data)
 ```
@@ -229,8 +259,8 @@ fw.close()
 
 - File `textfilepolish.txt` with following content is created :
 
-```python
-Polish text: Ä…Ä‡Ä™Å‚Å„Ã³Å›ÅºÅ¼Ä„Ä†Ä˜Å�ÅƒÃ“ÅšÅ¹Å»
+```text
+Polish text: ąćęłńóśźżĄĆĘŁŃÓŚŹŻ
 ```
 
 > `demo06 · writetextfile`
@@ -267,7 +297,7 @@ fr.close()
 
 
 
-```python
+```text
 Polish text: ąćęłńóśźżĄĆĘŁŃÓŚŹŻ
 ```
 
@@ -295,7 +325,7 @@ fo.close()
 
 - Result :
 
-```python
+```text
 Name of the file: foo.txt
 ```
 
@@ -339,7 +369,7 @@ fo.close()
 
 - Result :
 
-```python
+```text
 Read String is : Python is
 Current file position : 10
 Again read String is : Python is
@@ -400,12 +430,6 @@ os.mkdir("test")
 
 ```python
 import os
-```
-
-
-
-
-```python
 os.rmdir("/tmp/test")
 ```
 
@@ -465,7 +489,6 @@ os.getcwd()
   - Methods can retrieve and change the current file position
 - Python also has OS Object Methods to manipulate directories :
   - Creating and deleting directories
+  - Changing and displaying the current directory
 
 > `exercise09 · Python IO`
-
-  - Changing and displaying the current directory

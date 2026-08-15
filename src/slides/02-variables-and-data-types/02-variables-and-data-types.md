@@ -8,9 +8,7 @@ footer: Variables and Data Types
 
 # Variables
 
-<!-- NOTES: Perl comparison: 'my $x = 5' becomes 'x = 5'. No sigils, no 'my'. Python is dynamically typed like Perl, but variable names are bare identifiers. Type hints (x: int = 5) are optional annotations, not enforced at runtime. -->
-
-- Variables are
+- Variables represent memory locations to store values :
   - When a variable is created memory space is reserved
 - Variables can have different data types like integers, decimal or string :
   - Based on the data type of a variable, the interpreter allocates memory
@@ -78,10 +76,7 @@ a, b, c = 1, 2, "john"
 
 - Two integer objects with values 1 and 2 :
   - Assigned to variables a and b
-
-
 - One string object with the value "john" :
-
   - Assigned to the variable c
 
 > `demo03 · multipleassignment`
@@ -104,10 +99,7 @@ a, b, c = 1, 2, "john"
   - String
   - List
   - Tuple
-
-
   - Set
-
   - Dictionary
 
 > `demo04 · strongtyping`
@@ -157,10 +149,7 @@ del var_a, var_b
   - Only 0 behaves as `False`
 - All non empty strings behave as `True` :
   - Only empty string `""` behave as `False` and `None` as well
-
-
 - Boolean type is a subtype of the integer type :
-
   - Boolean values behave like values 0 and 1
   - When converted to a string in string context `"False"` or `"True"` are returned
 
@@ -285,7 +274,7 @@ print("Updated String :- ", var2)
 
 
 
-```python
+```text
 Updated String :- Hello Python
 ```
 - New string var2 will have different id
@@ -339,7 +328,6 @@ print (r'C:\\nowhere')
   - Allows more characters, including characters from most languages in the world
 - `unicodedata` module `:`
   - Provides access to Unicode Character Database (UCD)
-
   - UCD contains character properties for all Unicode characters
 
 
@@ -362,17 +350,11 @@ print ("My name is %s and weight is %d kg!" % ('Albert', 55))
 - In Python 3 new style of formatting available with `format()` function :
   - Allows complex variable substitutions and value formatting
 
-```python
+```text
 s = '{0}, {1}, {2}'.format('a', 'b', 'c')
 print (s) => 'a, b, c'
 s = '{}, {}, {}'.format('a', 'b', 'c')
 print (s) => 'a, b, c'
-```
-
-
-
-
-```python
 s = '{2}, {1}, {0}'.format('a', 'b', 'c')
 print (s) => 'c, b, a'
 ```
@@ -401,6 +383,66 @@ print (s) => 'c, b, a'
 ---
 
 # Format Method
+
+- Method `str.format` substitutes arguments into replacement fields :
+  - A field is written as `{index:spec}` inside the template string
+  - The index selects the argument, the spec decides how it is rendered
+
+<svg viewBox="0 0 960 250" width="100%" style="width:100%;height:auto;display:block;margin:10px 0 6px" role="img" aria-label="Each replacement field selects one argument of format and renders it into the result string">
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="currentColor">
+<text x="20" y="92" textLength="60" lengthAdjust="spacingAndGlyphs">"Art:</text>
+<text x="92" y="92" textLength="72" lengthAdjust="spacingAndGlyphs">{0:5d}</text>
+<text x="164" y="92" textLength="204" lengthAdjust="spacingAndGlyphs">, Price per Unit:</text>
+<text x="380" y="92" textLength="96" lengthAdjust="spacingAndGlyphs">{1:8.2f}</text>
+<text x="476" y="92" textLength="108" lengthAdjust="spacingAndGlyphs">".format(</text>
+<text x="584" y="92" textLength="36" lengthAdjust="spacingAndGlyphs">453</text>
+<text x="620" y="92" textLength="12" lengthAdjust="spacingAndGlyphs">,</text>
+<text x="644" y="92" textLength="72" lengthAdjust="spacingAndGlyphs">59.058</text>
+<text x="716" y="92" textLength="12" lengthAdjust="spacingAndGlyphs">)</text>
+</g>
+<g fill="none" stroke="currentColor" stroke-width="2">
+<rect x="90" y="72" width="76" height="28" rx="3"/>
+<rect x="378" y="72" width="100" height="28" rx="3"/>
+</g>
+<g fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.7" stroke-dasharray="4 4">
+<rect x="582" y="72" width="40" height="28" rx="3"/>
+<rect x="642" y="72" width="76" height="28" rx="3"/>
+</g>
+<defs>
+<marker id="fm-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+</marker>
+</defs>
+<g fill="none" stroke="currentColor" stroke-width="1.8" marker-end="url(#fm-arrow)">
+<path d="M 128 72 L 128 20 L 602 20 L 602 68"/>
+<path d="M 428 72 L 428 46 L 680 46 L 680 68"/>
+<path d="M 128 100 L 128 140 L 110 140 L 110 186"/>
+<path d="M 428 100 L 428 140 L 404 140 L 404 186"/>
+</g>
+<g fill="currentColor" opacity="0.12">
+<rect x="80" y="188" width="60" height="38"/>
+<rect x="356" y="188" width="96" height="38"/>
+</g>
+<g fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5">
+<rect x="20" y="188" width="432" height="38"/>
+</g>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="currentColor">
+<text x="20" y="214" textLength="48" lengthAdjust="spacingAndGlyphs">Art:</text>
+<text x="140" y="214" textLength="36" lengthAdjust="spacingAndGlyphs" text-anchor="end">453</text>
+<text x="140" y="214" textLength="204" lengthAdjust="spacingAndGlyphs">, Price per Unit:</text>
+<text x="452" y="214" textLength="60" lengthAdjust="spacingAndGlyphs" text-anchor="end">59.06</text>
+</g>
+<g fill="currentColor" font-size="17" opacity="0.75">
+<text x="640" y="124">positional arguments</text>
+<text x="480" y="214">result string</text>
+</g>
+</svg>
+
+- Fields may be named instead of numbered :
+
+```python
+"Art: {a:5d}, Price per Unit: {p:8.2f}".format(a=453, p=59.058)
+```
 
 > `demo11 · formatmethod`
 
@@ -453,7 +495,7 @@ print (para_str)
 
 - Result :
 
-```python
+```text
 this string is made up of several lines and non-printable
 characters such as TAB ( ) and they will show up that way when
 displayed. NEWLINEs within the string, whether explicitly given like
@@ -504,4 +546,6 @@ within the variable assignment will also show up.
 - Python boolean type is a subtype of integer :
   - Only allowed values are 0 and 1 printed as `"True"` and `"False"`
 - Python has built-in functions to convert between data types :
-  - Functions return new object representing converted valueExercise 2
+  - Functions return new object representing converted value
+
+> `exercise02 · Variables and Data Types`
