@@ -369,8 +369,8 @@ print(s) # 'Einstein'
 - Characters in string become Unicode values in bytes array :
 
 ```python
-str = "ABCDE"
-arr = bytes(str, 'utf-8') # string with encoding 'utf-8'
+text = "ABCDE"
+arr = bytes(text, 'utf-8') # string with encoding 'utf-8'
 print(arr)
 print(arr[0]) # 65
 ```

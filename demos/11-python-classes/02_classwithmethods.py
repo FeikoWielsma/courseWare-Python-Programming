@@ -12,7 +12,7 @@ class Person:
         return self.name
 
     def greet(self):
-        print("Hello, world! I'm %s." % self.name)
+        print(f"Hello, world! I'm {self.name}.")
 
 
 p1 = Person()

@@ -1,8 +1,9 @@
 from employees.employee import Employee
 
-class ManagerEmployee(Employee) :   
+
+class ManagerEmployee(Employee) :
     def __init__(self, name, weeksal):
-        super(ManagerEmployee,self).__init__(name)  
+        super().__init__(name)
         print ("Calling ManagerEmployee constructor")
         self.__weeksal = weeksal
 
@@ -23,7 +24,7 @@ class ManagerEmployee(Employee) :
     def __del__(self):
         class_name = self.__class__.__name__
         print (class_name, "destroyed")
-    
+
     def calcSal(self):
         return self.__weeksal
 
@@ -34,7 +35,7 @@ def main():
     m1.weeksal = 1000
     print (m1.weeksal)
     print (m1.calcSal())
-    
+
     print ("ManagerEmployee.__doc__:", ManagerEmployee.__doc__)
     print ("ManagerEmployee.__name__:", ManagerEmployee.__name__)
     print ("ManagerEmployee.__module__:", ManagerEmployee.__module__)

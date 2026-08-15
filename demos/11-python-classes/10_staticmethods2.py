@@ -10,7 +10,7 @@ class Robot:
     def __init__(self, name):
         """Initializes the data."""
         self.name = name
-        print("(Initializing {0})".format(self.name))
+        print(f"(Initializing {self.name})")
 
         # When this person is created, the robot
         # adds to the population
@@ -18,24 +18,24 @@ class Robot:
 
     def __del__(self):
         """I am dying."""
-        print("{0} is being destroyed!".format(self.name))
+        print(f"{self.name} is being destroyed!")
 
         Robot.population -= 1
 
         if Robot.population == 0:
-            print("{0} was the last one.".format(self.name))
+            print(f"{self.name} was the last one.")
         else:
-            print("There are still {0:d} robots working.".format(Robot.population))
+            print(f"There are still {Robot.population:d} robots working.")
 
     def say_hi(self):
         """Greeting by the robot.
 
         Yeah, they can do that."""
-        print("Greetings, my masters call me {0}.".format(self.name))
+        print(f"Greetings, my masters call me {self.name}.")
 
     def how_many():
         """Prints the current population."""
-        print("We have {0:d} robots.".format(Robot.population))
+        print(f"We have {Robot.population:d} robots.")
 
     how_many = staticmethod(how_many)
 

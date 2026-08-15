@@ -1,5 +1,6 @@
 from functools import reduce
 
+
 def add(i, j):
     z = i + j
     return z
@@ -48,4 +49,4 @@ def average(ilist):
 def faculty(n):
     if n == 1:
         return n
-    return n*faculty(n-1) 
+    return n*faculty(n-1)

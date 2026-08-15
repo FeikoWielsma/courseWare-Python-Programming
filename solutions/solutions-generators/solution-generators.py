@@ -23,6 +23,6 @@ for x in fi:
 #inf = intsfrom(10)
 #for i in inf:
 #    print(i)
-    
+
 fibo = fibgen(100)
 print(list(fibo))

@@ -9,7 +9,7 @@ with con:
     while True:
         row = cur.fetchone()
 
-        if row == None:
+        if row is None:
             break
 
         print(row[0], row[1], row[2])

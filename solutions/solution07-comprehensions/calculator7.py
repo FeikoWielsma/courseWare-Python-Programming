@@ -21,7 +21,7 @@ while calcAction != "Quit":
             av = reduce((lambda x, y: x + y), intlist)/len(intlist)
             # print("Average of list %s is %f" %(str(intlist), av))
             print(f"Average of list {intlist} is {av}")
-    elif (calcAction == "Add") or (calcAction == "Subtract") or (calcAction == "Multiply") or (calcAction == "Divide"):
+    elif calcAction in ("Add", "Subtract", "Multiply", "Divide"):
         f1 = float(input("Give me number 1 : "))
         f2 = float(input("Give me number 2 : "))
         if calcAction == "Add":
@@ -38,7 +38,9 @@ while calcAction != "Quit":
         print(f"Length of dictionary : {len(resdict)}")
     else:
         if calcAction != "Quit":
-            print("Incorrect. Available options are 'Faculty', 'Sum', 'Average', 'Add', 'Subtract, 'Multiply, 'Divide'")
-else:
-    print("Thank you for user our software")
+            print(
+                "Incorrect. Available options are "
+                "'Faculty', 'Sum', 'Average', 'Add', 'Subtract, 'Multiply, 'Divide'"
+            )
+print("Thank you for user our software")
 

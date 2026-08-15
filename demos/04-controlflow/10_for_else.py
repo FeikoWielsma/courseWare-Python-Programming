@@ -5,7 +5,7 @@ for n in range(99, 80, -1):
     print(root)
     print(int(root))
     if root == int(root):
-        print("Perfect square is %d" % (n))
+        print(f"Perfect square is {n}")
         break
 else:
     print("Didn't find it!")

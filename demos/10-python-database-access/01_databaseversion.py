@@ -10,10 +10,10 @@ try:
     cur.execute("SELECT SQLITE_VERSION()")
 
     data = cur.fetchone()
-    print("SQLite version: %s" % data)
+    print(f"SQLite version: {data}")
 
 except sqlite3.Error as e:
-    print("Error %s:" % e.args[0])
+    print(f"Error {e.args[0]}:")
     sys.exit(1)
 
 finally:

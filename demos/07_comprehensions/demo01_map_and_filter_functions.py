@@ -3,7 +3,7 @@ def square(x):
 
 
 def even(x):
-    return 0 == x % 2
+    return x % 2 == 0
 
 
 some_list = list(map(square, range(10, 20)))

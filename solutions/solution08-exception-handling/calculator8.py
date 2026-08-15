@@ -77,7 +77,7 @@ while calcAction != "Quit":
                 print(f"Average of list {intlist} is {average(intlist)}")
         except:
             print("Not a correct input for an integer list. Please try again")
-    elif (calcAction == "Add") or (calcAction == "Subtract") or (calcAction == "Multiply") or (calcAction == "Divide"):
+    elif calcAction in ("Add", "Subtract", "Multiply", "Divide"):
         try:
             f1 = float(input("Give me number 1 : "))
             f2 = float(input ("Give me number 2 : "))
@@ -104,6 +104,8 @@ while calcAction != "Quit":
             print("Conversion of input to float failed. Please try again")
     else:
         if calcAction != "Quit":
-            print("Incorrect. Available options are 'Faculty', 'Sum', 'Average', 'Add', 'Subtract, 'Multiply, 'Divide'")
-else:
-    print("Thank you for user our software")
+            print(
+                "Incorrect. Available options are "
+                "'Faculty', 'Sum', 'Average', 'Add', 'Subtract, 'Multiply, 'Divide'"
+            )
+print("Thank you for user our software")

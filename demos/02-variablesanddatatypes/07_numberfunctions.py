@@ -1,4 +1,4 @@
-from math import ceil, floor, sqrt, fabs
+from math import ceil, fabs, floor, sqrt
 
 print(ceil(3.1))
 print(floor(3.1))

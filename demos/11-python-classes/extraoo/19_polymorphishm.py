@@ -4,11 +4,11 @@ class SchoolMember:
     def __init__(self, name, age):
         self.name = name
         self.age = age
-        print("(Initialized SchoolMember: {0})".format(self.name))
+        print(f"(Initialized SchoolMember: {self.name})")
 
     def tell(self):
         """Tell my details."""
-        print('Name:"{0}" Age:"{1}"'.format(self.name, self.age))
+        print(f'Name:"{self.name}" Age:"{self.age}"')
 
 
 class Teacher(SchoolMember):
@@ -17,11 +17,11 @@ class Teacher(SchoolMember):
     def __init__(self, name, age, salary):
         SchoolMember.__init__(self, name, age)
         self.salary = salary
-        print("(Initialized Teacher: {0})".format(self.name))
+        print(f"(Initialized Teacher: {self.name})")
 
     def tell(self):
         SchoolMember.tell(self)
-        print('Salary: "{0:d}"'.format(self.salary))
+        print(f'Salary: "{self.salary:d}"')
 
 
 class Student(SchoolMember):
@@ -30,11 +30,11 @@ class Student(SchoolMember):
     def __init__(self, name, age, marks):
         SchoolMember.__init__(self, name, age)
         self.marks = marks
-        print("(Initialized Student: {0})".format(self.name))
+        print(f"(Initialized Student: {self.name})")
 
     def tell(self):
         SchoolMember.tell(self)
-        print('Marks: "{0:d}"'.format(self.marks))
+        print(f'Marks: "{self.marks:d}"')
 
 
 t = Teacher("Mrs. Shrividya", 40, 30000)
@@ -49,17 +49,17 @@ for member in members:
 
 class A:
     def show(self, msg):
-        print('class A -- msg: "%s"' % (msg,))
+        print(f'class A -- msg: "{msg}"')
 
 
 class B:
     def show(self, msg):
-        print('class B -- msg: "%s"' % (msg,))
+        print(f'class B -- msg: "{msg}"')
 
 
 class C:
     def show(self, msg):
-        print('class C -- msg: "%s"' % (msg,))
+        print(f'class C -- msg: "{msg}"')
 
 
 def test():
@@ -70,7 +70,7 @@ def test():
         A(),
     ]
     for idx, obj in enumerate(objs):
-        msg = "message # %d" % (idx + 1,)
+        msg = f"message # {idx + 1}"
         obj.show(msg)
 
 

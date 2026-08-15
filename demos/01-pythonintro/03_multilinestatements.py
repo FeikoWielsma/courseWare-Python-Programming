@@ -5,5 +5,5 @@ item_three = 3
 total = item_one + \
         item_two + \
         item_three
-        
+
 print(total)

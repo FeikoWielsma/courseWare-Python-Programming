@@ -33,7 +33,7 @@ footer: Comprehensions
 def square(x):
     return x*x
 def even(x):
-    return 0 == x % 2
+    return x % 2 == 0
 some_list = list(map(square, range(10,20)))
 print (some_list)
 ```

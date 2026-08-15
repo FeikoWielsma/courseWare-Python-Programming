@@ -1,6 +1,6 @@
-str = "ABCDE"
+text = "ABCDE"
 
-# arr = bytes(str, 'utf-8') # string with encoding 'utf-8'        # non mutable
+# arr = bytes(text, 'utf-8') # string with encoding 'utf-8'        # non mutable
 arr = bytearray(str, "utf-8")  # string with encoding 'utf-8'     # mutable
 
 print(arr)

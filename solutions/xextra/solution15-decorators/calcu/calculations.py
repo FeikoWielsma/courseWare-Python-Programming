@@ -23,7 +23,7 @@ def counter(func):
     def wrapper(*args, **kwargs):
         wrapper.count = wrapper.count + 1
         res = func(*args, **kwargs)
-        print ("{0} has been used: {1}x".format(func.__name__, wrapper.count))
+        print (f"{func.__name__} has been used: {wrapper.count}x")
         return res
     wrapper.count = 0
     return wrapper
@@ -91,4 +91,4 @@ def average(ilist):
 def faculty(n):
     if (n == 1):
         return n
-    return n*faculty(n-1) 
+    return n*faculty(n-1)

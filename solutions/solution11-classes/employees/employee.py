@@ -1,5 +1,5 @@
-class Employee: 
-    empCount = 0  
+class Employee:
+    empCount = 0
     def __init__(self, name):
         print ("Calling Employee constructor")
         self.__name = name
@@ -13,7 +13,7 @@ class Employee:
 
     def del_name(self):
         del self.__name
-        
+
     def __del__(self):
         class_name = self.__class__.__name__
         print (class_name, "destroyed")
@@ -21,7 +21,7 @@ class Employee:
 
     def calcSal(self):
         return 0
-    
+
 def main():
     e1 = Employee("Albert Einstein")
     print (e1._Employee__name)
@@ -29,13 +29,13 @@ def main():
     print(e1.name)
     print(e1)
     print("Salary is : ", e1.calcSal())
-    
+
     e2 = Employee("Werner von Braun")
     print (e2._Employee__name)
-    e2.name = "Mamaloe" 
+    e2.name = "Mamaloe"
     print (e2.name)
     print (e2)
-    
+
     print ("Employee.__doc__:", Employee.__doc__)
     print ("Employee.__name__:", Employee.__name__)
     print ("Employee.__module__:", Employee.__module__)
@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
 
 #   def __init__(self, name, salary):
-#     
+#
 #      self.salary = salary
 #      Employee.empCount += 1
 #   def displayCount(self):

@@ -17,8 +17,7 @@ def divide(i, j):
 def convertointlist(slist):
     ilist = []
     for x in slist:
-        x = int(x)
-        ilist.append(x)
+        ilist.append(int(x))
     return ilist
 
 def summate(ilist):
@@ -37,4 +36,4 @@ def average(ilist):
 def faculty(n):
     if n == 1:
         return n
-    return n*faculty(n-1) 
+    return n*faculty(n-1)

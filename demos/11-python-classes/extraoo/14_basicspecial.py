@@ -3,7 +3,7 @@ class Basic:
         self.name = name
 
     def show(self):
-        print("Basic -- name: %s" % self.name)
+        print(f"Basic -- name: {self.name}")
 
 
 class Special(Basic):
@@ -15,7 +15,7 @@ class Special(Basic):
     def show(self):
         Basic.show(self)
         print(
-            "Special -- upper name: %s." % self.upper,
+            f"Special -- upper name: {self.upper}.",
         )
         if self.edible:
             print("It's edible.")

@@ -8,4 +8,4 @@ with con:
 
     data = cur.fetchone()
 
-    print("SQLite version: %s" % data)
+    print(f"SQLite version: {data}")

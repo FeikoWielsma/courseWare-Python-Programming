@@ -44,6 +44,38 @@ exclude = [
     "gui",
     "tkinter",
     "extra",
+
+    # Demo folders that no slide references and that the student bundle does
+    # not ship. They are kept as reference material from earlier versions of
+    # the course and from adjacent courses, and are held to no standard. The
+    # bundle allowlist in .forgejo/workflows/release.yml is the authority on
+    # what does ship; keep these two lists in step.
+    "demos/09-python-io/createexecutable",
+    "demos/12-pythonlibraries-datetime",
+    "demos/12-pythonlibraries-extra",
+    "demos/12-pythonlibraries-json",
+    "demos/12-pythonlibraries-networking",
+    "demos/12-pythonlibraries-numpy",
+    "demos/12-pythonlibraries-regexp",
+    "demos/12-pythonlibraries-selenium",
+    "demos/12-pythonlibraries-threads",
+    "demos/12-pythonlibraries-tkgui",
+    "demos/12-pythonlibraries-unittesting",
+    "demos/12-pythonlibraries-unittesting-pytest",
+    "demos/12-pythonlibraries-xml",
+    "demos/13-appendix-decorators",
+    "demos/13-appendix-generators",
+    "demos/14-appendix-gui-toolkits",
+    "demos/14-gui-toolkits",
+    "demos/15-mocking",
+
+    # Solution folders for exercises this course does not have. xextra holds a
+    # second copy of the classes solution plus solutions for XML and decorators,
+    # and solutions-generators solves a generators exercise that is not in the
+    # exercise guide. They still ship in the bundle, which is worth revisiting;
+    # see build/tasks.md.
+    "solutions/xextra",
+    "solutions/solutions-generators",
 ]
 
 [lint]
@@ -92,12 +124,101 @@ ignore = [
 
 # The exception chapter deliberately shows a bare `except:` before explaining
 # why it is wrong, and raises inside handlers to demonstrate chaining.
-"demos/08-exceptionhandling/**" = ["B904", "E722"]
 "solutions/solution08-exception-handling/**" = ["B904", "E722"]
 
+# Where the anti-pattern is the lesson, it stays and the rule is turned off for
+# that file with the reason written down. Do not "fix" any of these.
+
+# The conversion-functions slide calls str('abc') to show what str() does.
+"demos/02-variablesanddatatypes/06_conversionfunctions.py" = ["UP018"]
+
+# These two slides teach str.format itself: the positional field numbers and the
+# method call are the subject, so an f-string would delete the example.
+"demos/02-variablesanddatatypes/10_stringformatting.py" = ["UP030", "UP031", "UP032"]
+"demos/02-variablesanddatatypes/11_formatmethod.py" = ["UP030", "UP031", "UP032"]
+
+# The sets demo writes duplicates on purpose, because dropping them is what a
+# set does, and builds a set from a list literal to show the constructor.
+"demos/03-datastructures/10_setsandfrozensets.py" = ["B033", "C405"]
+
+# The tuple demo calls tuple() to show the constructor beside the literal.
+"demos/03-datastructures/06_tuples.py" = ["C408"]
+
+# The pass statement is the subject of its own slide, and an empty class body
+# needs one.
+"demos/04-controlflow/11_passstatement.py" = ["PIE790"]
+"demos/11-python-classes/01_simplestclass.py" = ["PIE790"]
+
+# The boolean operators demo shows raw precedence, including the short circuit
+# that ruff would rather see written out or simplified away.
+"demos/04-controlflow/13_booleanoperators.py" = ["RUF021", "SIM222", "SIM223"]
+
+# Assigning a lambda to a name is exactly what the anonymous functions slide
+# demonstrates.
+"demos/05-functions/09_lambdafunctions.py" = ["E731"]
+
+# The comprehensions chapter shows map and filter first and the comprehension
+# second, so the first half of every pair is the half being taught.
+"demos/07_comprehensions/demo05_syntactic_sugar.py" = ["C417"]
+"demos/07_comprehensions/demo10_dictionary_comprehension.py" = ["C416"]
+
+# The dictionary-from-keys slide shows dict.fromkeys and the equivalent
+# comprehension side by side; collapsing one into the other deletes the
+# comparison that is the point of the slide.
+"demos/07_comprehensions/demo11_dictionary_from_keys.py" = ["C420"]
+
+# The triple-quotes slide prints a deliberately long string with a trailing
+# space in it, to show that a triple-quoted string keeps its whitespace.
+"demos/02-variablesanddatatypes/13_triplequotes.py" = ["E501", "W291"]
+
+# The dictionaries demo ends by deleting the dictionary and using it again, to
+# show the NameError that follows.
+"demos/03-datastructures/11_dictionaries.py" = ["F821"]
+
+# The dictionary-methods demo repeats a key on purpose: the slide's comment is
+# about which of the two values survives.
+"demos/03-datastructures/12_dictionarymethods.py" = ["F601"]
+
 # The IO chapter opens files without a context manager on purpose, so that the
-# slide that introduces `with` has something to improve on.
-"demos/09-python-io/**" = ["SIM115"]
+# slide that introduces `with` has something to improve on, and it spells out
+# the mode on every call because file modes are what the chapter is about.
+"demos/09-python-io/**" = ["SIM115", "UP015"]
+
+# The reference solutions follow the exercise text, and the exercise text
+# dictates several of these names and shapes :
+#
+#   F403 / F405  Exercise 6 ends by building a `calcu` package whose __init__
+#                re-exports, so every later solution starts `from calcu import *`.
+#   N816         `calcAction` is the variable the exercise itself names, in four
+#                separate exercise files.
+#   N802         `calcSal` is given to the student verbatim in Exercise 11, and
+#                the rest of the solution code is named to match it.
+#   N803 / N806  the same, for arguments and locals the exercise text names.
+#   N815         `empCount` is the class variable module 11 uses throughout.
+#   E501         each solution keeps every earlier step of the exercise as a
+#                commented-out block, and those comments are what is long.
+#
+# Renaming any of them would put the solutions out of step with the exercise a
+# student is reading beside them. Modernising both together is a content review,
+# tracked in build/tasks.md.
+"solutions/**" = ["E501", "F403", "F405", "N802", "N803", "N806", "N815", "N816"]
+
+# Modules 5 and 6 come before comprehensions are taught in module 7, so their
+# solutions build lists with an explicit loop on purpose.
+"solutions/solution05-functions/**" = ["PERF401"]
+"solutions/solution06-modules/**" = ["PERF401"]
+
+# Exercise 9 hands the student `fw = open(...)` and a later `fw.close()`,
+# because the IO module teaches open and close before it teaches `with`. The
+# solution follows the exercise.
+"solutions/solution09-io/**" = ["SIM115"]
+
+# The exceptions chapter uses the classic IOError name, which its table of
+# standard exceptions also lists, and opens files without a context manager
+# before `with` has been taught. Renaming IOError to OSError here would put the
+# demos out of step with the slides; doing it in both is a content decision,
+# tracked in build/tasks.md.
+"demos/08-exceptionhandling/**" = ["B904", "E722", "SIM115", "UP015", "UP024"]
 
 # SAX and minidom handler methods must carry the names the parser calls.
 "demos/12-pythonlibraries-xml/**" = ["N802"]

@@ -17,5 +17,5 @@ print(hex(id(pt1)), hex(id(pt2)), hex(id(pt3)))  # prints the ids of the objects
 del pt1
 del pt2
 # del pt3
-str = eval(input("Enter your input: "))
+entered = eval(input("Enter your input: "))
 print(("Received input is : ", str))

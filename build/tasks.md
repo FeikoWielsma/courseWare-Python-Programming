@@ -203,13 +203,16 @@ now `00a-python-tooling` (uv, ruff, editor, 7 slides) and type hinting is
 
 ## Follow-up, not this round
 
-- [ ] Clear the ~944 ruff findings inside the `ruff.toml` scope
+- [x] Clear the ruff findings : `uv run ruff check .` is at zero
+      - `demos/`, `appendices/`, `exercises/` and `src/` are genuinely clean
+      - the non-bundled demo folders and the two orphan solution folders
+        (`solutions/xextra`, `solutions/solutions-generators`, which solve
+        exercises this course does not have) are excluded, not fixed
+      - every remaining `per-file-ignores` entry names the lesson it protects
+- [x] Modernise percent formatting to f-strings, in the demos, the solutions and
+      the matching slide fences. Module 02's string-formatting slide and
+      Exercise 2 keep `%` because they teach it explicitly.
 - [ ] Promote `ruff check .` from informational to gating in CI
-- [ ] Modernise percent formatting to f-strings in modules 04, 10 and 11 and in
-      `src/exercises/02`, together with their demo files. `UP031` is ignored in
-      `build/check-fences.py` for now because the string-formatting slide in
-      module 02 teaches percent formatting on purpose; once the incidental uses
-      are gone that ignore can be narrowed.
 - [x] Triage `demos/*/extra/` : all 16 Python 2 files ported to Python 3 rather
       than deleted, and each one run to confirm it still does what it taught.
       `print x` to `print(x)`, `print x,` to `print(x, end=" ")`, `input()` wrapped

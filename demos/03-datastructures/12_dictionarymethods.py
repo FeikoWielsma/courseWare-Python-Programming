@@ -8,10 +8,10 @@ print(di1.get("Robert"))  # 9102
 print(di1.popitem())
 
 for name, nr in di1.items():
-    print("Key %s with value %s" % (name, nr))
+    print(f"Key {name} with value {nr}")
 
 if "Albert" in di1:  # OR di1.has_key('Name')
-    print("Name's value is %s" % di1["Albert"])
+    print("Name's value is {}".format(di1["Albert"]))
 
 # di2 = {['Albert']: 2341, 'Robert': 9102}     # TypeError: unhashable type: 'list'
 # print(di2[['Albert']])

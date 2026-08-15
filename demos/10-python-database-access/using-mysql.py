@@ -1,4 +1,5 @@
 import mysql.connector
+
 import pandas as pd
 
 # https://pypi.org/project/mysql-connector-python/

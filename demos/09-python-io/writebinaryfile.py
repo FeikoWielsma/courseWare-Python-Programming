@@ -9,7 +9,7 @@ fo.write(bytes(10, "UTF-8"))
 fo.close()
 # now reading just 5 characters
 fo = open("textfile3.txt", "rb")
-str = fo.read()
+data = fo.read()
 print("Read String is : ")
 print(str.decode("UTF-8"))
 fo.close()

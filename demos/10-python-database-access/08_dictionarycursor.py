@@ -11,4 +11,4 @@ with con:
     rows = cur.fetchall()
 
     for row in rows:
-        print("%s %s %s" % (row["Id"], row["Name"], row["Price"]))
+        print(f"{row['Id']} {row['Name']} {row['Price']}")

@@ -7,7 +7,7 @@ class Person:
         self.lastname = lastname
 
     def show(self):
-        print("Person -- firstname: %s  lastname: %s" % (self.firstname, self.lastname))
+        print(f"Person -- firstname: {self.firstname}  lastname: {self.lastname}")
 
 
 def sayhi():

@@ -5,13 +5,13 @@ class A:
 
 class B(A):
     def __init__(self):
-        super(B, self).__init__()
+        super().__init__()
         print("Constructor B was called")
 
 
 class C(B):
     def __init__(self):
-        super(C, self).__init__()
+        super().__init__()
         print("Constructor C was called")
 
 

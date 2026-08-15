@@ -6,4 +6,4 @@ while x <= 5:
 name = ""
 while not name:
     name = input("Please enter your name: ")
-print("Hello, %s!" % name)
+print(f"Hello, {name}!")

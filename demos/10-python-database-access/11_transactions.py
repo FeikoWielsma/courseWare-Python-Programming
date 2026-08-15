@@ -16,7 +16,7 @@ except sqlite3.Error as e:
     if con:
         con.rollback()
 
-    print("Error %s:" % e.args[0])
+    print(f"Error {e.args[0]}:")
     sys.exit(1)
 
 finally:

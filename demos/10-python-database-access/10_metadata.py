@@ -20,7 +20,7 @@ with con:
 
     rows = cur.fetchall()
 
-    print("%s %-10s %s" % (col_names[0], col_names[1], col_names[2]))
+    print(f"{col_names[0]} {col_names[1]:<10} {col_names[2]}")
 
     for row in rows:
-        print("%2s %-10s %s" % row)
+        print(f"{row[0]:>2} {row[1]:<10} {row[2]}")

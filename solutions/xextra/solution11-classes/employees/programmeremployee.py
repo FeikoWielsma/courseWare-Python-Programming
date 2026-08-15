@@ -1,8 +1,9 @@
 from employees.wageemployee import WageEmployee
 
-class ProgrammerEmployee(WageEmployee) :   
+
+class ProgrammerEmployee(WageEmployee) :
     def __init__(self, name, wage, hours, lines, bugs):
-        super(ProgrammerEmployee,self).__init__(name, wage, hours)  
+        super().__init__(name, wage, hours)
         print ("Calling ProgrammerEmployee constructor")
         self.__lines = lines
         self.__bugs = bugs
@@ -27,14 +28,14 @@ class ProgrammerEmployee(WageEmployee) :
 
     def __del__(self):
         class_name = self.__class__.__name__
-        print (class_name, "destroyed") 
-    
+        print (class_name, "destroyed")
+
     def calcSal(self):
         return self.get_wage()*self.get_hours()+self.__lines - self.__bugs
-    
+
     lines = property(get_lines, set_lines, del_lines, "lines's docstring")
     bugs = property(get_bugs, set_bugs, del_bugs, "bugs's docstring")
-    
+
 def main():
     p1 = ProgrammerEmployee("Charles Shimenoni", 10, 20, 50, 60)
     print (p1.name)
@@ -45,7 +46,7 @@ def main():
     print ("Salary : ",  p1.calcSal())
 #    p1.bugs=11111
 #    print p1.bugs
-        
+
     print ("ProgrammerEmployee.__doc__:", ProgrammerEmployee.__doc__)
     print ("ProgrammerEmployee.__name__:", ProgrammerEmployee.__name__)
     print ("ProgrammerEmployee.__module__:", ProgrammerEmployee.__module__)

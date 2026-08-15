@@ -21,7 +21,7 @@ while True :
     del reslist[0]
     # print("Content of list after deletion %s : " %(reslist))
     print(f"Content of list after deletion {reslist} : ")
-    
+
 #step 2
 # while True :
 #    f1 = float(input("Give me number 1 : "))

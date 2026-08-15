@@ -9,9 +9,11 @@ print(dict10)  # {'a': 0, 'c': 0, 'b': 0}
 dict11 = dict.fromkeys("dictionary")
 print(
     dict11
-)  # {'d': None, 'o': None, 'i': None, 't': None, 'a': None, 'c': None, 'y': None, 'n': None, 'r': None}
+)  # {'d': None, 'i': None, 'c': None, 't': None, 'o': None,
+#  'n': None, 'a': None, 'r': None, 'y': None}
 
 dict12 = {k: None for k in "dictionary"}
 print(
     dict12
-)  # {'t': None, 'y': None, 'c': None, 'd': None, 'i': None, 'r': None, 'o': None, 'n': None, 'a': None}
+)  # {'d': None, 'i': None, 'c': None, 't': None, 'o': None,
+#  'n': None, 'a': None, 'r': None, 'y': None}

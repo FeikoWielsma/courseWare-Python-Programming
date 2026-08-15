@@ -64,9 +64,9 @@ try :
      cur = con.cursor()
      cur.execute('SELECT SQLITE_VERSION()')
      data = cur.fetchone()
-     print ("SQLite version: %s" % data)
+     print(f"SQLite version: {data}")
 except sqlite3.Error as e :
-     print ("Error %s:" % e.args[0])
+     print(f"Error {e.args[0]}:")
      sys.exit(1)
 finally :
      if con:
@@ -91,7 +91,7 @@ with con:
      cur = con.cursor()
      cur.execute('SELECT SQLITE_VERSION()')
      data = cur.fetchone()
-     print ("SQLite version: %s" % data)
+     print(f"SQLite version: {data}")
 ```
 
 - Using the `with` statement :
@@ -172,7 +172,7 @@ with con:
   cur.execute("INSERT INTO Friends(Name) VALUES ('Jim');")
   cur.execute("INSERT INTO Friends(Name) VALUES ('Robert');")
   lid = cur.lastrowid
-  print ("The last Id of the inserted row is %d" % lid)
+  print(f"The last Id of the inserted row is {lid}")
 ```
 
 > `demo05 · lastinsertedrowid`
@@ -229,7 +229,7 @@ with con:
      cur.execute("SELECT * FROM Cars")
      while True:
           row = cur.fetchone()
-          if row == None:
+          if row is None:
               break
           print (row[0], row[1], row[2])
 ```
@@ -257,7 +257,7 @@ with con:
      cur.execute("SELECT * FROM Cars")
      rows = cur.fetchall()
      for row in rows:
-          print ("%s %s %s" % (row["Id"], row["Name"], row["Price"]))
+          print(f"{row['Id']} {row['Name']} {row['Price']}")
 ```
 
 > `demo08 · dictionarycursor`
@@ -282,7 +282,7 @@ with con:
      cur = con.cursor()
      cur.execute("UPDATE Cars SET Price=? WHERE Id=?", (uPrice, uId))
      con.commit()
-     print ("Number of rows updated: %d" % cur.rowcount)
+     print(f"Number of rows updated: {cur.rowcount}")
 ```
 
 > `demo09 · parameterizedqueries`
@@ -365,7 +365,7 @@ try:# con = sqlite3.connect('friends.db', isolation_level=None) => autocommit
 except sqlite3.Error as e:
      if con:
           con.rollback()
-     print ("Error %s:" % e.args[0])
+     print(f"Error {e.args[0]}:")
      sys.exit(1)
 finally:
      if con:

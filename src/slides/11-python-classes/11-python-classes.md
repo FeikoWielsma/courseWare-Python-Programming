@@ -100,7 +100,7 @@ class Employee :
        self.salary = salary
        Employee.empCount += 1
     def displayCount(self):
-      print ("Total Employee %d" % Employee.empCount)
+      print(f"Total Employee {Employee.empCount}")
     def displayEmployee(self):
        print ("Name : ", self.name, ", Salary: ", self.salary)
 ```
@@ -162,7 +162,7 @@ emp2.displayEmployee()
 - Access class variable using class name :
 
 ```python
-print("Total Employee %d" % Employee.empCount)
+print(f"Total Employee {Employee.empCount}")
 ```
 
 - Result :

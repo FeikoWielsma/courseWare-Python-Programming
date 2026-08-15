@@ -11,7 +11,7 @@ with con:
     cur.execute("UPDATE Cars SET Price=? WHERE Id=?", (u_price, u_id))
     con.commit()
 
-    print("Number of rows updated: %d" % cur.rowcount)
+    print(f"Number of rows updated: {cur.rowcount}")
 
 
 u_id = 4

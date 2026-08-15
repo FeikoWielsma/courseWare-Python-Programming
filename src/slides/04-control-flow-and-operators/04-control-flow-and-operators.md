@@ -276,7 +276,7 @@ flowchart LR
 words = ['one', 'way', 'ticket', 'to', 'mars']
 for word in words:
      print(word , end=' ')
-print('')
+print()
 list1 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 for number in list1:
      print(number)
@@ -361,7 +361,7 @@ for n in range(99, 80, -1):
      print(root)
      print(int(root))
      if root == int(root):
-        print("Perfect square is %d" % n)
+        print(f"Perfect square is {n}")
         break
 else:
     print("Didn't find it!")

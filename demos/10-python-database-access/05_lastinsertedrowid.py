@@ -11,4 +11,4 @@ with con:
     cur.execute("INSERT INTO Friends(Name) VALUES ('Robert');")
 
     lid = cur.lastrowid
-    print("The last Id of the inserted row is %d" % lid)
+    print(f"The last Id of the inserted row is {lid}")

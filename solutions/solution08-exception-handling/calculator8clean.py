@@ -57,14 +57,17 @@ def doCalculations():
     calcAction = input("What type of calculation do you want to do :")
     if calcAction == "Faculty":
         doOneNumberCalculation(calcAction)
-    elif calcAction == "Add" or calcAction == "Subtract" or calcAction == "Multiply" or calcAction == "Divide":
+    elif calcAction in ("Add", "Subtract", "Multiply", "Divide"):
         doTwoNumberCalculation(calcAction)
     elif calcAction == "Sum" or calcAction == "Average":
         doListOfNumbersCalculation(calcAction)
     elif calcAction == "Quit":
         return False
     else:
-        print("Incorrect. Available options are 'Sum', 'Average', 'Add', 'Subtract, 'Multiply, 'Divide'")
+        print(
+            "Incorrect. Available options are "
+            "'Sum', 'Average', 'Add', 'Subtract, 'Multiply, 'Divide'"
+        )
     return True
 
 continuecalcu = True

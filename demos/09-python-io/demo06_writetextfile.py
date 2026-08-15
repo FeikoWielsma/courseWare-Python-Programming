@@ -1,6 +1,6 @@
 # writing a text file
 fw = open("textfilepolish.txt", mode="w", encoding="UTF-8")
-s = "Polish text: Ä…Ä‡Ä™Å‚Å„Ã³Å›ÅºÅ¼Ä„Ä†Ä˜Å�ÅƒÃ“ÅšÅ¹Å»"
+s = "Polish text: ąćęłńóśźżĄĆĘŁŃÓŚŹŻ"
 fw.write(s)
 fw.close()
 

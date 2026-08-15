@@ -19,8 +19,7 @@ def divide(i, j):
 def convertointlist(slist):
     ilist = []
     for x in slist:
-        x = int(x)
-        ilist.append(x)
+        ilist.append(int(x))
     return ilist
 
 def summate(ilist):
@@ -40,7 +39,7 @@ def average(ilist):
 def faculty(n):
     if n == 1:
         return n
-    return n*faculty(n-1) 
+    return n*faculty(n-1)
 
 resdict = {"Add": [], "Subtract": [], "Multiply": [], "Divide": []}
 calcAction = "Continue"
@@ -54,16 +53,16 @@ while calcAction != "Quit":
     elif (calcAction == "Sum") or (calcAction == "Average"):
         s = input("Give a set of numbers separated by space characters : ")
         slist = s.split(' ')
-        intlist = convertointlist(slist)  
+        intlist = convertointlist(slist)
         if calcAction == "Sum":
-            summation = summate(intlist) 
+            summation = summate(intlist)
             #print ("Sum of list %s is %d" %(str(intlist), summation))
             print(f"Sum of list {intlist} is {summation}")
         elif calcAction == "Average":
             av = average(intlist)
             #print ("Average of list %s is %f" %(str(intlist), av))
             print(f"Average of list {intlist} is {av}")
-    elif (calcAction == "Add") or (calcAction == "Subtract") or (calcAction == "Multiply") or (calcAction == "Divide"):
+    elif calcAction in ("Add", "Subtract", "Multiply", "Divide"):
         f1 = float(input("Give me number 1 : "))
         f2 = float(input("Give me number 2 : "))
         if calcAction == "Add":
@@ -88,6 +87,8 @@ while calcAction != "Quit":
         print(f"Length of dictionary : {len(resdict)}")
     else:
         if calcAction != "Quit":
-            print ("Incorrect. Available options are 'Sum', 'Average', 'Add', 'Subtract, 'Multiply, 'Divide'")
-else:
-    print("Thank you for user our software")
+            print(
+                "Incorrect. Available options are "
+                "'Sum', 'Average', 'Add', 'Subtract, 'Multiply, 'Divide'"
+            )
+print("Thank you for user our software")
