@@ -30,15 +30,20 @@ footer: Python Classes
 
 - A class is a blueprint; each object has its own state :
 
-| | Car Class | Object Car A | Object Car B |
-|---|---|---|---|
-| Instance Variables | Plate Number | ABC 111 | XYX 123 |
-| | Color | Blue | Red |
-| | Manufacturer | Mitsubishi | Toyota |
-| | Current Speed | 50 km/h | 100 km/h |
-| Instance Methods | Accelerate Method | | |
-| | Turn Method | | |
-| | Brake Method | | |
+<table>
+<thead>
+<tr><th></th><th>Car Class</th><th>Object Car A</th><th>Object Car B</th></tr>
+</thead>
+<tbody>
+<tr><td rowspan="4">Instance<br/>Variables</td><td>Plate Number</td><td>ABC 111</td><td>XYX 123</td></tr>
+<tr><td>Color</td><td>Blue</td><td>Red</td></tr>
+<tr><td>Manufacturer</td><td>Mitsubishi</td><td>Toyota</td></tr>
+<tr><td>Current Speed</td><td>50 km/h</td><td>100 km/h</td></tr>
+<tr><td rowspan="3">Instance<br/>Methods</td><td colspan="3">Accelerate Method</td></tr>
+<tr><td colspan="3">Turn Method</td></tr>
+<tr><td colspan="3">Brake Method</td></tr>
+</tbody>
+</table>
 
 ---
 
@@ -371,11 +376,11 @@ print(Account.getInterestRate2())
   - Result is implementation hiding and modularity
 
 ```mermaid
-graph LR
-    F1[method] --> D((internal data))
-    F2[method] --> D
-    F3[method] --> D
-    F4[method] --> D
+flowchart LR
+  A[client code] --> B[get_length]
+  A --> C[set_length]
+  B --> D[hidden attribute<br/>_length]
+  C --> D
 ```
 
 ---

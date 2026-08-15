@@ -14,6 +14,18 @@ footer: Exception Handling
 - When Python encounters conditions it can't cope with :
   - An exception is raised
   - An exception is a Python object that represents an error
+- Every exception is a class, and the classes form a tree :
+
+```mermaid
+flowchart LR
+  A[BaseException] --> B[Exception]
+  B --> C[ArithmeticError] --> D[ZeroDivisionError]
+  B --> E[LookupError] --> F[IndexError]
+  B --> G[ValueError]
+  B --> H[OSError]
+```
+
+- Catching a class catches everything below it in that tree
 - When a Python script raises an exception :
   - The exception must be handled immediately otherwise the script terminates
 - Another feature to handle unexpected errors are assertions :
@@ -208,6 +220,17 @@ finally:
 
 - Combining `finally` and `except` is allowed :
   - `try` block can be followed by multiple `except` clauses and one `finally` clause
+
+```mermaid
+flowchart LR
+  A[try block] --> B{exception raised}
+  B -- yes --> C[matching except block]
+  B -- no --> D[else block]
+  C --> E[finally block]
+  D --> E
+  E --> F[statement after]
+```
+
 - Limitation :
   - It is not possible to use an `else` clause along with a `finally` clause
 

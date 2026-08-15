@@ -39,6 +39,16 @@ if expression:
 - Expression is evaluated first :
   - If true that is then statement(s) block are executed
   - Otherwise next statement following statement(s) block is executed
+
+```mermaid
+flowchart LR
+  A[statement before] --> B{expression}
+  B -- True --> C[indented block]
+  B -- False --> D[block is skipped]
+  C --> E[statement after]
+  D --> E
+```
+
 - Numbers and strings represent true values :
   - Except number 0 and empty string
 - Grouping statements :
@@ -176,6 +186,15 @@ while expression:
 
 - `while` loop ends when conditional expression becomes false :
   - Control is passed to the statement following the loop
+
+```mermaid
+flowchart LR
+  A[before the loop] --> B{expression}
+  B -- True --> C[loop body]
+  C --> B
+  B -- False --> D[statement after the loop]
+```
+
 - In case the condition of a `while` never resolves to a false value :
   - Result is an infinite loop
 - Infinite loop might be useful in client/server programming :
@@ -240,10 +259,18 @@ for var in sequence:
 ```
 
 - `for` loop operation :
-  - First item in the sequence is assigned to iterating variable `var`
-  - Next statements block is executed
-  - Each item in the list is assigned to `var`
+  - Each item in the sequence is assigned to iterating variable `var` in turn
   - Statements(s) block is executed until the entire sequence is finished
+
+```mermaid
+flowchart LR
+  A[sequence] --> B{items left}
+  B -- yes --> C[assign next item to var]
+  C --> D[loop body]
+  D --> B
+  B -- no --> E[statement after the loop]
+```
+
 
 ```python
 words = ['one', 'way', 'ticket', 'to', 'mars']

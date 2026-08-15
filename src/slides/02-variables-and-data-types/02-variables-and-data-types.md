@@ -45,8 +45,43 @@ name = "John" # A string
   - Multiple names in multiple scopes can be bound to the same object
   - This is known as aliasing in other languages
 - Variable names are not properties of an object :
-  - They are stored in separate namespaces
-  - Dictionaries of name → object reference (id) pairs
+  - A namespace maps each name to the object it refers to
+
+<svg viewBox="0 0 960 190" width="100%" style="width:100%;height:auto;display:block;margin:8px 0 4px" role="img" aria-label="Two names in a namespace refer to one object, which carries the identity, type and value">
+<defs>
+<marker id="nb-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+</marker>
+</defs>
+<g fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5">
+<rect x="20" y="30" width="250" height="130" rx="4"/>
+</g>
+<g fill="currentColor" font-size="17" opacity="0.75">
+<text x="30" y="22">namespace</text>
+<text x="560" y="22">one object</text>
+</g>
+<g fill="none" stroke="currentColor" stroke-width="2">
+<rect x="50" y="52" width="120" height="38" rx="3"/>
+<rect x="50" y="106" width="120" height="38" rx="3"/>
+<rect x="540" y="40" width="360" height="112" rx="4"/>
+</g>
+<g fill="currentColor" font-size="21" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle">
+<text x="110" y="78">a</text>
+<text x="110" y="132">b</text>
+</g>
+<g fill="none" stroke="currentColor" stroke-width="1.8" marker-end="url(#nb-arrow)">
+<path d="M 170 71 L 350 71 L 350 96 L 534 96"/>
+<path d="M 170 125 L 350 125 L 350 96 L 534 96"/>
+</g>
+<g fill="currentColor" font-size="20" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+<text x="562" y="70">id(x)   140237... </text>
+<text x="562" y="102">type(x) int</text>
+<text x="562" y="134">value   5</text>
+</g>
+<g fill="currentColor" font-size="17" opacity="0.75" text-anchor="middle">
+<text x="352" y="172">a is b, and id(a) == id(b)</text>
+</g>
+</svg>
 
 > `demo02 · typeandid`
 
@@ -93,14 +128,16 @@ a, b, c = 1, 2, "john"
   - Operations possible on the variable
   - Storage method for the variable
 - Python is a strongly typed language :
-  - Trying to perform operations on a type that are not allowed gives error
+  - An operation the type does not allow raises rather than coercing silently
+
+```text
+1 + 1      ->  2             int plus int
+"1" + "1"  ->  '11'          str plus str, concatenation
+"1" + 1    ->  TypeError     no implicit conversion between the two
+```
+
 - Important Python data types :
-  - Numbers
-  - String
-  - List
-  - Tuple
-  - Set
-  - Dictionary
+  - Numbers, String, List, Tuple, Set and Dictionary
 
 > `demo04 · strongtyping`
 

@@ -13,8 +13,16 @@ footer: Python Intro
 - Python is Beginner's Language :
   - Great language for the beginner programmers
 - Python is interpreted :
-  - Processed at runtime by the interpreter like Perl and PHP code
-  - No need to compile your program before executing it
+  - Processed at runtime by the interpreter, with no separate compile step to run
+
+```mermaid
+graph LR
+  A[source code<br/>hello.py] --> B[compile to bytecode]
+  B --> C[bytecode<br/>hello.pyc]
+  C --> D[Python virtual machine]
+  D --> E[output]
+```
+
 - Python is interactive :
   - Prompt allows you to interact with the interpreter directly to write your programs
 - Python is Object Oriented :

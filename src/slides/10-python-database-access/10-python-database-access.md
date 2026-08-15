@@ -30,24 +30,24 @@ footer: Python Database Access
 
 - DB API uses two main concepts for processing queries :
   - Connections and cursors
-- Connection objects logically wrap a database connection :
-  - Provide network/RPC access to the database
-  - Provide means to handle database transactions
-  - You can't execute statements on connection objects
-- Example :
+- Every script follows the same shape :
 
-```python
-db_connection = sqlite.connect('sample.db')
+```mermaid
+flowchart LR
+  A[connect] --> B[cursor] --> C[execute] --> D[fetch] --> E[commit] --> F[close]
 ```
 
+- Connection objects logically wrap a database connection :
+  - Provide network access to the database and handle transactions
+  - You can't execute statements on connection objects
 - Cursor objects used to manipulate and query the database :
   - Created on connections using the `conn.cursor()` method
   - Cursor objects provide ways to execute statements and access results
-- Example :
 
 ```python
-cursor = conn.cursor()
-cursor.execute('create table testtable(id int, name varchar(254))')
+con = sqlite3.connect('sample.db')
+cur = con.cursor()
+cur.execute('CREATE TABLE testtable(id int, name varchar(254))')
 ```
 
 ---

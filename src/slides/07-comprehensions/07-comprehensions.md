@@ -122,18 +122,40 @@ print (new_list)
 
 - Syntax of a list comprehension may involve :
   - `for` loop, an `in` operation and an `if` statement
-- Python’s notation :
-  - `[ expression for name in list ]`
-  - Expression :
-    - Some calculation or operation acting upon the variable name
-  - For each member of the list, the list comprehension
-    - Sets name equal to that member
-    - Calculates a new value using expression
-  - Collects these new values into a list which is return value of list comprehension
+- Python's notation is `[ expression for name in list ]` :
 
-```text
+<svg viewBox="0 0 960 210" width="100%" style="width:100%;height:auto;display:block;margin:6px 0 4px" role="img" aria-label="The three parts of a list comprehension: the expression, the name bound to each item and the source sequence">
+<g fill="currentColor" font-size="23" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+<text x="194" y="46" textLength="14" lengthAdjust="spacingAndGlyphs">[</text>
+<text x="214" y="46" textLength="84" lengthAdjust="spacingAndGlyphs">elem*2</text>
+<text x="312" y="46" textLength="42" lengthAdjust="spacingAndGlyphs">for</text>
+<text x="368" y="46" textLength="56" lengthAdjust="spacingAndGlyphs">elem</text>
+<text x="438" y="46" textLength="28" lengthAdjust="spacingAndGlyphs">in</text>
+<text x="480" y="46" textLength="28" lengthAdjust="spacingAndGlyphs">li</text>
+<text x="514" y="46" textLength="14" lengthAdjust="spacingAndGlyphs">]</text>
+</g>
+<g fill="none" stroke="currentColor" stroke-width="2">
+<rect x="210" y="24" width="92" height="30" rx="3"/>
+<rect x="364" y="24" width="64" height="30" rx="3"/>
+<rect x="476" y="24" width="34" height="30" rx="3"/>
+</g>
+<g fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.7">
+<path d="M 494 54 L 494 100 L 554 100"/>
+<path d="M 396 54 L 396 140 L 554 140"/>
+<path d="M 256 54 L 256 180 L 554 180"/>
+</g>
+<g fill="currentColor" font-size="19">
+<text x="566" y="106">the source sequence</text>
+<text x="566" y="146">the name bound to each item</text>
+<text x="566" y="186">the expression, evaluated per item</text>
+</g>
+</svg>
+
+- Reads as the loop that would otherwise be written out in full :
+
+```python
 li = [3, 6, 2, 7]
-li_new = [elem*2 for elem in li] => [6, 12, 4, 14]
+li_new = [elem*2 for elem in li]   # [6, 12, 4, 14]
 ```
 
 - `if` statement acts as a filter and is optional :

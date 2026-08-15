@@ -62,32 +62,48 @@ Found while doing the above, not in the original inventory :
 
 Repairs are tracked in Phase 1. New diagrams :
 
-- [ ] 01 `Running Python` : source to bytecode to interpreter loop
-- [ ] 02 `Everything is an Object` : two names, one object, `id()`
-- [ ] 02 `Strong Typing` : why `"1" + 1` raises
-- [ ] 03 `Accessing Lists` : positive and negative index rulers
-- [ ] 03 `Accessing Lists` : slice boundaries
-- [ ] 03 `Sets` : union, intersection, difference
-- [ ] 03 `Dictionaries` : key to hash to bucket to value
-- [ ] 04 `if Statement` : if / elif / else flow
-- [ ] 04 `while Loop` : condition, body, `else` on normal exit
-- [ ] 04 `for Loop` : iterable, iterator, item, `break`
-- [ ] 05 `Pass by Value` : mutating through a shared reference
-- [ ] 05 `Overwriting References` : rebinding leaves the original untouched
-- [ ] 05 `Scope of Variables` : LEGB lookup order
-- [ ] 06 `Locating Modules` : `sys.path` search order
-- [ ] 06 `Packages in Python` : package tree with `__init__.py`
-- [ ] 07 `Syntax List Comprehensions` : anatomy against the equivalent loop
-- [ ] 07 `Zip Function` : two sequences into pairs
-- [ ] 08 `Exception Handling` : try / except / else / finally
-- [ ] 08 `Python Standard Exceptions` : exception hierarchy
-- [ ] 09 `File Positions` : `tell()` and `seek()` on a byte ruler
-- [ ] 10 `DB API Concepts` : connect to cursor to execute to fetch to commit
-- [ ] 11 `Accessing Attributes` : instance dict, class dict, bases
-- [ ] 11 `Override Base Methods` : base and derived class diagram
-- [ ] 11 `Example Class and Objects` : rebuild the table with `rowspan` / `colspan`
-- [ ] `ls build/.mermaid-cache/ | grep placeholder` returns nothing
-- [ ] `grep -o 'viewBox="[^"]*"' build/.mermaid-cache/*.svg` shows no cropped diagrams
+- [x] 01 `What is Python?` : source to bytecode to virtual machine.
+      Moved here from `Running Python`, which is about launch modes, not
+      about what interpretation means.
+- [x] 02 `Everything is an Object` : two names, one object, `id()`
+- [x] 02 `Strong Typing` : a three-line comparison fence rather than a diagram.
+      `1 + 1`, `"1" + "1"`, `"1" + 1`. A diagram here would have been decoration.
+- [x] 03 `Accessing Lists` : one ruler carrying positive indexes, negative
+      indexes and the extent of `li[1:3]`
+- [x] 04 `if Statement` : if / else flow
+- [x] 04 `while Loop` : condition, body, exit
+- [x] 04 `for Loop` : items left, assign, body, exit
+- [x] 05 `Mutating Versus Rebinding` : **a new slide.** `Pass by Value` and
+      `Overwriting References` are both three fences deep with no room, and the
+      contrast between them is the point, so it earns a slide of its own.
+- [x] 05 `Scope of Variables` : LEGB lookup order
+- [x] 06 `Locating Modules` : search order, first hit wins
+- [x] 06 `Packages in Python` : package tree with `__init__.py`
+- [x] 07 `Syntax List Comprehensions` : anatomy of the three parts
+- [x] 08 `Unexpected Errors` : exception hierarchy. Placed on the module opener
+      rather than beside the standard-exceptions tables, which are already tall.
+- [x] 08 `try-finally Clause` : try / except / else / finally flow
+- [x] 09 `File Positions` : `tell()` and `seek()` on a byte ruler
+- [x] 10 `DB API Concepts` : connect, cursor, execute, fetch, commit, close
+- [x] 11 `Example Class and Objects` : rebuilt with `rowspan` and `colspan`, so
+      the instance methods span the object columns as they do in the original
+- [x] **11 `Encapsulation` : the deck's one pre-existing diagram was broken.**
+      Its `D((internal data))` circle was cropped away by `trimSvgViewBox`,
+      leaving four `method` boxes with arrows pointing at nothing. Rebuilt with
+      rectangles as a client / accessors / hidden attribute chain.
+- [x] `ls build/.mermaid-cache/ | grep placeholder` returns nothing
+- [x] No diagram is cropped; every viewBox starts at `3 3`
+
+Considered and deliberately not done :
+
+- 03 `Sets` : a Venn of union, intersection and difference. The slide already
+  carries three fences whose output shows exactly that, so it would not fit and
+  would not add.
+- 03 `Dictionaries` : key to hash to bucket. Implementation detail beyond what a
+  fundamentals course needs.
+- 07 `Zip Function` : the fence already prints the pairs.
+- 11 `Accessing Attributes` and `Override Base Methods` : both slides are wall to
+  wall code fences with no room, and neither concept was struggling.
 
 ## Phase 4 : Module 00a, Modern Python
 

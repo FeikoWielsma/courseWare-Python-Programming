@@ -340,6 +340,42 @@ Name of the file: foo.txt
 - `seek(offset[, from])` method changes the current file position :
   - Offset argument indicates the number of bytes to be moved
   - From argument specifies reference position from where bytes are to be moved
+
+<svg viewBox="0 0 960 175" width="100%" style="width:100%;height:auto;display:block;margin:6px 0 4px" role="img" aria-label="After reading ten bytes tell reports position ten, and seek zero moves the position back to the start">
+<defs>
+<marker id="fp-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+</marker>
+</defs>
+<g fill="currentColor" opacity="0.12">
+<rect x="60" y="56" width="320" height="44"/>
+</g>
+<g fill="none" stroke="currentColor" stroke-width="2">
+<rect x="60" y="56" width="832" height="44"/>
+</g>
+<g fill="currentColor" font-size="22" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+<text x="60" y="86" textLength="832" lengthAdjust="spacingAndGlyphs">Python is a great language</text>
+</g>
+<g fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.6">
+<path d="M 60 44 L 60 56"/>
+<path d="M 380 44 L 380 56"/>
+<path d="M 892 44 L 892 56"/>
+</g>
+<g fill="currentColor" font-size="18" text-anchor="middle" opacity="0.75">
+<text x="60" y="36">byte 0</text>
+<text x="380" y="36">byte 10</text>
+<text x="892" y="36">byte 26</text>
+</g>
+<g fill="none" stroke="currentColor" stroke-width="1.8" marker-end="url(#fp-arrow)">
+<path d="M 380 130 L 380 106"/>
+<path d="M 372 148 L 66 148"/>
+</g>
+<g fill="currentColor" font-size="19">
+<text x="392" y="136">tell() reports 10, the next read starts here</text>
+<text x="392" y="155">seek(0) moves the position back to the start</text>
+</g>
+</svg>
+
 - If from is set to 0 :
   - Use beginning of the file as the reference position
 - If from is set to 1 :

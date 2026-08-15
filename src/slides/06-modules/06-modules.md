@@ -104,10 +104,16 @@ from modname import *
 
 # Locating Modules
 
-- On import Python interpreter searches for module as follows :
-  - Current directory
-  - Each directory in the shell variable `PYTHONPATH`
-  - Default path which is OS dependent
+- On import the interpreter searches these places in order, first hit wins :
+
+```mermaid
+flowchart LR
+  A[import mymod] --> B[current directory]
+  B --> C[each directory in<br/>PYTHONPATH]
+  C --> D[the default path,<br/>OS dependent]
+  D --> E[ModuleNotFoundError]
+```
+
 - Search path is stored in system module `sys` as `sys.path` variable :
   - Should import `sys` to be able to access path
   - `sys` module give also access to command line arguments or parameters to script
@@ -205,11 +211,17 @@ print(content)
 - Package is way to organize number of modules together as unit :
   - Package is simply a directory and has a hierarchical file directory structure
   - Consists of modules and subpackages and sub-subpackages and so on
-- Multiple functions in files and different Python classes :
-  - Create packages out of those classes
-  - Package provide a namespace and can prevent name classes
+- A package provides a namespace and so prevents name clashes
 - Typically modules of a package are placed in a directory :
-  - Consider for example `Canon.py` , `Leika.py` and `Nikon.py` in `cameras` directory
+
+```text
+cameras/
+├─ __init__.py     marks the directory as a package
+├─ Canon.py        defines CanonInfo()
+├─ Leika.py        defines LeikaInfo()
+└─ Nikon.py        defines NikonInfo()
+```
+
 - `Canon.py` could define a simple function like :
 
 ```python
@@ -217,8 +229,6 @@ def CanonInfo():
      print ("Canon camera")
 ```
 
-- Other two files could define similar but different functions :
-  - `def Leika()` and `def Nikon()`
 - Package is required to have `__init__.py` in its directory :
   - Indicates directory contains package and makes functions available when package is imported
 

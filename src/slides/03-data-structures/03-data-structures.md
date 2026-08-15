@@ -56,8 +56,51 @@ print(list1[::-1]) # Prints complete list in reverse order
 # Accessing Lists
 
 - Use index operator `[]` to access list at specific position :
-  - On left-hand side of assignment operator for given element a value
-  - On right-hand side of assignment operator for reading value of element
+  - Counting runs from `0` at the front and from `-1` at the back
+  - A slice runs up to but not including its second index
+
+<svg viewBox="0 0 960 200" width="100%" style="width:100%;height:auto;display:block;margin:6px 0 4px" role="img" aria-label="A five element list with its positive indexes, negative indexes and the extent of the slice one to three">
+<g fill="currentColor" font-size="17" opacity="0.75">
+<text x="20" y="42">index</text>
+<text x="20" y="88">value</text>
+<text x="20" y="140">from the end</text>
+</g>
+<g fill="none" stroke="currentColor" stroke-width="2">
+<rect x="150" y="56" width="130" height="48"/>
+<rect x="280" y="56" width="130" height="48"/>
+<rect x="410" y="56" width="130" height="48"/>
+<rect x="540" y="56" width="130" height="48"/>
+<rect x="670" y="56" width="130" height="48"/>
+</g>
+<g fill="currentColor" font-size="21" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle">
+<text x="215" y="88">10</text>
+<text x="345" y="88">20</text>
+<text x="475" y="88">30</text>
+<text x="605" y="88">40</text>
+<text x="735" y="88">50</text>
+</g>
+<g fill="currentColor" font-size="19" text-anchor="middle">
+<text x="215" y="42">0</text>
+<text x="345" y="42">1</text>
+<text x="475" y="42">2</text>
+<text x="605" y="42">3</text>
+<text x="735" y="42">4</text>
+</g>
+<g fill="currentColor" font-size="19" text-anchor="middle" opacity="0.75">
+<text x="215" y="140">-5</text>
+<text x="345" y="140">-4</text>
+<text x="475" y="140">-3</text>
+<text x="605" y="140">-2</text>
+<text x="735" y="140">-1</text>
+</g>
+<g fill="none" stroke="currentColor" stroke-width="2">
+<path d="M 280 158 L 280 176 L 540 176 L 540 158"/>
+</g>
+<g fill="currentColor" font-size="19" text-anchor="middle">
+<text x="410" y="196">li[1:3] gives [20, 30]</text>
+</g>
+</svg>
+
 
 ```python
 li = ['physics', 'chemistry', 'biology', 'computer science']

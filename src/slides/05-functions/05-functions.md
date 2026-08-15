@@ -155,6 +155,56 @@ Values outside the function: [10, 20, 30]
 
 ---
 
+# Mutating Versus Rebinding
+
+- The two previous slides differ in one character, and that changes everything :
+
+<svg viewBox="0 0 960 250" width="100%" style="width:100%;height:auto;display:block;margin:8px 0 4px" role="img" aria-label="Mutating the list through the parameter is visible to the caller, rebinding the parameter is not">
+<defs>
+<marker id="mr-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+</marker>
+</defs>
+<g fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4">
+<rect x="10" y="10" width="460" height="230" rx="5"/>
+<rect x="490" y="10" width="460" height="230" rx="5"/>
+</g>
+<g fill="currentColor" font-size="20" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+<text x="30" y="42">mylist.append(40)</text>
+<text x="510" y="42">mylist = [1, 2, 3, 4]</text>
+</g>
+<g fill="none" stroke="currentColor" stroke-width="2">
+<rect x="30" y="70" width="160" height="38" rx="3"/>
+<rect x="30" y="140" width="160" height="38" rx="3"/>
+<rect x="270" y="95" width="180" height="58" rx="3"/>
+<rect x="510" y="70" width="160" height="38" rx="3"/>
+<rect x="510" y="140" width="160" height="38" rx="3"/>
+<rect x="750" y="62" width="180" height="54" rx="3"/>
+<rect x="750" y="132" width="180" height="54" rx="3"/>
+</g>
+<g fill="currentColor" font-size="18" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle">
+<text x="110" y="95">mylistouter</text>
+<text x="110" y="165">mylist</text>
+<text x="360" y="130">[10,20,30,40]</text>
+<text x="590" y="95">mylistouter</text>
+<text x="590" y="165">mylist</text>
+<text x="840" y="95">[10, 20, 30]</text>
+<text x="840" y="165">[1, 2, 3, 4]</text>
+</g>
+<g fill="none" stroke="currentColor" stroke-width="1.8" marker-end="url(#mr-arrow)">
+<path d="M 190 89 L 230 89 L 230 124 L 264 124"/>
+<path d="M 190 159 L 230 159 L 230 124 L 264 124"/>
+<path d="M 670 89 L 744 89"/>
+<path d="M 670 159 L 744 159"/>
+</g>
+<g fill="currentColor" font-size="17" opacity="0.75" text-anchor="middle">
+<text x="240" y="222">one object, two names, the caller sees the change</text>
+<text x="720" y="222">the name is rebound, the caller sees nothing</text>
+</g>
+</svg>
+
+---
+
 # Function Arguments
 
 - Functions can be called with different types of arguments
@@ -363,9 +413,16 @@ Outside the function : 30
 
 - Accessibility of variable depends on where it is declared :
   - Scope determines where in program you can access a particular identifier
-- There are two basic scopes of variables in Python :
-  - Global variables
-  - Local variables
+- A name is looked up in four places, in this order :
+
+```mermaid
+flowchart LR
+  A[Local<br/>inside this function] --> B[Enclosing<br/>an outer function]
+  B --> C[Global<br/>the module]
+  C --> D[Built-in<br/>len, print, range]
+```
+
+- The first place that has the name wins, the rest are never consulted
 - Global versus Local variables :
   - Variables defined inside a function body have a local scope
   - Variables defined outside have a global scope
