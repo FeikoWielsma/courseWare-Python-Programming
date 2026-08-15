@@ -17,6 +17,8 @@ material, so a `git pull` always gives you the latest version.
   per module (for example `demos/05-functions/`). A slide that shows a demo names
   it at the bottom, for example `demo03 · overwritingreferences`, which is the
   file `demos/05-functions/03_overwritingreferences.py`.
+- **`demos/00a-python-tooling/`** and **`demos/12-type-hinting/`** : the demos for
+  the first and last modules of the course.
 - **`solutions/`** : reference solutions for the exercises, in case you get stuck
   or want to compare. Try the exercise first.
 - **`exercises/`** : supporting files for a few of the exercises.
@@ -72,6 +74,12 @@ When an exercise needs a package, add it from inside that folder :
 uv add requests
 ```
 
+The last module uses a type checker, which you add the same way :
+
+```bash
+uv add --dev mypy
+```
+
 The bundle does ship a `ruff.toml`. That is the linter configuration the course
 material is written against, so the Ruff extension will not flag the demo files
 over style choices the course makes on purpose, and it holds the code you write
@@ -87,5 +95,15 @@ uv run python ../demos/05-functions/03_overwritingreferences.py
 
 Running through `uv run` guarantees the command uses your project's Python and
 its packages, so you never have to activate an environment by hand.
+
+## Checking your own code
+
+Two commands are worth getting into the habit of, and the course covers both in
+the first and last modules :
+
+```bash
+uv run ruff check .      # style and correctness, without running anything
+uv run mypy .            # type checking, once you have added annotations
+```
 
 Enjoy the course.

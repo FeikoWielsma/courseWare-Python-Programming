@@ -55,7 +55,7 @@ Found while doing the above, not in the original inventory :
       - it now reconfigures stdout to UTF-8, because the findings quote characters
         a Windows console cannot encode and the script died on the first one.
         Worth pushing back to Advanced-Python, which has the same latent bug.
-- [x] `uv run --with ruff --no-project python build/check-fences.py` passes clean
+- [x] `uv run python build/check-fences.py` passes clean
 - [x] Wire it into CI as a gating step
 
 ## Phase 3 : Diagrams
@@ -105,7 +105,7 @@ Considered and deliberately not done :
 - 11 `Accessing Attributes` and `Override Base Methods` : both slides are wall to
   wall code fences with no room, and neither concept was struggling.
 
-## Phase 4 : Module 00a, Modern Python
+## Phase 4 : Module 00a, Python Tooling, and module 12, Type Hinting
 
 - [x] Create `src/slides/00a-modern-python/00a-modern-python.md`, footer `Modern Python`,
       13 slides
@@ -129,33 +129,57 @@ Considered and deliberately not done :
 - [x] Add the new demo folder to the CI compileall gate and the bundle allowlist
 - [x] Record the `00a-` naming rationale and the diagram rules in `AGENTS.md`
 
-Ordering caveat worth knowing when teaching : the primer shows `def f(a: int) -> str`
-in chapter 0, four modules before `def` itself is taught in module 05. For an
-experienced programmer meeting Python this is not an obstacle, and the Functions
-module now carries annotated signatures that pay the primer off. For a true first
-programming course, move the type hinting half to the end.
+**Resolved : the type hinting half was moved to the end.** The chapter 0 module is
+now `00a-python-tooling` (uv, ruff, editor, 7 slides) and type hinting is
+`12-type-hinting` (7 slides), after Python Classes. Consequences, all done :
+
+- [x] `demos/00a-modern-python/` split into `demos/00a-python-tooling/` (2 demos) and
+      `demos/12-type-hinting/` (5 demos, renumbered from `01_`)
+- [x] The annotations added to the Functions and Classes slides were **reverted**.
+      Modules 01 to 11 now carry no annotations at all, so nothing in the deck uses
+      a notation the course has not taught yet. The naming fixes made in the same
+      pass were kept (`show_message`, `print_info`, the modern traceback wording).
+- [x] Exercise 1 is `Exercise 1 : Python Tooling` and its type checker step moved to
+      the new `src/exercises/12-type-hinting.md`
+- [x] `ruff.toml`, the CI compileall list and the bundle allowlist repointed
 
 ## Phase 5 : Appendix, Python Libraries
 
-- [ ] Create `src/slides/12-appendix-libraries/` with `appendix: true`, footer `Python Libraries`
-- [ ] Slides : overview, datetime (3), json (3), re (4), unittest (3), summary
-- [ ] Point the pills at the existing `demos/12-pythonlibraries-*` folders
-- [ ] Give `src/exercises/12-python-libraries.md` an `<!-- appendix -->` first line and real content
-- [ ] Record the demo-folder-naming exception in `AGENTS.md`
-- [ ] Confirm the appendix divider appears on the schedule slide
+- [x] Create `src/slides/13-appendix-libraries/` with `appendix: true`, footer
+      `Python Libraries`, 16 slides. Numbered 13, not 12, because type hinting took 12.
+- [x] Slides : overview, datetime (3), json (3), re (4), unittest (3), summary
+- [x] **Own demo folder rather than the planned exception.** The plan was to point the
+      pills at the existing `demos/12-pythonlibraries-*` folders and record a
+      naming exception in `AGENTS.md`. Those folders turned out to be a mix of
+      `demo01_*.py`, bare names and scratch subfolders, so instead
+      `demos/13-appendix-libraries/` holds ten fresh numbered demos that the slides
+      reference. The one-demo-folder-per-module rule is intact and no exception was
+      needed. The old folders stay in the repository as extra material and are no
+      longer in the student bundle.
+- [x] Every demo was run; the output quoted on the slides is what it prints
+- [x] `src/exercises/12-python-libraries.md` renamed to `13-python-libraries.md`,
+      given `<!-- appendix -->` as its first line and real content
+- [x] Confirmed the appendix divider appears on the schedule slide, and that the
+      exercise is separated under its own APPENDIX heading in the exercises TOC
 
 ## Phase 6 : Repository furniture
 
 - [x] `ruff.toml` with the vendored and other-course exclusions
 - [x] `README.md`, student-facing
-- [ ] `pyproject.toml`
-- [ ] `.python-version` : `3.14`
-- [ ] `.gitattributes` — **deferred deliberately.** `* text=auto eol=lf` would
+- [x] `pyproject.toml` — no runtime dependencies, because every bundled demo imports
+      only the standard library. `mypy` and `ruff` are dev dependencies.
+- [x] `.python-version` : `3.14`
+- [x] `MAINTAINING.md`, maintainer-facing, excluded from the bundle
+- [x] Expand `AGENTS.md` : the `00a-` prefix rationale, why type hinting is last,
+      the appendix mechanism, fence-language rules, the mermaid cropping trap, the
+      inline-SVG whitespace trap, and the two workflow edits a new module needs
+- [x] `uv lock` produces `uv.lock`; CI now runs `uv lock --check` then
+      `uv sync --frozen`, and every check runs through `uv run`
+- [x] Removed a stale `.venv` that pointed at a Python removed in the Windows
+      reinstall, which made `uv lock` fail outright
+- [ ] `.gitattributes` — **still deferred deliberately.** `* text=auto eol=lf` would
       renormalise line endings across 5000+ tracked files in one commit. Do it on
       its own, not mixed into content work.
-- [ ] `MAINTAINING.md`, maintainer-facing, excluded from the bundle
-- [ ] Expand `AGENTS.md` : diagram conventions, mermaid pitfalls, fence rules, title register, pill rules, appendix mechanism
-- [ ] `uv sync` produces a `uv.lock` and CI can run `--frozen`
 
 ## Phase 7 : CI and student repository
 

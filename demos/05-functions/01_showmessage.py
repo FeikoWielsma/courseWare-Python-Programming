@@ -1,4 +1,4 @@
-def show_message(message: str) -> None:
+def show_message(message):
     """This prints a passed parameter into this function"""
     print(message)
 

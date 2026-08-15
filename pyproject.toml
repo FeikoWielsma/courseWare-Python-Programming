@@ -1,0 +1,21 @@
+[project]
+name = "python-programming"
+version = "0.1.0"
+description = "SpiralTrain Python Programming (PRG400) courseware"
+readme = "README.md"
+requires-python = ">=3.14"
+# The course itself needs nothing from PyPI. Every demo that ships in the
+# student bundle imports only the standard library, which is deliberate for a
+# fundamentals course: the student can run all of it straight after Exercise 1.
+# A couple of unbundled extras under demos/ do import mysql and pandas; they
+# are not referenced from any slide and are not part of the course.
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "mypy>=1.11",
+    "ruff>=0.14.0",
+]
+
+# Ruff is configured in ruff.toml, not here, so that the student bundle can
+# ship the configuration without shipping a pyproject.toml.

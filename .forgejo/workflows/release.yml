@@ -35,6 +35,16 @@ jobs:
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.local/bin" >> "${GITHUB_PATH}"
 
+      # The lockfile and pyproject.toml must agree, or `uv sync --frozen`
+      # below is installing something other than what the project declares.
+      - name: Check the lockfile is current
+        shell: bash
+        run: uv lock --check
+
+      - name: Install the project
+        shell: bash
+        run: uv sync --frozen
+
       # Gating. Every file that ships in the student bundle must at least parse
       # as Python 3. `-x extra` skips the demos/*/extra/ directories, which
       # still hold Python 2 residue and are excluded from the bundle for the
@@ -42,9 +52,8 @@ jobs:
       - name: Check the Python compiles
         shell: bash
         run: |
-          uv python install 3.14
-          uv run --no-project --python 3.14 python -m compileall -q -x extra \
-            demos/00a-modern-python \
+          uv run python -m compileall -q -x extra \
+            demos/00a-python-tooling \
             demos/01-pythonintro \
             demos/02-variablesanddatatypes \
             demos/03-datastructures \
@@ -56,6 +65,8 @@ jobs:
             demos/09-python-io \
             demos/10-python-database-access \
             demos/11-python-classes \
+            demos/12-type-hinting \
+            demos/13-appendix-libraries \
             demos/12-pythonlibraries-datetime \
             demos/12-pythonlibraries-json \
             demos/12-pythonlibraries-regexp \
@@ -68,7 +79,7 @@ jobs:
       # quote or ellipsis sitting inside code.
       - name: Check the slide code fences
         shell: bash
-        run: uv run --with ruff --no-project python build/check-fences.py
+        run: uv run python build/check-fences.py
 
       # Informational for now. The courseware carries roughly 950 findings
       # inside the ruff.toml scope; clearing them and promoting this step to
@@ -76,7 +87,7 @@ jobs:
       - name: Check the style
         shell: bash
         continue-on-error: true
-        run: uvx ruff check .
+        run: uv run ruff check .
 
       - name: Checkout Presentation Template
         run: |
@@ -119,7 +130,7 @@ jobs:
 
           # One demo folder per module, exactly the folders the slides reference.
           for item in \
-            00a-modern-python \
+            00a-python-tooling \
             01-pythonintro \
             02-variablesanddatatypes \
             03-datastructures \
@@ -131,10 +142,8 @@ jobs:
             09-python-io \
             10-python-database-access \
             11-python-classes \
-            12-pythonlibraries-datetime \
-            12-pythonlibraries-json \
-            12-pythonlibraries-regexp \
-            12-pythonlibraries-unittesting
+            12-type-hinting \
+            13-appendix-libraries
           do
             cp -r "demos/${item}" "${BUNDLE}/demos/"
           done

@@ -32,7 +32,7 @@ footer: Functions
   - Installed by `uv add pdoc3` and used with `pdoc --html <module>`
 
 ```python
-def function_name(parameter: type, ...) -> return_type:
+def function_name(parameters):
     """function_docstring"""
     function_statements
     return expression
@@ -43,10 +43,9 @@ def function_name(parameter: type, ...) -> return_type:
   - Should pass them in the same order that they were defined
 - Example of a simple Python function :
   - Takes a string as input parameter and prints it on standard screen
-  - The annotations are optional, and are covered in the Modern Python module
 
 ```python
-def show_message(message: str) -> None:
+def show_message(message):
     """This prints a passed string into this function"""
     print(message)
 ```
@@ -266,7 +265,7 @@ Age: 55
 - Function definition :
 
 ```python
-def print_info(name: str, age: int = 35) -> None:
+def print_info(name, age=35):
      """This prints name and age passed into this function"""
      print("Name: ", name)
      print("Age: ", age)

@@ -1,4 +1,4 @@
-# Exercise 1 : Environment Configuration
+# Exercise 1 : Python Tooling
 
 This exercise takes about fifteen minutes and leaves you with a working Python 3.14, the `uv` project manager, the `ruff` linter and an editor that understands Python. Everything you do in the rest of the course runs in the project you build here.
 
@@ -68,10 +68,10 @@ uv run python --version      # prints Python 3.14.x
 uv run ruff --version
 ```
 
-Then write a first annotated function. Create `hello.py` in the project :
+Then write a first script. Create `hello.py` in the project :
 
 ```python
-def greet(name: str) -> str:
+def greet(name):
     return f"Hello, {name}"
 
 
@@ -100,28 +100,4 @@ Run `uv run ruff check .` again. It reports `F401 'json' imported but unused`. N
 uv run ruff check . --fix
 ```
 
----
-
-### Step 7 : See a type checker work
-
-Add `mypy` to the project and give it something to object to :
-
-```bash
-uv add --dev mypy
-```
-
-Change the last line of `hello.py` to pass a number instead of a string :
-
-```python
-print(greet(42))
-```
-
-Run the program with `uv run python hello.py`. It runs, and it fails at runtime inside the f-string only if the type actually matters. The annotation was ignored. Now run the checker :
-
-```bash
-uv run mypy hello.py
-```
-
-It reports `Argument 1 to "greet" has incompatible type "int"; expected "str"` without running the program at all. Put the string back.
-
-**If time permits** : look at `demos/00a-modern-python/02_ruff_findings.py`, which is written badly on purpose. Run `uv run ruff check` over it and read every finding before you look at the comments explaining them.
+**If time permits** : look at `demos/00a-python-tooling/02_ruff_findings.py`, which is written badly on purpose. Run `uv run ruff check` over it and read every finding before you look at the comments explaining them.

@@ -36,7 +36,7 @@ exclude = [
     "demos/09-python-io/createexecutable/build",
     # Written badly on purpose : it is the file the linting slide runs ruff over,
     # and every finding in it is the lesson.
-    "demos/00a-modern-python/02_ruff_findings.py",
+    "demos/00a-python-tooling/02_ruff_findings.py",
     # Material belonging to sibling courses, kept here for convenience only.
     # pandas/ is Python-Data-Analysis, books/ is vendored book source.
     "pandas",

@@ -7,10 +7,10 @@ Read this in full before making any changes.
 
 ## What this is
 
-12 modules of Marp Markdown slides plus per-module exercise files. Modules 01 to 11 are
+14 modules of Marp Markdown slides plus per-module exercise files. Modules 01 to 11 are
 converted from the original PDF deck (`PRG400-Python-Programming_og.pdf`, kept for
-reference); `00a-modern-python` is new material on the `uv` and `ruff` toolchain and a
-type hinting primer.
+reference). `00a-python-tooling`, `12-type-hinting` and the `13-appendix-libraries`
+appendix are new material.
 
 Working notes live in `build/plan.md` (where the conversion stands, what is left) and
 `build/tasks.md` (the checklist). Read those before picking up work.
@@ -19,16 +19,27 @@ The build system is shared with sibling courseware repos via `../../Presentation
 Never modify anything under `Presentation-Template` from here.
 
 **The `00a-` prefix is deliberate.** The build discovers modules with
-`readdirSync(slidesDir).sort()` and skips only `00-preamble`, so `00a-modern-python`
+`readdirSync(slidesDir).sort()` and skips only `00-preamble`, so `00a-python-tooling`
 sorts after the preamble and before `01-python-intro` without renumbering anything
 else. The schedule slide lists modules by footer name and carries no numbers, so it
 picks the module up on its own. Do not renumber `01` to `11` to make room.
+
+**Type hinting is module 12, at the end, on purpose.** It was first drafted inside the
+chapter 0 toolchain module and moved, because annotating a signature four modules
+before `def` is taught reads backwards. Modules 01 to 11 therefore carry no
+annotations; do not add them.
+
+**`13-appendix-libraries` carries `appendix: true`** in its frontmatter, which puts it
+under its own Appendix divider on the schedule slide. Its exercise file starts with
+`<!-- appendix -->` as its very first line, which separates it in the exercises table
+of contents.
 
 ## First-time setup
 
 ```bash
 bun install --cwd ../Presentation-Template/build
 bunx puppeteer browsers install chrome      # required by the lint height check
+uv sync                                     # ruff and mypy for the code checks
 ```
 
 ## Build commands (from this course root)
@@ -42,15 +53,33 @@ bun run --cwd build lint                   # style and layout linter
 
 Run lint after editing any slide file and fix every warning before stopping.
 
+## Python code
+
+```bash
+uv run python build/check-fences.py     # gating in CI, must be clean
+uv run ruff check .                     # informational in CI, ~944 findings today
+uv run python -m compileall -q -x extra demos/01-pythonintro solutions
+```
+
+`ruff` is configured in `ruff.toml`, not in `pyproject.toml`, because the student
+bundle ships `ruff.toml` and deliberately ships no `pyproject.toml`.
+
+The repository is **not** at zero ruff findings, unlike the sibling Advanced Python
+course. Clearing them is tracked in `build/tasks.md`. Do not "fix" a finding in a
+demo where the anti-pattern is the lesson; add a scoped entry to
+`[lint.per-file-ignores]` with a comment saying why.
+
 ## File structure
 
 ```
 src/slides/00-preamble/00-preamble.md      title + logistics (carries pdfName: and language:)
-src/slides/00a-modern-python/              uv, ruff and the type hinting primer
+src/slides/00a-python-tooling/             uv, ruff and the editor
 src/slides/01-python-intro/ … 11-python-classes/   one folder per module, one .md per folder
-src/exercises/01-…md … 12-…md              exercise guides
-demos/00a-modern-python/                   demos for the Modern Python module
-demos/01-pythonintro/ … 11-python-classes/ runnable demo files referenced from the slides
+src/slides/12-type-hinting/                the type hinting module, last in the run
+src/slides/13-appendix-libraries/          appendix, carries appendix: true
+src/exercises/01-…md … 13-…md              exercise guides
+demos/00a-python-tooling/                  demos for the tooling module
+demos/01-pythonintro/ … 13-appendix-libraries/  runnable demo files referenced from the slides
 solutions/                                  exercise solutions
 build/check-fences.py                       the python fences on the slides, gating in CI
 build/plan.md, build/tasks.md               working notes
@@ -60,9 +89,13 @@ Demo files are named `NN_name.py` here, matching the `> \`demoNN · name\`` pill
 than the `demoNN_name.py` form the sibling Advanced Python course uses.
 
 `src/exercises/01-environment-configuration.md` is Exercise 1 and belongs to
-`00a-modern-python`, not to `01-python-intro`. Module 01 has no exercise, which
+`00a-python-tooling`, not to `01-python-intro`. Module 01 has no exercise, which
 matches the original course flow where the first coding exercise follows Variables
 and Data Types.
+
+**A new module means two edits to `.forgejo/workflows/release.yml`** : its demo folder
+joins the `compileall` list and the bundle `for item in` list. The bundle is an
+allowlist, so a folder that is not named there does not reach the student.
 
 ## Conventions
 
@@ -81,8 +114,7 @@ and Data Types.
     content and grammar skeletons that are not valid Python take ```` ```text ````;
     shell commands take ```` ```bash ````.
   - `build/check-fences.py` extracts every python fence and checks it. Run
-    `uv run --with ruff --no-project python build/check-fences.py` before stopping; CI
-    gates on it.
+    `uv run python build/check-fences.py` before stopping; CI gates on it.
 - Diagrams are ` ```mermaid ` fences, or inline SVG where mermaid cannot express the
   shape. The build renders mermaid to SVG and caches it in `build/.mermaid-cache/`.
   - **Run `build` first, then `lint` separately.** The lint pass inside `build` runs
