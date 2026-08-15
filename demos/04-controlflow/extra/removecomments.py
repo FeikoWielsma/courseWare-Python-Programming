@@ -1,25 +1,23 @@
 import sys
 
 
-def filter(infile, outfile, filterfunc):
+def apply_filter(infile, outfile, filterfunc):
     for line in infile:
-        line = filterfunc(line)
-        outfile.write(line)
+        outfile.write(filterfunc(line))
 
 
 def add_comment(line):
-    line = "## %s" % (line,)
+    line = f"## {line}"
     return line
 
 
 def remove_comment(line):
-    if line.startswith("## "):
-        line = line[3:]
+    line = line.removeprefix("## ")
     return line
 
 
 def main():
-    filter(sys.stdin, sys.stdout, add_comment)
+    apply_filter(sys.stdin, sys.stdout, add_comment)
 
 
 if __name__ == "__main__":

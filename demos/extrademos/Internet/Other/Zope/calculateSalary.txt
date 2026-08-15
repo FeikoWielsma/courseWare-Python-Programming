@@ -1,6 +1,0 @@
-import math
-if hours < 0:
-    hours = 0
-else:
-    hours = math.floor(hours)
-return hours * rate

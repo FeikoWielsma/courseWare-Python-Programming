@@ -22,7 +22,7 @@ class F2(B, M):
     def __init__(self):
         print("G2", end=" ")
         super().__init__()
-        
+
 class G(F1, F2):
     def __init__(self):
         print("G", end=" ")

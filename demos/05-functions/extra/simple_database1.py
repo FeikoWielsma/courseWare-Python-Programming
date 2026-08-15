@@ -15,7 +15,7 @@ def store(data, full_name):
     if len(names) == 2:
         names.insert(1, "")
     labels = "first", "middle", "last"
-    for label, name in zip(labels, names):
+    for label, name in zip(labels, names, strict=False):
         people = lookup(data, label, name)
         if people:
             people.append(full_name)

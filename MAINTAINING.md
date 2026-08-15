@@ -29,6 +29,8 @@ src/slides/13-appendix-libraries/          appendix, datetime, json, re, unittes
 src/exercises/NN-topic.md                  one exercise guide per module
 demos/<same name as the slide module>/     runnable demo code, files named NN_name.py
 solutions/                                 reference solutions
+appendices/                                appendix decks the exercises point at
+reference/                                 background reading, shipped to students
 build/package.json                         thin wrapper over the shared template build
 build/check-fences.py                      the python fences on the slides, gating in CI
 build/plan.md, build/tasks.md              working notes
@@ -121,12 +123,30 @@ Type annotations are introduced as the course goes rather than saved for the end
 so demo code reads like real code. A demo and the slide fence that quotes it must
 carry the same annotations.
 
+## The reference tree
+
+`reference/` is the background material that ships with the course. It is meant
+to feel generous, so keep it that way, but keep it **current**: the point of the
+tree is that everything in it is worth a student's time. It replaced a pile that
+included the Python 3.5 documentation, a Python 2.7 installer and a copy of
+Dive Into Python written against Python 2.3.
+
+`reference/python-docs/` is a curated subset of the official documentation from
+`docs.python.org/3/archives/`. When Python moves on, replace it wholesale rather
+than adding a second copy :
+
+```bash
+curl -LO https://docs.python.org/3/archives/python-3.NN-docs-pdf-a4.tar.bz2
+```
+
+Keep the tutorial, library, reference, using, faq and whatsnew PDFs plus the
+howtos a fundamentals student might open. Leave out the C API, the extending
+and embedding guides and the porting notes.
+
 ## Known rough edges
 
-- `pandas/`, `software/`, `vb/`, `demos/extrademos` and the other unreferenced
-  demo folders belong to earlier versions of the course or to sibling courses.
-  They are excluded from ruff and from the student bundle, but still in the repo.
 - `solutions/xextra` and `solutions/solutions-generators` solve exercises this
-  course does not have, and still ship in the bundle. Worth deciding on.
+  course does not have, and still ship in the bundle. They are outside the ruff
+  scope, so they still hold camelCase names. Worth deciding on.
 - The `demos/12-pythonlibraries-*` folders are superseded by
   `demos/13-appendix-libraries` and no longer ship.

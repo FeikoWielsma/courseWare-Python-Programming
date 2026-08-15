@@ -116,10 +116,10 @@ jobs:
       - name: Assemble student bundle
         shell: bash
         run: |
-          # An allowlist, not a copy-then-prune. This repository is around
-          # 800 MB and most of it belongs to other courses (pandas/ alone is
-          # 397 MB) or is scratch material. Naming what goes in means a folder
-          # added later cannot leak into a student's clone by accident.
+          # An allowlist, not a copy-then-prune. Naming what goes in means a
+          # folder added later cannot leak into a student's clone by accident.
+          # reference/ ships whole: it is curated background reading and every
+          # part of it is meant to reach the student.
           BUNDLE=/tmp/student-bundle
           rm -rf "${BUNDLE}"
           mkdir -p "${BUNDLE}/demos"
@@ -150,7 +150,7 @@ jobs:
           # exercise installs sees the same rules the courseware is written
           # against. The bundle keeps this layout, so its relative paths still
           # resolve. No pyproject.toml, though: the student creates that one.
-          for item in solutions exercises appendices cheatsheets README.md ruff.toml; do
+          for item in solutions exercises appendices reference README.md ruff.toml; do
             if [ -e "${item}" ]; then
               cp -r "${item}" "${BUNDLE}/"
             fi

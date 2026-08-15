@@ -23,8 +23,11 @@ material, so a `git pull` always gives you the latest version.
 - **`solutions/`** : reference solutions for the exercises, in case you get stuck
   or want to compare. Try the exercise first.
 - **`exercises/`** : supporting files for a few of the exercises.
-- **`appendices/`** and **`cheatsheets/`** : optional background reading and
-  quick reference sheets.
+- **`appendices/`** : the appendix decks and their exercises.
+- **`reference/`** : background reading, none of it required. The official
+  Python 3.14 documentation as PDFs, articles on single topics, books,
+  cheatsheets, and material on GUI work, notebooks and packaging. It has its
+  own `README.md` describing what is where.
 
 ## Setting up Python
 

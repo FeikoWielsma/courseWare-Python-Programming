@@ -35,15 +35,10 @@ exclude = [
     # Written badly on purpose : it is the file the linting slide runs ruff over,
     # and every finding in it is the lesson.
     "demos/00a-python-tooling/02_ruff_findings.py",
-    # Material belonging to sibling courses, kept here for convenience only.
-    # pandas/ is Python-Data-Analysis, books/ is vendored book source.
-    "pandas",
-    "books",
-    "jupyter",
-    "vb",
-    "gui",
-    "tkinter",
-    "extra",
+    # reference/ is background material for the student to browse: vendored
+    # book source, GUI toolkit examples, notebooks. It is not course code and
+    # is not held to the course's style.
+    "reference",
 
     # Demo folders that no slide references and that the student bundle does
     # not ship. They are kept as reference material from earlier versions of

@@ -450,7 +450,7 @@ AttributeError: 'Secretive' object has no attribute '__secretCount'
 
 # Override Base Methods
 
-- Generic functionality that you can override in your own classes :
+- Generic functionality that you can override in your own classes
 - `__init__ ( self [,args...] ) :`
   - Constructor (with any optional arguments)
 

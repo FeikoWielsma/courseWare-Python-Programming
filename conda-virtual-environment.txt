@@ -1,3 +1,0 @@
-Create a virtual environment for your project
-In the terminal client enter the following where yourenvname is the name you want to call your environment, and replace x.x with the Python version you wish to use. (To see a list of available python versions first, type conda search "^python$" and press enter.)
-conda create -n yourenvname python=x.x anaconda

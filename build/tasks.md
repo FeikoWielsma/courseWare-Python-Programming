@@ -293,12 +293,45 @@ Still open :
 
 Still open :
 
-- [ ] Repo slimming. 1.1 GB checkout, 297 MB tracked, 122 MB of history.
-      `pandas/` 467 MB, `demos/extrademos` 71 MB, `documentation/` 62 MB of
-      Python 3.5 docs, `software/python-2.7.1.msi`, `vb/`. None is PRG400.
 - [ ] `solutions/xextra` and `solutions/solutions-generators` still ship in the
       bundle and solve exercises this course does not have. They also still hold
       camelCase names and a Java block, being outside the ruff scope.
-- [ ] Two dangling-colon bullets, in modules 03 and 11
-- [ ] `conda-virtual-environment.txt` at the repository root, superseded by the
-      tooling module
+- [ ] Git history is still 122 MB, because deleting a file does not shrink it.
+      Only a history rewrite would, and that breaks every existing clone.
+
+---
+
+## Round 4 : the reference tree
+
+The extras were kept, but curated. The rule applied throughout was that
+everything shipped should be worth a student's time.
+
+- [x] Deleted, 630 MB in total : `pandas/` 467 MB of Python-Data-Analysis
+      material, `demos/extrademos` 71 MB of scratch, `documentation/` 62 MB of
+      **Python 3.5** docs, `software/` with a Python 2.7 installer, `vb/` with
+      Visual Basic and PyInstaller output, `books/diveintopython-5.4` written
+      against Python 2.3, and the PyInstaller output under `demos/casestudy`.
+- [x] `reference/python-docs/` holds the **Python 3.14** documentation instead:
+      tutorial, library, reference, using, faq, whatsnew and ten howtos.
+      The C API, extending and porting guides are left out.
+- [x] Everything else consolidated under `reference/` : `articles`, `books`,
+      `cheatsheets`, `gui` (tkinter, Qt, wxPython survey), `jupyter`,
+      `packaging`, `perl-to-python`. `reference/README.md` says what is where.
+- [x] Thirteen articles removed: ten Word files that had an identical PDF beside
+      them, plus mod_python and the goto joke library.
+- [x] `extra/` dissolved into `reference/`, its duplicates dropped
+- [x] `conda-virtual-environment.txt` removed
+- [x] Both dangling-colon bullets fixed
+- [x] `reference/` now ships whole in the student bundle, which grows from
+      8.9 MB to 53 MB of material the student can actually use
+
+Found while doing it :
+
+- [x] **`demos/*/extra/` had never been linted.** The bare `"extra"` entry in
+      `ruff.toml` matched a directory of that name at any depth, so every
+      `demos/NN-topic/extra/` was silently skipped. Removing it exposed 56
+      findings, all now fixed: `super(X, self)`, `class X(object)`, percent
+      formatting, a function named `filter`, another named `sum`, an exception
+      class without an `Error` suffix, and a bare `print`.
+
+Numbers : 5905 tracked files to 1158, 297 MB to 73 MB, 1.1 GB checkout to 492 MB.

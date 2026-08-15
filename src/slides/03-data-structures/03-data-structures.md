@@ -580,7 +580,7 @@ readings: tuple[float, ...] = (1.5, 2.5, 3.5)
   - Support mathematical operations like union and intersection
   - Set is mutable and `frozenset` is immutable
 - Dictionaries are comparable to associative arrays :
-  - Pairs of keys and values separated by comma , and colon :
+  - Pairs of keys and values, separated by a comma and a colon
   - Enclosed by curly braces `{ },` values access with square brackets `[]`
 
 > `exercise03 · Data Structures`

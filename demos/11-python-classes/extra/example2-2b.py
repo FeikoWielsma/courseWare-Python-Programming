@@ -34,7 +34,7 @@ class F4(A, B, N, M):
         print("F3", end=" ")
         super().__init__()
 
-        
+
 def test(cl):
     print("MRO:", [x.__name__ for x in cl.__mro__])
     print("Calls:", end=" ")

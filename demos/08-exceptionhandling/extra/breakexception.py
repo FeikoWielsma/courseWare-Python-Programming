@@ -1,4 +1,4 @@
-class BreakException1(Exception):
+class BreakLoopError(Exception):
     pass
 
 
@@ -21,15 +21,15 @@ def test():
     ]
     try:
         for x in a:
-            print("outer -- x: %d" % x)
+            print(f"outer -- x: {x}")
             for y in b:
                 if x > 22 and y > 444:
-                    raise BreakException1("leaving inner loop")
-                print("inner -- y: %d" % y)
+                    raise BreakLoopError("leaving inner loop")
+                print(f"inner -- y: {y}")
             print("outer -- after")
             print("-" * 40)
-    except BreakException1 as exp:
-        print("out of loop -- exp: %s" % exp)
+    except BreakLoopError as exp:
+        print(f"out of loop -- exp: {exp}")
 
 
 test()

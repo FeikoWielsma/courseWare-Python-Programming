@@ -5,7 +5,7 @@ def test():
         for line in infile:
             print(line)
     except IOError:
-        print('cannot open file "%s"' % infilename)
+        print(f'cannot open file "{infilename}"')
 
 
 test()

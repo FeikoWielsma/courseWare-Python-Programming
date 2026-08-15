@@ -1,5 +1,5 @@
 def story(**kwds):
-    return "Once upon a time, there was a %(job)s called %(name)s." % kwds
+    return "Once upon a time, there was a {job} called {name}.".format(**kwds)
 
 
 def power(x, y, *others):

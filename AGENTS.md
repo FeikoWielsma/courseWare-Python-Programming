@@ -89,6 +89,8 @@ src/exercises/01-…md … 13-…md              exercise guides
 demos/00a-python-tooling/                  demos for the tooling module
 demos/01-pythonintro/ … 13-appendix-libraries/  runnable demo files referenced from the slides
 solutions/                                  exercise solutions
+appendices/                                 appendix decks the exercises point at
+reference/                                  background reading, shipped to students
 build/check-fences.py                       the python fences on the slides, gating in CI
 build/plan.md, build/tasks.md               working notes
 ```

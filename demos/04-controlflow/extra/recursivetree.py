@@ -31,9 +31,9 @@ Tree = {
     },
     'right_branch': None,
 }
-    
+
 Indents = ['    ' * idx for idx in range(10)]
-    
+
 def walk_and_show(node, level=0):
     if node is None:
         return
@@ -41,10 +41,10 @@ def walk_and_show(node, level=0):
     level += 1
     walk_and_show(node['left_branch'], level)
     walk_and_show(node['right_branch'], level)
-    
+
 def test():
     walk_and_show(Tree)
-    
+
 if __name__ == '__main__':
     test()
 
