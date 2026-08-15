@@ -105,9 +105,9 @@ Repairs are tracked in Phase 1. New diagrams :
 - [x] Write `.forgejo/workflows/release.yml`
 - [x] Bundle step uses an allowlist, not copy-then-prune
 - [x] Untrack the built PDFs and ignore the built HTML, matching Advanced-Python
-- [ ] Push to `master` and confirm the release assets appear
-- [ ] Confirm the student repository receives the bundle on `main`
-- [ ] Check the zip size (dry run assembles to 8.9 MB before the four documents)
+- [x] Push to `master` and confirm the release assets appear
+- [x] Confirm the student repository receives the bundle on `main`
+- [x] Check the zip size : 9.5 MB, anonymous clone is 22 MB
 
 ## Follow-up, not this round
 
