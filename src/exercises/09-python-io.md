@@ -17,19 +17,19 @@ fw = open('calculationdata.txt', mode='w', encoding='UTF-8')
 Next add the details of a calculation to a line in this file when each calculation is performed. For the Faculty calculation you could use the following code :
 
 ```python
-fw.write(f"{calcAction},{x},{faculty(x)}\n")
+fw.write(f"{calc_action},{x},{faculty(x)}\n")
 ```
 
 For the Sum and Average calculations you could use the following code :
 
 ```python
-fw.write(f"{calcAction},{intlist},{summate(intlist)}\n")
+fw.write(f"{calc_action},{intlist},{summate(intlist)}\n")
 ```
 
 And for the Add, Subtract, Divide and Multiply calculations you could use the following code just after the input of the numbers :
 
 ```python
-fw.write(f"{calcAction},{f1},{f2}")
+fw.write(f"{calc_action},{f1},{f2}")
 ```
 
 And the following code just after each calculation :

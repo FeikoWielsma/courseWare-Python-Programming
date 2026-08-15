@@ -32,29 +32,25 @@ def counter(func):
 @logging
 @benchmark
 def add (i, j):
-    z = i + j
-    return z
+    return i + j
 
 @counter
 @logging
 @benchmark
 def subtract (i, j):
-    z = i - j
-    return z
+    return i - j
 
 @counter
 @logging
 @benchmark
 def multiply (i, j):
-    z = i * j
-    return z
+    return i * j
 
 @counter
 @logging
 @benchmark
 def divide (i, j):
-    z = i / j
-    return z
+    return i / j
 
 @counter
 @logging
@@ -86,8 +82,7 @@ def average(ilist):
     s = 0
     for x in ilist :
         s = s + x
-    av = s / len(ilist)
-    return av
+    return s / len(ilist)
 
 @counter
 @logging

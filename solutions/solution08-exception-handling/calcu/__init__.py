@@ -1,7 +1,7 @@
 from calcu.calculations import (
     add,
     average,
-    convertointlist,
+    convert_to_int_list,
     divide,
     faculty,
     multiply,

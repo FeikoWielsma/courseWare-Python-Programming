@@ -280,7 +280,7 @@ fr = open('textfilepolish.txt', mode='r', encoding='UTF-8')
   - Parameter is the number of bytes to be read from the opened file
 
 ```python
-fileObject.read([count]);
+file_object.read([count]);
 ```
 
 - `read()` starts reading from the beginning of the file :
@@ -312,7 +312,7 @@ Polish text: ąćęłńóśźżĄĆĘŁŃÓŚŹŻ
 - Syntax :
 
 ```python
-fileObject.close();
+file_object.close();
 ```
 
 - Example :

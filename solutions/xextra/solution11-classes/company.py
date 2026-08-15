@@ -27,7 +27,7 @@
 #print (p1.lines)
 #print (p1.bugs)
 #
-#print ("Number of employees : " + str(employees.employee.Employee.empCount))
+#print ("Number of employees : " + str(employees.employee.Employee.emp_count))
 #
 #print ("Beginning iteration")
 #
@@ -37,8 +37,8 @@
 #
 #for e in ar :
 #    print (e.name)
-#    print (e.calcSal())
-#    payRoll+=e.calcSal()
+#    print (e.calc_salary())
+#    payRoll+=e.calc_salary()
 #
 #print ("PayRoll is : ", payRoll)
 
@@ -68,7 +68,7 @@ print (p1.hours)
 print (p1.lines)
 print (p1.bugs)
 
-print ("Number of employees : " + str(Employee.empCount))
+print ("Number of employees : " + str(Employee.emp_count))
 
 print ("Beginning iteration")
 
@@ -78,7 +78,7 @@ payRoll = 0
 
 for e in ar :
     print (e.name)
-    print (e.calcSal())
-    payRoll+=e.calcSal()
+    print (e.calc_salary())
+    payRoll+=e.calc_salary()
 
 print ("PayRoll is : ", payRoll)

@@ -23,6 +23,6 @@ Define an exception class. Then write a `try: except:` statement in which you th
 
 The code that we have made up to now is not very clean. We should make our script more maintainable and extensible. One big script in which everything happens is not so good. The if statements are also nested too much.
 
-Now refactor the code so it consists of a main from where three functions are called, namely : `OneNumberCalculations`, `TwoNumberCalculations` and `MultipleNumberCalculations`. Each of these functions should get a `calcAction` string as parameter.
+Now refactor the code so it consists of a main from where three functions are called, namely : `OneNumberCalculations`, `TwoNumberCalculations` and `MultipleNumberCalculations`. Each of these functions should get a `calc_action` string as parameter.
 
 Write this script in the file `calculatorclean.py`. Make sure the script works exactly the same as the non-clean version.

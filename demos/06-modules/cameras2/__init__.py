@@ -1,3 +1,3 @@
-from cameras2.Canon import CanonInfo
-from cameras2.Leika import LeikaInfo
-from cameras2.Nikon import NikonInfo
+from cameras2.canon import canon_info
+from cameras2.leika import leika_info
+from cameras2.nikon import nikon_info

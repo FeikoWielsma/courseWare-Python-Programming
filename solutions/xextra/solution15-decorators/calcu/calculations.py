@@ -59,7 +59,7 @@ def divide (i, j):
 @counter
 @logging
 @benchmark
-def convertointlist(slist):
+def convert_to_int_list(slist):
     ilist = []
     for x in slist :
         x = int(x)

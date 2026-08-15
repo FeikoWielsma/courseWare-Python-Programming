@@ -91,24 +91,23 @@ TypeError: show_message() missing 1 required positional argument: 'message'
   - Mutable and immutable objects behave differently
 
 ```python
-def changeme( mylist ):
+def change_me1(mylist):
     mylist.append(40)
-    print("List inside the function: ", mylist)
-    return
+    print("List inside the function change_me1: ", mylist)
 ```
 
-- Call to `changeme` function :
+- Call to `change_me1` function :
 
 ```python
-mylistouter = [10,20,30]
-changeme(mylistouter)
-print("List outside the function: ", mylistouter)
+my_list_outer = [10, 20, 30]
+change_me1(my_list_outer)
+print("List outside the function: ", my_list_outer)
 ```
 
 - Reference of passed object is used to append values :
 
 ```text
-List inside the function changeme1: [10, 20, 30, 40]
+List inside the function change_me1: [10, 20, 30, 40]
 List outside the function: [10, 20, 30, 40]
 ```
 
@@ -122,26 +121,25 @@ List outside the function: [10, 20, 30, 40]
 - Reference may be overwritten in the function :
 
 ```python
-def changeme(mylist):
-    mylist = [1,2,3,4] # This would assign new reference
-    print("Values inside the function: ", mylist)
-    return
+def change_me2(mylist):
+    mylist = [1, 2, 3, 4]  # This would assign new reference
+    print("Values inside the function change_me2: ", mylist)
 ```
 
-- Call `changeme` function :
+- Call `change_me2` function :
 
 ```python
-mylistouter = [10,20,30]
-changeme(mylistouter)
-print("Values outside the function: ", mylistouter)
+my_list_outer = [10, 20, 30]
+change_me2(my_list_outer)
+print("Values outside the function: ", my_list_outer)
 ```
 
-- Parameter `mylist` is changed in the function `changeme` :
-  - Changing `mylist` within the function does not affect `mylistouter`
+- Parameter `mylist` is changed in the function `change_me2` :
+  - Changing `mylist` within the function does not affect `my_list_outer`
   - Function does nothing to original list and finally this would produce following result :
 
 ```text
-Values inside the function: [1, 2, 3, 4]
+Values inside the function change_me2: [1, 2, 3, 4]
 Values outside the function: [10, 20, 30]
 ```
 
@@ -183,10 +181,10 @@ Values outside the function: [10, 20, 30]
 <rect x="750" y="132" width="180" height="54" rx="3"/>
 </g>
 <g fill="currentColor" font-size="18" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle">
-<text x="110" y="95">mylistouter</text>
+<text x="110" y="95">my_list_outer</text>
 <text x="110" y="165">mylist</text>
 <text x="360" y="130">[10,20,30,40]</text>
-<text x="590" y="95">mylistouter</text>
+<text x="590" y="95">my_list_outer</text>
 <text x="590" y="165">mylist</text>
 <text x="840" y="95">[10, 20, 30]</text>
 <text x="840" y="165">[1, 2, 3, 4]</text>
@@ -232,22 +230,21 @@ Values outside the function: [10, 20, 30]
 - Function definition :
 
 ```python
-def printinfo(name, age):
+def print_info(name, age):
     """This prints name and age passed into this function"""
     print("Name: ", name)
     print("Age: ", age)
-    return
 ```
 
 - Function call with keyword arguments :
 
 ```python
-printinfo(age=55, name= "Albert")
+print_info(age=55, name="Albert")
 ```
 
 - Result :
 
-```python
+```text
 Name: Albert
 Age: 55
 ```
@@ -297,10 +294,10 @@ Age: 35
 - Syntax for function with variable arguments :
 
 ```python
-def testArgLists(arg, *argtuple, **kwargs):
+def show_arg_lists(arg, *arg_tuple, **kwargs):
      """Function referencing argument, argument list and keyword arguments"""
      print('arg:', arg)
-     print('args:', argtuple)
+     print('args:', arg_tuple)
      print('kwargs:', kwargs)
 ```
 
@@ -312,9 +309,9 @@ def testArgLists(arg, *argtuple, **kwargs):
   - Dictionary remains empty if no keyword arguments are passed
 
 ```python
-testArgLists(1, 2, 3, 4, 5, x=1, y=2)
-testArgLists(33, x=8, y=9)
-testArgLists(44)
+show_arg_lists(1, 2, 3, 4, 5, x=1, y=2)
+show_arg_lists(33, x=8, y=9)
+show_arg_lists(44)
 ```
 
 > `demo08 · variableargumentlist`

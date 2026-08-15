@@ -94,14 +94,14 @@ class ClassName:
 ```python
 class Employee :
     'Common base class for all employees'
-    empCount = 0
+    emp_count = 0
     def __init__(self, name, salary):
        self.name = name
        self.salary = salary
-       Employee.empCount += 1
-    def displayCount(self):
-      print(f"Total Employee {Employee.empCount}")
-    def displayEmployee(self):
+       Employee.emp_count += 1
+    def display_count(self):
+      print(f"Total Employee {Employee.emp_count}")
+    def display_employee(self):
        print ("Name : ", self.name, ", Salary: ", self.salary)
 ```
 
@@ -120,9 +120,9 @@ emp1 = Employee("Albert", 2000)
 
 # Class Members
 
-- `empCount` :
+- `emp_count` :
   - Class variable whose value would be shared among all instances of a this class
-  - Accessible as `Employee.empCount` from inside the class or outside the class
+  - Accessible as `Employee.emp_count` from inside the class or outside the class
 - `__init__()` :
   - Special method which is called class constructor or initialization method
   - Called by Python when you create a new instance of this class
@@ -155,14 +155,14 @@ emp2 = Employee("Werner", 5000)
 - Access object's attributes using dot operator with object :
 
 ```python
-emp1.displayEmployee()
-emp2.displayEmployee()
+emp1.display_employee()
+emp2.display_employee()
 ```
 
 - Access class variable using class name :
 
 ```python
-print(f"Total Employee {Employee.empCount}")
+print(f"Total Employee {Employee.emp_count}")
 ```
 
 - Result :
@@ -271,9 +271,9 @@ Employee.__doc__: Common base class for all employees
 Employee.__name__: Employee
 Employee.__module__: __main__
 Employee.__bases__: (<class 'object'>,)
-Employee.__dict__: {'__module__': '__main__', 'displayCount':
-<function displayCount at 0xb7c84994>, 'empCount': 2,
-'displayEmployee': <function displayEmployee at 0xb7c8441c>,
+Employee.__dict__: {'__module__': '__main__', 'display_count':
+<function display_count at 0xb7c84994>, 'emp_count': 2,
+'display_employee': <function display_employee at 0xb7c8441c>,
 '__doc__': 'Common base class for all employees',
 '__init__': <function __init__ at 0xb7c846bc>}
 ```
@@ -348,18 +348,18 @@ Point destroyed
 
 ```python
 class Account:
-    interestRate = 10
+    interest_rate = 10
 
-    def getInterestRate1():
-        return Account.interestRate
-    getInterestRate1 = staticmethod(getInterestRate1)
+    def get_interest_rate1():
+        return Account.interest_rate
+    get_interest_rate1 = staticmethod(get_interest_rate1)
 
     @staticmethod
-    def getInterestRate2():
-        return Account.interestRate
+    def get_interest_rate2():
+        return Account.interest_rate
 
-print(Account.getInterestRate1())
-print(Account.getInterestRate2())
+print(Account.get_interest_rate1())
+print(Account.get_interest_rate2())
 ```
 
 - A static method typically is called through the class
@@ -455,7 +455,7 @@ AttributeError: 'Secretive' object has no attribute '__secretCount'
   - Constructor (with any optional arguments)
 
 ```python
-obj = className(args)
+obj = ClassName(args)
 ```
 
 - `__del__( self ) :`

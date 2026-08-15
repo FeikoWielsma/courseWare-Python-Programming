@@ -25,7 +25,7 @@ class ManagerEmployee(Employee) :
         class_name = self.__class__.__name__
         print (class_name, "destroyed")
 
-    def calcSal(self):
+    def calc_salary(self):
         return self.__weeksal
 
 def main():
@@ -34,7 +34,7 @@ def main():
     print (m1.weeksal)
     m1.weeksal = 1000
     print (m1.weeksal)
-    print (m1.calcSal())
+    print (m1.calc_salary())
 
     print ("ManagerEmployee.__doc__:", ManagerEmployee.__doc__)
     print ("ManagerEmployee.__name__:", ManagerEmployee.__name__)

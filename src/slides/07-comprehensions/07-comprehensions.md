@@ -13,11 +13,11 @@ footer: Comprehensions
 - Python has functions and features enabling functional approach :
   - `map, filter, reduce, lambda`
   - `list comprehension`
-- `map(aFunction, aSequence) :`
+- `map(function, iterable) :`
   - Applies operation to each item and collects the result
-- `filter(aFunction, aSequence)` :
+- `filter(function, iterable)` :
   - Extracts each element in the sequence for which function returns True
-- `reduce(aFunction, aSequence)` :
+- `reduce(function, iterable)` :
   - Reduces list to single value by combining elements via supplied function
   - In functools in Python 3.0
 - `lambda` :

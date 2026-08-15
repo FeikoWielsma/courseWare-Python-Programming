@@ -113,7 +113,7 @@ ignore = [
 # The modules chapter is *about* the import system: it manipulates sys.path
 # before importing, reloads modules mid-file, and demonstrates
 # `from x import *`.
-"demos/06-modules/**" = ["E402", "F403", "F405", "N999", "N802"]
+"demos/06-modules/**" = ["E402", "F403", "F405"]
 
 # The comprehensions chapter shows the explicit for-loop first and the
 # comprehension second. PERF4xx would flag every one of those first halves,
@@ -184,24 +184,14 @@ ignore = [
 # the mode on every call because file modes are what the chapter is about.
 "demos/09-python-io/**" = ["SIM115", "UP015"]
 
-# The reference solutions follow the exercise text, and the exercise text
-# dictates several of these names and shapes :
+# The reference solutions keep every earlier step of the exercise as a
+# commented-out block, so a student can follow the progression. Those comments
+# are what is long; the live code is within the limit.
 #
-#   F403 / F405  Exercise 6 ends by building a `calcu` package whose __init__
-#                re-exports, so every later solution starts `from calcu import *`.
-#   N816         `calcAction` is the variable the exercise itself names, in four
-#                separate exercise files.
-#   N802         `calcSal` is given to the student verbatim in Exercise 11, and
-#                the rest of the solution code is named to match it.
-#   N803 / N806  the same, for arguments and locals the exercise text names.
-#   N815         `empCount` is the class variable module 11 uses throughout.
-#   E501         each solution keeps every earlier step of the exercise as a
-#                commented-out block, and those comments are what is long.
-#
-# Renaming any of them would put the solutions out of step with the exercise a
-# student is reading beside them. Modernising both together is a content review,
-# tracked in build/tasks.md.
-"solutions/**" = ["E501", "F403", "F405", "N802", "N803", "N806", "N815", "N816"]
+# F403 / F405 : Exercise 6 ends by building a `calcu` package whose __init__
+# re-exports, so every later solution starts `from calcu import *`. That is the
+# shape the exercise arrives at.
+"solutions/**" = ["E501", "F403", "F405"]
 
 # Modules 5 and 6 come before comprehensions are taught in module 7, so their
 # solutions build lists with an explicit loop on purpose.

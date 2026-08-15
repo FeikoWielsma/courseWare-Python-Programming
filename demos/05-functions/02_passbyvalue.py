@@ -1,8 +1,7 @@
 def change_me1(mylist):
     """This function changes a passed list and the list is changed outside the function as well"""
     mylist.append(40)
-    print("List inside the function changeme1: ", mylist)
-    return
+    print("List inside the function change_me1: ", mylist)
 
 
 my_list_outer = [10, 20, 30]

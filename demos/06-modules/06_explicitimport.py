@@ -1,7 +1,7 @@
-import cameras1.Canon
-import cameras1.Leika
-import cameras1.Nikon
+import cameras1.canon
+import cameras1.leika
+import cameras1.nikon
 
-cameras1.Nikon.NikonInfo()
-cameras1.Canon.CanonInfo()
-cameras1.Leika.LeikaInfo()
+cameras1.nikon.nikon_info()
+cameras1.canon.canon_info()
+cameras1.leika.leika_info()

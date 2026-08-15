@@ -62,10 +62,10 @@ print ("Employee.__bases__:", Employee.__bases__)
 print ("Employee.__dict__:", Employee.__dict__)
 ```
 
-Put the `Employee` class in a script in the `employees` package and add code to be able to export the `Employee` class from this package. Give the `Employee` class a `calcSal()` method as follows :
+Put the `Employee` class in a script in the `employees` package and add code to be able to export the `Employee` class from this package. Give the `Employee` class a `calc_salary()` method as follows :
 
 ```python
-def calcSal(self):
+def calc_salary(self):
     return 0
 ```
 
@@ -85,8 +85,8 @@ import employees.employee
 e1 = employees.employee.Employee("Albert Einstein")
 ```
 
-Create a number of employees and put them in a list, called for instance `employeeList`. Next iterate through the list and print the name of the employees in the list.
+Create a number of employees and put them in a list, called for instance `employee_list`. Next iterate through the list and print the name of the employees in the list.
 
-**If time permits** : alternatively you could create a `Company` class with functions to add or to remove employees from the `employeeList`, which displays a list of employees including their name and ID. In that case make a simple script which declares a `Company` object, add several employees to the company and display a list of employees.
+**If time permits** : alternatively you could create a `Company` class with functions to add or to remove employees from the `employee_list`, which displays a list of employees including their name and ID. In that case make a simple script which declares a `Company` object, add several employees to the company and display a list of employees.
 
 The relationship between the `Company` class and the `Employee` class is an association relation of the normal type. We can say every Company employs Employees, or every Employee works for a Company.

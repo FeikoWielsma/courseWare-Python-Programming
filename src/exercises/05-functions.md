@@ -24,10 +24,10 @@ addresult = add(f1, f2)
 
 ### Step 2
 
-Write a function `convertointlist` that converts a list of input characters to a list of integers :
+Write a function `convert_to_int_list` that converts a list of input characters to a list of integers :
 
 ```python
-def convertointlist(slist):
+def convert_to_int_list(slist):
     ilist = []
     for x in slist:
         x = int(x)

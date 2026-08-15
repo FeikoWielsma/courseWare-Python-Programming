@@ -30,7 +30,7 @@ class WageEmployee(Employee) :
         class_name = self.__class__.__name__
         print (class_name, "destroyed")
 
-    def calcSal(self):
+    def calc_salary(self):
         return self.__wage * self.__hours
 
     wage = property(get_wage, set_wage, del_wage, "wage's docstring")
@@ -42,7 +42,7 @@ def main():
     print (w1.wage)
     print (w1.hours)
 
-    print ("Salary : ",  w1.calcSal())
+    print ("Salary : ",  w1.calc_salary())
 
     print ("WageEmployee.__doc__:", WageEmployee.__doc__)
     print ("WageEmployee.__name__:", WageEmployee.__name__)

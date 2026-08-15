@@ -30,7 +30,7 @@ class ProgrammerEmployee(WageEmployee) :
         class_name = self.__class__.__name__
         print (class_name, "destroyed")
 
-    def calcSal(self):
+    def calc_salary(self):
         return self.get_wage()*self.get_hours()+self.__lines - self.__bugs
 
     lines = property(get_lines, set_lines, del_lines, "lines's docstring")
@@ -43,7 +43,7 @@ def main():
     print (p1.hours)
     print (p1.lines)
     print (p1.bugs)
-    print ("Salary : ",  p1.calcSal())
+    print ("Salary : ",  p1.calc_salary())
 #    p1.bugs=11111
 #    print p1.bugs
 

@@ -3,7 +3,6 @@ def swap1(i, j):
     j = i
     i = tmp
     print(i, j)
-    return
 
 
 def swap2(i, j):

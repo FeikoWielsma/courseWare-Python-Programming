@@ -24,7 +24,7 @@ Next consider the Faculty calculation type and replace the code where data is wr
 with con:
     cur = con.cursor()
     cur.execute("INSERT INTO Calculations ('Id', 'Nr1', 'Nr2', 'Result') VALUES(?,?,?,?)",
-                (calcAction, x, 0, faculty(x)))
+                (calc_action, x, 0, faculty(x)))
 ```
 
 In this exercise we will not consider the Sum and Average calculation types; just remove the code that writes their data to the file. We will however consider the Add, Subtract, Divide and Multiply calculation types. For these replace the file access code with the following database access code, for instance for the Add calculation type :
@@ -33,7 +33,7 @@ In this exercise we will not consider the Sum and Average calculation types; jus
 with con:
     cur = con.cursor()
     cur.execute("INSERT INTO Calculations ('Id', 'Nr1', 'Nr2', 'Result') VALUES(?,?,?,?)",
-                (calcAction, f1, f2, add(f1, f2)))
+                (calc_action, f1, f2, add(f1, f2)))
 ```
 
 Next insert some records in the database, observe the existence of the `calculations.db` file in the directory of the script and use the SQLiteStudio Database Viewer to connect to SQLite and examine the contents of the database.

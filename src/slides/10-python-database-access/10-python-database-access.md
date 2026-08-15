@@ -275,12 +275,12 @@ with con:
 
 ```python
 import sqlite3
-uId = 1
-uPrice = 62300
+car_id = 1
+new_price = 62300
 con = sqlite3.connect('test.db')
 with con:
      cur = con.cursor()
-     cur.execute("UPDATE Cars SET Price=? WHERE Id=?", (uPrice, uId))
+     cur.execute("UPDATE Cars SET Price=? WHERE Id=?", (new_price, car_id))
      con.commit()
      print(f"Number of rows updated: {cur.rowcount}")
 ```

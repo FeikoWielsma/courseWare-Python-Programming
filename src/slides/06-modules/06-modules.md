@@ -20,9 +20,8 @@ footer: Modules
 - `test.py` :
 
 ```python
-def print_func( par ):
-    print ("Hello : ", par)
-    return
+def print_func(par):
+    print("Hello : ", par)
 ```
 
 - Modules allows code reuse :
@@ -217,15 +216,15 @@ print(content)
 ```text
 cameras/
 ├─ __init__.py     marks the directory as a package
-├─ Canon.py        defines CanonInfo()
-├─ Leika.py        defines LeikaInfo()
-└─ Nikon.py        defines NikonInfo()
+├─ canon.py        defines canon_info()
+├─ leika.py        defines leika_info()
+└─ nikon.py        defines nikon_info()
 ```
 
-- `Canon.py` could define a simple function like :
+- `canon.py` could define a simple function like :
 
 ```python
-def CanonInfo():
+def canon_info():
      print ("Canon camera")
 ```
 
@@ -240,17 +239,17 @@ def CanonInfo():
 - If `__init.py__` empty modules of package must be imported explicitly :
 
 ```python
-import cameras.Canon
-import cameras.Leika
-import cameras.Nikon
+import cameras.canon
+import cameras.leika
+import cameras.nikon
 ```
 
 - Functions in package are called with full name :
 
 ```python
-cameras.Nikon.NikonInfo()
-cameras.Canon.CanonInfo()
-cameras.Leika.LeikaInfo()
+cameras.nikon.nikon_info()
+cameras.canon.canon_info()
+cameras.leika.leika_info()
 ```
 
 - Full name consists of :
@@ -266,9 +265,9 @@ cameras.Leika.LeikaInfo()
 - Following lines can be added to `__init__.py` :
 
 ```python
-from cameras.Canon import CanonInfo
-from cameras.Leika import LeikaInfo
-from cameras.Nikon import NikonInfo
+from cameras.canon import canon_info
+from cameras.leika import leika_info
+from cameras.nikon import nikon_info
 ```
 
 - Now modules can be imported by importing the package :
@@ -280,18 +279,18 @@ import cameras
 - Import `cameras` package and call methods as follows :
 
 ```python
-cameras.NikonInfo()
-cameras.CanonInfo()
-cameras.LeikaInfo()
+cameras.nikon_info()
+cameras.canon_info()
+cameras.leika_info()
 ```
 
 - Also `from .. import` can be used :
 
 ```python
-from cameras import NikonInfo, CanonInfo, LeikaInfo
-NikonInfo()
-CanonInfo()
-LeikaInfo()
+from cameras import nikon_info, canon_info, leika_info
+nikon_info()
+canon_info()
+leika_info()
 ```
 
 > `demo07 · implicitimport`

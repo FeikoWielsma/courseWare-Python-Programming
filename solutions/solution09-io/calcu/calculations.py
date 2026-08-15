@@ -2,29 +2,25 @@ from functools import reduce
 
 
 def add (i, j):
-    z = i + j
-    return z
+    return i + j
 
 def subtract (i, j):
-    z = i - j
-    return z
+    return i - j
 
 def multiply (i, j):
-    z = i * j
-    return z
+    return i * j
 
 def divide (i, j):
-    z = i / j
-    return z
+    return i / j
 
-# def convertointlist(slist):
+# def convert_to_int_list(slist):
 #     ilist = []
 #     for x in slist :
 #         x = int(x)
 #         ilist.append(x)
 #     return ilist
 
-def convertointlist(slist):
+def convert_to_int_list(slist):
     return [int(x) for x in slist]
 
 # def summate(ilist):

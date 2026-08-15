@@ -1,11 +1,11 @@
 import cameras2
 
-cameras2.NikonInfo()
-cameras2.CanonInfo()
-cameras2.LeikaInfo()
+cameras2.nikon_info()
+cameras2.canon_info()
+cameras2.leika_info()
 
-# from cameras2 import NikonInfo, CanonInfo, LeikaInfo
+# from cameras2 import nikon_info, canon_info, leika_info
 #
-# NikonInfo()
-# CanonInfo()
-# LeikaInfo()
+# nikon_info()
+# canon_info()
+# leika_info()

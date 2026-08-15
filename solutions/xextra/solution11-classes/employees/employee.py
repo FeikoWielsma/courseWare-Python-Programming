@@ -1,9 +1,9 @@
 class Employee:
-    empCount = 0
+    emp_count = 0
     def __init__(self, name):
         print ("Calling Employee constructor")
         self.__name = name
-        Employee.empCount+=1
+        Employee.emp_count+=1
 
     def get_name(self):
         return self.__name
@@ -19,7 +19,7 @@ class Employee:
         print (class_name, "destroyed")
     name = property(get_name, set_name, del_name, "name's docstring")
 
-    def calcSal(self):
+    def calc_salary(self):
         return 0
 
 def main():
@@ -28,7 +28,7 @@ def main():
     e1.name = "Pipo de Clown"
     print (e1.name)
     print (e1)
-    print ("Salary is : ", e1.calcSal())
+    print ("Salary is : ", e1.calc_salary())
 
     e2 = Employee("Werner von Braun")
     print (e2._Employee__name)
@@ -49,18 +49,18 @@ if __name__ == '__main__':
 #   def __init__(self, name, salary):
 #
 #      self.salary = salary
-#      Employee.empCount += 1
-#   def displayCount(self):
-#     print "Total Employee %d" % Employee.empCount
-#   def displayEmployee(self):
+#      Employee.emp_count += 1
+#   def display_count(self):
+#     print "Total Employee %d" % Employee.emp_count
+#   def display_employee(self):
 #      print "Name : ", self.name,  ", Salary: ", self.salary
 
 
-#    public String getName() {
+#    public String get_name() {
 #        return name;
 #    }
 #
-#    public void setName(String s) {
+#    public void set_name(String s) {
 #        s = name;
 #    }
 #}
@@ -78,11 +78,11 @@ if __name__ == '__main__':
 #        name = s;
 #    }
 #
-#    public String getName() {
+#    public String get_name() {
 #        return name;
 #    }
 #
-#    public void setName(String s) {
+#    public void set_name(String s) {
 #        s = name;
 #    }
 #}

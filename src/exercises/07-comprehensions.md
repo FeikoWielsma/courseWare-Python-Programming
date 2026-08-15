@@ -17,10 +17,10 @@ Replace the following code by a list comprehension :
 ```python
 s = input("Give a set of numbers separated by space characters : ")
 slist = s.split(' ')
-intlist = convertointlist(slist)
+intlist = convert_to_int_list(slist)
 ```
 
-We do not need a `convertointlist` function because we can do the conversion in a one-liner using a list comprehension.
+We do not need a `convert_to_int_list` function because we can do the conversion in a one-liner using a list comprehension.
 
 ### Step 3
 

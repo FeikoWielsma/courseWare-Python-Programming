@@ -1,20 +1,16 @@
 def add(i, j):
-    z = i + j
-    return z
+    return i + j
 
 def subtract(i, j):
-    z = i - j
-    return z
+    return i - j
 
 def multiply(i, j):
-    z = i * j
-    return z
+    return i * j
 
 def divide(i, j):
-    z = i / j
-    return z
+    return i / j
 
-def convertointlist(slist):
+def convert_to_int_list(slist):
     ilist = []
     for x in slist:
         ilist.append(int(x))
@@ -30,8 +26,7 @@ def average(ilist):
     s = 0
     for x in ilist:
         s = s + x
-    av = s / len(ilist)
-    return av
+    return s / len(ilist)
 
 def faculty(n):
     if n == 1:
