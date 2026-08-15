@@ -1,11 +1,11 @@
 class SquareGetterSetter:
-    def __init__(self, length):
+    def __init__(self, length: float) -> None:
         self._length = length
 
-    def get_length(self):  # Java-style
+    def get_length(self) -> float:  # Java-style
         return self._length
 
-    def set_length(self, length):  # Java-style
+    def set_length(self, length: float) -> None:  # Java-style
         self._length = length
 
 
@@ -16,16 +16,16 @@ print(r.get_length())
 
 
 class SquarePropertySyntax:
-    def __init__(self, length):
+    def __init__(self, length: float) -> None:
         self._length = length
 
-    def get_length(self):
+    def get_length(self) -> float:
         return self._length
 
-    def set_length(self, length):
+    def set_length(self, length: float) -> None:
         self._length = length
 
-    def del_length(self):
+    def del_length(self) -> None:
         del self._length
 
     length = property(get_length, set_length, del_length)
@@ -38,19 +38,19 @@ print(r.length)
 
 
 class SquarePropertyDecorator:
-    def __init__(self, length):
+    def __init__(self, length: float) -> None:
         self._length = length
 
     @property
-    def length(self):
+    def length(self) -> float:
         return self._length
 
     @length.setter
-    def length(self, value):
+    def length(self, value: float) -> None:
         self._length = value
 
     @length.deleter
-    def length(self):
+    def length(self) -> float:
         del self._length
 
 

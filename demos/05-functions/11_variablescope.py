@@ -2,16 +2,16 @@ x = 50  # This is a global variable
 y = 50  # This is a global variable
 
 
-def func1():
+def func1() -> None:
     x = 2
     print("Changed local x to", x)
 
 
-def func2():
+def func2() -> None:
     print("Access global x as", x)
 
 
-def func3():
+def func3() -> None:
     global y
     y = 2
     print("Changed global y to", y)

@@ -1,3 +1,5 @@
+<!-- appendix -->
+
 # Exercise 12 : Type Hinting
 
 In this exercise you annotate code you have already written, and let a checker read the annotations for you. Work in the `course-work` project you created in Exercise 1.

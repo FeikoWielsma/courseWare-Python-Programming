@@ -2,7 +2,7 @@
 # it unpacks a list or tuple into positional arguments.
 
 
-def greet(name, age):
+def greet(name: str, age: int) -> None:
     print(f"Hello, {name}. You are {age} years old.")
 
 
@@ -14,7 +14,7 @@ greet(*args)  # same as greet("Alice", 30)
 
 
 # can also see ** used for keyword arguments:
-def greet(name, age):
+def greet(name: str, age: int) -> None:
     print(f"Hello, {name}. You are {age} years old.")
 
 

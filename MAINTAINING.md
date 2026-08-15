@@ -15,8 +15,8 @@ courses. It shares its build with them through `../Presentation-Template`.
 
 Modules 01 to 11 came from a PowerPoint deck, kept for reference as
 `PRG400-Python-Programming_og.pdf` and `PRG400-Python-Programming-Exercises_og.pdf`.
-`00a-python-tooling`, `12-type-hinting` and the `13-appendix-libraries` appendix
-are new material.
+`00a-python-tooling` and the two appendices, `12-appendix-type-hinting` and
+`13-appendix-libraries`, are new material.
 
 ## Layout
 
@@ -24,7 +24,8 @@ are new material.
 src/slides/00-preamble/00-preamble.md      title and logistics, carries pdfName: and language:
 src/slides/00a-python-tooling/             uv, ruff and the editor
 src/slides/NN-topic/NN-topic.md            one Marp Markdown file per module
-src/slides/13-appendix-libraries/          appendix, carries appendix: true
+src/slides/12-appendix-type-hinting/       appendix, the type hinting recap
+src/slides/13-appendix-libraries/          appendix, datetime, json, re, unittest
 src/exercises/NN-topic.md                  one exercise guide per module
 demos/<same name as the slide module>/     runnable demo code, files named NN_name.py
 solutions/                                 reference solutions
@@ -39,9 +40,11 @@ sorts between the preamble and `01-python-intro`. That is what let the toolchain
 module be added without renumbering eleven slide directories, eleven demo
 directories, eleven exercise files and every pill. Do not "tidy" it into `01-`.
 
-Type hinting is module 12, deliberately at the end. It was drafted as part of the
-chapter 0 toolchain module and moved, because annotating a signature before `def`
-has been taught in module 05 is backwards for a first course.
+Type hints are introduced as the course goes: variables in module 02, collections
+in module 03, signatures in module 05, constructors in module 11. The appendix
+`12-appendix-type-hinting` is the recap. It was drafted twice before that, first
+inside the chapter 0 toolchain module and then as a standalone module 12 at the
+end; both read worse than teaching it in context.
 
 ## Building
 
@@ -72,17 +75,21 @@ slide as fitting when it does not. Run `build` first to populate
 ```bash
 uv run python build/check-fences.py    # gating in CI
 uv run ruff check .                    # informational in CI, see below
-uv run python -m compileall -q -x extra demos/01-pythonintro ... solutions
+uv run python -m compileall -q demos/01-pythonintro ... solutions
 ```
 
 `ruff` is configured in `ruff.toml`, not in `pyproject.toml`, because the student
 bundle ships `ruff.toml` and deliberately ships no `pyproject.toml`. Its relative
 paths are written to resolve in the bundle as well as here.
 
-The repository is **not** at zero ruff findings. There are around 944 inside the
-configured scope, nearly all of them dated style in demo code that came from the
-original deck. CI runs ruff with `continue-on-error` until they are cleared; the
-plan for that is in `build/tasks.md`.
+`uv run ruff check .` is at **zero findings** and should stay there. Every entry
+in `[lint.per-file-ignores]` names the lesson it protects, so before silencing a
+new finding, check whether the code is teaching the pattern deliberately. If it
+is, add a scoped entry with the reason; if it is not, fix the code.
+
+The scope deliberately excludes the demo folders no slide references and the two
+orphan solution folders. `ruff.toml` and the bundle allowlist in the workflow
+should name the same set; keep them in step.
 
 ## Releasing
 
@@ -102,13 +109,24 @@ The push to the student repository authenticates with a repo-level
 key named `prg400-ci-push` on the student repository. The step skips cleanly if
 the secret is absent.
 
+## House style for the code
+
+All code in the course, on the slides and in the demos, exercises and solutions,
+is PEP 8 named and Pythonic. The material inherited camelCase names, trailing
+bare `return` statements and CapWords modules from its PowerPoint days; those are
+gone and should not come back. Where an unpythonic form is the lesson, keep it and
+say so in a comment and in `ruff.toml`.
+
+Type annotations are introduced as the course goes rather than saved for the end,
+so demo code reads like real code. A demo and the slide fence that quotes it must
+carry the same annotations.
+
 ## Known rough edges
 
-- `.gitattributes` has not been added. `* text=auto eol=lf` would renormalise
-  line endings across 5000+ tracked files in one commit, so it wants doing on its
-  own rather than mixed into content work.
-- `demos/*/extra/` holds sixteen Python 2 files that do not compile. The whole
-  `extra/` tree is excluded from the bundle and from the `compileall` gate.
-- `demos/09-python-io/createexecutable/build` is 12 MB of committed PyInstaller
-  output, excluded from the bundle and worth deleting from the repository.
-- `pandas/`, `software/`, `vb/` and `demos/extrademos` belong to other courses.
+- `pandas/`, `software/`, `vb/`, `demos/extrademos` and the other unreferenced
+  demo folders belong to earlier versions of the course or to sibling courses.
+  They are excluded from ruff and from the student bundle, but still in the repo.
+- `solutions/xextra` and `solutions/solutions-generators` solve exercises this
+  course does not have, and still ship in the bundle. Worth deciding on.
+- The `demos/12-pythonlibraries-*` folders are superseded by
+  `demos/13-appendix-libraries` and no longer ship.

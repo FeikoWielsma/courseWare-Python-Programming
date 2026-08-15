@@ -225,3 +225,41 @@ now `00a-python-tooling` (uv, ruff, editor, 7 slides) and type hinting is
       material, so the bundle continues to skip the folder.
 - [ ] Consider deleting `pandas/`, `software/`, `vb/` and `demos/extrademos` from the
       repository, since they belong to other courses
+
+
+---
+
+## Round 2 : PEP 8 and type hints in context
+
+Asked for after the first pass, and done.
+
+- [x] PEP 8 naming everywhere. 23 identifiers renamed across the slides, demos,
+      exercise text and solutions in one pass so they still agree with each other,
+      `calcAction` alone appearing 244 times. `Canon.py` and friends became
+      `canon.py`, `CanonInfo()` became `canon_info()`, `HelloPython.py` became
+      `hello_python.py`.
+- [x] Java-isms beyond naming : the trailing bare `return` at the end of a
+      function that returns nothing, useless else-after-return, repeated equality
+      chains that are really membership tests, `def f( x )` spacing.
+- [x] The ruff ignores those names had needed are gone. N802, N803, N806, N815,
+      N816 and N999 are enforced again and `ruff check .` is still at zero.
+- [x] Type hints introduced as the course goes, so the demos read like real code :
+      - module 02, a new `Annotating Variables` slide
+      - module 03, a new `Annotating Collections` slide
+      - module 05, a new `Annotating a Function` slide, and every signature on the
+        slides and in the demos annotated
+      - module 11, constructors and methods annotated on the slides and in the demos
+- [x] `12-type-hinting` became `12-appendix-type-hinting`, an appendix recap that
+      gathers what the course has shown and adds `| None` and `mypy`. Its exercise
+      carries `<!-- appendix -->`.
+- [x] `AGENTS.md`, `MAINTAINING.md` and `README.md` updated to match
+
+Still open :
+
+- [ ] Promote `ruff check .` from informational to gating in CI. It has been at
+      zero across several commits now, so this is safe to do.
+- [ ] Annotate the reference solutions. The demos and slides are annotated; the
+      solutions under `solutions/` are not, and a student comparing their work
+      against them will see the older style.
+- [ ] Decide whether `solutions/xextra` and `solutions/solutions-generators`,
+      which solve exercises this course does not have, should ship in the bundle.

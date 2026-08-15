@@ -2,16 +2,16 @@
 
 
 class Person:
-    def say_hi(self):
+    def say_hi(self) -> None:
         print("Hello, how are you?")
 
-    def set_name(self, name):
+    def set_name(self, name: str) -> None:
         self.name = name
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self.name
 
-    def greet(self):
+    def greet(self) -> None:
         print(f"Hello, world! I'm {self.name}.")
 
 

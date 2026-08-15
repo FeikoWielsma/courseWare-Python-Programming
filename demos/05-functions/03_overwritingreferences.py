@@ -1,4 +1,4 @@
-def change_me2(mylist):
+def change_me2(mylist: list[int]) -> None:
     """This changes a passed list into this function"""
     mylist = [1, 2, 3, 4]  # This would assign new reference
     print("Values inside the function change_me2: ", mylist)
@@ -9,7 +9,7 @@ change_me2(my_list_outer)
 print("Values outside the function: ", my_list_outer)
 
 
-def change_me3(my_str):
+def change_me3(my_str: str) -> None:
     my_str = my_str + " data inside"
     print("Values inside the function change_me3: ", my_str)
 

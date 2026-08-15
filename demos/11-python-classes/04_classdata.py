@@ -1,10 +1,10 @@
 class C:
     count = 0  # number of times C.__init__ called
 
-    def __init__(self):
+    def __init__(self) -> None:
         C.count = C.count + 1
 
-    def getcount(self):
+    def getcount(self) -> int:
         return C.count  # or return self.count
 
 

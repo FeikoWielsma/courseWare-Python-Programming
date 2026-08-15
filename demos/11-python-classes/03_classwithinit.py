@@ -2,10 +2,10 @@
 
 
 class Person:
-    def __init__(self, name):
+    def __init__(self, name: str) -> None:
         self.name = name
 
-    def say_hi(self):
+    def say_hi(self) -> None:
         print("Hello, my name is", self.name)
 
 

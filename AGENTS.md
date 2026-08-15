@@ -9,8 +9,8 @@ Read this in full before making any changes.
 
 14 modules of Marp Markdown slides plus per-module exercise files. Modules 01 to 11 are
 converted from the original PDF deck (`PRG400-Python-Programming_og.pdf`, kept for
-reference). `00a-python-tooling`, `12-type-hinting` and the `13-appendix-libraries`
-appendix are new material.
+reference). `00a-python-tooling` and the two appendices, `12-appendix-type-hinting`
+and `13-appendix-libraries`, are new material.
 
 Working notes live in `build/plan.md` (where the conversion stands, what is left) and
 `build/tasks.md` (the checklist). Read those before picking up work.
@@ -24,15 +24,23 @@ sorts after the preamble and before `01-python-intro` without renumbering anythi
 else. The schedule slide lists modules by footer name and carries no numbers, so it
 picks the module up on its own. Do not renumber `01` to `11` to make room.
 
-**Type hinting is module 12, at the end, on purpose.** It was first drafted inside the
-chapter 0 toolchain module and moved, because annotating a signature four modules
-before `def` is taught reads backwards. Modules 01 to 11 therefore carry no
-annotations; do not add them.
+**Type hints are taught as the course goes.** Variables are annotated in module 02,
+collections in module 03, signatures in module 05 and constructors in module 11, so
+the demo code looks like real code rather than a stripped-down teaching dialect.
+`12-appendix-type-hinting` is the recap: it gathers what has been shown and adds
+`| None` and a checker. When you touch a demo, keep its annotations, and keep the
+matching slide fence identical to it.
 
-**`13-appendix-libraries` carries `appendix: true`** in its frontmatter, which puts it
-under its own Appendix divider on the schedule slide. Its exercise file starts with
-`<!-- appendix -->` as its very first line, which separates it in the exercises table
-of contents.
+**Both appendices carry `appendix: true`** in their frontmatter, which puts them under
+their own Appendix divider on the schedule slide. Their exercise files start with
+`<!-- appendix -->` as the very first line, which separates them in the exercises
+table of contents.
+
+**All code in the course is PEP 8 named and Pythonic.** The material inherited a set
+of Java-isms, camelCase names and trailing bare `return` statements, and they were
+removed across the slides, demos, exercise text and solutions together. Do not
+reintroduce them. Where an unpythonic form is the lesson, such as the Java-style
+accessors that the property slide improves on, keep it and say so in a comment.
 
 ## First-time setup
 
@@ -75,7 +83,7 @@ demo where the anti-pattern is the lesson; add a scoped entry to
 src/slides/00-preamble/00-preamble.md      title + logistics (carries pdfName: and language:)
 src/slides/00a-python-tooling/             uv, ruff and the editor
 src/slides/01-python-intro/ … 11-python-classes/   one folder per module, one .md per folder
-src/slides/12-type-hinting/                the type hinting module, last in the run
+src/slides/12-appendix-type-hinting/       appendix, the type hinting recap
 src/slides/13-appendix-libraries/          appendix, carries appendix: true
 src/exercises/01-…md … 13-…md              exercise guides
 demos/00a-python-tooling/                  demos for the tooling module

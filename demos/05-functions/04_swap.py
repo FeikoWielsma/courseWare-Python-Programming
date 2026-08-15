@@ -1,11 +1,11 @@
-def swap1(i, j):
+def swap1(i: int, j: int) -> None:
     tmp = j
     j = i
     i = tmp
     print(i, j)
 
 
-def swap2(i, j):
+def swap2(i: int, j: int) -> tuple[int, int]:
     tmp = j
     j = i
     i = tmp

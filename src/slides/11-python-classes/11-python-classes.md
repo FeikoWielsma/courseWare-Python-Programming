@@ -92,16 +92,16 @@ class ClassName:
 
 
 ```python
-class Employee :
+class Employee:
     'Common base class for all employees'
     emp_count = 0
-    def __init__(self, name, salary):
+    def __init__(self, name: str, salary: float) -> None:
        self.name = name
        self.salary = salary
        Employee.emp_count += 1
-    def display_count(self):
+    def display_count(self) -> None:
       print(f"Total Employee {Employee.emp_count}")
-    def display_employee(self):
+    def display_employee(self) -> None:
        print ("Name : ", self.name, ", Salary: ", self.salary)
 ```
 
@@ -211,9 +211,9 @@ delattr(empl, 'age') # Delete attribute 'age'
 
 ```python
 class SquareGetterSetter:
-     def get_length(self): # Java-style
+     def get_length(self) -> float:  # Java-style
           return self._length
-     def set_length(self, length): # Java-style
+     def set_length(self, length: float) -> None:  # Java-style
           self._length = length
 ```
 
@@ -223,9 +223,9 @@ class SquareGetterSetter:
 
 ```python
 class SquarePropertySyntax:
-     def get_length(self):
+     def get_length(self) -> float:
           return self._length
-     def set_length(self, length):
+     def set_length(self, length: float) -> None:
           self._length = length
      length = property(get_length, set_length)
 ```
@@ -306,10 +306,10 @@ Employee.__dict__: {'__module__': '__main__', 'display_count':
 
 ```python
 class Point:
-    def __init__(self, x=0, y=0):
+    def __init__(self, x: float = 0, y: float = 0) -> None:
         self.x = x
         self.y = y
-    def __del__(self):
+    def __del__(self) -> None:
         class_name = self.__class__.__name__
         print(class_name, "destroyed")
 
@@ -350,12 +350,12 @@ Point destroyed
 class Account:
     interest_rate = 10
 
-    def get_interest_rate1():
+    def get_interest_rate1() -> int:
         return Account.interest_rate
     get_interest_rate1 = staticmethod(get_interest_rate1)
 
     @staticmethod
-    def get_interest_rate2():
+    def get_interest_rate2() -> int:
         return Account.interest_rate
 
 print(Account.get_interest_rate1())
@@ -425,7 +425,7 @@ s._Secretive__inaccessible()
 ```python
 class Secretive:
      __secretCount = 0
-     def count(self):
+     def count(self) -> None:
           self.__secretCount += 1
           print (self.__secretCount)
 s.count()

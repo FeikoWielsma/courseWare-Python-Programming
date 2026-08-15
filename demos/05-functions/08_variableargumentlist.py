@@ -1,16 +1,16 @@
-def test_arg_lists(arg, *arg_tuple, **kwargs):
+def show_arg_lists(arg: int, *arg_tuple: int, **kwargs: int) -> None:
     """Function referencing argument, argument list and keyword arguments"""
     print("arg:", arg)
     print("args:", arg_tuple)
     print("kwargs:", kwargs)
 
 
-test_arg_lists(1, 2, 3, 4, 5, x=1, y=2)
-test_arg_lists(33, x=8, y=9)
-test_arg_lists(44)
+show_arg_lists(1, 2, 3, 4, 5, x=1, y=2)
+show_arg_lists(33, x=8, y=9)
+show_arg_lists(44)
 
 
-def total(initial=5, *numbers, extra_number):
+def total(initial: int = 5, *numbers: int, extra_number: int) -> None:
     count = initial
     for number in numbers:
         count += number

@@ -515,6 +515,36 @@ print (dict[['Albert']])
 
 ---
 
+# Annotating Collections
+
+- Each built-in collection is annotated with the type of what it holds :
+
+```python
+scores: list[int] = [10, 20, 30]
+names: set[str] = {"Alice", "Bob"}
+extensions: dict[str, int] = {"Albert": 2341, "Robert": 9102}
+```
+
+- A dictionary takes two types, the key first and then the value
+- A tuple is annotated position by position, because its length is fixed :
+
+```python
+point: tuple[int, int] = (3, 4)
+row: tuple[str, int, float] = ("Audi", 2019, 52643.0)
+```
+
+- An ellipsis means any number of one type :
+
+```python
+readings: tuple[float, ...] = (1.5, 2.5, 3.5)
+```
+
+- Annotate where the collection is homogeneous, which most are :
+  - A deliberately mixed list such as `['abcd', 786, 2.23]` has no single
+    element type, and is better left bare than annotated `list[object]`
+
+---
+
 # Dictionary Functions and Methods
 
 | Function | Description |

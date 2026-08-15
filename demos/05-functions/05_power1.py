@@ -1,4 +1,4 @@
-def power(x, n):
+def power(x: int, n: int) -> int:
     result = 1
     for _ in range(n):
         result *= x

@@ -4,30 +4,31 @@ theme: spiraltrain
 size: 16:10
 paginate: true
 footer: Type Hinting
+appendix: true
 ---
 
-# Why Type Hints
+# Type Hinting Recap
 
+- Annotations have appeared throughout the course, module by module :
+  - Variables in Variables and Data Types, `age: int = 25`
+  - Collections in Data Structures, `list[int]` and `dict[str, int]`
+  - Signatures in Functions, `def area(w: float, h: float) -> float`
+  - Constructors and methods in Classes, `def __init__(self, name: str) -> None`
+- This appendix gathers them up and adds the two things left over :
+  - A value that may be absent, and a checker that reads the annotations
 - Python is dynamically typed and stays that way :
   - A name refers to an object, and the object carries the type
   - Nothing forces a parameter to be the type the author had in mind
-- A type hint records that intent in the signature :
-
-```python
-def apply_discount(price: float, percent: float) -> float:
-    return price * (1 - percent / 100)
-```
-
-- The value is that the intent cannot drift away from the code :
-  - A comment saying "price is a float" goes stale, a hint does not
-  - The editor can complete, rename and navigate with far more confidence
-  - A checker can read the whole program and find the mismatches
+- What an annotation buys is that the intent cannot drift from the code :
+  - A comment saying "price is a float" goes stale, an annotation does not
+  - The editor completes, renames and navigates with far more confidence
+  - A checker reads the whole program and finds the mismatches
 
 ---
 
 # Basic Type Syntax
 
-- A variable is annotated with a colon and the intended type :
+- To recap, a variable is annotated with a colon and the intended type :
 
 ```python
 age: int = 25
@@ -57,7 +58,7 @@ def log_message(message: str) -> None:
 
 # Typing Collections
 
-- The built-in container types are written with the element type in brackets :
+- And a container is written with the type of what it holds in brackets :
 
 ```python
 scores: list[int] = [10, 20, 30]

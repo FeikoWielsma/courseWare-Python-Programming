@@ -63,7 +63,7 @@ jobs:
             demos/09-python-io \
             demos/10-python-database-access \
             demos/11-python-classes \
-            demos/12-type-hinting \
+            demos/12-appendix-type-hinting \
             demos/13-appendix-libraries \
             demos/12-pythonlibraries-datetime \
             demos/12-pythonlibraries-json \
@@ -140,7 +140,7 @@ jobs:
             09-python-io \
             10-python-database-access \
             11-python-classes \
-            12-type-hinting \
+            12-appendix-type-hinting \
             13-appendix-libraries
           do
             cp -r "demos/${item}" "${BUNDLE}/demos/"

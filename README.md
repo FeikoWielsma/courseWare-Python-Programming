@@ -17,8 +17,9 @@ material, so a `git pull` always gives you the latest version.
   per module (for example `demos/05-functions/`). A slide that shows a demo names
   it at the bottom, for example `demo03 · overwritingreferences`, which is the
   file `demos/05-functions/03_overwritingreferences.py`.
-- **`demos/00a-python-tooling/`** and **`demos/12-type-hinting/`** : the demos for
-  the first and last modules of the course.
+- **`demos/00a-python-tooling/`** : the demos for the opening module on `uv`
+  and `ruff`. Type annotations appear from module 2 onwards, and
+  **`demos/12-appendix-type-hinting/`** gathers them up in the appendix.
 - **`solutions/`** : reference solutions for the exercises, in case you get stuck
   or want to compare. Try the exercise first.
 - **`exercises/`** : supporting files for a few of the exercises.

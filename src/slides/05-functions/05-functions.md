@@ -32,7 +32,7 @@ footer: Functions
   - Installed by `uv add pdoc3` and used with `pdoc --html <module>`
 
 ```python
-def function_name(parameters):
+def function_name(parameter: type, ...) -> return_type:
     """function_docstring"""
     function_statements
     return expression
@@ -45,9 +45,38 @@ def function_name(parameters):
   - Takes a string as input parameter and prints it on standard screen
 
 ```python
-def show_message(message):
+def show_message(message: str) -> None:
     """This prints a passed string into this function"""
     print(message)
+```
+
+---
+
+# Annotating a Function
+
+- Each parameter takes a colon and the type it expects :
+  - The result takes an arrow and the type it returns
+  - A function that returns nothing is annotated `-> None`
+
+```python
+def area(width: float, height: float) -> float:
+    return width * height
+
+
+def show_message(message: str) -> None:
+    print(message)
+```
+
+- The annotation is documentation the interpreter carries with the function :
+  - Nothing is converted and nothing is checked while the program runs
+  - Passing the wrong type still works, right up until an operation fails
+- What it buys is everything that reads the signature :
+  - The editor, a checker, and the next person to read the code
+- A collection parameter is annotated like any other collection :
+
+```python
+def average(values: list[float]) -> float:
+    return sum(values) / len(values)
 ```
 
 ---
@@ -91,7 +120,7 @@ TypeError: show_message() missing 1 required positional argument: 'message'
   - Mutable and immutable objects behave differently
 
 ```python
-def change_me1(mylist):
+def change_me1(mylist: list[int]) -> None:
     mylist.append(40)
     print("List inside the function change_me1: ", mylist)
 ```
@@ -121,7 +150,7 @@ List outside the function: [10, 20, 30, 40]
 - Reference may be overwritten in the function :
 
 ```python
-def change_me2(mylist):
+def change_me2(mylist: list[int]) -> None:
     mylist = [1, 2, 3, 4]  # This would assign new reference
     print("Values inside the function change_me2: ", mylist)
 ```
@@ -230,7 +259,7 @@ Values outside the function: [10, 20, 30]
 - Function definition :
 
 ```python
-def print_info(name, age):
+def print_info(name: str, age: int) -> None:
     """This prints name and age passed into this function"""
     print("Name: ", name)
     print("Age: ", age)
@@ -262,7 +291,7 @@ Age: 55
 - Function definition :
 
 ```python
-def print_info(name, age=35):
+def print_info(name: str, age: int = 35) -> None:
      """This prints name and age passed into this function"""
      print("Name: ", name)
      print("Age: ", age)
@@ -294,7 +323,7 @@ Age: 35
 - Syntax for function with variable arguments :
 
 ```python
-def show_arg_lists(arg, *arg_tuple, **kwargs):
+def show_arg_lists(arg: int, *arg_tuple: int, **kwargs: int) -> None:
      """Function referencing argument, argument list and keyword arguments"""
      print('arg:', arg)
      print('args:', arg_tuple)
@@ -378,7 +407,7 @@ Value of total : 40
 - Function definition :
 
 ```python
-def summation(arg1, arg2):
+def summation(arg1: int, arg2: int) -> int:
     """Add both the parameters and return them"""
     tot = arg1 + arg2
     print("Inside the function : ", tot)
@@ -442,12 +471,12 @@ y = 50 # This is a global variable
 - Function definitions :
 
 ```python
-def func1():
+def func1() -> None:
      x = 2
      print ('Changed local x to', x) # prints 2
-def func2():
+def func2() -> None:
      print('Access global x as', x)
-def func3():
+def func3() -> None:
     global y
     y = 2
     print ('Changed global y to', y) # prints 2

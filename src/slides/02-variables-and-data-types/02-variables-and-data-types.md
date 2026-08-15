@@ -144,6 +144,31 @@ a, b, c = 1, 2, "john"
 
 ---
 
+# Annotating Variables
+
+- A variable can carry a type hint saying what it is meant to hold :
+
+```python
+age: int = 25
+height: float = 1.87
+name: str = "Alice"
+is_student: bool = True
+```
+
+- The hint changes nothing at runtime :
+  - Python still stores whatever it is given, and still checks types only when
+    an operation is attempted
+  - The annotation records the intent, so that a reader and a tool can see it
+- It is worth writing where the type is not obvious from the value :
+  - `total: float = 0` says that the running total will not stay an integer
+  - An editor can then complete and check against the annotation
+- Annotations appear throughout the rest of this course :
+  - Collections in the data structures module, functions in the functions module
+  - The appendix gathers them up and adds a checker
+
+
+---
+
 # Python Numbers
 
 - Number objects are created when you assign a value to them :

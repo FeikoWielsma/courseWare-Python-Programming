@@ -1,9 +1,9 @@
 class Point:
-    def __init__(self, x=0, y=0):
+    def __init__(self, x: float = 0, y: float = 0) -> None:
         self.x = x
         self.y = y
 
-    def __del__(self):
+    def __del__(self) -> None:
         class_name = self.__class__.__name__
         print(class_name, "destroyed")
 
