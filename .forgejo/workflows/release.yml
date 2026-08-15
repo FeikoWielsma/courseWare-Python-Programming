@@ -1,0 +1,271 @@
+name: Build and Release PDFs and HTML
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+env:
+  SLIDES_PDF: PRG400-Python-Programming.pdf
+  SLIDES_HTML: PRG400-Python-Programming.html
+  EXERCISES_PDF: PRG400-Python-Programming-Exercises.pdf
+  EXERCISES_HTML: PRG400-Python-Programming-Exercises.html
+
+jobs:
+  build:
+    runs-on: docker-build
+    container:
+      image: git.feikowielsma.nl/feiko/courseware-ci-image:latest
+    steps:
+      - name: Checkout
+        uses: https://github.com/actions/checkout@v4
+
+      # The CI image carries bun, node and Chrome but no Python, so uv is
+      # installed here and brings its own interpreter. These checks run before
+      # the decks are built : if the courseware code is broken there is no
+      # point publishing it, and nothing should reach the student repository.
+      - name: Install uv
+        shell: bash
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> "${GITHUB_PATH}"
+
+      # Gating. Every file that ships in the student bundle must at least parse
+      # as Python 3. `-x extra` skips the demos/*/extra/ directories, which
+      # still hold Python 2 residue and are excluded from the bundle for the
+      # same reason. See build/tasks.md for the plan to port or drop them.
+      - name: Check the Python compiles
+        shell: bash
+        run: |
+          uv python install 3.14
+          uv run --no-project --python 3.14 python -m compileall -q -x extra \
+            demos/01-pythonintro \
+            demos/02-variablesanddatatypes \
+            demos/03-datastructures \
+            demos/04-controlflow \
+            demos/05-functions \
+            demos/06-modules \
+            demos/07_comprehensions \
+            demos/08-exceptionhandling \
+            demos/09-python-io \
+            demos/10-python-database-access \
+            demos/11-python-classes \
+            demos/12-pythonlibraries-datetime \
+            demos/12-pythonlibraries-json \
+            demos/12-pythonlibraries-regexp \
+            demos/12-pythonlibraries-unittesting \
+            solutions
+
+      # Informational for now. The courseware carries roughly 950 findings
+      # inside the ruff.toml scope; clearing them and promoting this step to
+      # gating is tracked in build/tasks.md.
+      - name: Check the style
+        shell: bash
+        continue-on-error: true
+        run: uvx ruff check .
+
+      - name: Checkout Presentation Template
+        run: |
+          git clone --depth=1 "${GITHUB_SERVER_URL}/SpiralTrain/Presentation-Template.git" \
+            "$(dirname $(pwd))/Presentation-Template"
+
+      - name: Install template dependencies
+        run: bun install --cwd ../Presentation-Template/build --frozen-lockfile
+
+      - name: Build slides and exercises
+        shell: bash
+        env:
+          CHROME_PATH: /usr/bin/google-chrome-stable
+          MARP_EXTRA_ARGS: --chrome-arg=--no-sandbox --chrome-arg=--disable-dev-shm-usage
+        run: |
+          cd build
+          bun run build -- --force
+          bun run build -- --exercises --force
+
+      - name: Name the slides HTML
+        shell: bash
+        run: |
+          # The template writes the slides HTML to build/dist/combined.html; the
+          # exercises pass already writes its HTML to the repo root under the
+          # course name. Give the slides HTML the matching name.
+          cp build/dist/combined.html "${SLIDES_HTML}"
+
+      - name: Assemble student bundle
+        shell: bash
+        run: |
+          # An allowlist, not a copy-then-prune. This repository is around
+          # 800 MB and most of it belongs to other courses (pandas/ alone is
+          # 397 MB) or is scratch material. Naming what goes in means a folder
+          # added later cannot leak into a student's clone by accident.
+          BUNDLE=/tmp/student-bundle
+          rm -rf "${BUNDLE}"
+          mkdir -p "${BUNDLE}/demos"
+
+          cp "${SLIDES_PDF}" "${SLIDES_HTML}" "${EXERCISES_PDF}" "${EXERCISES_HTML}" "${BUNDLE}/"
+
+          # One demo folder per module, exactly the folders the slides reference.
+          for item in \
+            01-pythonintro \
+            02-variablesanddatatypes \
+            03-datastructures \
+            04-controlflow \
+            05-functions \
+            06-modules \
+            07_comprehensions \
+            08-exceptionhandling \
+            09-python-io \
+            10-python-database-access \
+            11-python-classes \
+            12-pythonlibraries-datetime \
+            12-pythonlibraries-json \
+            12-pythonlibraries-regexp \
+            12-pythonlibraries-unittesting
+          do
+            cp -r "demos/${item}" "${BUNDLE}/demos/"
+          done
+
+          # ruff.toml travels with the bundle so the Ruff extension the setup
+          # exercise installs sees the same rules the courseware is written
+          # against. The bundle keeps this layout, so its relative paths still
+          # resolve. No pyproject.toml, though: the student creates that one.
+          for item in solutions exercises appendices cheatsheets README.md ruff.toml; do
+            if [ -e "${item}" ]; then
+              cp -r "${item}" "${BUNDLE}/"
+            fi
+          done
+
+          # A PyInstaller output tree committed by accident, 12 MB of build
+          # artefacts for a tkinter demo that the IO module never shows.
+          rm -rf "${BUNDLE}/demos/09-python-io/createexecutable"
+
+          # The extra/ directories still hold Python 2 files that do not
+          # compile, and no slide references them.
+          find "${BUNDLE}/demos" -type d -name 'extra' -prune -exec rm -rf {} +
+
+          # Strip build and editor droppings that travelled along with the copies.
+          find "${BUNDLE}" -type d \( \
+              -name '__pycache__' -o -name '.mypy_cache' -o -name '.ruff_cache' \
+              -o -name '.pytest_cache' -o -name '.venv' -o -name '.idea' \
+              -o -name '.vscode' -o -name '.metadata' \
+            \) -prune -exec rm -rf {} +
+          find "${BUNDLE}" -type f \( \
+              -name '*.pyc' -o -name 'Thumbs.db' -o -name 'Desktop.ini' -o -name '.DS_Store' \
+            \) -delete
+
+          echo "Bundle size: $(du -sh "${BUNDLE}" | cut -f1)"
+
+      - name: Package student zip
+        shell: bash
+        run: |
+          mkdir -p build/dist
+          ZIP="$(pwd)/build/dist/Python-Programming-student.zip"
+          cd /tmp/student-bundle
+          zip -rq "${ZIP}" .
+          echo "Packaged $(du -h "${ZIP}" | cut -f1)"
+
+      - name: Publish latest release
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          SHORT_SHA=$(echo "${GITHUB_SHA}" | head -c7)
+          API="${GITHUB_SERVER_URL}/api/v1/repos/${GITHUB_REPOSITORY}"
+
+          # Delete existing latest release and tag so we can recreate them
+          EXISTING=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" "${API}/releases/tags/latest")
+          EXISTING_ID=$(echo "${EXISTING}" | bun -e "const fs = require('fs'); try { const d = JSON.parse(fs.readFileSync(0, 'utf-8')); console.log(d.id || ''); } catch (e) { console.log(''); }" 2>/dev/null)
+          if [ -n "${EXISTING_ID}" ]; then
+            curl -sf -X DELETE -H "Authorization: token ${GITHUB_TOKEN}" "${API}/releases/${EXISTING_ID}"
+          fi
+          curl -sf -X DELETE -H "Authorization: token ${GITHUB_TOKEN}" "${API}/git/refs/tags/latest" || true
+
+          # Create fresh latest release
+          RELEASE=$(curl -sf -X POST \
+            -H "Authorization: token ${GITHUB_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "{\"tag_name\":\"latest\",\"name\":\"Latest build\",\"body\":\"Built from commit \`${SHORT_SHA}\`\",\"prerelease\":true}" \
+            "${API}/releases")
+
+          RELEASE_ID=$(echo "${RELEASE}" | bun -e "const fs = require('fs'); console.log(JSON.parse(fs.readFileSync(0, 'utf-8')).id);")
+
+          for asset in "${SLIDES_PDF}" "${SLIDES_HTML}" "${EXERCISES_PDF}" "${EXERCISES_HTML}"; do
+            echo "Uploading ${asset}..."
+            curl -sf -X POST \
+              -H "Authorization: token ${GITHUB_TOKEN}" \
+              -F "attachment=@${asset}" \
+              "${API}/releases/${RELEASE_ID}/assets"
+          done
+
+          find build/dist -maxdepth 1 -name "*.zip" | while read -r asset; do
+            echo "Uploading ${asset}..."
+            curl -sf -X POST \
+              -H "Authorization: token ${GITHUB_TOKEN}" \
+              -F "attachment=@${asset}" \
+              "${API}/releases/${RELEASE_ID}/assets"
+          done
+
+      - name: Push to student repository
+        shell: bash
+        env:
+          STUDENT_REPO_SSH_KEY: ${{ secrets.STUDENT_REPO_SSH_KEY }}
+        run: |
+          if [ -z "${STUDENT_REPO_SSH_KEY}" ]; then
+            echo "STUDENT_REPO_SSH_KEY secret is not set, skipping push to student repo."
+            exit 0
+          fi
+
+          mkdir -p ~/.ssh
+          echo "${STUDENT_REPO_SSH_KEY}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p 222 git.feikowielsma.nl >> ~/.ssh/known_hosts 2>/dev/null
+
+          STUDENT_REPO_URL="ssh://git@git.feikowielsma.nl:222/SpiralTrain/Python-Programming-Student.git"
+          TARGET=/tmp/Python-Programming-Student
+          rm -rf "${TARGET}"
+          git clone "${STUDENT_REPO_URL}" "${TARGET}"
+
+          # Clear existing contents (except .git) so removals propagate
+          find "${TARGET}" -mindepth 1 -maxdepth 1 ! -name ".git" -exec rm -rf {} +
+
+          cp -r /tmp/student-bundle/. "${TARGET}/"
+
+          # A .gitignore tailored to a student workspace, so their own scratch
+          # work does not show up as changes when they pull.
+          (
+            echo '# System and Python temp files'
+            echo 'Thumbs.db'
+            echo 'Desktop.ini'
+            echo '.DS_Store'
+            echo '**/__pycache__/'
+            echo '**/*.py[cod]'
+            echo '**/*$py.class'
+            echo '**/.venv/'
+            echo '**/venv/'
+            echo '**/env/'
+            echo '**/.mypy_cache/'
+            echo '**/.ruff_cache/'
+            echo '**/.pytest_cache/'
+            echo ''
+            echo '# Custom course work folders created by the student'
+            echo '/course-work/'
+            echo '/my-project/'
+          ) > "${TARGET}/.gitignore"
+
+          cd "${TARGET}"
+          git config user.name "Forgejo CI/CD"
+          git config user.email "ci@feikowielsma.nl"
+          # An empty student repo has no HEAD yet, so create the branch first.
+          git checkout -B main
+          git add -A
+
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to push to the student repository."
+          else
+            git commit -m "Update student materials from master commit ${GITHUB_SHA::7}"
+            git push origin main
+          fi

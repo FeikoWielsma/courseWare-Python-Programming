@@ -1,0 +1,108 @@
+# Ruff configuration for the courseware.
+#
+# This lives in its own file rather than in pyproject.toml on purpose. The
+# student bundle ships this file but deliberately ships no pyproject.toml,
+# because the setup exercise has the student create one with `uv init`. That
+# exercise also has them install the Astral Ruff extension, so without a config
+# of its own the editor would fall back to ruff's stock defaults and underline
+# several hundred things in the course's own demo files, many of them the very
+# patterns being taught.
+#
+# The paths below are relative to this file, and the student bundle keeps the
+# same layout (demos/, solutions/, exercises/ as siblings), so the one file is
+# correct in both places.
+#
+# Pin the rule set explicitly rather than riding on ruff's defaults, which
+# widen between releases and would make the courseware appear to rot on its own.
+
+target-version = "py314"
+line-length = 100
+
+# Editors and pre-commit hooks pass file names explicitly, and ruff lints a file
+# named on the command line even when it is excluded. Without this the vendored
+# code below would still be underlined in the student's editor.
+force-exclude = true
+
+exclude = [
+    # Vendored third-party sample code. Not ours to restyle, and none of it is
+    # referenced from a slide.
+    "demos/Qt-Python-Binding-Examples-master",
+    # Scratch and archive directories that accumulated alongside the course.
+    # 2387 files, none referenced from a slide.
+    "demos/extrademos",
+    "demos/feiko",
+    "demos/casestudy",
+    # PyInstaller output committed by accident, not source.
+    "demos/09-python-io/createexecutable/build",
+    # Material belonging to sibling courses, kept here for convenience only.
+    # pandas/ is Python-Data-Analysis, books/ is vendored book source.
+    "pandas",
+    "books",
+    "jupyter",
+    "vb",
+    "gui",
+    "tkinter",
+    "extra",
+]
+
+[lint]
+select = [
+    "A",     # shadowed builtins, a real trap in teaching code
+    "B",     # bugbear
+    "C4",    # comprehension style
+    "E",     # pycodestyle errors
+    "F",     # pyflakes
+    "FURB",  # modernisation refurb
+    "I",     # import sorting
+    "N",     # PEP 8 naming
+    "PERF",  # obvious performance traps
+    "PIE",   # misc lints
+    "PLE",   # pylint errors
+    "PLW",   # pylint warnings
+    "RUF",   # ruff-specific
+    "SIM",   # simplifications
+    "UP",    # pyupgrade, catches the Python 2 residue
+    "W",     # pycodestyle warnings
+]
+
+ignore = [
+    "E741",    # `l`, `I`, `O` as names; the maths demos use them deliberately
+    "PLW0603", # `global`; the scope module teaches it on purpose
+    "RUF012",  # ClassVar annotations would be noise in a pre-typing course
+    "T201",    # print() is how a beginners course shows output
+]
+
+[lint.per-file-ignores]
+# Package __init__ files re-export their contents on purpose; that re-export is
+# itself the lesson in the modules chapter.
+"**/__init__.py" = ["F401"]
+
+# The modules chapter is *about* the import system: it manipulates sys.path
+# before importing, reloads modules mid-file, and demonstrates
+# `from x import *`.
+"demos/06-modules/**" = ["E402", "F403", "F405", "N999", "N802"]
+
+# The comprehensions chapter shows the explicit for-loop first and the
+# comprehension second. PERF4xx would flag every one of those first halves,
+# which is the half being taught. `strict=` on zip() is likewise a distraction
+# ahead of the concept it qualifies.
+"demos/07_comprehensions/**" = ["B905", "B912", "PERF401", "PERF402", "PERF403"]
+"solutions/solution07-comprehensions/**" = ["B905", "B912", "PERF401", "PERF402", "PERF403"]
+
+# The exception chapter deliberately shows a bare `except:` before explaining
+# why it is wrong, and raises inside handlers to demonstrate chaining.
+"demos/08-exceptionhandling/**" = ["B904", "E722"]
+"solutions/solution08-exception-handling/**" = ["B904", "E722"]
+
+# The IO chapter opens files without a context manager on purpose, so that the
+# slide that introduces `with` has something to improve on.
+"demos/09-python-io/**" = ["SIM115"]
+
+# SAX and minidom handler methods must carry the names the parser calls.
+"demos/12-pythonlibraries-xml/**" = ["N802"]
+
+# Appendix demo directories are reference material, held to correctness rather
+# than to house naming style.
+"demos/13-appendix-generators/**" = ["N801", "N802", "N803", "N806", "N816", "N999"]
+"demos/14-gui-toolkits/**" = ["N801", "N802", "N803", "N806", "N816", "N999"]
+"demos/12-pythonlibraries-extra/**" = ["N801", "N802", "N803", "N806", "N816", "N999"]
