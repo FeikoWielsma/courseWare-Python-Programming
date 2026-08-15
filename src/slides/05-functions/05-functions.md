@@ -32,10 +32,10 @@ footer: Functions
   - Installed by `uv add pdoc3` and used with `pdoc --html <module>`
 
 ```python
-def functionname( parameters ):
+def function_name(parameter: type, ...) -> return_type:
     """function_docstring"""
     function_statements
-    return [expression]
+    return expression
 ```
 
 - By default :
@@ -43,11 +43,12 @@ def functionname( parameters ):
   - Should pass them in the same order that they were defined
 - Example of a simple Python function :
   - Takes a string as input parameter and prints it on standard screen
+  - The annotations are optional, and are covered in the Modern Python module
 
 ```python
-def showmessage( str ):
+def show_message(message: str) -> None:
     """This prints a passed string into this function"""
-    print(str)
+    print(message)
 ```
 
 ---
@@ -59,12 +60,12 @@ def showmessage( str ):
   - If functions specify parameters, it is required to pass them
 - Function must be defined before they can be called :
   - Order of definition and call is important
-- Example of calling the previously defined `showmessage()` function :
+- Example of calling the previously defined `show_message()` function :
 
 ```python
-showmessage("First call to user defined function!")
-showmessage("Again second call to the same function")
-showmessage() # results in error
+show_message("First call to user defined function!")
+show_message("Again second call to the same function")
+show_message() # results in error
 ```
 
 - Result :
@@ -73,9 +74,9 @@ showmessage() # results in error
 First call to user defined function!
 Again second call to the same function
 Traceback (most recent call last):
-  File "01_showmessage.py", line 8, in <module>
-showmessage()
-TypeError: showmessage() takes exactly 1 argument (0 given)
+  File "01_showmessage.py", line 10, in <module>
+    show_message()
+TypeError: show_message() missing 1 required positional argument: 'message'
 ```
 
 > `demo01 · showmessage`
@@ -265,18 +266,17 @@ Age: 55
 - Function definition :
 
 ```python
-def printinfo(name, age = 35):
+def print_info(name: str, age: int = 35) -> None:
      """This prints name and age passed into this function"""
      print("Name: ", name)
      print("Age: ", age)
-     return
 ```
 
 - Functions calls with and without default arguments :
 
 ```python
-printinfo(age=55, name= "Albert")
-printinfo(name= "Werner")
+print_info(age=55, name="Albert")
+print_info(name="Werner")
 ```
 
 - Results :

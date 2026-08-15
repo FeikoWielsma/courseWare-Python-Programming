@@ -1,20 +1,127 @@
 # Exercise 1 : Environment Configuration
 
-To create Python scripts we can use different IDEs :
-
-- PyCharm Community Edition IDE that is free and can be downloaded
-- Spyder IDE from the community Anaconda distribution that is free and can be downloaded
-- Visual Code with a Python plugin that is free but has limited capabilities
-- Eclipse IDE with the Python plugin PyDev for Python development, not recommended
-
-But first we need to install a Python version.
+This exercise takes about fifteen minutes and leaves you with a working Python 3.14, the `uv` project manager, the `ruff` linter and an editor that understands Python. Everything you do in the rest of the course runs in the project you build here.
 
 ---
 
-### Step 1 : Python Installation
+### Step 1 : Install uv
 
-Install a recent Python 3 version (the course was developed against Python 3.10+). Do a full install, for example in `C:\Python310`, and add the installation directory to the `PATH` environment variable (Computer -> Properties -> Advanced System Settings -> Environment Variables).
+`uv` is the project manager the course uses, and it can install Python itself, so it is the only thing you install by hand. On Windows, run this in PowerShell :
 
-### Step 2 : PyCharm IDE
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
 
-Download and install the latest version of the PyCharm Community Edition. The demo projects in the course are made with PyCharm and this is the IDE that we recommend.
+On macOS or Linux, run this in a terminal :
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Close and reopen the terminal afterwards so that `uv` is on your `PATH`, then confirm it works with `uv --version`.
+
+See also : https://docs.astral.sh/uv/
+
+### Step 2 : Install Python
+
+Let `uv` fetch the interpreter the course uses :
+
+```bash
+uv python install 3.14
+```
+
+This needs no administrator rights and leaves any Python already on the machine alone. Confirm it with `uv python list`.
+
+---
+
+### Step 3 : Install an editor
+
+Install Visual Studio Code from `https://code.visualstudio.com`, then add two extensions from the Extensions panel, the square icon on the left :
+
+- `Python`, published by Microsoft
+- `Ruff`, published by Astral
+
+Any editor works, but the course demonstrates VS Code and the slides assume it.
+
+See also : https://docs.astral.sh/ruff/
+
+### Step 4 : Create your course project
+
+You write your own code this week in a project of your own, the same way you would at work. From the folder where you keep your work :
+
+```bash
+uv init course-work
+cd course-work
+```
+
+Open that folder in VS Code, then use the Command Palette, `Python: Select Interpreter`, and choose the interpreter in `.venv`.
+
+---
+
+### Step 5 : Confirm the toolchain runs
+
+Run each of these from inside `course-work` :
+
+```bash
+uv --version
+uv run python --version      # prints Python 3.14.x
+uv run ruff --version
+```
+
+Then write a first annotated function. Create `hello.py` in the project :
+
+```python
+def greet(name: str) -> str:
+    return f"Hello, {name}"
+
+
+print(greet("Python"))
+```
+
+Run it with `uv run python hello.py`. You should see `Hello, Python`.
+
+### Step 6 : See the linter work
+
+Run the linter over your project :
+
+```bash
+uv run ruff check .
+```
+
+It should report nothing. Now break something on purpose. Add an unused import at the top of `hello.py` :
+
+```python
+import json
+```
+
+Run `uv run ruff check .` again. It reports `F401 'json' imported but unused`. Notice that VS Code underlines the same line. Remove the import, or let the linter do it for you :
+
+```bash
+uv run ruff check . --fix
+```
+
+---
+
+### Step 7 : See a type checker work
+
+Add `mypy` to the project and give it something to object to :
+
+```bash
+uv add --dev mypy
+```
+
+Change the last line of `hello.py` to pass a number instead of a string :
+
+```python
+print(greet(42))
+```
+
+Run the program with `uv run python hello.py`. It runs, and it fails at runtime inside the f-string only if the type actually matters. The annotation was ignored. Now run the checker :
+
+```bash
+uv run mypy hello.py
+```
+
+It reports `Argument 1 to "greet" has incompatible type "int"; expected "str"` without running the program at all. Put the string back.
+
+**If time permits** : look at `demos/00a-modern-python/02_ruff_findings.py`, which is written badly on purpose. Run `uv run ruff check` over it and read every finding before you look at the comments explaining them.

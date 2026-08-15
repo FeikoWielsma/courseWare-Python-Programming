@@ -44,6 +44,7 @@ jobs:
         run: |
           uv python install 3.14
           uv run --no-project --python 3.14 python -m compileall -q -x extra \
+            demos/00a-modern-python \
             demos/01-pythonintro \
             demos/02-variablesanddatatypes \
             demos/03-datastructures \
@@ -118,6 +119,7 @@ jobs:
 
           # One demo folder per module, exactly the folders the slides reference.
           for item in \
+            00a-modern-python \
             01-pythonintro \
             02-variablesanddatatypes \
             03-datastructures \

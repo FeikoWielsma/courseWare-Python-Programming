@@ -378,5 +378,3 @@ paragraph = """This is a paragraph. It is made up of
   - Denote that the line should continue
 - Python uses quotes to denote string literals :
   - single ('), double (") and triple (''' or """)
-
-> `exercise01 · Python Intro`

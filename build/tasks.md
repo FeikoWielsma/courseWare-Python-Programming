@@ -107,15 +107,33 @@ Considered and deliberately not done :
 
 ## Phase 4 : Module 00a, Modern Python
 
-- [ ] Create `src/slides/00a-modern-python/00a-modern-python.md`, footer `Modern Python`
-- [ ] Toolchain slides : tooling overview, installing uv, projects with uv, virtual environments, ruff, editor setup
-- [ ] Type hinting slides : why, basic syntax, collections, optional, not enforced, mypy, summary
-- [ ] Create `demos/00a-modern-python/` with pills numbered from `demo01`
-- [ ] Rewrite `src/exercises/01-environment-configuration.md` for uv, ruff and VS Code
-- [ ] Add `> \`exercise01 · Modern Python\`` to the module 00a summary
-- [ ] Annotate the signatures in `05-functions` syntax and default-argument slides
-- [ ] Annotate the `__init__` attributes in `11-python-classes`
-- [ ] Confirm the schedule slide picks the module up in the right position
+- [x] Create `src/slides/00a-modern-python/00a-modern-python.md`, footer `Modern Python`,
+      13 slides
+- [x] Toolchain slides : tooling overview, installing uv, creating a project, adding
+      dependencies, ruff, editor setup
+- [x] Type hinting slides : why, basic syntax, collections, optional, not enforced,
+      mypy, summary
+- [x] Create `demos/00a-modern-python/`, seven demos numbered `01_` to `07_`
+      - every demo was run, and the output on the slides is the output it actually gives
+      - `02_ruff_findings.py` is written badly on purpose and is excluded in `ruff.toml`
+      - `07_mypy_error.py` really does fail `mypy`, with the message the slide quotes
+- [x] Rewrite `src/exercises/01-environment-configuration.md` for uv, ruff and VS Code
+- [x] Move `exercise01` from the module 01 summary to the module 00a summary
+- [x] Annotate the signatures in `05-functions`, and the matching demo files
+      - the slides said `showmessage` and `printinfo` where the demos said
+        `show_message` and `print_info`; aligned on the demo names
+      - the `Calling Functions` traceback quoted the Python 2 wording
+        `takes exactly 1 argument (0 given)`; now the 3.x wording
+- [x] Annotate `__init__` in `11-python-classes` and in `03_classwithinit.py`
+- [x] Confirm the schedule slide lists Modern Python first, with no renumbering
+- [x] Add the new demo folder to the CI compileall gate and the bundle allowlist
+- [x] Record the `00a-` naming rationale and the diagram rules in `AGENTS.md`
+
+Ordering caveat worth knowing when teaching : the primer shows `def f(a: int) -> str`
+in chapter 0, four modules before `def` itself is taught in module 05. For an
+experienced programmer meeting Python this is not an obstacle, and the Functions
+module now carries annotated signatures that pay the primer off. For a true first
+programming course, move the type hinting half to the end.
 
 ## Phase 5 : Appendix, Python Libraries
 
