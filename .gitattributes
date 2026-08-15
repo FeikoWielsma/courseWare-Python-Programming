@@ -1,0 +1,86 @@
+# Line endings are normalised to LF in the repository. Git still checks files
+# out with CRLF on Windows when core.autocrlf says so, but what is stored is
+# always LF, so a Windows and a Linux checkout produce identical diffs and the
+# CI container sees the shell scripts and YAML it expects.
+
+* text=auto eol=lf
+
+# Batch files are the exception : the Windows command interpreter has historically
+# needed CRLF, so force it rather than leaving it to the checkout setting.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Spelled out for the file types the course itself is written in, so the
+# intent survives even if the wildcard above is ever narrowed.
+*.py   text eol=lf
+*.md   text eol=lf
+*.txt  text eol=lf
+*.toml text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.ipynb text eol=lf
+*.html text eol=lf
+*.css  text eol=lf
+*.js   text eol=lf
+*.ts   text eol=lf
+*.xml  text eol=lf
+*.csv  text eol=lf
+*.sh   text eol=lf
+
+# Binary, so that git never applies an end of line conversion to them. The
+# `text=auto` heuristic gets nearly all of these right on its own; naming them
+# means a corrupt checkout cannot happen even if the heuristic is fooled.
+*.pdf   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.bmp   binary
+*.tif   binary
+*.tiff  binary
+*.ico   binary
+*.icns  binary
+*.doc   binary
+*.docx  binary
+*.xls   binary
+*.xlsx  binary
+*.ppt   binary
+*.pptx  binary
+*.chm   binary
+*.msi   binary
+*.exe   binary
+*.dll   binary
+*.so    binary
+*.pyd   binary
+*.pyc   binary
+*.pyo   binary
+*.pyz   binary
+*.pck   binary
+*.pkg   binary
+*.whl   binary
+*.jar   binary
+*.class binary
+*.zip   binary
+*.tar   binary
+*.gz    binary
+*.7z    binary
+*.rar   binary
+*.db    binary
+*.sqlite binary
+*.sqlite3 binary
+*.accdb binary
+*.npy   binary
+*.mp3   binary
+*.wav   binary
+*.au    binary
+*.aif   binary
+*.aifc  binary
+*.aiff  binary
+*.8svx  binary
+*.hcom  binary
+*.sndt  binary
+*.ttf   binary
+*.otf   binary
+*.woff  binary
+*.woff2 binary
