@@ -263,3 +263,42 @@ Still open :
       against them will see the older style.
 - [ ] Decide whether `solutions/xextra` and `solutions/solutions-generators`,
       which solve exercises this course does not have, should ship in the bundle.
+
+
+---
+
+## Round 3 : accuracy, the `with` gap, pathlib, annotated solutions
+
+- [x] `ruff check .` promoted to a **gating** CI step
+- [x] Factual errors inherited from the original deck :
+      - Python described as GPL "like Perl"; it is the PSF License
+      - "No support for `switch` or `case` statements"; Python 3.10 added `match`
+      - `raw_input` presented as a current function in the module 09 summary
+      - "Both Python 2 and Python 3 are available", years after Python 2 died
+      - `set PYTHONPATH=c:\python37\lib`, and an `http://` python.org URL
+- [x] Module 01 no longer contradicts the tooling module. It pointed students at
+      Anaconda, IDLE and the Jupyter prompt while module 00a teaches uv and VS Code.
+- [x] **`with` is taught.** The IO module had eighteen slides and never showed a
+      context manager, and Exercise 9 had students call `fw.close()` by hand. There
+      is now a `Using with` slide and demo, the exercise wraps its loop in `with`,
+      and the reader iterates the file object instead of `readlines()`.
+- [x] `match` statement slide and demo added to Control Flow
+- [x] The IO module's directory slides rebuilt around `pathlib`, with a new
+      `Paths with pathlib` slide; the three demos rewritten and each made
+      re-runnable
+- [x] The reference solutions are annotated, so a student comparing their work
+      against them sees one style
+- [x] A block of commented-out Java, a transcription of the Employee class from
+      an earlier life of the material, removed from the classes solution
+
+Still open :
+
+- [ ] Repo slimming. 1.1 GB checkout, 297 MB tracked, 122 MB of history.
+      `pandas/` 467 MB, `demos/extrademos` 71 MB, `documentation/` 62 MB of
+      Python 3.5 docs, `software/python-2.7.1.msi`, `vb/`. None is PRG400.
+- [ ] `solutions/xextra` and `solutions/solutions-generators` still ship in the
+      bundle and solve exercises this course does not have. They also still hold
+      camelCase names and a Java block, being outside the ruff scope.
+- [ ] Two dangling-colon bullets, in modules 03 and 11
+- [ ] `conda-virtual-environment.txt` at the repository root, superseded by the
+      tooling module

@@ -20,7 +20,7 @@ def divide (i, j):
 #         ilist.append(x)
 #     return ilist
 
-def convert_to_int_list(slist):
+def convert_to_int_list(slist: list[str]) -> list[int]:
     return [int(x) for x in slist]
 
 # def summate(ilist):
@@ -29,7 +29,7 @@ def convert_to_int_list(slist):
 #         s = s + x
 #     return s
 
-def summate(ilist):
+def summate(ilist: list[int]) -> int:
     return reduce((lambda x, y: x + y), ilist)
 
 # def average(ilist):
@@ -39,10 +39,10 @@ def summate(ilist):
 #     av = s / len(ilist)
 #     return av
 
-def average(ilist):
+def average(ilist: list[int]) -> float:
     return reduce((lambda x, y: x + y), ilist)/len(ilist)
 
-def faculty(n):
+def faculty(n: int) -> int:
     if (n == 1):
         return n
     return n*faculty(n-1)

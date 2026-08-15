@@ -122,7 +122,7 @@ flowchart LR
 - Typical `PYTHONPATH` from Windows system :
 
 ```bash
-set PYTHONPATH=c:\python37\lib;
+set PYTHONPATH=c:\python314\lib;
 ```
 
 - Typical `PYTHONPATH` from UNIX system :

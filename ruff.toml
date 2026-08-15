@@ -151,7 +151,7 @@ ignore = [
 
 # The boolean operators demo shows raw precedence, including the short circuit
 # that ruff would rather see written out or simplified away.
-"demos/04-controlflow/13_booleanoperators.py" = ["RUF021", "SIM222", "SIM223"]
+"demos/04-controlflow/14_booleanoperators.py" = ["RUF021", "SIM222", "SIM223"]
 
 # Assigning a lambda to a name is exactly what the anonymous functions slide
 # demonstrates.
@@ -197,11 +197,6 @@ ignore = [
 # solutions build lists with an explicit loop on purpose.
 "solutions/solution05-functions/**" = ["PERF401"]
 "solutions/solution06-modules/**" = ["PERF401"]
-
-# Exercise 9 hands the student `fw = open(...)` and a later `fw.close()`,
-# because the IO module teaches open and close before it teaches `with`. The
-# solution follows the exercise.
-"solutions/solution09-io/**" = ["SIM115"]
 
 # The exceptions chapter uses the classic IOError name, which its table of
 # standard exceptions also lists, and opens files without a context manager

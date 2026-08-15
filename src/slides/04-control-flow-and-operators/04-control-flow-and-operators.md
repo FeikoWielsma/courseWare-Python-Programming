@@ -140,7 +140,8 @@ else:
     statement(s)
 ```
 
-- No support for `switch` or `case` statements as in other languages
+- Where a chain of `elif` tests one value, `match` often reads better :
+  - Covered two slides on, and available from Python 3.10
 
 > `demo03 · elif`
 
@@ -397,6 +398,33 @@ print("Good bye!")
 
 ---
 
+# match Statement
+
+- Python 3.10 added structural pattern matching, `match` and `case` :
+  - It compares a value against a series of patterns and runs the first that fits
+  - Older Python has no such statement, which is why chains of `elif` are common
+
+```python
+match command.split():
+    case ["quit"]:                  # a literal pattern
+        return "leaving"
+    case ["go", direction]:         # captures the second word
+        return f"walking {direction}"
+    case ["take" | "get", item] if item != "moon":   # or-pattern with a guard
+        return f"picking up the {item}"
+    case _:                         # the wildcard, matched last
+        return "I do not understand"
+```
+
+- It matches the shape of the data as well as its value :
+  - A pattern can bind names out of a sequence, as `direction` and `item` do
+  - `case _` is the catch-all, and belongs last
+- There is no fall through between cases, so no `break` is needed
+
+> `demo12 · matchstatement`
+
+---
+
 # Python Operators
 
 - Operators perform operations on the operands :
@@ -444,7 +472,7 @@ print("Good bye!")
 | `/=` | Divides left operand by right operand and assigns result to left |
 | `%=` | Takes modulus using two operands and assigns result to left |
 
-> `demo12 · pythonoperators`
+> `demo13 · pythonoperators`
 
 ---
 
@@ -485,7 +513,7 @@ print("Good bye!")
 | `is` | Evaluates to true if variables on both sides point to the same object |
 | `is not` | Evaluates to true if variables on both sides do not point to the same object |
 
-> `demo13 · booleanoperators`
+> `demo14 · booleanoperators`
 
 ---
 

@@ -79,12 +79,12 @@ jobs:
         shell: bash
         run: uv run python build/check-fences.py
 
-      # Informational for now. The courseware carries roughly 950 findings
-      # inside the ruff.toml scope; clearing them and promoting this step to
-      # gating is tracked in build/tasks.md.
+      # Gating. The repository is at zero findings inside the ruff.toml scope,
+      # and every per-file-ignore there names the lesson it protects. A new
+      # finding is either a defect or a deliberate teaching pattern that wants
+      # an ignore with a reason; neither should reach the student silently.
       - name: Check the style
         shell: bash
-        continue-on-error: true
         run: uv run ruff check .
 
       - name: Checkout Presentation Template

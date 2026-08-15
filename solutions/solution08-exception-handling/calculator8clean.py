@@ -3,7 +3,7 @@ from calcu import *
 
 resdict = {"Add": [], "Subtract": [], "Multiply": [], "Divide": []}
 
-def do_one_number_calculation(calc_action):
+def do_one_number_calculation(calc_action: str) -> None:
     try:
         x = int(input("Give a positive integer number : "))
         # print("Faculty of %d is %d" % (x, faculty(x)))
@@ -11,7 +11,7 @@ def do_one_number_calculation(calc_action):
     except:
         print("Conversion to positive integer failed. Please try again")
         do_one_number_calculation(calc_action)
-def do_two_number_calculation(calc_action):
+def do_two_number_calculation(calc_action: str) -> None:
     try:
         f1 = float(input("Give me number 1 : "))
         f2 = float(input("Give me number 2 : "))
@@ -39,7 +39,7 @@ def do_two_number_calculation(calc_action):
         print("Conversion of input to float failed. Please try again")
         do_two_number_calculation(calc_action)
 
-def do_list_of_numbers_calculation(calc_action):
+def do_list_of_numbers_calculation(calc_action: str) -> None:
     try:
         s = input("Give a set of numbers separated by space characters : ")
         intlist = convert_to_int_list(s.split(' '))
@@ -53,7 +53,7 @@ def do_list_of_numbers_calculation(calc_action):
         print("Not a correct input for an integer list. Please try again")
         do_list_of_numbers_calculation(calc_action)
 
-def do_calculations():
+def do_calculations() -> bool:
     calc_action = input("What type of calculation do you want to do :")
     if calc_action == "Faculty":
         do_one_number_calculation(calc_action)

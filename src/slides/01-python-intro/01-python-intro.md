@@ -62,10 +62,10 @@ graph LR
   - Including Modula-3, C, C++,SmallTalk, Unix shell and other scripting languages
 - Python is usable as :
   - Scripting language or compiled to byte-code for building large applications
-- Python is copyrighted and Python source code available :
-  - Like Perl under the GNU General Public License (GPL)
+- Python is copyrighted and the source is open :
+  - Released under the PSF License, a permissive licence that allows commercial use
 - Python is maintained by a development team at the institute :
-  - Guido van Rossum still holds a vital role in directing it's progress
+  - Development is now steered by the Python Steering Council and the community
 - Python supports :
   - Functional and structured programming methods as well as OOP
   - Very high-level dynamic data types and dynamic type checking
@@ -75,19 +75,20 @@ graph LR
 # Getting Started
 
 - Python Official Website :
-  - `http://www.python.org/`
+  - `https://www.python.org/`
   - Has most up-to-date and current source code and binaries
-  - Both Python 2 and Python 3 are available which differ significantly
+  - Python 2 reached its end of life in 2020, so Python 3 is the only choice
 - Linux Installation :
   - Download the zipped source code available for Unix/Linux
   - Extract files and enter `make install`
   - This will install Python in a standard location `/usr/local/bin`
 - Windows Installation :
-  - Download the Windows installer `python-XYZ.msi` file
-  - Double-click the `msi` file and run the Python installation wizard
-  - Accept the default settings or choose an installation directory
+  - Download the Windows installer `python-XYZ.exe` and run the wizard
+  - Tick `Add python.exe to PATH` on the first page
+- Simplest of all, and what this course uses :
+  - `uv python install 3.14`, covered in the Python Tooling module
 - Python Documentation Website :
-  - `www.python.org/doc/`
+  - `https://docs.python.org/3/`
   - Documentation available in HTML, PDF and PostScript format
 
 ---
@@ -126,7 +127,7 @@ PATH=%PATH%;C:\Python
   - Add the Python directory to your path
 - Interactive Interpreter :
   - Start the Python interactive interpreter from command line by entering `python`
-  - You will get `$python` in Linux and `>>>` in Windows or Anaconda prompt with `IPython`
+  - The interpreter answers with its `>>>` prompt, ready for a statement
   - Script can be parameterized with command line arguments `C:\ python -h`
 - Script from Command Line :
   - A Python script can be executed at command line by invoking the interpreter
@@ -137,10 +138,10 @@ C:> python script.py    # Windows
 ```
 
 - Integrated Development Environment :
-  - Run Python from a graphical user interface (GUI) environment
-  - GUI IDE for Python on system that supports Python is IDLE
+  - Run and debug Python from an editor, which is how most work is done
+  - This course uses VS Code, set up in the Python Tooling module
 - Jupyter Notebook on a web server :
-  - Give command jupyter notebook from Anaconda prompt
+  - Cell by cell execution, common in data science work
 
 ---
 
@@ -369,7 +370,7 @@ paragraph = """This is a paragraph. It is made up of
 - Python was developed by Guido van Rossum around 1990 at :
   - National Research Institute for Mathematics and Computer Science in Netherlands
 - Python can be started in three different ways :
-  - Interactive Interpreter, Script from Command Line, from inside an IDE, Jupyter Notebook
+  - Interactive interpreter, script from the command line, from inside an IDE
 - Python is a case sensitive programming language :
   - `myVar` and `Myvar` are different
 - Python uses line indentation to denote blocks of code :

@@ -15,8 +15,7 @@ footer: Python IO
 print ("Python is really a great language,", "isn't it? ")
 ```
 
-- Major difference between version 2 and 3 of the language :
-  - In version 3 print is a function
+- `print` is a function, so its arguments go inside the parentheses
 - Standard input default comes from keyboard with input function
 - `input([prompt])` function :
   - Reads line from standard input, converts it to a string and strips trailing newline
@@ -329,7 +328,32 @@ fo.close()
 Name of the file: foo.txt
 ```
 
-- Good practice to use `close()` method to close a file
+- Good practice to use `close()` method to close a file, but see the next slide
+
+---
+
+# Using with
+
+- Calling `close()` by hand is easy to get wrong :
+  - An exception between `open` and `close` skips the `close` entirely
+  - An early `return` does the same
+- A `with` statement closes the file when the block ends, whatever happens :
+
+```python
+with open("foo.txt", mode="w", encoding="utf-8") as fw:
+    fw.write("one line
+")
+# the file is closed here, even if write() raised
+```
+
+- This is the normal way to open a file in Python :
+  - The manual `open` and `close` above is shown so that you recognise it
+  - Prefer `with` in everything you write
+- The file is closed on the way out of the block, not at the end of the program
+- Any object with the same protocol can be used this way :
+  - A database connection, a lock, a network socket
+
+> `demo07 · usingwith`
 
 ---
 
@@ -413,99 +437,121 @@ Again read String is : Python is
 
 ---
 
+# Paths with pathlib
+
+- The `pathlib` module represents a path as an object, not a string :
+  - `Path` knows how to join, inspect, read, write, rename and delete
+  - It is the modern replacement for stringly typed `os.path` work
+
+```python
+from pathlib import Path
+
+here = Path.cwd()                 # the current working directory
+sample = here / "data" / "one.txt"   # joining, with / instead of concatenation
+```
+
+- The `/` operator joins path segments :
+  - It produces the right separator on Windows, macOS and Linux alike
+  - No more `"dir" + "\\" + name`, and no more forgetting the separator
+- A path answers questions about itself :
+
+```python
+sample.name       # one.txt
+sample.stem       # one
+sample.suffix     # .txt
+sample.parent     # the containing directory, as a Path
+sample.exists()   # True or False
+```
+
+---
+
 # Renaming and Deleting Files
 
-- Files can be renamed and deleted :
-  - `os` module has methods for file-processing operations like renaming and deleting
-  - `os` module must first be imported before methods can be called
-- `rename` method takes two arguments :
-  - Current filename and new filename
+- A `Path` renames and deletes itself :
 
 ```python
-os.rename(current_file_name, new_file_name)
+from pathlib import Path
+
+data_file = Path("datafile1.txt")
+data_file.touch()                              # create it, empty
+renamed = data_file.rename("renamedfile.txt")  # returns the new path
+renamed.unlink()                               # delete it
 ```
 
-- Rename an existing file from `test1.txt` to `test2.txt` :
+- `touch` creates an empty file, `unlink` removes one :
+  - `unlink(missing_ok=True)` does nothing when the file is already gone
+- Short reads and writes need no `open` at all :
 
 ```python
-import os
-os.rename( "test1.txt", "test2.txt" )
+sample.write_text("first
+", encoding="utf-8")
+content = sample.read_text(encoding="utf-8")
 ```
 
-- Delete an existing file `test2.txt` :
+- The `os` module still has `os.rename` and `os.remove` :
+  - They take strings and are what older code uses
 
-```python
-import os
-os.remove("text2.txt")
-```
-
-> `demo07 · renaming_files`
+> `demo08 · renaming_files`
 
 
 ---
 
 # Creating and Removing Directories
 
-- Files are in directories and Python can handle directories too :
-  - os module has methods to create, remove, and change directories
-- `mkdir()` method creates directory in the current directory :
-  - Argument is name of the directory to be created
-- Syntax : `os.mkdir("newdir")`
-- Example to create a directory test in current directory :
+- `mkdir` creates a directory, `rmdir` removes an empty one :
 
 ```python
-import os
-os.mkdir("test")
+from pathlib import Path
+
+Path("test1").mkdir()
+Path("test1").rmdir()
 ```
 
-- `rmdir()` method deletes the directory passed as an argument :
-  - Before removing a directory, all the contents in it should be removed
-- Syntax : `os.rmdir('dirname')`
-- Example to remove `"/tmp/test"` directory :
-  - Give fully qualified name of directory otherwise search directory in current directory
+- Two keyword arguments cover the awkward cases :
+  - `parents=True` creates every missing directory in the path
+  - `exist_ok=True` succeeds quietly when the directory is already there
 
 ```python
-import os
-os.rmdir("/tmp/test")
+Path("test2/nested/deeper").mkdir(parents=True, exist_ok=True)
 ```
 
-> `demo08 · creatingandremoving_directories`
+- `rmdir` only removes an empty directory :
+  - Remove the contents first, from the leaf upwards
+  - `shutil.rmtree` removes a whole tree at once, and does not ask twice
+
+> `demo09 · creatingandremoving_directories`
 
 
 ---
 
-# Directory Methods
+# Directory Contents
 
-- `chdir()` changes the current directory :
-  - Argument is the name of the directory that you want to make the current directory
-- Syntax :
+- `iterdir` yields every entry of one directory :
 
 ```python
-os.chdir("newdir")
+from pathlib import Path
+
+work = Path("justtesting")
+for entry in work.iterdir():
+    print(entry.name)
 ```
 
-- Example changing a directory to `"/home/newdir"` :
+- `glob` yields the entries matching a pattern :
 
 ```python
-import os
-os.chdir("/home/newdir")
+for text_file in work.glob("*.txt"):
+    print(text_file.name)
+
+for text_file in work.rglob("*.txt"):   # recursively, through subdirectories
+    print(text_file)
 ```
 
-- `getcwd()` displays the current working directory
-- Syntax :
+- Each entry is itself a `Path`, so it can be inspected or opened straight away :
+  - `entry.is_file()`, `entry.is_dir()`, `entry.stat().st_size`
+- `Path.cwd()` gives the current working directory :
+  - `os.chdir` still changes it, but passing paths around beats changing directory
 
-```python
-os.getcwd()
-```
-
-- Example to give location of the current directory :
-
-```python
-import os
-os.getcwd()
-```
-
-> `demo09 · directorymethods`
+> `demo10 · directorymethods`
 
 
 ---
@@ -514,17 +560,17 @@ os.getcwd()
 
 - Simplest way to produce output is to use the `print` statement :
   - Allows you to pass zero or more expressions, separated by commas
-- Two built-in functions read a line of text from standard input :
-  - `raw_input` reads one line from standard input and returns it as string
-  - `input` assumes input is a valid Python expression and returns evaluated result
+- The `input` function reads a line of text from standard input :
+  - It always returns a string, so convert it before doing arithmetic with it
 - Python also has File Object methods to manipulate files :
   - Creating, opening files, closing files, reading, writing, renaming and deleting files
 - Files can be opened in several modes :
   - For reading, for writing, for appending or combinations thereof
 - File Positioning :
   - Methods can retrieve and change the current file position
-- Python also has OS Object Methods to manipulate directories :
-  - Creating and deleting directories
-  - Changing and displaying the current directory
+- Open files with `with`, which closes them whatever happens :
+  - The manual `open` and `close` pair is shown so that you recognise older code
+- `pathlib` represents a path as an object :
+  - `Path` joins with `/`, and creates, renames, deletes, reads and lists
 
 > `exercise09 · Python IO`

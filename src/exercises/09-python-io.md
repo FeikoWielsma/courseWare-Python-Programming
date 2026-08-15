@@ -8,10 +8,12 @@ In this exercise every calculation is logged to a text file.
 
 Create a project or directory named `exercise9` and a Python module `calculator9.py`. Copy the contents of `calculator8.py` from the previous exercise to `calculator9.py`. Also copy the `calcu` package.
 
-Open a text file for writing just before entering the while loop that asks the user to choose a calculation type :
+Open a text file for writing just before entering the while loop that asks the user to choose a calculation type. Use a `with` statement, so that the file is closed however the loop ends, and indent the whole loop inside it :
 
 ```python
-fw = open('calculationdata.txt', mode='w', encoding='UTF-8')
+with open('calculationdata.txt', mode='w', encoding='UTF-8') as fw:
+    while calc_action != "Quit":
+        ...
 ```
 
 Next add the details of a calculation to a line in this file when each calculation is performed. For the Faculty calculation you could use the following code :
@@ -38,11 +40,7 @@ And the following code just after each calculation :
 fw.write(f"{add(f1, f2)}\n")
 ```
 
-Finally close the file when you give the `"Quit"` command, otherwise nothing is written :
-
-```python
-fw.close()
-```
+There is no `fw.close()` to write. Leaving the `with` block closes the file, which is what makes the text appear on disk.
 
 Now enter some calculations to test your code and observe the contents of the file.
 
@@ -51,13 +49,14 @@ Now enter some calculations to test your code and observe the contents of the fi
 Next create a new Python module `readcalculations.py`, read the lines of the file and display its contents with the following code :
 
 ```python
-fr = open('calculationdata.txt', mode='r', encoding='UTF-8')
-for line in fr.readlines():
-    s = line.rstrip('\n')
-    slist = s.split(',')
-    print (slist)
-fr.close()
+with open('calculationdata.txt', encoding='UTF-8') as fr:
+    for line in fr:
+        s = line.rstrip('\n')
+        slist = s.split(',')
+        print(slist)
 ```
+
+Note two things: the file object is iterated directly rather than through `readlines()`, which avoids holding the whole file in memory, and `mode='r'` is left out because reading is the default.
 
 The results could look as follows :
 

@@ -1,28 +1,28 @@
 class Employee:
     emp_count = 0
-    def __init__(self, name):
+    def __init__(self, name: str) -> None:
         print ("Calling Employee constructor")
         self.__name = name
         Employee.emp_count += 1
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self.__name
 
-    def set_name(self, value):
+    def set_name(self, value: str) -> None:
         self.__name = value
 
-    def del_name(self):
+    def del_name(self) -> None:
         del self.__name
 
-    def __del__(self):
+    def __del__(self) -> None:
         class_name = self.__class__.__name__
         print (class_name, "destroyed")
     name = property(get_name, set_name, del_name, "name's docstring")
 
-    def calc_salary(self):
+    def calc_salary(self) -> float:
         return 0
 
-def main():
+def main() -> None:
     e1 = Employee("Albert Einstein")
     print (e1._Employee__name)
     e1.name = "Pipo de Clown"
@@ -44,45 +44,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-#   def __init__(self, name, salary):
-#
-#      self.salary = salary
-#      Employee.emp_count += 1
-#   def display_count(self):
-#     print "Total Employee %d" % Employee.emp_count
-#   def display_employee(self):
-#      print "Name : ", self.name,  ", Salary: ", self.salary
-
-
-#    public String get_name() {
-#        return name;
-#    }
-#
-#    public void set_name(String s) {
-#        s = name;
-#    }
-#}
-# Java Code
-#package employees;
-#
-#public class Employee {
-#    private String name;
-#
-#    public Employee() {
-#        name = "Empty";
-#    }
-#
-#    public Employee(String s) {
-#        name = s;
-#    }
-#
-#    public String get_name() {
-#        return name;
-#    }
-#
-#    public void set_name(String s) {
-#        s = name;
-#    }
-#}
