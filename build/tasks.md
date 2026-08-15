@@ -177,9 +177,13 @@ now `00a-python-tooling` (uv, ruff, editor, 7 slides) and type hinting is
       `uv sync --frozen`, and every check runs through `uv run`
 - [x] Removed a stale `.venv` that pointed at a Python removed in the Windows
       reinstall, which made `uv lock` fail outright
-- [ ] `.gitattributes` — **still deferred deliberately.** `* text=auto eol=lf` would
-      renormalise line endings across 5000+ tracked files in one commit. Do it on
-      its own, not mixed into content work.
+- [x] `.gitattributes` added in a commit of its own. The renormalisation itself
+      touched almost nothing, because `core.autocrlf` had already been storing LF,
+      but it surfaced four binaries under `demos/extrademos` that checkout had
+      corrupted **in the working tree** by injecting CR bytes into pickles and a
+      `.doc`. The stored copies were clean and were restored from `HEAD`; the
+      binary markers stop it recurring. Two demo CSVs had doubled `^M^M` stored
+      and are now plain LF.
 
 ## Phase 7 : CI and student repository
 
@@ -206,10 +210,15 @@ now `00a-python-tooling` (uv, ruff, editor, 7 slides) and type hinting is
       `build/check-fences.py` for now because the string-formatting slide in
       module 02 teaches percent formatting on purpose; once the incidental uses
       are gone that ignore can be narrowed.
-- [ ] Triage `demos/*/extra/` : 16 files are Python 2 and do not compile, so the
-      whole `extra/` tree is excluded from the student bundle and from the
-      `compileall` gate. Port them or delete them, then drop the exclusion.
-- [ ] `demos/09-python-io/createexecutable/build` is 12 MB of committed
-      PyInstaller output. Excluded from the bundle; delete it from the repository.
+- [x] Triage `demos/*/extra/` : all 16 Python 2 files ported to Python 3 rather
+      than deleted, and each one run to confirm it still does what it taught.
+      `print x` to `print(x)`, `print x,` to `print(x, end=" ")`, `input()` wrapped
+      in `int()` where it was compared with a number, `class X(object)` and
+      `super(X, self)` modernised in the three MRO demos. The `-x extra` escape
+      hatch is gone from the CI gate and the `extra/` prune is gone from the
+      bundle, so those directories are now checked and shipped like the rest.
+- [x] `demos/09-python-io/createexecutable/build` deleted, 12 MB of committed
+      PyInstaller output. The source beside it stays but is still not course
+      material, so the bundle continues to skip the folder.
 - [ ] Consider deleting `pandas/`, `software/`, `vb/` and `demos/extrademos` from the
       repository, since they belong to other courses

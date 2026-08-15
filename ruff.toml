@@ -32,8 +32,6 @@ exclude = [
     "demos/extrademos",
     "demos/feiko",
     "demos/casestudy",
-    # PyInstaller output committed by accident, not source.
-    "demos/09-python-io/createexecutable/build",
     # Written badly on purpose : it is the file the linting slide runs ruff over,
     # and every finding in it is the lesson.
     "demos/00a-python-tooling/02_ruff_findings.py",

@@ -36,8 +36,8 @@ Indents = ['    ' * idx for idx in range(10)]
     
 def walk_and_show(node, level=0):
     if node is None:
-     return
-    print '%sname: %s' % (Indents[level], node['name'], )
+        return
+    print(f"{Indents[level]}name: {node['name']}")
     level += 1
     walk_and_show(node['left_branch'], level)
     walk_and_show(node['right_branch'], level)

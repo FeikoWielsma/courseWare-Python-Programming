@@ -46,13 +46,11 @@ jobs:
         run: uv sync --frozen
 
       # Gating. Every file that ships in the student bundle must at least parse
-      # as Python 3. `-x extra` skips the demos/*/extra/ directories, which
-      # still hold Python 2 residue and are excluded from the bundle for the
-      # same reason. See build/tasks.md for the plan to port or drop them.
+      # as Python 3, the demos/*/extra/ directories included.
       - name: Check the Python compiles
         shell: bash
         run: |
-          uv run python -m compileall -q -x extra \
+          uv run python -m compileall -q \
             demos/00a-python-tooling \
             demos/01-pythonintro \
             demos/02-variablesanddatatypes \
@@ -158,13 +156,11 @@ jobs:
             fi
           done
 
-          # A PyInstaller output tree committed by accident, 12 MB of build
-          # artefacts for a tkinter demo that the IO module never shows.
+          # A tkinter demo for building an executable, which the IO module
+          # never shows. Its 12 MB of PyInstaller output has been deleted from
+          # the repository; the source is left behind but is still not course
+          # material, so it does not travel.
           rm -rf "${BUNDLE}/demos/09-python-io/createexecutable"
-
-          # The extra/ directories still hold Python 2 files that do not
-          # compile, and no slide references them.
-          find "${BUNDLE}/demos" -type d -name 'extra' -prune -exec rm -rf {} +
 
           # Strip build and editor droppings that travelled along with the copies.
           find "${BUNDLE}" -type d \( \
