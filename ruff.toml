@@ -63,14 +63,6 @@ exclude = [
     "demos/14-appendix-gui-toolkits",
     "demos/14-gui-toolkits",
     "demos/15-mocking",
-
-    # Solution folders for exercises this course does not have. xextra holds a
-    # second copy of the classes solution plus solutions for XML and decorators,
-    # and solutions-generators solves a generators exercise that is not in the
-    # exercise guide. They still ship in the bundle, which is worth revisiting;
-    # see build/tasks.md.
-    "solutions/xextra",
-    "solutions/solutions-generators",
 ]
 
 [lint]
@@ -154,13 +146,13 @@ ignore = [
 
 # The comprehensions chapter shows map and filter first and the comprehension
 # second, so the first half of every pair is the half being taught.
-"demos/07_comprehensions/demo05_syntactic_sugar.py" = ["C417"]
-"demos/07_comprehensions/demo10_dictionary_comprehension.py" = ["C416"]
+"demos/07_comprehensions/demo06_syntactic_sugar.py" = ["C417"]
+"demos/07_comprehensions/demo11_dictionary_comprehension.py" = ["C416"]
 
 # The dictionary-from-keys slide shows dict.fromkeys and the equivalent
 # comprehension side by side; collapsing one into the other deletes the
 # comparison that is the point of the slide.
-"demos/07_comprehensions/demo11_dictionary_from_keys.py" = ["C420"]
+"demos/07_comprehensions/demo12_dictionary_from_keys.py" = ["C420"]
 
 # The triple-quotes slide prints a deliberately long string with a trailing
 # space in it, to show that a triple-quoted string keeps its whitespace.

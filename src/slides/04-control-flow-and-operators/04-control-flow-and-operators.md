@@ -290,27 +290,56 @@ for number in list1:
 
 # Iterating by Sequence Index
 
-- Also possible is to iterate by index into the sequence :
+- A sequence can be walked by index, using `len()` and `range()` :
 
 ```python
 planets = ['venus', 'mars', 'jupiter']
 for index in range(len(planets)):
     print('Current planet :', planets[index])
-print("Lift off!")
 ```
 
-- Result :
+- This works, and is what someone arriving from C or Java writes first :
+  - `len()` gives the number of elements, `range()` the sequence of positions
+  - It is worth recognising, because you will meet it in other people's code
+- In Python it is rarely what you want :
+  - The index is only used to look the element back up again
+  - A `range` that drifts out of step with the sequence is a common bug
+- When the element is all you need, iterate the sequence itself :
+
+```python
+for planet in planets:
+    print('Current planet :', planet)
+```
+
+---
+
+# Iterating with enumerate
+
+- When the index is genuinely needed, `enumerate` yields both :
+
+```python
+for index, planet in enumerate(planets):
+    print(index, planet)
+```
 
 ```text
-Current planet : venus
-Current planet : mars
-Current planet : jupiter
-Lift off!
+0 venus
+1 mars
+2 jupiter
 ```
 
-- Used utility functions are built-in `len()` and `range()` functions :
-  - `len()` provides the total number of elements in the tuple
-  - `range()` gives us the actual sequence to iterate over
+- The two can never fall out of step, because they come from one call
+- Counting starts at zero unless a `start` is given :
+
+```python
+for number, planet in enumerate(planets, start=1):
+    print(number, planet)
+```
+
+- The pattern generalises :
+  - `enumerate(seq)` for position and element
+  - `zip(a, b)` for two sequences walked in step, covered in Comprehensions
+  - `dict.items()` for a dictionary's keys and values together
 
 > `demo08 · loopbyindex`
 

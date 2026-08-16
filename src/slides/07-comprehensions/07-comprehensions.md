@@ -88,6 +88,39 @@ print (result)
 
 ---
 
+# Built-ins that Take a Function
+
+- `sorted` returns a new sorted list, `list.sort` rearranges in place :
+
+```python
+words = ["ticket", "to", "mars", "one", "way"]
+sorted(words)                    # ['mars', 'one', 'ticket', 'to', 'way']
+sorted(words, reverse=True)
+```
+
+- A `key` function decides the order, and `min` and `max` accept the same :
+
+```python
+sorted(words, key=len)           # ['to', 'one', 'way', 'mars', 'ticket']
+max(words, key=len)              # 'ticket'
+```
+
+- `any` and `all` reduce a sequence of conditions to a single boolean :
+
+```python
+numbers = [4, 8, 15, 16, 23, 42]
+any(n > 40 for n in numbers)     # True
+all(n % 2 == 0 for n in numbers) # False
+```
+
+- Both stop as soon as the answer is known :
+  - On an empty sequence `any` is `False` and `all` is `True`
+
+> `demo03 · sorted_any_all`
+
+
+---
+
 # List Comprehensions
 
 - Construct for creating new list based on existing lists :
@@ -113,7 +146,7 @@ print (new_list)
 
 - Output : `[2, 4, 6, 8, 10, 12, 14, 16, 18, 20]`
 
-> `demo03 · list_comprehensions`
+> `demo04 · list_comprehensions`
 
 
 ---
@@ -190,7 +223,7 @@ new_list = [str(x) for x in slist if (x % 2) == 0]
 print (new_list) => ['2', '4', '6', '8', '10']
 ```
 
-> `demo04 · comprehension_with_predicate`
+> `demo05 · comprehension_with_predicate`
 
 
 ---
@@ -222,7 +255,7 @@ ls2 = [2*x+1 for x in [10, 20, 30, -10] if x > 0]
 print (ls2) # [21, 41, 61]
 ```
 
-> `demo05 · syntactic_sugar`
+> `demo06 · syntactic_sugar`
 
 
 ---
@@ -253,7 +286,7 @@ print (list_c)
 [['AC', 'BC'], ['AD', 'BD']]
 ```
 
-> `demo06 · nested_comprehensions`
+> `demo07 · nested_comprehensions`
 
 
 ---
@@ -283,7 +316,7 @@ list_f = [subtract(y, x) for (x, y) in oplist]
 print (list_f) # [-3, 6, 0]
 ```
 
-> `demo07 · comprehension_features`
+> `demo08 · comprehension_features`
 
 
 ---
@@ -310,7 +343,7 @@ print (b1)
 print (b2)
 ```
 
-> `demo08 · zip_function`
+> `demo09 · zip_function`
 
 
 ---
@@ -343,7 +376,7 @@ print (dict3) # {'a': 1, 'b': 2, 'c': 3}
 dict4 = dict(zip(keys, values))
 ```
 
-> `demo09 · dictionary_with_zip`
+> `demo10 · dictionary_with_zip`
 
 
 ---
@@ -377,7 +410,7 @@ dict8 = {x.upper(): x*3 for x in 'abcd'}
 print (dict8) #{'A': 'aaa', 'C': 'ccc', 'B': 'bbb', 'D': 'ddd'}
 ```
 
-> `demo10 · dictionary_comprehension`
+> `demo11 · dictionary_comprehension`
 
 
 ---
@@ -414,7 +447,7 @@ print (dict12) # {'t': None, 'y': None, 'c': None,
 # 'd': None, 'i': None, 'r': None, 'o': None, 'n': None, 'a': None}
 ```
 
-> `demo11 · dictionary_from_keys`
+> `demo12 · dictionary_from_keys`
 
 ---
 
@@ -448,7 +481,7 @@ my_set4 = {2**x for x in range(10)}
 print (my_set4) #{32, 1, 2, 4, 8, 64, 128, 256, 16, 512}
 ```
 
-> `demo12 · set_comprehensions`
+> `demo13 · set_comprehensions`
 
 
 ---

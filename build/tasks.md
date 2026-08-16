@@ -363,3 +363,36 @@ tooling module gave different answers on how to install Python.
 Stale text found and fixed while doing it : `AGENTS.md` still said ruff was
 informational with 944 findings, and still showed the `-x extra` flag that went
 two rounds ago.
+
+
+---
+
+## Round 6 : Pythonic idioms, missing solutions, dead weight
+
+- [x] **`enumerate` is taught.** `Iterating by Sequence Index` kept
+      `for index in range(len(planets))` as the form to recognise, and now says
+      plainly why Python avoids it. A new `Iterating with enumerate` slide follows,
+      and the demo shows all three ways side by side.
+- [x] `sorted(key=)`, `min`/`max(key=)`, `any` and `all` on a new
+      `Built-ins that Take a Function` slide in the Comprehensions module, beside
+      `map`, `filter` and `reduce` where they belong, rather than early in Control
+      Flow where they would have been a distraction. Ten demos renumbered so the
+      pills stay in slide order.
+- [x] Solutions written for exercises 12 and 13, so all thirteen have one. The
+      type hinting solution passes `mypy`; the libraries solution runs and its
+      five unit tests pass.
+- [x] Two demos that could not run are gone: `12_readsqlpanda.py` imported pandas,
+      deleted from the repo last round, and `using-mysql.py` imported a MySQL
+      connector that is not a dependency. Both shipped to students and failed.
+- [x] `solutions/xextra` and `solutions/solutions-generators` deleted. They solved
+      exercises this course does not have, and being outside the ruff scope they
+      were the last place camelCase names and a commented-out Java block survived.
+      Their ruff exclusions are gone with them.
+
+Deliberately not done :
+
+- Git history stays at 122 MB. Only a rewrite would shrink it, and that breaks
+  every existing clone for a repository cloned a handful of times. The student
+  repository is rebuilt from the bundle and is unaffected either way.
+- `@dataclass` gets no mention. PRG404 owns it, and a fundamentals course that
+  has just taught `__init__` by hand does not need the shortcut in the same hour.
