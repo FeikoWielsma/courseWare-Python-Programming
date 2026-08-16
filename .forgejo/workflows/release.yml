@@ -51,7 +51,6 @@ jobs:
         shell: bash
         run: |
           uv run python -m compileall -q \
-            demos/00a-python-tooling \
             demos/01-pythonintro \
             demos/02-variablesanddatatypes \
             demos/03-datastructures \
@@ -128,7 +127,6 @@ jobs:
 
           # One demo folder per module, exactly the folders the slides reference.
           for item in \
-            00a-python-tooling \
             01-pythonintro \
             02-variablesanddatatypes \
             03-datastructures \

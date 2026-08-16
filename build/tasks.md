@@ -335,3 +335,31 @@ Found while doing it :
       class without an `Error` suffix, and a bare `print`.
 
 Numbers : 5905 tracked files to 1158, 297 MB to 73 MB, 1.1 GB checkout to 492 MB.
+
+
+---
+
+## Round 5 : the toolchain folds into the introduction
+
+`00a-python-tooling` is gone as a separate module. Installing Python and running
+it is what an introduction is for, and having both meant module 01 and the
+tooling module gave different answers on how to install Python.
+
+- [x] The seven tooling slides merged into `01-python-intro`, which is now 21
+      slides : what Python is, the toolchain, installing it, running it, and the
+      syntax basics.
+- [x] `Installing uv` absorbed into `Getting Started`, so there is one slide
+      about getting an interpreter rather than two that disagreed.
+- [x] `Setting up PATH` reframed as the manual-install route, since `uv` needs
+      none of it.
+- [x] The two summaries merged into one.
+- [x] `demos/00a-python-tooling/` folded into `demos/01-pythonintro/` and the six
+      demos renumbered so the pills stay in slide order.
+- [x] Exercise 1 retitled `Python Intro`, matching the module name as every other
+      exercise does.
+- [x] `ruff.toml`, the workflow's two lists, `AGENTS.md`, `MAINTAINING.md` and
+      `README.md` all follow.
+
+Stale text found and fixed while doing it : `AGENTS.md` still said ruff was
+informational with 944 findings, and still showed the `-x extra` flag that went
+two rounds ago.

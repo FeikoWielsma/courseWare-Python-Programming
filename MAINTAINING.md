@@ -15,14 +15,13 @@ courses. It shares its build with them through `../Presentation-Template`.
 
 Modules 01 to 11 came from a PowerPoint deck, kept for reference as
 `PRG400-Python-Programming_og.pdf` and `PRG400-Python-Programming-Exercises_og.pdf`.
-`00a-python-tooling` and the two appendices, `12-appendix-type-hinting` and
-`13-appendix-libraries`, are new material.
+The `uv` and `ruff` material inside module 01, and the two appendices,
+`12-appendix-type-hinting` and `13-appendix-libraries`, are new.
 
 ## Layout
 
 ```
 src/slides/00-preamble/00-preamble.md      title and logistics, carries pdfName: and language:
-src/slides/00a-python-tooling/             uv, ruff and the editor
 src/slides/NN-topic/NN-topic.md            one Marp Markdown file per module
 src/slides/12-appendix-type-hinting/       appendix, the type hinting recap
 src/slides/13-appendix-libraries/          appendix, datetime, json, re, unittest
@@ -36,11 +35,10 @@ build/check-fences.py                      the python fences on the slides, gati
 build/plan.md, build/tasks.md              working notes
 ```
 
-**The `00a-` prefix is load bearing.** The build discovers modules with
-`readdirSync(slidesDir).sort()` and skips only `00-preamble`, so `00a-python-tooling`
-sorts between the preamble and `01-python-intro`. That is what let the toolchain
-module be added without renumbering eleven slide directories, eleven demo
-directories, eleven exercise files and every pill. Do not "tidy" it into `01-`.
+The toolchain material, `uv` and `ruff` and the editor, sits inside module 01. It
+spent a while as a separate `00a-python-tooling` module, which worked but meant two
+modules explained how to install Python and disagreed about it. Installing and
+running Python is what an introduction is for.
 
 Type hints are introduced as the course goes: variables in module 02, collections
 in module 03, signatures in module 05, constructors in module 11. The appendix
@@ -76,7 +74,7 @@ slide as fitting when it does not. Run `build` first to populate
 
 ```bash
 uv run python build/check-fences.py    # gating in CI
-uv run ruff check .                    # informational in CI, see below
+uv run ruff check .                    # gating in CI, see below
 uv run python -m compileall -q demos/01-pythonintro ... solutions
 ```
 
@@ -100,9 +98,8 @@ Python, builds both decks, publishes a `latest` release with the four documents
 plus a zip, and pushes a student bundle to
 `SpiralTrain/Python-Programming-Student`.
 
-The bundle is an **allowlist**, not a copy-then-prune. This repository is around
-800 MB and most of it belongs to other courses; `pandas/` alone is 397 MB. Naming
-what goes in means a folder added later cannot leak into a student's clone. When
+The bundle is an **allowlist**, not a copy-then-prune: naming what goes in means a
+folder added later cannot leak into a student's clone. When
 you add a module, add its demo folder to two places in the workflow: the
 `compileall` list and the bundle `for item in` list.
 

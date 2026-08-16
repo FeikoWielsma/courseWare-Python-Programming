@@ -34,7 +34,7 @@ exclude = [
     "demos/casestudy",
     # Written badly on purpose : it is the file the linting slide runs ruff over,
     # and every finding in it is the lesson.
-    "demos/00a-python-tooling/02_ruff_findings.py",
+    "demos/01-pythonintro/03_ruff_findings.py",
     # reference/ is background material for the student to browse: vendored
     # book source, GUI toolkit examples, notebooks. It is not course code and
     # is not held to the course's style.

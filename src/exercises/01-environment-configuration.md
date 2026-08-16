@@ -1,4 +1,4 @@
-# Exercise 1 : Python Tooling
+# Exercise 1 : Python Intro
 
 This exercise takes about fifteen minutes and leaves you with a working Python 3.14, the `uv` project manager, the `ruff` linter and an editor that understands Python. Everything you do in the rest of the course runs in the project you build here.
 
@@ -100,4 +100,4 @@ Run `uv run ruff check .` again. It reports `F401 'json' imported but unused`. N
 uv run ruff check . --fix
 ```
 
-**If time permits** : look at `demos/00a-python-tooling/02_ruff_findings.py`, which is written badly on purpose. Run `uv run ruff check` over it and read every finding before you look at the comments explaining them.
+**If time permits** : look at `demos/01-pythonintro/03_ruff_findings.py`, which is written badly on purpose. Run `uv run ruff check` over it and read every finding before you look at the comments explaining them.

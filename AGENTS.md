@@ -7,10 +7,10 @@ Read this in full before making any changes.
 
 ## What this is
 
-14 modules of Marp Markdown slides plus per-module exercise files. Modules 01 to 11 are
+13 modules of Marp Markdown slides plus per-module exercise files. Modules 01 to 11 are
 converted from the original PDF deck (`PRG400-Python-Programming_og.pdf`, kept for
-reference). `00a-python-tooling` and the two appendices, `12-appendix-type-hinting`
-and `13-appendix-libraries`, are new material.
+reference). The `uv` and `ruff` material inside module 01, and the two appendices,
+`12-appendix-type-hinting` and `13-appendix-libraries`, are new.
 
 Working notes live in `build/plan.md` (where the conversion stands, what is left) and
 `build/tasks.md` (the checklist). Read those before picking up work.
@@ -18,11 +18,10 @@ Working notes live in `build/plan.md` (where the conversion stands, what is left
 The build system is shared with sibling courseware repos via `../../Presentation-Template/build/`.
 Never modify anything under `Presentation-Template` from here.
 
-**The `00a-` prefix is deliberate.** The build discovers modules with
-`readdirSync(slidesDir).sort()` and skips only `00-preamble`, so `00a-python-tooling`
-sorts after the preamble and before `01-python-intro` without renumbering anything
-else. The schedule slide lists modules by footer name and carries no numbers, so it
-picks the module up on its own. Do not renumber `01` to `11` to make room.
+**The toolchain lives inside module 01.** `uv`, `ruff` and the editor were briefly a
+separate `00a-python-tooling` module, but installing Python and running it is what
+an introduction is for, and having both meant module 01 and the tooling module
+contradicted each other on how to install Python. Keep them together.
 
 **Type hints are taught as the course goes.** Variables are annotated in module 02,
 collections in module 03, signatures in module 05 and constructors in module 11, so
@@ -65,28 +64,25 @@ Run lint after editing any slide file and fix every warning before stopping.
 
 ```bash
 uv run python build/check-fences.py     # gating in CI, must be clean
-uv run ruff check .                     # informational in CI, ~944 findings today
-uv run python -m compileall -q -x extra demos/01-pythonintro solutions
+uv run ruff check .                     # gating in CI, must be at zero
+uv run python -m compileall -q demos/01-pythonintro solutions
 ```
 
 `ruff` is configured in `ruff.toml`, not in `pyproject.toml`, because the student
 bundle ships `ruff.toml` and deliberately ships no `pyproject.toml`.
 
-The repository is **not** at zero ruff findings, unlike the sibling Advanced Python
-course. Clearing them is tracked in `build/tasks.md`. Do not "fix" a finding in a
-demo where the anti-pattern is the lesson; add a scoped entry to
-`[lint.per-file-ignores]` with a comment saying why.
+`ruff check .` is at **zero** and gating. Do not "fix" a finding in a demo where the
+anti-pattern is the lesson; add a scoped entry to `[lint.per-file-ignores]` with a
+comment saying why. Every existing entry names the lesson it protects.
 
 ## File structure
 
 ```
 src/slides/00-preamble/00-preamble.md      title + logistics (carries pdfName: and language:)
-src/slides/00a-python-tooling/             uv, ruff and the editor
 src/slides/01-python-intro/ … 11-python-classes/   one folder per module, one .md per folder
 src/slides/12-appendix-type-hinting/       appendix, the type hinting recap
 src/slides/13-appendix-libraries/          appendix, carries appendix: true
 src/exercises/01-…md … 13-…md              exercise guides
-demos/00a-python-tooling/                  demos for the tooling module
 demos/01-pythonintro/ … 13-appendix-libraries/  runnable demo files referenced from the slides
 solutions/                                  exercise solutions
 appendices/                                 appendix decks the exercises point at
@@ -98,10 +94,8 @@ build/plan.md, build/tasks.md               working notes
 Demo files are named `NN_name.py` here, matching the `> \`demoNN · name\`` pill, rather
 than the `demoNN_name.py` form the sibling Advanced Python course uses.
 
-`src/exercises/01-environment-configuration.md` is Exercise 1 and belongs to
-`00a-python-tooling`, not to `01-python-intro`. Module 01 has no exercise, which
-matches the original course flow where the first coding exercise follows Variables
-and Data Types.
+`src/exercises/01-environment-configuration.md` is Exercise 1, and belongs to
+module 01. It sets up `uv`, `ruff` and the editor.
 
 **A new module means two edits to `.forgejo/workflows/release.yml`** : its demo folder
 joins the `compileall` list and the bundle `for item in` list. The bundle is an

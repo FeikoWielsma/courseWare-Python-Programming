@@ -72,52 +72,133 @@ graph LR
 
 ---
 
+# Modern Python Tooling
+
+- Python needs an interpreter, an environment and a set of packages :
+  - Historically each of these was installed and managed by a separate tool
+  - The result was hard to reproduce on a second machine
+- Two tools now cover almost all of it :
+  - `uv` installs Python, creates the environment and resolves the packages
+  - `ruff` checks style and catches a large class of mistakes before you run
+- Both are single binaries with no Python of their own to bootstrap :
+
+| Older tool | Replaced by |
+|---|---|
+| `python.org` installer, `pyenv` | `uv python install` |
+| `venv`, `virtualenv` | `uv` creates `.venv` for you |
+| `pip`, `pip-tools`, `requirements.txt` | `uv add` and `uv.lock` |
+| `flake8`, `isort`, `black`, `pylint` | `ruff check` and `ruff format` |
+
+---
+
 # Getting Started
 
-- Python Official Website :
-  - `https://www.python.org/`
-  - Has most up-to-date and current source code and binaries
+- Install `uv` once, and let it install Python for you :
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+- On macOS or Linux use the shell installer :
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+- Close and reopen the terminal, then fetch the interpreter :
+
+```bash
+uv python install 3.14
+```
+
+- This needs no administrator rights :
+  - Any Python already on the machine is left alone, and versions live side by side
+- The traditional route is the installer from `https://www.python.org/` :
+  - Tick `Add python.exe to PATH` on the first page of the Windows wizard
   - Python 2 reached its end of life in 2020, so Python 3 is the only choice
-- Linux Installation :
-  - Download the zipped source code available for Unix/Linux
-  - Extract files and enter `make install`
-  - This will install Python in a standard location `/usr/local/bin`
-- Windows Installation :
-  - Download the Windows installer `python-XYZ.exe` and run the wizard
-  - Tick `Add python.exe to PATH` on the first page
-- Simplest of all, and what this course uses :
-  - `uv python install 3.14`, covered in the Python Tooling module
-- Python Documentation Website :
-  - `https://docs.python.org/3/`
-  - Documentation available in HTML, PDF and PostScript format
+- Documentation lives at `https://docs.python.org/3/`
 
 ---
 
 # Setting up PATH
 
-- To invoke the Python interpreter from any particular directory :
-  - Add the Python directory to your path
+- Only needed when Python was installed by hand :
+  - `uv` puts the interpreter where `uv run` can find it, so it needs none of this
 - PATH is an environment variable :
   - Provides a search path that lists directories that OS searches for executables
-  - Named PATH in Unix or Path in Windows
-  - Unix is case-sensitive, Windows is not
+  - Named PATH in Unix or Path in Windows, and Unix is case-sensitive
 - Setting PATH in Linux :
-  - In the bash shell type :
 
 ```bash
 export PATH="$PATH:/usr/local/bin/python"
 ```
 
 - Setting PATH in Windows :
-  - At a command prompt type :
 
 ```bash
 PATH=%PATH%;C:\Python
 ```
 
   - Or use the environment variables tab under System Properties
-- PYTHONPATH :
-  - Tells Python interpreter where to locate module files you import into a program
+- PYTHONPATH is a separate variable :
+  - It tells the interpreter where to find modules you import, not where Python is
+
+---
+
+# Creating a Project
+
+- A project is a directory with a `pyproject.toml` in it :
+
+```bash
+uv init course-work
+cd course-work
+```
+
+- `uv init` writes three things :
+  - `pyproject.toml` , the file that names the project and its dependencies
+  - `.python-version` , the interpreter this project is pinned to
+  - `main.py` , a placeholder to delete or edit
+
+```text
+course-work/
+├─ pyproject.toml
+├─ .python-version
+├─ main.py
+└─ .venv/            created on the first uv run or uv add
+```
+
+- Run code through `uv run`, which uses the project's own interpreter :
+
+```bash
+uv run python main.py
+```
+
+---
+
+# Adding Dependencies
+
+- `uv add` installs a package and records it in `pyproject.toml` :
+
+```bash
+uv add requests
+uv add "requests>=2.28,<3"
+uv add --dev pytest
+```
+
+- Two files describe the dependencies, and both belong in version control :
+  - `pyproject.toml` states what the project asks for
+  - `uv.lock` states the exact versions that were resolved
+- Anyone can then reproduce the environment exactly :
+
+```bash
+uv sync          # install exactly what uv.lock says
+uv remove requests
+```
+
+- There is no environment to activate :
+  - `uv run` puts the project's `.venv` in front for the length of one command
+
+> `demo01 · uv_project`
 
 ---
 
@@ -139,7 +220,7 @@ C:> python script.py    # Windows
 
 - Integrated Development Environment :
   - Run and debug Python from an editor, which is how most work is done
-  - This course uses VS Code, set up in the Python Tooling module
+  - This course uses VS Code, set up two slides on
 - Jupyter Notebook on a web server :
   - Cell by cell execution, common in data science work
 
@@ -197,12 +278,46 @@ $ chmod +x test.py # set execute permission
 Hello, Python!
 ```
 
-
-
 - `print()` default prints a new line
 
-> `demo01 · hellopython`
+> `demo02 · hellopython`
 
+---
+
+# Linting with ruff
+
+- A linter reads code without running it and reports what looks wrong :
+  - Unused imports and variables, shadowed built-ins, unreachable code
+  - Style that departs from the conventions the rest of Python follows
+- Two commands cover the daily use :
+
+```bash
+uv run ruff check .          # report problems
+uv run ruff check . --fix    # fix the ones that are safe to fix
+uv run ruff format .         # lay the code out consistently
+```
+
+- Rules are configured in `ruff.toml`, which ships with this course :
+  - It selects the rule set the course material is written against
+  - Without it the editor would flag patterns the course uses on purpose
+
+> `demo03 · ruff_findings`
+
+---
+
+# Editor Setup
+
+- The course demonstrates Visual Studio Code :
+  - Any editor works, but the slides assume this one
+- Install two extensions from the Extensions panel :
+  - `Python` , published by Microsoft
+  - `Ruff` , published by Astral
+- With both installed the editor will :
+  - Underline the problems `ruff check` would report, as you type
+  - Offer the same fixes, and format on save if you ask it to
+  - Resolve imports against the project's `.venv` rather than a global Python
+- Point the editor at the project interpreter :
+  - Command Palette, `Python: Select Interpreter`, choose the one in `.venv`
 
 ---
 
@@ -304,7 +419,7 @@ else:
 - `print()` without new line is written as `print ('hello python', end='')`
 - Semicolon ; allows multiple statements on single line
 
-> `demo02 · lines_and_identation`
+> `demo04 · lines_and_identation`
 
 ---
 
@@ -331,8 +446,7 @@ days = ['Monday', 'Tuesday', 'Wednesday',
   - Semicolon ( ; ) allows multiple statements on single line
   - Neither statement should start a new code block
 
-> `demo03 · multilinestatements`
-
+> `demo05 · multilinestatements`
 
 ---
 
@@ -358,24 +472,25 @@ paragraph = """This is a paragraph. It is made up of
 'What \'s your name'
 ```
 
-> `demo04 · quotesandescapes`
-
+> `demo06 · quotesandescapes`
 
 ---
 
 # Summary : Python Intro
 
 - Python is a general purpose high-level scripting language :
-  - It is interpreted, interactive and object oriented
-- Python was developed by Guido van Rossum around 1990 at :
-  - National Research Institute for Mathematics and Computer Science in Netherlands
+  - Interpreted, interactive and object oriented, developed by Guido van Rossum
+- `uv` manages the interpreter, the environment and the packages :
+  - `uv python install`, `uv init`, `uv add`, `uv run`
+  - `pyproject.toml` states what is wanted, `uv.lock` pins what was resolved
+- `ruff` reports style and correctness problems without running the code
 - Python can be started in three different ways :
   - Interactive interpreter, script from the command line, from inside an IDE
 - Python is a case sensitive programming language :
-  - `myVar` and `Myvar` are different
+  - `my_var` and `My_var` are different
 - Python uses line indentation to denote blocks of code :
-  - No braces for blocks of code for class and function definitions or flow control
-- Python allows the use of the line continuation character (\) :
-  - Denote that the line should continue
-- Python uses quotes to denote string literals :
-  - single ('), double (") and triple (''' or """)
+  - No braces for class and function definitions or for flow control
+- The line continuation character (\) denotes that a line should continue
+- Quotes denote string literals, single, double or triple
+
+> `exercise01 · Python Intro`
