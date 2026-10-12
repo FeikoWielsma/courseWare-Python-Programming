@@ -288,17 +288,17 @@ jobs:
       - name: Mirror student repository to GitHub
         shell: bash
         env:
-          GITHUB_STUDENT_DEPLOY_KEY: ${{ secrets.GITHUB_STUDENT_DEPLOY_KEY }}
+          STUDENT_MIRROR_DEPLOY_KEY: ${{ secrets.STUDENT_MIRROR_DEPLOY_KEY }}
         run: |
           # Codespaces only runs on GitHub, so online students work from a copy
           # of the student repository there. It shares the Forgejo history, so
           # a plain push keeps a student's own `git pull` working.
-          if [ -z "${GITHUB_STUDENT_DEPLOY_KEY}" ]; then
-            echo "GITHUB_STUDENT_DEPLOY_KEY secret is not set, skipping the GitHub mirror."
+          if [ -z "${STUDENT_MIRROR_DEPLOY_KEY}" ]; then
+            echo "STUDENT_MIRROR_DEPLOY_KEY secret is not set, skipping the GitHub mirror."
             exit 0
           fi
 
-          echo "${GITHUB_STUDENT_DEPLOY_KEY}" > ~/.ssh/github_student
+          echo "${STUDENT_MIRROR_DEPLOY_KEY}" > ~/.ssh/github_student
           chmod 600 ~/.ssh/github_student
           ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
 
