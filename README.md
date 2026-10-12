@@ -28,6 +28,24 @@ material, so a `git pull` always gives you the latest version.
   cheatsheets, and material on GUI work, notebooks and packaging. It has its
   own `README.md` describing what is where.
 
+## Following the course online : GitHub Codespaces
+
+If you join remotely, or cannot install software on your machine, you can do
+the whole course in your browser. You need a free GitHub account; it includes
+60 hours a month of Codespaces, which is more than the course uses.
+
+1. Open <https://codespaces.new/FeikoWielsma/Python-Programming-Student> and
+   click **Create codespace**. The first start takes a few minutes.
+2. You get VS Code in the browser with Python 3.14, uv and the Python and Ruff
+   extensions already installed, and this bundle already opened. Skip the
+   installation steps below and continue at **Creating your own project**,
+   using the **Terminal** menu to open a terminal.
+3. Your work is kept inside the codespace between days. Reopen it from
+   <https://github.com/codespaces>. A codespace stops itself after 30 minutes
+   of inactivity; that is harmless, your files stay.
+
+The tkinter GUI demos need a desktop and do not open a window in a codespace.
+
 ## Setting up Python
 
 1. Install [**uv**](https://docs.astral.sh/uv/), the Python project manager. It

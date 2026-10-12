@@ -1,0 +1,24 @@
+// GitHub Codespaces setup for students who follow the course online.
+// It gives the same toolchain the README asks a local student to install:
+// Python 3.14, uv, and VS Code with the Python and Ruff extensions.
+{
+  "name": "Python Programming (PRG400)",
+  "image": "mcr.microsoft.com/devcontainers/python:3.14",
+  "hostRequirements": { "cpus": 2 },
+  "postCreateCommand": "curl -LsSf https://astral.sh/uv/install.sh | sudo env UV_INSTALL_DIR=/usr/local/bin UV_NO_MODIFY_PATH=1 sh",
+  "customizations": {
+    "codespaces": {
+      "openFiles": ["README.md"]
+    },
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "charliermarsh.ruff"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "workbench.startupEditor": "readme"
+      }
+    }
+  }
+}

@@ -148,7 +148,9 @@ jobs:
           # exercise installs sees the same rules the courseware is written
           # against. The bundle keeps this layout, so its relative paths still
           # resolve. No pyproject.toml, though: the student creates that one.
-          for item in solutions exercises appendices reference README.md ruff.toml; do
+          # .devcontainer/ is the GitHub Codespaces setup for online students,
+          # used by the GitHub copy of the student repository (see below).
+          for item in solutions exercises appendices reference README.md ruff.toml .devcontainer; do
             if [ -e "${item}" ]; then
               cp -r "${item}" "${BUNDLE}/"
             fi
@@ -282,3 +284,23 @@ jobs:
             git commit -m "Update student materials from master commit ${GITHUB_SHA::7}"
             git push origin main
           fi
+
+      - name: Mirror student repository to GitHub
+        shell: bash
+        env:
+          GITHUB_STUDENT_DEPLOY_KEY: ${{ secrets.GITHUB_STUDENT_DEPLOY_KEY }}
+        run: |
+          # Codespaces only runs on GitHub, so online students work from a copy
+          # of the student repository there. It shares the Forgejo history, so
+          # a plain push keeps a student's own `git pull` working.
+          if [ -z "${GITHUB_STUDENT_DEPLOY_KEY}" ]; then
+            echo "GITHUB_STUDENT_DEPLOY_KEY secret is not set, skipping the GitHub mirror."
+            exit 0
+          fi
+
+          echo "${GITHUB_STUDENT_DEPLOY_KEY}" > ~/.ssh/github_student
+          chmod 600 ~/.ssh/github_student
+          ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
+
+          cd /tmp/Python-Programming-Student
+          GIT_SSH_COMMAND="ssh -i ~/.ssh/github_student -o IdentitiesOnly=yes"             git push git@github.com:FeikoWielsma/Python-Programming-Student.git main
