@@ -16,12 +16,13 @@ appendix: true
   - `datetime` , dates, times and the arithmetic between them
   - `json` , reading and writing the interchange format of the web
   - `re` , regular expressions for searching and rewriting text
-  - `unittest` , the testing framework built into the language
+  - `sys.argv` , inspecting command-line arguments passed to a script
+  - `pytest` , testing behaviour with plain assertions
 - Others worth knowing about :
   - `pathlib` for filesystem paths, `csv` for tabular files
   - `collections` for counters, deques and default dictionaries
   - `itertools` for combinations, grouping and infinite sequences
-  - `os` and `sys` for the environment the program runs in
+  - `argparse` for flags, options and generated help messages
 - Full reference at `https://docs.python.org/3/library/`
 
 ---
@@ -282,90 +283,113 @@ re.split(r"\s+or\s+", text)
 
 ---
 
-# Unit Testing with unittest
+# Command-Line Arguments with sys.argv
 
-- A unit test checks one unit of behaviour in isolation :
-  - Tests are run automatically, so a regression is noticed immediately
-- A test case is a class deriving from `unittest.TestCase` :
-  - Every method whose name starts with `test` is collected and run
+- `sys.argv` holds the arguments passed to a Python script as a list of strings :
+  - `sys.argv[0]` is the name or path of the script itself
+  - `sys.argv[1:]` contains any arguments passed after the script name
 
 ```python
-import unittest
+import sys
 
+print(f"Script name : {sys.argv[0]}")
+print(f"Arguments   : {sys.argv[1:]}")
+```
 
-def add(a, b):
+- Every argument arrives as a string :
+  - Convert numbers explicitly with `int()` or `float()`
+  - Inspect `len(sys.argv)` to check how many arguments were supplied
+- For option flags, defaults and help messages, `argparse` is the next step :
+  - `argparse` handles `--flag` options, generates `--help` and parses types
+  - `sys.argv` is the underlying list `argparse` reads from
+
+> `demo09 · sys_argv`
+
+---
+
+# Testing with pytest
+
+- In `pytest`, a test is a function whose name starts with `test_` :
+  - No test case class to subclass and no special assertion methods
+  - Plain `assert` statements check the expected conditions
+- `pytest` is installed in the project with `uv add --dev pytest` :
+
+```python
+def add(a: int, b: int) -> int:
     return a + b
 
 
-class TestAdd(unittest.TestCase):
-    def test_two_positives(self):
-        self.assertEqual(add(2, 3), 5)
+def test_positive_numbers() -> None:
+    assert add(2, 3) == 5
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_with_zero() -> None:
+    assert add(0, 7) == 7
 ```
 
-> `demo09 · unittest_basic`
-
----
-
-# Assertions
-
-- The assertion methods say what is expected, and report clearly when it is not :
-
-| Method | Checks |
-|---|---|
-| `assertEqual(a, b)` | `a == b` |
-| `assertNotEqual(a, b)` | `a != b` |
-| `assertTrue(x)` / `assertFalse(x)` | truth of `x` |
-| `assertIs(a, b)` / `assertIsNone(x)` | identity |
-| `assertIn(a, b)` | `a in b` |
-| `assertRaises(Error)` | the block raises that exception |
-| `assertAlmostEqual(a, b)` | equal to seven decimal places |
-
-- `assertAlmostEqual` exists because floating point equality is unreliable
-- `assertRaises` is used as a context manager :
-
-```python
-with self.assertRaises(AttributeError):
-    self.basket.remove("apple")
-```
-
----
-
-# Fixtures and Running Tests
-
-- `setUp` runs before every test method, `tearDown` after every one :
-  - So no test can be affected by what another test did
-
-```python
-class TestBasket(unittest.TestCase):
-    def setUp(self):
-        self.basket = Basket()
-
-    def test_starts_empty(self):
-        self.assertEqual(self.basket.total(), 0)
-```
-
-- Tests are run from the command line :
+- Run all discovered tests with `uv run pytest` (verbose with `-v`) :
 
 ```bash
-python -m unittest test_basket.py
-python -m unittest discover        # find every test in the tree
-python -m unittest -v              # name each test as it runs
+uv run pytest -v
 ```
 
-- Output reports a dot per passing test :
+> `demo10 · pytest_basic`
+
+---
+
+# Reading a Test Failure
+
+- When an `assert` fails, `pytest` explains exactly what went wrong :
+  - It reconstructs intermediate expressions and shows where the values diverged
+- Running `uv run pytest 11_pytest_failure.py` on a deliberately failing test :
 
 ```text
-...
-Ran 3 tests in 0.000s
+_______________________________ test_wrong_sum ________________________________
 
-OK
+    def test_wrong_sum() -> None:
+>       assert add(2, 3) == 6
+E       assert 5 == 6
+E        +  where 5 = add(2, 3)
+
+11_pytest_failure.py:15: AssertionError
+=========================== short test summary info ===========================
+FAILED 11_pytest_failure.py::test_wrong_sum - assert 5 == 6
 ```
 
-> `demo10 · unittest_fixtures`
+- The report shows the source line, the evaluated values, and the summary line :
+  - No custom assertion methods like `assertEqual` are needed for clear output
+
+> `demo11 · pytest_failure`
+
+---
+
+# Exceptions and Parametrized Tests
+
+- `pytest.raises` checks that a block of code raises an expected exception :
+  - Used as a context manager; the test passes only if the exception occurs
+
+```python
+with pytest.raises(ValueError):
+    divide(10, 0)
+```
+
+- `@pytest.mark.parametrize` runs one test function across multiple inputs :
+  - Each tuple in the list runs as an independent test case
+
+```python
+@pytest.mark.parametrize(
+    ("a", "b", "expected"),
+    [
+        (10, 2, 5.0),
+        (9, 3, 3.0),
+        (5, 2, 2.5),
+    ],
+)
+def test_divide(a: int, b: int, expected: float) -> None:
+    assert divide(a, b) == expected
+```
+
+> `demo12 · pytest_features`
 
 ---
 
@@ -380,8 +404,10 @@ OK
 - `re` searches and rewrites text with patterns :
   - `match` at the start, `search` anywhere, `findall` for every hit
   - Parentheses capture, and `sub` replaces using what was captured
-- `unittest` runs checks over the code automatically :
-  - A `TestCase` class, methods named `test...` , and the `assert...` family
-  - `setUp` gives every test a clean starting point
+- `sys.argv` exposes command-line arguments as a list of strings :
+  - `argparse` is the next step for options, flags and automatic help
+- `pytest` runs checks over the code automatically :
+  - Test functions named `test_` and plain `assert` statements
+  - `pytest.raises` for exceptions and `@pytest.mark.parametrize` for tables
 
 > `exercise13 · Python Libraries`
