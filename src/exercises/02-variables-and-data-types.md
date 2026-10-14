@@ -16,12 +16,12 @@ nr2 = 23
 Use your own values if you like. Print the values, the type and the memory location of the variables with :
 
 ```python
-print (nr1)
-print (nr2)
-print (type(nr1))
-print (type(nr2))
-print (id(nr1))
-print (id(nr2))
+print(nr1)
+print(nr2)
+print(type(nr1))
+print(type(nr2))
+print(id(nr1))
+print(id(nr2))
 ```
 
 You should see that the type of the variables is `<class 'int'>`. The `id` function gives some numeric value which actually indicates the memory address in a default Python implementation.
@@ -39,8 +39,8 @@ addresult = nr1 + nr2
 Display the results of the operations with an explanatory message :
 
 ```python
-print ("The result of the addition of : " + str(nr1) + " and " + str(nr2) + " is : ")
-print (addresult)
+print("The result of the addition of : " + str(nr1) + " and " + str(nr2) + " is : ")
+print(addresult)
 ```
 
 Notice the conversion function `str` that turns an integer into a string, so that it can be added to other strings.
@@ -48,7 +48,7 @@ Notice the conversion function `str` that turns an integer into a string, so tha
 As an alternative you can also use the string format operator `%` for printing values in a string :
 
 ```python
-print ("The result of the addition of : %d and %d is : " % (nr1, nr2))
+print("The result of the addition of : %d and %d is : " % (nr1, nr2))
 ```
 
 A third alternative is to use the new style of formatting in Python 3 with the `format()` function. Figure out using the course manual or documentation how to use this style of string formatting. And a fourth alternative would be to use an f-string. Figure that one out as well.
@@ -68,7 +68,7 @@ The `input()` function returns a string. Find out about the type of the return v
 
 ```python
 addresult = s1 + s2  # s1='1', s2='3'
-print (addresult)    # prints 13
+print(addresult)     # prints 13
 ```
 
 Next convert the strings to integers with the `int()` conversion function as follows :

@@ -1,4 +1,4 @@
-a = b = c = 10
+a = b = c = 1
 print(a, b, c)
 print(id(a), id(b), id(c))
 
@@ -6,9 +6,9 @@ a = 11
 print(a, b, c)
 print(id(a), id(b), id(c))
 
-d = 10
+d = 1
 print(d)
 print(id(d))
 
-a, b, c = 1, 2, "pipo"
+a, b, c = 1, 2, "john"
 print(a, b, c)

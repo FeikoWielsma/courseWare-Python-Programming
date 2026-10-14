@@ -18,9 +18,7 @@ buffer = fr.read()
 data = unpack("iii", buffer)
 
 print(type(data))
-num1 = data[0]
-num2 = data[1]
-res = data[2]
+num1, num2, res = data
 print(num1)
 print(num2)
 print(res)

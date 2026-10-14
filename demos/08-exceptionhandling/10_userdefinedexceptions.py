@@ -1,14 +1,14 @@
-class MyError(Exception):
-    def __init__(self, value):
-        self.value = value
-
-    def __str__(self):
-        return repr(self.value)
+class NetworkError(RuntimeError):
+    def __init__(self, hostname: str) -> None:
+        super().__init__(f"Bad hostname: {hostname}")
+        self.hostname = hostname
 
 
 try:
-    raise MyError(2 * 2)
-except MyError as e:
-    print("My exception occurred, value:", e.value)
+    raise NetworkError("example.invalid")
+except NetworkError as e:
+    print(e)  # Bad hostname: example.invalid
+    print(e.hostname)  # example.invalid
 
-raise MyError("oops!")
+# Uncaught, it ends the program with a traceback naming the class and message.
+raise NetworkError("oops.invalid")

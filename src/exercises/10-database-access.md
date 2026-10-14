@@ -11,7 +11,7 @@ Create a project or directory named `exercise10` and a Python module `calculator
 Before entering the while loop in which the user is asked to choose the type of calculation, use the following code to create a database `calculations.db` and a table `Calculations` :
 
 ```python
-con = sqlite3.connect('calculations.db')
+con = sqlite3.connect("calculations.db")
 with con:
     cur = con.cursor()
     cur.execute("DROP TABLE IF EXISTS Calculations")
@@ -23,8 +23,10 @@ Next consider the Faculty calculation type and replace the code where data is wr
 ```python
 with con:
     cur = con.cursor()
-    cur.execute("INSERT INTO Calculations ('Id', 'Nr1', 'Nr2', 'Result') VALUES(?,?,?,?)",
-                (calc_action, x, 0, faculty(x)))
+    cur.execute(
+        "INSERT INTO Calculations ('Id', 'Nr1', 'Nr2', 'Result') VALUES(?,?,?,?)",
+        (calc_action, x, 0, faculty(x)),
+    )
 ```
 
 In this exercise we will not consider the Sum and Average calculation types; just remove the code that writes their data to the file. We will however consider the Add, Subtract, Divide and Multiply calculation types. For these replace the file access code with the following database access code, for instance for the Add calculation type :
@@ -32,8 +34,10 @@ In this exercise we will not consider the Sum and Average calculation types; jus
 ```python
 with con:
     cur = con.cursor()
-    cur.execute("INSERT INTO Calculations ('Id', 'Nr1', 'Nr2', 'Result') VALUES(?,?,?,?)",
-                (calc_action, f1, f2, add(f1, f2)))
+    cur.execute(
+        "INSERT INTO Calculations ('Id', 'Nr1', 'Nr2', 'Result') VALUES(?,?,?,?)",
+        (calc_action, f1, f2, add(f1, f2)),
+    )
 ```
 
 Next insert some records in the database, observe the existence of the `calculations.db` file in the directory of the script and use the SQLiteStudio Database Viewer to connect to SQLite and examine the contents of the database.

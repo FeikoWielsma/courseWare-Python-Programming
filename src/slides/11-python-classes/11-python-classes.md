@@ -72,7 +72,7 @@ footer: Python Classes
 
 ```python
 class ClassName:
-    'Optional class documentation string'
+    "Optional class documentation string"
     class_suite
 ```
 
@@ -93,16 +93,16 @@ class ClassName:
 
 ```python
 class Employee:
-    'Common base class for all employees'
+    "Common base class for all employees"
     emp_count = 0
     def __init__(self, name: str, salary: float) -> None:
-       self.name = name
-       self.salary = salary
-       Employee.emp_count += 1
+        self.name = name
+        self.salary = salary
+        Employee.emp_count += 1
     def display_count(self) -> None:
-      print(f"Total Employee {Employee.emp_count}")
+        print(f"Total Employee {Employee.emp_count}")
     def display_employee(self) -> None:
-       print ("Name : ", self.name, ", Salary: ", self.salary)
+        print(f"Name : {self.name}, Salary: {self.salary}")
 ```
 
 - To create instances of a class :
@@ -146,9 +146,9 @@ emp1 = Employee("Albert", 2000)
 - Creating objects :
 
 ```python
-"This would create first object of Employee class"
+# This would create first object of Employee class
 emp1 = Employee("Albert", 2000)
-"This would create second object of Employee class"
+# This would create second object of Employee class
 emp2 = Employee("Werner", 5000)
 ```
 
@@ -168,8 +168,8 @@ print(f"Total Employee {Employee.emp_count}")
 - Result :
 
 ```text
-Name : Albert ,Salary: 2000
-Name : Werner ,Salary: 5000
+Name : Albert, Salary: 2000
+Name : Werner, Salary: 5000
 Total Employee 2
 ```
 
@@ -183,9 +183,9 @@ Total Employee 2
 - In Python can add, remove, or modify attributes at any time :
 
 ```python
-emp1.age = 7 # Add an 'age' attribute
-emp1.age = 8 # Modify 'age' attribute
-del emp1.age # Delete 'age' attribute
+emp1.age = 7  # Add an 'age' attribute
+emp1.age = 8  # Modify 'age' attribute
+del emp1.age  # Delete 'age' attribute
 ```
 
 - There are alternative functions to access attributes :
@@ -196,10 +196,10 @@ del emp1.age # Delete 'age' attribute
 - Example code :
 
 ```python
-hasattr(emp1, 'age') # Returns true if 'age' attribute exists
-getattr(emp1, 'age') # Returns value of 'age' attribute
-setattr(emp1, 'age', 8) # Set attribute 'age' at 8
-delattr(empl, 'age') # Delete attribute 'age'
+hasattr(emp1, "age")  # Returns true if 'age' attribute exists
+getattr(emp1, "age")  # Returns value of 'age' attribute
+setattr(emp1, "age", 8)  # Set attribute 'age' at 8
+delattr(emp1, "age")  # Delete attribute 'age'
 ```
 
 ---
@@ -211,10 +211,10 @@ delattr(empl, 'age') # Delete attribute 'age'
 
 ```python
 class SquareGetterSetter:
-     def get_length(self) -> float:  # Java-style
-          return self._length
-     def set_length(self, length: float) -> None:  # Java-style
-          self._length = length
+    def get_length(self) -> float:  # Java-style
+        return self._length
+    def set_length(self, length: float) -> None:  # Java-style
+        self._length = length
 ```
 
 - However Python also supports property syntax :
@@ -223,11 +223,11 @@ class SquareGetterSetter:
 
 ```python
 class SquarePropertySyntax:
-     def get_length(self) -> float:
-          return self._length
-     def set_length(self, length: float) -> None:
-          self._length = length
-     length = property(get_length, set_length)
+    def get_length(self) -> float:
+        return self._length
+    def set_length(self, length: float) -> None:
+        self._length = length
+    length = property(get_length, set_length)
 ```
 
 > `demo05 · propertysyntax`
@@ -257,11 +257,11 @@ class SquarePropertySyntax:
 
 
 ```python
-print ("Employee.__doc__:", Employee.__doc__)
-print ("Employee.__name__:", Employee.__name__)
-print ("Employee.__module__:", Employee.__module__)
-print ("Employee.__bases__:", Employee.__bases__)
-print ("Employee.__dict__:", Employee.__dict__)
+print("Employee.__doc__:", Employee.__doc__)
+print("Employee.__name__:", Employee.__name__)
+print("Employee.__module__:", Employee.__module__)
+print("Employee.__bases__:", Employee.__bases__)
+print("Employee.__dict__:", Employee.__dict__)
 ```
 
 - Result :
@@ -394,24 +394,24 @@ flowchart LR
 - Attributes made private with double underscore prefix in name :
 
 ```python
-__secretCount = 0
+__secret_count = 0
 ```
 
 - Attributes will not be directly visible to outsiders :
     - Access of such attributes from outside should include class name
 
 ```python
-print(s._Secretive__secretCount)
+print(s._Secretive__secret_count)
 ```
 
 - Methods can also be protected with double underscore as prefix :
 
 ```python
 def __inaccessible(self):
-        print("Bet you can't see me...")
+    print("Bet you can't see me...")
 ```
 
-- Methods can accessed from the outside in the following way :
+- Methods can be accessed from the outside in the following way :
 
 ```python
 s._Secretive__inaccessible()
@@ -424,23 +424,28 @@ s._Secretive__inaccessible()
 
 ```python
 class Secretive:
-     __secretCount = 0
-     def count(self) -> None:
-          self.__secretCount += 1
-          print (self.__secretCount)
+    __secret_count = 0
+    def count(self) -> None:
+        self.__secret_count += 1
+        print(self.__secret_count)
+s = Secretive()
 s.count()
 s.count()
-print (s._Secretive__secretCount)
-print (s.__secretCount)
+print(s._Secretive__secret_count)
+print(s.__secret_count)
 ```
 
 - Result :
 
 ```text
+1
+2
+2
 Traceback (most recent call last):
-  File "", line 21, in <module>
-     print (s.__secretCount)
-AttributeError: 'Secretive' object has no attribute '__secretCount'
+  File "11_datahiding.py", line 10, in <module>
+    print(s.__secret_count)
+          ^^^^^^^^^^^^^^^^
+AttributeError: 'Secretive' object has no attribute '__secret_count'
 ```
 
 > `demo11 · datahiding`

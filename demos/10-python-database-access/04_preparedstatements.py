@@ -1,7 +1,7 @@
 import sqlite3
 
 cars = (
-    (1, "Audi", 52643),
+    (1, "Audi", 52642),
     (2, "Mercedes", 57127),
     (3, "Skoda", 9000),
     (4, "Volvo", 29000),

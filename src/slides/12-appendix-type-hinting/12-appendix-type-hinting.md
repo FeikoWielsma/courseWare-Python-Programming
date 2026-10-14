@@ -117,13 +117,13 @@ def parse(value: str | int) -> int:
 def double(n: int) -> int:
     return n * 2
 
-print(double("ab"))   # prints abab, no error is raised
+print(double("ab"))  # prints abab, no error is raised
 ```
 
 - Annotations are stored, and can be read at runtime :
 
 ```python
-print(double.__annotations__)   # {'n': <class 'int'>, 'return': <class 'int'>}
+print(double.__annotations__)  # {'n': <class 'int'>, 'return': <class 'int'>}
 ```
 
 - So a hint is worth exactly as much as the tooling that reads it :

@@ -45,16 +45,16 @@ flowchart LR
   - Generic `except` clause handles any exception
 
 ```python
-try :
-     x = 1
-     y = 0
-     z = x/y # ZeroDivisionError
+try:
+    x = 1
+    y = 0
+    z = x / y  # ZeroDivisionError
 except:
-     print('Cannot divide by zero')
-try :
-     fh = open("somefile", "r") # IOError
+    print("Cannot divide by zero")
+try:
+    fh = open("somefile", "r")  # IOError
 except:
-     print('Cannot open file')
+    print("Cannot open file")
 ```
 
 
@@ -77,16 +77,16 @@ except:
   - Useful when the `try` block might throw different types of exceptions
 
 ```python
-try :
-     x = 1
-     y = 0
-     z = x/y # ZeroDivisionError
-     tup = (1,2,3)
-     tup[0] = 2 # TypeError
-except ZeroDivisionError :
-     print ('Division by zero')
-except TypeError :
-     print ('Cannot change tuple contents')
+try:
+    x = 1
+    y = 0
+    z = x / y  # ZeroDivisionError
+    tup = (1, 2, 3)
+    tup[0] = 2  # TypeError
+except ZeroDivisionError:
+    print("Division by zero")
+except TypeError:
+    print("Cannot change tuple contents")
 ```
 
 
@@ -105,7 +105,7 @@ except TypeError :
 
 ```text
 try:
-    Do you operations here
+    Do your operations here
 except:
     If there is any exception, then execute this block
 else:
@@ -116,11 +116,11 @@ else:
 
 ```python
 try:
-     x = int(input("Please enter a number: "))
+    x = int(input("Please enter a number: "))
 except ValueError:
-     print("Oops! That was not valid number")
+    print("Oops! That was not valid number")
 else:
-     print ("Yeah! That was a really good number")
+    print("Yeah! That was a really good number")
 ```
 
 > `demo04 · exceptionhandlingwithelse`
@@ -134,7 +134,7 @@ else:
 
 ```text
 try:
-    Do you operations here;
+    Do your operations here;
 except(Exception1[, Exception2[,...ExceptionN]]]):
     If there is any exception from the given exception list,
     then execute this block
@@ -146,11 +146,11 @@ else:
 
 ```python
 for value in (None, "Hi!"):
-     try:
-          print ("Attempting to convert", value, "-->",)
-          print (float(value))
-     except(TypeError, ValueError):
-          print ("Something went wrong!")
+    try:
+        print("Attempting to convert", value, "-->", end=" ")
+        print(float(value))
+    except (TypeError, ValueError):
+        print("Something went wrong!")
 ```
 
 
@@ -212,7 +212,7 @@ for value in (None, "Hi!"):
 
 ```text
 try:
-    Do you operations here;
+    Do your operations here;
     Due to any exception, this may be skipped
 finally:
     This would always be executed
@@ -231,8 +231,8 @@ flowchart LR
   E --> F[statement after]
 ```
 
-- Limitation :
-  - It is not possible to use an `else` clause along with a `finally` clause
+- `else` and `finally` can be combined :
+  - `else` runs when no exception was raised, `finally` runs in every case
 
 ---
 
@@ -244,13 +244,13 @@ try:
     fh = open("testfile", "w")
     fh.write("This is my test file for exception handling!!")
 finally:
-    print ("Error: can\'t find file or read data")
+    print("This always runs")
 ```
 
-- Result without permission to open the file in writing mode :
+- Result, whether or not the write succeeded :
 
 ```text
-Error: can't find file or read data
+This always runs
 ```
 
 - Same example can be written more cleanly as follows :
@@ -259,11 +259,11 @@ Error: can't find file or read data
 try:
     fh = open("testfile", "w")
     try:
-       fh.write("This is my test file for exception handling!!")
+        fh.write("This is my test file for exception handling!!")
     finally:
-       fh.close()
+        fh.close()
 except IOError:
-    print ("Error: can\'t find file or read data")
+    print("Error: can't find file or read data")
 ```
 
 > `demo07 · tryfinally`
@@ -280,7 +280,7 @@ except IOError:
 
 ```text
 try:
-    Do you operations here;
+    Do your operations here;
 except ExceptionType as Argument:
     You can print value of Argument here...
 ```
@@ -302,18 +302,17 @@ except ExceptionType as Argument:
 # Define a function here.
 def temp_convert(var):
     try:
-       return int(var)
+        return int(var)
     except ValueError as e:
-       print ("Argument does not contain numbers\n", e)
+        print("Argument does not contain numbers:", e)
 # Call above function here
-temp_convert("xyz");
+temp_convert("xyz")
 ```
 
 - Result :
 
 ```text
-The argument does not contain numbers
-invalid literal for int() with base 10: 'xyz'
+Argument does not contain numbers: invalid literal for int() with base 10: 'xyz'
 ```
 
 
@@ -326,19 +325,19 @@ invalid literal for int() with base 10: 'xyz'
 - Exceptions can be raised with the `raise` statement :
 
 ```text
-raise [Exception [, args [, traceback]]]
+raise ExceptionType(args)
+raise ExceptionType(args) from cause
+raise
 ```
 
 - Explanation :
-  - Exception is the type of exception, for example `NameError`
-  - Argument is a value for the exception argument
-  - The argument is optional; if not supplied, the exception argument is None.
-  - Final argument `traceback` is optional and is the `traceback` object for exception
-- Example :
-  - An exception can be a string, a class, or an object
-  - Most of the exceptions that the Python core raises are classes
-    - with an argument that is an instance of the class
-- Defining new exceptions can be done as follows
+  - `ExceptionType` is the class of the exception, for example `NameError`
+  - `args` are passed to its constructor and kept in the exception's `args` attribute
+  - `from cause` chains the new exception to the one that caused it
+  - A bare `raise` inside an `except` block re-raises the exception being handled
+- Every exception is an instance of a class :
+  - Built-in exceptions derive from `BaseException`, nearly all of them from `Exception`
+  - Your own exceptions should derive from `Exception` or one of its subclasses
 
 ---
 
@@ -346,7 +345,7 @@ raise [Exception [, args [, traceback]]]
 
 ```python
 try:
-    raise NameError('HiThere')
+    raise NameError("HiThere")
 ```
 
 - In order to catch an exception :
@@ -355,12 +354,10 @@ try:
 
 ```python
 try:
-    # Business Logic here...
+    raise NameError("HiThere")
 except NameError:
-    print('An exception flew by!')
-    # raise
-else:
-    # Rest of the code here...
+    print("An exception flew by!")
+    raise  # re-raise it for a caller to handle
 ```
 
 > `demo09 · raisingexceptions`
@@ -370,25 +367,27 @@ else:
 # User Defined Exceptions
 
 - Created by deriving classes from standard built-in exceptions :
-  - Exception class may created that is subclassed from `RuntimeError`
+  - Exception class may be created that is subclassed from `RuntimeError`
   - Useful when more specific information is needed when an exception is caught
 - In `try:` block :
   - User-defined exception is raised and caught in the `except` block
-  - The variable e is used to create an instance of the class `Networkerror`
+  - The name `e` is bound to the `NetworkError` instance that was raised
 
 ```python
-class Networkerror(RuntimeError):
-    def __init__(self, arg):
-       self.args = arg
+class NetworkError(RuntimeError):
+    def __init__(self, hostname: str) -> None:
+        super().__init__(f"Bad hostname: {hostname}")
+        self.hostname = hostname
 ```
 
 - With above class exception is raised as follows :
 
 ```python
 try:
-    raise Networkerror("Bad hostname")
-except Networkerror as e:
-    print(e.args)
+    raise NetworkError("example.invalid")
+except NetworkError as e:
+    print(e)           # Bad hostname: example.invalid
+    print(e.hostname)  # example.invalid
 ```
 
 > `demo10 · userdefinedexceptions`

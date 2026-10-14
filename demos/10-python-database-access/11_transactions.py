@@ -1,8 +1,9 @@
 import sqlite3
 import sys
 
+con = None
 try:
-    con = sqlite3.connect("friends.db")
+    con = sqlite3.connect("friends.db")  # isolation_level=None would autocommit
     cur = con.cursor()
     cur.execute("DROP TABLE IF EXISTS Friends")
     cur.execute("CREATE TABLE Friends(Id INTEGER PRIMARY KEY, Name TEXT)")
@@ -11,7 +12,7 @@ try:
     cur.execute("INSERT INTO Friends(Name) VALUES ('Jim')")
     cur.execute("INSERT INTO Friends(Name) VALUES ('Robert')")
 
-    # con.commit()
+    # con.commit()  # without it, close() discards the inserts
 except sqlite3.Error as e:
     if con:
         con.rollback()

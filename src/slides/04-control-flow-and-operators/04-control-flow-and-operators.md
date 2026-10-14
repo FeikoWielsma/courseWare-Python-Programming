@@ -63,14 +63,14 @@ flowchart LR
 ```python
 var1 = 100
 if var1:
-    print ("1 - Got a true expression value")
-    print (var1)
+    print("1 - Got a true expression value")
+    print(var1)
 
 var2 = 0
 if var2:
-    print ("2 - Got a true expression value")
-    print (var2)
-print ("Good bye!")
+    print("2 - Got a true expression value")
+    print(var2)
+print("Good bye!")
 ```
 
 - Result :
@@ -84,7 +84,7 @@ Good bye!
 - In case `if` has only one line it may go on same line :
 
 ```python
-if ( expression == 1 ) : print ("Value of expression is 1")
+if expression == 1: print("Value of expression is 1")
 ```
 
 > `demo01 · if`
@@ -109,11 +109,11 @@ else:
 - Example asking input with `input` and `endswith` methods :
 
 ```python
-name = input('What is your name? ')
-if name.endswith('Gumby'):
-     print ('Hello, Mr. Gumby')
+name = input("What is your name? ")
+if name.endswith("Gumby"):
+    print("Hello, Mr. Gumby")
 else:
-     print ('Hello, stranger')
+    print("Hello, stranger")
 ```
 
 > `demo02 · else`
@@ -204,7 +204,7 @@ flowchart LR
   - Placement on the same line is allowed
 
 ```python
-while expression : statement
+while expression: statement
 ```
 
 
@@ -221,9 +221,9 @@ while expression : statement
 
 ```python
 var = 1
-while var == 1 : # This constructs an infinite loop
+while var == 1:  # This constructs an infinite loop
     num = input("Enter a number :")
-    print("You entered: ", num)
+    print("You entered:", num)
 print("Good bye!")
 ```
 
@@ -234,9 +234,9 @@ Enter a number :20
 You entered: 20
 Enter a number :3
 You entered: 3
-Enter a number between :Traceback (most recent call last):
-  File "test.py", line 5, in <module>
-     num = input("Enter a number :")
+Enter a number :Traceback (most recent call last):
+  File "06_infinitewhile.py", line 3, in <module>
+    num = input("Enter a number :")
 KeyboardInterrupt
 ```
 
@@ -274,13 +274,13 @@ flowchart LR
 
 
 ```python
-words = ['one', 'way', 'ticket', 'to', 'mars']
+words = ["one", "way", "ticket", "to", "mars"]
 for word in words:
-     print(word , end=' ')
+    print(word, end=" ")
 print()
 list1 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 for number in list1:
-     print(number)
+    print(number)
 ```
 
 > `demo07 · for`
@@ -293,12 +293,12 @@ for number in list1:
 - A sequence can be walked by index, using `len()` and `range()` :
 
 ```python
-planets = ['venus', 'mars', 'jupiter']
+planets = ["venus", "mars", "jupiter"]
 for index in range(len(planets)):
-    print('Current planet :', planets[index])
+    print("Current planet :", planets[index])
 ```
 
-- This works, and is what someone arriving from C or Java writes first :
+- This works, and is what a loop over positions looks like in many languages :
   - `len()` gives the number of elements, `range()` the sequence of positions
   - It is worth recognising, because you will meet it in other people's code
 - In Python it is rarely what you want :
@@ -308,7 +308,7 @@ for index in range(len(planets)):
 
 ```python
 for planet in planets:
-    print('Current planet :', planet)
+    print("Current planet :", planet)
 ```
 
 ---
@@ -356,15 +356,15 @@ for number, planet in enumerate(planets, start=1):
 - `break` and `continue` can be used in both `while` and `for` loops
 
 ```python
-for letter in 'Python':
-    if letter == 'h':
-       continue
-    print('Current Letter :', letter) # letter 'h' is not printed
+for letter in "Python":
+    if letter == "h":
+        continue
+    print("Current Letter :", letter)  # letter 'h' is not printed
 print("After first loop!")
-for letter in 'Programming':
-    if letter == 'i':
-       break
-    print('Current Letter :', letter) # loop stops on letter 'i'
+for letter in "Programming":
+    if letter == "i":
+        break
+    print("Current Letter :", letter)  # loop stops on letter 'i'
 print("After second loop!")
 ```
 
@@ -387,10 +387,10 @@ print("After second loop!")
 ```python
 from math import sqrt
 for n in range(99, 80, -1):
-     root = sqrt(n)
-     print(root)
-     print(int(root))
-     if root == int(root):
+    root = sqrt(n)
+    print(root)
+    print(int(root))
+    if root == int(root):
         print(f"Perfect square is {n}")
         break
 else:
@@ -414,11 +414,11 @@ else:
   - Block may remain with `pass` statement so it doesn't interfere with other code parts
 
 ```python
-for letter in 'Python':
-    if letter == 'h':
-       pass
-       print('This is pass block')
-    print('Current Letter :', letter)
+for letter in "Python":
+    if letter == "h":
+        pass
+        print("This is pass block")
+    print("Current Letter :", letter)
 print("Good bye!")
 ```
 
@@ -435,13 +435,13 @@ print("Good bye!")
 
 ```python
 match command.split():
-    case ["quit"]:                  # a literal pattern
+    case ["quit"]:  # a literal pattern
         return "leaving"
-    case ["go", direction]:         # captures the second word
+    case ["go", direction]:  # captures the second word
         return f"walking {direction}"
-    case ["take" | "get", item] if item != "moon":   # or-pattern with a guard
+    case ["take" | "get", item] if item != "moon":  # or-pattern with a guard
         return f"picking up the {item}"
-    case _:                         # the wildcard, matched last
+    case _:  # the wildcard, matched last
         return "I do not understand"
 ```
 

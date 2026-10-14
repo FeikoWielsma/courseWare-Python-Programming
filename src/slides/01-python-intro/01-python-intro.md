@@ -36,21 +36,17 @@ graph LR
 # Python Features
 
 - Broad standard library :
-  - Bulk of the library is cross portable on UNIX, Windows, and Macintosh
+  - Files, paths, dates, JSON, CSV, regular expressions, SQLite and testing out of the box
 - Portable :
-  - Python runs on a wide variety of platforms and has same interface on all platforms
+  - The same code runs on Linux, Windows and macOS
+- Large ecosystem :
+  - Hundreds of thousands of packages on PyPI, installed with `uv add`
+- Used across many fields :
+  - Automation and scripting, web back ends, data analysis, machine learning, testing
 - Extendable :
-  - Python allows the addition of low-level modules to the Python interpreter
-- Databases :
-  - Python provides interfaces to all major commercial databases
-- GUI Programming :
-  - Python supports GUI applications that can be ported to many system calls
-- Web Applications :
-  - Django and Flask Framework allow building of Python Web Applications
-- Scalable :
-  - Python provides better structure and support for large programs than shell scripting
-- Supports automatic garbage collection :
-  - Can be easily integrated with C, C++, COM, ActiveX, CORBA, and Java
+  - Performance-critical parts can be written in C or Rust and called from Python
+- Automatic memory management :
+  - Objects are freed by reference counting and a garbage collector, not by hand
 
 ---
 
@@ -228,8 +224,6 @@ C:> python script.py    # Windows
 
 # Python in Interactive Mode
 
-- Python language has many similarities to Perl, C, and Java :
-  - There are some definite differences between the languages
 - Start with Hello World Python program in interactive mode :
   - Invoke the interpreter by typing `python` in a command prompt
 
@@ -257,7 +251,7 @@ Hello, Python!
   - Put the following source code in a `test.py` file
 
 ```python
-print ("Hello, Python!")
+print("Hello, Python!")
 ```
 
 - Run the script as follows :
@@ -369,7 +363,7 @@ except lambda yield
 
 ```python
 # First comment
-print ("Hello, Python!") # second comment
+print("Hello, Python!")  # second comment
 ```
 
 - Will produce following result :
@@ -381,7 +375,7 @@ Hello, Python!
 - Comment may be on same line after statement or expression :
 
 ```python
-name = "Einstein" # This is again comment
+name = "Einstein"  # This is again comment
 ```
 
 - Comment multiple lines as follows :
@@ -403,20 +397,20 @@ name = "Einstein" # This is again comment
   - All statements within the block must be indented the same amount
 
 ```python
-if True: # Both blocks in first example are fine
-    print ("True")
+if True:  # Both blocks in first example are fine
+    print("True")
 else:
-  print ("False")
+  print("False")
 
-if True: # Second line in second block will generate an error
-    print ("Answer")
-    print ("True")
+if True:  # Second line in second block will generate an error
+    print("Answer")
+    print("True")
 else:
-    print ("Answer")
-  print ("False")
+    print("Answer")
+  print("False")
 ```
 
-- `print()` without new line is written as `print ('hello python', end='')`
+- `print()` without new line is written as `print("hello python", end="")`
 - Semicolon ; allows multiple statements on single line
 
 > `demo04 · lines_and_identation`
@@ -431,15 +425,16 @@ else:
 
 ```python
 total = item_one + \
-          item_two + \
+        item_two + \
+        item_three
 ```
 
 - Statements contained within the `[], {},` or `()` brackets :
   - No need to use the line continuation character
 
 ```python
-days = ['Monday', 'Tuesday', 'Wednesday',
-                'Thursday', 'Friday']
+days = ["Monday", "Tuesday", "Wednesday",
+        "Thursday", "Friday"]
 ```
 
 - On a single line :
@@ -458,18 +453,18 @@ days = ['Monday', 'Tuesday', 'Wednesday',
   - Triple quotes can be used to span the string across multiple lines
 
 ```python
-print ('hello' + " " + '''world''')
+print('hello' + " " + '''world''')
 word = 'word'
 sentence = "This is a sentence."
 paragraph = """This is a paragraph. It is made up of
-                  multiple lines and sentences."""
+               multiple lines and sentences."""
 ```
 
 - Single quote in a single quoted string :
   - Displayed with an escape character \
 
 ```python
-'What \'s your name'
+print('That\'s a brave new world')
 ```
 
 > `demo06 · quotesandescapes`

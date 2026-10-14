@@ -1,9 +1,9 @@
 class Secretive:
-    __secretCount = 0
+    __secret_count = 0
 
     def count(self):
-        self.__secretCount += 1
-        print(self.__secretCount)
+        self.__secret_count += 1
+        print(self.__secret_count)
 
     def __inaccessible(self):
         print("Bet you can't see me...")
@@ -21,5 +21,5 @@ s._Secretive__inaccessible()
 s.count()
 s.count()
 
-print(s._Secretive__secretCount)
-# print (s.__secretCount)
+print(s._Secretive__secret_count)
+# print(s.__secret_count)  # AttributeError

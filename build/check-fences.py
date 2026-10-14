@@ -35,13 +35,15 @@ RUFF_SELECT = "UP,W6,RUF001,RUF002,RUF003"
 #         function does; rewriting it as a literal deletes the example.
 # UP024 : the exceptions module teaches the classic names, and `IOError` appears
 #         in its table of standard exceptions as an alias of `OSError`.
+# UP030 : the string-formatting slide numbers its fields, `{0}, {1}, {2}` and then
+#         `{2}, {1}, {0}`, because the numbering is what it is showing.
 # UP031 : the string-formatting slide teaches percent formatting explicitly.
 #         Elsewhere in the deck it is dated style rather than a lesson, and
 #         modernising those fences with their demo files is tracked in
 #         build/tasks.md.
 # UP032 : the format-method slide is about `str.format`, so an f-string there
 #         would replace the subject of the slide.
-RUFF_IGNORE = "UP015,UP018,UP024,UP031,UP032"
+RUFF_IGNORE = "UP015,UP018,UP024,UP030,UP031,UP032"
 
 FENCE_OPEN = re.compile(r"^```python[ \t]*$")
 FENCE_CLOSE = re.compile(r"^[ \t]*```[ \t]*$")

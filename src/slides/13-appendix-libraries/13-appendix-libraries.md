@@ -41,7 +41,7 @@ midday = time(12, 30, 0)
 launch = datetime(2026, 8, 15, 12, 30, 0)
 
 print(launch.year, launch.month, launch.day)
-print(launch.weekday())     # Monday is 0, so this prints 5
+print(launch.weekday())  # Monday is 0, so this prints 5
 ```
 
 - The current moment comes from the class itself :
@@ -57,8 +57,8 @@ print(launch.weekday())     # Monday is 0, so this prints 5
   - The `f` is for format, the `p` is for parse
 
 ```python
-launch.strftime("%d-%m-%Y %H:%M")        # 15-08-2026 12:30
-launch.strftime("%A %d %B %Y")           # Saturday 15 August 2026
+launch.strftime("%d-%m-%Y %H:%M")  # 15-08-2026 12:30
+launch.strftime("%A %d %B %Y")     # Saturday 15 August 2026
 
 datetime.strptime("24-12-2026 18:00", "%d-%m-%Y %H:%M")
 ```
@@ -70,7 +70,7 @@ datetime.strptime("24-12-2026 18:00", "%d-%m-%Y %H:%M")
 - ISO 8601 needs no format string in either direction :
 
 ```python
-launch.isoformat()                       # 2026-08-15T12:30:00
+launch.isoformat()  # 2026-08-15T12:30:00
 datetime.fromisoformat("2026-12-24T18:00:00")
 ```
 
@@ -88,15 +88,15 @@ from datetime import date, timedelta
 start = date(2026, 8, 15)
 end = date(2026, 12, 24)
 span = end - start
-print(span.days)              # 131
+print(span.days)  # 131
 ```
 
 - Adding a `timedelta` to a date gives another date :
 
 ```python
-start + timedelta(weeks=1)    # 2026-08-22
-start + timedelta(days=100)   # 2026-11-23
-start - timedelta(days=1)     # 2026-08-14
+start + timedelta(weeks=1)   # 2026-08-22
+start + timedelta(days=100)  # 2026-11-23
+start - timedelta(days=1)    # 2026-08-14
 ```
 
 - A `timedelta` is built from any combination of units :
@@ -198,8 +198,8 @@ with path.open(encoding="utf-8") as f:
   - `^` start of the string, `$` end of the string, `\b` word boundary
 
 ```python
-r"\d{4}-\d{2}-\d{2}"       # a date like 2026-08-15
-r"^\w+@\w+\.\w{2,4}$"      # a very rough email address
+r"\d{4}-\d{2}-\d{2}"   # a date like 2026-08-15
+r"^\w+@\w+\.\w{2,4}$"  # a very rough email address
 ```
 
 ---
@@ -213,10 +213,10 @@ import re
 
 text = "Order 1234 shipped, order 5678 pending"
 
-re.match(r"Order", text)      # only tries position zero
-re.match(r"shipped", text)    # None, even though the word is present
-re.search(r"shipped", text)   # scans the whole string, finds it
-re.findall(r"\d+", text)      # ['1234', '5678']
+re.match(r"Order", text)     # only tries position zero
+re.match(r"shipped", text)   # None, even though the word is present
+re.search(r"shipped", text)  # scans the whole string, finds it
+re.findall(r"\d+", text)     # ['1234', '5678']
 ```
 
 - `match` and `search` return a match object, or `None` :
@@ -236,17 +236,17 @@ re.findall(r"\d+", text)      # ['1234', '5678']
 line = "2026-08-15 12:30 ERROR disk full"
 m = re.search(r"(\d{4})-(\d{2})-(\d{2}) (\d{2}:\d{2}) (\w+) (.*)", line)
 
-m.group(0)      # the whole match
-m.group(1)      # 2026, the first group
-m.groups()      # ('2026', '08', '15', '12:30', 'ERROR', 'disk full')
+m.group(0)  # the whole match
+m.group(1)  # 2026, the first group
+m.groups()  # ('2026', '08', '15', '12:30', 'ERROR', 'disk full')
 ```
 
 - Named groups read better once there are more than two :
 
 ```python
 named = re.search(r"(?P<level>ERROR|WARN|INFO) (?P<message>.*)", line)
-named.group("level")      # ERROR
-named.group("message")    # disk full
+named.group("level")    # ERROR
+named.group("message")  # disk full
 ```
 
 > `demo07 · regex_groups`
@@ -260,7 +260,7 @@ named.group("message")    # disk full
 ```python
 text = "Call 020-1234567 or 010-7654321 today"
 
-re.sub(r"\d", "x", text)                  # Call xxx-xxxxxxx or xxx-xxxxxxx today
+re.sub(r"\d", "x", text)  # Call xxx-xxxxxxx or xxx-xxxxxxx today
 re.sub(r"\d{3}-\d{7}", "[redacted]", text)
 ```
 

@@ -396,3 +396,71 @@ Deliberately not done :
   repository is rebuilt from the bundle and is unaffected either way.
 - `@dataclass` gets no mention. PRG404 owns it, and a fundamentals course that
   has just taught `__init__` by hand does not need the shortcut in the same hour.
+
+
+---
+
+## Round 7 : the slide code catches up with the demos
+
+The PEP 8 pass of Round 2 reached the demos but not most slide fences, which
+still carried `print (x)`, single quotes, five-space indents and unaligned
+comments. Comparing every fence against its demo also turned up real errors.
+
+- [x] Every parseable python fence on the slides and in the exercises run through
+      `ruff format`, keeping each fence's own blank lines so no slide grew, and
+      keeping column-aligned comments aligned. Left alone, because the layout is
+      the lesson : the quotes slide, the line-continuation slide, and the
+      single-statement-suite one-liners.
+- [x] `print("Label: ", value)` printed a double space that no output fence
+      showed. The trailing space is gone across slides, demos and solutions.
+- [x] Code that did not run, or did something other than the slide said :
+      - `10 · Fetching Rows` imported `sqlite3` and called `lite.connect`
+      - `demo09 · bytesandbytesarrays` passed the builtin `str` to `bytearray`
+      - two `09` fences had a literal line break inside `"...\n"`
+      - `03` used the builtin `dict` where it meant `dict1`, and `tuple[2] = 1000`
+        assigned into the builtin type
+      - `06 · globals and locals` printed `locals()` outside the function
+      - `11 · Example Data Hiding` never created `s`
+      - `08 · Example User Defined Exceptions` set `self.args` to a string, so
+        `e.args` was a tuple of characters. Now `NetworkError`, via `super().__init__`
+      - `08 · except Clause Multiple Exceptions` kept the Python 2 trailing comma
+        that once meant "no newline"; now `end=" "`
+      - `demo08 · destructordemo` ended in `eval(input())`
+      - `demo10 · testharness`'s companion `importtestharness.py` never imported
+        anything. `testharnass` is spelled `testharness` throughout.
+- [x] Python 2 claims removed from module 08 : the `raise [Exception [, args [,
+      traceback]]]` grammar, string exceptions, and "`else` cannot be combined
+      with `finally`" (the slide's own diagram combines them)
+- [x] Output that Python no longer prints : dict and set orders in module 07,
+      `dir(math)` in module 06, the unhashable-key message, slice results shown
+      as lists for tuples, `reload` without `importlib`
+- [x] Module 10 used `test.db`, `cars.db` and `Cars.db` for the same table. The
+      last is a different file on Linux. All `cars.db` now.
+- [x] `UP030` added to the fence checker's ignores, for the format-numbering slide
+
+Still open :
+
+- [ ] About 50 demo-backed slides still differ from their demo beyond being an
+      excerpt. Most are deliberate : the slide shows an expression where the demo
+      prints it, a grammar skeleton, or the error the demo comments out. A gating
+      fence-to-demo check is not practical for that reason.
+
+
+---
+
+## Round 8 : towards the Wordle spine
+
+The plan for this round onwards is `build/plan.md`.
+
+- [x] Cheap coherency fixes on the slides : three cross-language comparisons
+      removed, `Python Features` rewritten (COM, ActiveX, CORBA gone), the lambda
+      slide's false claim about enclosing scopes, the raw-string example that
+      demonstrated nothing, "32-bit code points", the dated f-string and
+      `reduce` wording, "Toilettes"
+- [x] Calculator exercises and solutions 2 to 11 archived in `archive/calculator/`,
+      excluded from ruff and from the bundle
+- [x] Prototype : Exercise 5 rewritten on the Wordle spine, with ★ tiers and
+      reference-solution blocks; solutions for Exercises 4 and 5; the first
+      handout (`test_wordle.py`, 9 tests); `build/make-starters.py` with a
+      `--check` mode for CI
+- [ ] Everything else : see `build/plan.md` section 9

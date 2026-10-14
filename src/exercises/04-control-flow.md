@@ -46,7 +46,7 @@ if calc_action == "Sum":
         x = int(x)
         summation = summation + x
         intlist.append(x)
-    print (f"Sum of list {intlist} is {summation}")
+    print(f"Sum of list {intlist} is {summation}")
 ```
 
 ### Step 3
@@ -63,5 +63,5 @@ Also add an `else` statement to the while loop that gets executed when the while
 
 ```python
 else:
-    print ("Thank you for using our software")
+    print("Thank you for using our software")
 ```

@@ -19,7 +19,7 @@ footer: Comprehensions
   - Extracts each element in the sequence for which function returns True
 - `reduce(function, iterable)` :
   - Reduces list to single value by combining elements via supplied function
-  - In functools in Python 3.0
+  - Lives in the `functools` module, so it must be imported
 - `lambda` :
   - Small anonymous function consisting of single line
 
@@ -31,25 +31,25 @@ footer: Comprehensions
 
 ```python
 def square(x):
-    return x*x
+    return x * x
 def even(x):
     return x % 2 == 0
-some_list = list(map(square, range(10,20)))
-print (some_list)
+some_list = list(map(square, range(10, 20)))
+print(some_list)
 ```
 
 - Output : `[100, 121, 144, 169, 196, 225, 256, 289, 324, 361]`
 
 ```python
-some_list = list(filter(even, range(10,20)))
-print (some_list)
+some_list = list(filter(even, range(10, 20)))
+print(some_list)
 ```
 
 - Output : `[10, 12, 14, 16, 18]`
 
 ```python
-some_list = list(map(square, filter(even, range(10,20))))
-print (some_list)
+some_list = list(map(square, filter(even, range(10, 20))))
+print(some_list)
 ```
 
 - Output : `[100, 144, 196, 256, 324]`
@@ -66,8 +66,8 @@ print (some_list)
 
 ```python
 from functools import reduce
-var1 = reduce( (lambda x, y: x * y), [1, 2, 3, 4] )
-print (var1) # 24
+var1 = reduce((lambda x, y: x * y), [1, 2, 3, 4])
+print(var1)  # 24
 ```
 
 - Above code works as follows :
@@ -78,9 +78,9 @@ print (var1) # 24
 ```python
 li1 = [1, 2, 3, 4]
 result = li1[0]
-for x in li1[1:] :
-     result = result * x
-print (result)
+for x in li1[1:]:
+    result = result * x
+print(result)
 ```
 
 > `demo02 · reduce_and_lambda`
@@ -94,23 +94,23 @@ print (result)
 
 ```python
 words = ["ticket", "to", "mars", "one", "way"]
-sorted(words)                    # ['mars', 'one', 'ticket', 'to', 'way']
+sorted(words)  # ['mars', 'one', 'ticket', 'to', 'way']
 sorted(words, reverse=True)
 ```
 
 - A `key` function decides the order, and `min` and `max` accept the same :
 
 ```python
-sorted(words, key=len)           # ['to', 'one', 'way', 'mars', 'ticket']
-max(words, key=len)              # 'ticket'
+sorted(words, key=len)  # ['to', 'one', 'way', 'mars', 'ticket']
+max(words, key=len)     # 'ticket'
 ```
 
 - `any` and `all` reduce a sequence of conditions to a single boolean :
 
 ```python
 numbers = [4, 8, 15, 16, 23, 42]
-any(n > 40 for n in numbers)     # True
-all(n % 2 == 0 for n in numbers) # False
+any(n > 40 for n in numbers)      # True
+all(n % 2 == 0 for n in numbers)  # False
 ```
 
 - Both stop as soon as the answer is known :
@@ -132,16 +132,16 @@ all(n % 2 == 0 for n in numbers) # False
 
 ```python
 slist = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-print (slist)
+print(slist)
 list_str = [str(x) for x in slist]
-print (list_str)
+print(list_str)
 ```
 
 - Output : `['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']`
 
 ```python
 new_list = [x * 2 for x in slist]
-print (new_list)
+print(new_list)
 ```
 
 - Output : `[2, 4, 6, 8, 10, 12, 14, 16, 18, 20]`
@@ -188,13 +188,13 @@ print (new_list)
 
 ```python
 li = [3, 6, 2, 7]
-li_new = [elem*2 for elem in li]   # [6, 12, 4, 14]
+li_new = [elem * 2 for elem in li]  # [6, 12, 4, 14]
 ```
 
 - `if` statement acts as a filter and is optional :
 
 ```python
-[x-10 for x in grades if x>0]
+[x - 10 for x in grades if x > 0]
 ```
 
 ---
@@ -213,7 +213,7 @@ new_list = []
 for x in slist:
     if (x % 2) == 0:
         new_list.append(str(x))
-print (new_list) # ['2', '4', '6', '8', '10']
+print(new_list)  # ['2', '4', '6', '8', '10']
 ```
 
 - Pythonic syntax using list comprehension :
@@ -233,26 +233,26 @@ print (new_list) => ['2', '4', '6', '8', '10']
 - List comprehensions are syntactic sugar for higher-order functions :
 
 ```python
-[ expression for name in list ]
-map( lambda name: expression, list )
+[expression for name in list]
+map(lambda name: expression, list)
 ```
 
 - Example using higher order functions versus a list comprehension :
 
 ```python
-lm = list(map(lambda x: 2*x+1, [10, 20, 30]))
-print (lm) # [21, 41, 61]
-lc = [2*x+1 for x in [10, 20, 30]]
-print (lc) # [21, 41, 61]
+lm = list(map(lambda x: 2 * x + 1, [10, 20, 30]))
+print(lm)  # [21, 41, 61]
+lc = [2 * x + 1 for x in [10, 20, 30]]
+print(lc)  # [21, 41, 61]
 ```
 
 - The same comparison combining `map` with `filter` :
 
 ```python
-ls1 = list(map(lambda x: 2*x+1, filter(lambda x: x > 0, [10, 20, 30, -10])))
-print (ls1) # [21, 41, 61]
-ls2 = [2*x+1 for x in [10, 20, 30, -10] if x > 0]
-print (ls2) # [21, 41, 61]
+ls1 = list(map(lambda x: 2 * x + 1, filter(lambda x: x > 0, [10, 20, 30, -10])))
+print(ls1)  # [21, 41, 61]
+ls2 = [2 * x + 1 for x in [10, 20, 30, -10] if x > 0]
+print(ls2)  # [21, 41, 61]
 ```
 
 > `demo06 · syntactic_sugar`
@@ -268,16 +268,16 @@ print (ls2) # [21, 41, 61]
 
 ```python
 li = [3, 2, 4, 1]
-[elem*2 for elem in [item+1 for item in li] ] #[8, 6, 10, 4]
+[elem * 2 for elem in [item + 1 for item in li]]  # [8, 6, 10, 4]
 ```
 
 - Another example is :
 
 ```python
-list_a = ['A', 'B']
-list_b = ['C', 'D']
-list_c = [[x+y for x in list_a] for y in list_b]
-print (list_c)
+list_a = ["A", "B"]
+list_b = ["C", "D"]
+list_c = [[x + y for x in list_a] for y in list_b]
+print(list_c)
 ```
 
 - Produces :
@@ -299,9 +299,9 @@ print (list_c)
   - Name can consist of container of names matching type and “shape” of list members
 
 ```python
-list_d = [('a' , 1), ('b', 2), ('c', 7)]
-list_e = [ n * 3 for (x, n) in list_d]
-print (list_e) # [3, 6, 21]
+list_d = [("a", 1), ("b", 2), ("c", 7)]
+list_e = [n * 3 for (x, n) in list_d]
+print(list_e)  # [3, 6, 21]
 ```
 
 - Containers are objects that contain references to other objects :
@@ -310,10 +310,10 @@ print (list_e) # [3, 6, 21]
 
 ```python
 def subtract(a, b):
-     return a - b
+    return a - b
 oplist = [(6, 3), (1, 7), (5, 5)]
 list_f = [subtract(y, x) for (x, y) in oplist]
-print (list_f) # [-3, 6, 0]
+print(list_f)  # [-3, 6, 0]
 ```
 
 > `demo08 · comprehension_features`
@@ -329,18 +329,18 @@ print (list_f) # [-3, 6, 0]
 - Used to combine two lists in list of pairs :
 
 ```python
-ls1 = [1,2,3]
-ls2 = [4,5,6]
-ls3 = list(zip(ls1,ls2))
-print (ls3) # [(1, 4), (2, 5), (3, 6)]
+ls1 = [1, 2, 3]
+ls2 = [4, 5, 6]
+ls3 = list(zip(ls1, ls2))
+print(ls3)  # [(1, 4), (2, 5), (3, 6)]
 ```
 
 - Original lists can also be restored using same function :
 
 ```python
 b1, b2 = zip(*ls3)
-print (b1)
-print (b2)
+print(b1)
+print(b2)
 ```
 
 > `demo09 · zip_function`
@@ -355,9 +355,11 @@ print (b2)
 - Dictionaries are traditionally created with literals or key assignments :
 
 ```python
-dict1 = {'a':1, 'b':2, 'c':3}
+dict1 = {"a": 1, "b": 2, "c": 3}
 dict2 = {}
-dict2['a'] = 1; dict2['b'] = 2; dict2['c'] = 3
+dict2["a"] = 1
+dict2["b"] = 2
+dict2["c"] = 3
 ```
 
 - Sometimes keys and values are only known at runtime :
@@ -365,9 +367,9 @@ dict2['a'] = 1; dict2['b'] = 2; dict2['c'] = 3
 
 ```python
 dict3 = {}
-for (k,v) in zip(keys, values):
-     dict3[k] = v
-print (dict3) # {'a': 1, 'b': 2, 'c': 3}
+for k, v in zip(keys, values):
+    dict3[k] = v
+print(dict3)  # {'a': 1, 'b': 2, 'c': 3}
 ```
 
 - Alternative is using constructor with :
@@ -388,26 +390,26 @@ dict4 = dict(zip(keys, values))
 - Dictionary comprehension makes dictionary from two lists :
 
 ```python
-keys = ['a', 'b', 'c']
+keys = ["a", "b", "c"]
 values = [1, 2, 3]
-dict5 = { k:v for (k,v) in zip(keys, values)}
-print (dict5) # {'a': 1, 'b': 2, 'c': 3}
+dict5 = {k: v for (k, v) in zip(keys, values)}
+print(dict5)  # {'a': 1, 'b': 2, 'c': 3}
 ```
 
 - Requires actually more code then constructor function :
 
 ```python
 dict6 = dict(zip(keys, values))
-print (dict6) # {'b': 2, 'c': 3, 'a': 1}
+print(dict6)  # {'a': 1, 'b': 2, 'c': 3}
 ```
 
 - Many more occasions to use dictionary comprehension :
 
 ```python
-dict7 = {x: x**2 for x in [1,2,3,4,5]}
-print (dict7) # {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
-dict8 = {x.upper(): x*3 for x in 'abcd'}
-print (dict8) #{'A': 'aaa', 'C': 'ccc', 'B': 'bbb', 'D': 'ddd'}
+dict7 = {x: x**2 for x in [1, 2, 3, 4, 5]}
+print(dict7)  # {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
+dict8 = {x.upper(): x * 3 for x in "abcd"}
+print(dict8)  # {'A': 'aaa', 'B': 'bbb', 'C': 'ccc', 'D': 'ddd'}
 ```
 
 > `demo11 · dictionary_comprehension`
@@ -420,31 +422,31 @@ print (dict8) #{'A': 'aaa', 'C': 'ccc', 'B': 'bbb', 'D': 'ddd'}
 - We can initialize dictionary from `keys` as follows :
 
 ```python
-dict9 = dict.fromkeys(['a','b','c'], 0)
-print (dict9) # {'a': 0, 'c': 0, 'b': 0}
+dict9 = dict.fromkeys(["a", "b", "c"], 0)
+print(dict9)  # {'a': 0, 'b': 0, 'c': 0}
 ```
 
 - Can use dictionary comprehension to do the same thing :
 
 ```python
-dict10 = {k: 0 for k in ['a','b','c']}
-print (dict10) # {'a': 0, 'c': 0, 'b': 0}
+dict10 = {k: 0 for k in ["a", "b", "c"]}
+print(dict10)  # {'a': 0, 'b': 0, 'c': 0}
 ```
 
 - Generate dictionary by iterating each element :
 
 ```python
-dict11 = dict.fromkeys('dictionary')
-print (dict11) # {'d': None, 'o': None, 'i': None,
-# 't': None, 'a': None, 'c': None, 'y': None, 'n': None, 'r': None}
+dict11 = dict.fromkeys("dictionary")
+print(dict11)  # {'d': None, 'i': None, 'c': None, 't': None,
+# 'o': None, 'n': None, 'a': None, 'r': None, 'y': None}
 ```
 
 - Now using comprehension :
 
 ```python
-dict12 = {k: None for k in 'dictionary'}
-print (dict12) # {'t': None, 'y': None, 'c': None,
-# 'd': None, 'i': None, 'r': None, 'o': None, 'n': None, 'a': None}
+dict12 = {k: None for k in "dictionary"}
+print(dict12)  # {'d': None, 'i': None, 'c': None, 't': None,
+# 'o': None, 'n': None, 'a': None, 'r': None, 'y': None}
 ```
 
 > `demo12 · dictionary_from_keys`
@@ -461,16 +463,16 @@ print (dict12) # {'t': None, 'y': None, 'c': None,
 
 ```python
 my_set = set(range(10))
-print (my_set) # {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
-my_set2 = {x ** 2 for x in my_set}
-print (my_set2) # {0, 1, 4, 81, 64, 9, 16, 49, 25, 36}
+print(my_set)  # {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+my_set2 = {x**2 for x in my_set}
+print(my_set2)  # {0, 1, 64, 4, 36, 9, 16, 49, 81, 25}
 ```
 
 - Set comprehensions can contain `if` clause to filter items :
 
 ```python
 my_set3 = {x for x in my_set if x % 2 == 0}
-print (my_set3) #{0, 8, 2, 4, 6}
+print(my_set3)  # {0, 2, 4, 6, 8}
 ```
 
 - Set comprehensions do not have to take set as input :
@@ -478,7 +480,7 @@ print (my_set3) #{0, 8, 2, 4, 6}
 
 ```python
 my_set4 = {2**x for x in range(10)}
-print (my_set4) #{32, 1, 2, 4, 8, 64, 128, 256, 16, 512}
+print(my_set4)  # {32, 1, 2, 64, 4, 128, 256, 512, 8, 16}
 ```
 
 > `demo13 · set_comprehensions`

@@ -2,8 +2,8 @@
 def temp_convert(var):
     try:
         return int(var)
-    except ValueError as Argument:
-        print("The argument does not contain numbers\n", Argument)
+    except ValueError as e:
+        print("Argument does not contain numbers:", e)
 
 
 # Call above function here.

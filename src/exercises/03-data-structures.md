@@ -22,17 +22,17 @@ while True:
 Also print the content of the list, print the length of the list and print a subset of the list as follows :
 
 ```python
-print (f"Content of list : {reslist}")
-print (f"Length of list : {len(reslist)}")
-print (f"Part of list : {reslist[0:3]}")
+print(f"Content of list : {reslist}")
+print(f"Length of list : {len(reslist)}")
+print(f"Part of list : {reslist[0:3]}")
 ```
 
 Finally remove the first element of the list and print the list again :
 
 ```python
-print (reslist[0])
+print(reslist[0])
 del reslist[0]
-print (f"Content of list after deletion : {reslist}")
+print(f"Content of list after deletion : {reslist}")
 ```
 
 ### Step 2
@@ -40,7 +40,7 @@ print (f"Content of list after deletion : {reslist}")
 Now create a multidimensional list in which each row contains a calculation with as elements the type of operation, the two float numbers and the result. Also calculate the results of the subtraction, multiplication and division and store these as rows in the multidimensional list. Start by allocating memory for the multidimensional list as follows :
 
 ```python
-multireslist = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]]
+multireslist = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
 ```
 
 Then store the results of the operations in separate lists and add these lists at appropriate places in the multidimensional list. For the add operation your code could look as follows :
@@ -109,8 +109,8 @@ Ask the user to input a list of integers and split the input string into a list 
 
 ```python
 s = input("Give me a set of numbers separated by space characters : ")
-slist = s.split(' ')
-print (slist)
+slist = s.split(" ")
+print(slist)
 ```
 
 Also sort and reverse the list with the `sort` and `reverse` functions. Finally convert the list of strings to a list of integers with :
@@ -120,7 +120,7 @@ intlist = []
 for x in slist:
     x = int(x)
     intlist.append(x)
-print (intlist)
+print(intlist)
 ```
 
 Feel free to experiment with other string, list and dictionary functions. Use the documentation.

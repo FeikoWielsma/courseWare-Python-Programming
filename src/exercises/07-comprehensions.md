@@ -16,7 +16,7 @@ Replace the following code by a list comprehension :
 
 ```python
 s = input("Give a set of numbers separated by space characters : ")
-slist = s.split(' ')
+slist = s.split(" ")
 intlist = convert_to_int_list(slist)
 ```
 
@@ -28,7 +28,7 @@ Replace the following code by a call to the `reduce` function which uses a lambd
 
 ```python
 summation = summate(intlist)
-print (f"Sum of list {intlist} is {summation}")
+print(f"Sum of list {intlist} is {summation}")
 ```
 
 ### Step 4
@@ -37,7 +37,7 @@ Replace the following code by a call to the `reduce` function which uses a lambd
 
 ```python
 av = average(intlist)
-print (f"Average of list {intlist} is {av}")
+print(f"Average of list {intlist} is {av}")
 ```
 
 We can calculate the average in a one-liner using the `reduce` function, a lambda and the length of the list with the `len` function.
@@ -58,5 +58,5 @@ Finally replace the calculation of the factorial with the following code and obs
 
 ```python
 n = int(input("Give a positive integer number : "))
-fac = reduce((lambda x, y: x * y), list(range(1, n+1)))
+fac = reduce((lambda x, y: x * y), list(range(1, n + 1)))
 ```

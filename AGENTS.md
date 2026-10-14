@@ -12,11 +12,15 @@ converted from the original PDF deck (`PRG400-Python-Programming_og.pdf`, kept f
 reference). The `uv` and `ruff` material inside module 01, and the two appendices,
 `12-appendix-type-hinting` and `13-appendix-libraries`, are new.
 
-Working notes live in `build/plan.md` (where the conversion stands, what is left) and
+Working notes live in `build/plan.md` (the current rework plan : the Wordle exercise
+spine and the coherency pass; the finished conversion plan is
+`build/plan-2026-08-conversion.md`) and
 `build/tasks.md` (the checklist). Read those before picking up work.
 
 The build system is shared with sibling courseware repos via `../../Presentation-Template/build/`.
-Never modify anything under `Presentation-Template` from here.
+Changes to the shared build are allowed, but they are made and committed in
+`../Presentation-Template` itself, and they must keep every other course that uses it
+building. Prefer a course-level option over behaviour that changes for everyone.
 
 **The toolchain lives inside module 01.** `uv`, `ruff` and the editor were briefly a
 separate `00a-python-tooling` module, but installing Python and running it is what

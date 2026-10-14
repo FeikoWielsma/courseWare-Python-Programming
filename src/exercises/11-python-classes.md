@@ -13,7 +13,7 @@ Add a constructor to the `Employee` class which sets the attributes when they ar
 ```python
 class Employee:
     def __init__(self, name):
-        print ("Calling Employee constructor")
+        print("Calling Employee constructor")
         self.name = name
 ```
 
@@ -34,7 +34,7 @@ Also add a destructor to the class and keep a class variable which counts how ma
 ```python
 def __del__(self):
     class_name = self.__class__.__name__
-    print (class_name, "destroyed")
+    print(class_name, "destroyed")
 ```
 
 Write print statements when the constructor, destructor, getters and setters are called. Also print an instance variable directly. What is the result?
@@ -49,17 +49,17 @@ Access the `Employee` object through the property as follows :
 
 ```python
 e1.name = "Some Name"
-print (e1.name)
+print(e1.name)
 ```
 
 Also write statements to show the class and object data :
 
 ```python
-print ("Employee.__doc__:", Employee.__doc__)
-print ("Employee.__name__:", Employee.__name__)
-print ("Employee.__module__:", Employee.__module__)
-print ("Employee.__bases__:", Employee.__bases__)
-print ("Employee.__dict__:", Employee.__dict__)
+print("Employee.__doc__:", Employee.__doc__)
+print("Employee.__name__:", Employee.__name__)
+print("Employee.__module__:", Employee.__module__)
+print("Employee.__bases__:", Employee.__bases__)
+print("Employee.__dict__:", Employee.__dict__)
 ```
 
 Put the `Employee` class in a script in the `employees` package and add code to be able to export the `Employee` class from this package. Give the `Employee` class a `calc_salary()` method as follows :
@@ -72,7 +72,7 @@ def calc_salary(self):
 Optionally you can also add a `hiringdate` attribute to the `Employee` class. Add the following code to test the `Employee` class in stand alone mode :
 
 ```python
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
 ```
 

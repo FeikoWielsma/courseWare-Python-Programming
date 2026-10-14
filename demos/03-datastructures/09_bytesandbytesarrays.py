@@ -1,7 +1,7 @@
 text = "ABCDE"
 
 # arr = bytes(text, 'utf-8') # string with encoding 'utf-8'        # non mutable
-arr = bytearray(str, "utf-8")  # string with encoding 'utf-8'     # mutable
+arr = bytearray(text, "utf-8")  # string with encoding 'utf-8'     # mutable
 
 print(arr)
 print(arr[0])  # 65
@@ -18,7 +18,7 @@ arr[3] = 73
 arr[4] = 74
 
 str2 = arr.decode("utf-8")
-print(str2)
+print(str2)  # FGHIJ
 
 size = 5
 

@@ -28,7 +28,7 @@ def main() -> None:
     e1.name = "Pipo de Clown"
     print(e1.name)
     print(e1)
-    print("Salary is : ", e1.calc_salary())
+    print("Salary is :", e1.calc_salary())
 
     e2 = Employee("Werner von Braun")
     print (e2._Employee__name)

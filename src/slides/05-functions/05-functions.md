@@ -93,7 +93,7 @@ def average(values: list[float]) -> float:
 ```python
 show_message("First call to user defined function!")
 show_message("Again second call to the same function")
-show_message() # results in error
+show_message()  # results in error
 ```
 
 - Result :
@@ -122,7 +122,7 @@ TypeError: show_message() missing 1 required positional argument: 'message'
 ```python
 def change_me1(mylist: list[int]) -> None:
     mylist.append(40)
-    print("List inside the function change_me1: ", mylist)
+    print("List inside the function change_me1:", mylist)
 ```
 
 - Call to `change_me1` function :
@@ -130,7 +130,7 @@ def change_me1(mylist: list[int]) -> None:
 ```python
 my_list_outer = [10, 20, 30]
 change_me1(my_list_outer)
-print("List outside the function: ", my_list_outer)
+print("List outside the function:", my_list_outer)
 ```
 
 - Reference of passed object is used to append values :
@@ -152,7 +152,7 @@ List outside the function: [10, 20, 30, 40]
 ```python
 def change_me2(mylist: list[int]) -> None:
     mylist = [1, 2, 3, 4]  # This would assign new reference
-    print("Values inside the function change_me2: ", mylist)
+    print("Values inside the function change_me2:", mylist)
 ```
 
 - Call `change_me2` function :
@@ -160,7 +160,7 @@ def change_me2(mylist: list[int]) -> None:
 ```python
 my_list_outer = [10, 20, 30]
 change_me2(my_list_outer)
-print("Values outside the function: ", my_list_outer)
+print("Values outside the function:", my_list_outer)
 ```
 
 - Parameter `mylist` is changed in the function `change_me2` :
@@ -261,8 +261,8 @@ Values outside the function: [10, 20, 30]
 ```python
 def print_info(name: str, age: int) -> None:
     """This prints name and age passed into this function"""
-    print("Name: ", name)
-    print("Age: ", age)
+    print("Name:", name)
+    print("Age:", age)
 ```
 
 - Function call with keyword arguments :
@@ -292,9 +292,9 @@ Age: 55
 
 ```python
 def print_info(name: str, age: int = 35) -> None:
-     """This prints name and age passed into this function"""
-     print("Name: ", name)
-     print("Age: ", age)
+    """This prints name and age passed into this function"""
+    print("Name:", name)
+    print("Age:", age)
 ```
 
 - Functions calls with and without default arguments :
@@ -324,10 +324,10 @@ Age: 35
 
 ```python
 def show_arg_lists(arg: int, *arg_tuple: int, **kwargs: int) -> None:
-     """Function referencing argument, argument list and keyword arguments"""
-     print('arg:', arg)
-     print('args:', arg_tuple)
-     print('kwargs:', kwargs)
+    """Function referencing argument, argument list and keyword arguments"""
+    print("arg:", arg)
+    print("args:", arg_tuple)
+    print("kwargs:", kwargs)
 ```
 
 - `*args_tuple :`
@@ -356,12 +356,11 @@ show_arg_lists(44)
   - Return just one value in the form of an expression
   - Cannot contain commands or multiple expressions
 - Characteristics of lambda functions :
-  - Have their own local namespace
-  - Cannot access variables besides in parameter list and in global namespace
-  - Cannot be a direct call to print because lambda requires an expression
-  - Can be stored in variables and passed and returned to functions
-- Lambda's appear to be a one-line versions of a function :
-  - However they are not equivalent to inline statements in C or C++
+  - Have their own local namespace, and can read names from enclosing scopes
+  - The body is a single expression, so no assignments, loops or `return`
+  - Can be passed to and returned from functions, which is where they are useful
+- Lambdas are best kept short and passed straight to another function :
+  - `sorted(words, key=lambda w: w[-1])` rather than naming them with `=`
 
 ---
 
@@ -382,8 +381,8 @@ summation = lambda arg1, arg2: arg1 + arg2
 - Function call :
 
 ```python
-print("Value of total : ", summation( 10, 20 ))
-print("Value of total : ", summation( 20, 20 ))
+print("Value of total :", summation(10, 20))
+print("Value of total :", summation(20, 20))
 ```
 
 - Result :
@@ -410,7 +409,7 @@ Value of total : 40
 def summation(arg1: int, arg2: int) -> int:
     """Add both the parameters and return them"""
     tot = arg1 + arg2
-    print("Inside the function : ", tot)
+    print("Inside the function :", tot)
     return tot
 ```
 
@@ -418,7 +417,7 @@ def summation(arg1: int, arg2: int) -> int:
 
 ```python
 total = summation(10, 20)
-print("Outside the function : ", total )
+print("Outside the function :", total)
 ```
 
 - Result :
@@ -464,33 +463,33 @@ flowchart LR
 
 
 ```python
-x = 50 # This is a global variable
-y = 50 # This is a global variable
+x = 50  # This is a global variable
+y = 50  # This is a global variable
 ```
 
 - Function definitions :
 
 ```python
 def func1() -> None:
-     x = 2
-     print ('Changed local x to', x) # prints 2
+    x = 2
+    print("Changed local x to", x)  # prints 2
 def func2() -> None:
-     print('Access global x as', x)
+    print("Access global x as", x)
 def func3() -> None:
     global y
     y = 2
-    print ('Changed global y to', y) # prints 2
+    print("Changed global y to", y)  # prints 2
 ```
 
 - Function calls :
 
 ```python
-func1() # prints 2
-print('x is still', x) # prints 50
-func2() # prints 50
-print('x is still', x) # prints 50
-func3() # prints 2
-print('Value of y is', y) # prints 2
+func1()  # prints 2
+print("x is still", x)  # prints 50
+func2()  # prints 50
+print("x is still", x)  # prints 50
+func3()  # prints 2
+print("Value of y is", y)  # prints 2
 ```
 
 > `demo11 · variablescope`

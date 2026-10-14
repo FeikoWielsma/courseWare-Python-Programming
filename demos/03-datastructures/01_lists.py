@@ -1,16 +1,15 @@
-li = ["abcd", 786, 2.23, "john", 70.2]
-
-print(li)  # Prints complete list
-print(li[0])  # Prints first element of the list
-print(li[1:3])  # Prints elements starting from 2nd to 4th
-print(li * 2)  # Prints list two times
-print(li[::-1])  # Prints complete list in reverse order
+list1 = ["abcd", 786, 2.23, "john", True]
+print(list1)  # Prints complete list
+print(list1[0])  # Prints first element of the list
+print(list1[1:3])  # Prints the 2nd and 3rd elements
+print(list1 * 2)  # Prints list two times
+print(list1[::-1])  # Prints complete list in reverse order
 
 li2 = []
 print(li2)
 
-li2 = li2 + li
+li2 = li2 + list1
 print(li2)
 
-print(id(li))
+print(id(list1))
 print(id(li2))

@@ -11,7 +11,7 @@ Create a project or directory named `exercise9` and a Python module `calculator9
 Open a text file for writing just before entering the while loop that asks the user to choose a calculation type. Use a `with` statement, so that the file is closed however the loop ends, and indent the whole loop inside it :
 
 ```python
-with open('calculationdata.txt', mode='w', encoding='UTF-8') as fw:
+with open("calculationdata.txt", mode="w", encoding="UTF-8") as fw:
     while calc_action != "Quit":
         ...
 ```
@@ -49,10 +49,10 @@ Now enter some calculations to test your code and observe the contents of the fi
 Next create a new Python module `readcalculations.py`, read the lines of the file and display its contents with the following code :
 
 ```python
-with open('calculationdata.txt', encoding='UTF-8') as fr:
+with open("calculationdata.txt", encoding="UTF-8") as fr:
     for line in fr:
-        s = line.rstrip('\n')
-        slist = s.split(',')
+        s = line.rstrip("\n")
+        slist = s.split(",")
         print(slist)
 ```
 

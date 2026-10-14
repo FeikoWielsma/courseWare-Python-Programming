@@ -21,7 +21,7 @@ footer: Modules
 
 ```python
 def print_func(par):
-    print("Hello : ", par)
+    print("Hello :", par)
 ```
 
 - Modules allows code reuse :
@@ -47,8 +47,8 @@ import module1[, module2[,... moduleN]
   - Use name of the module as prefix when accessing functions, classes or variables
 
 ```python
-import test # Now you can call defined function
-test.print_func('pipo') # Hello : pipo
+import test  # Now you can call defined function
+test.print_func("pipo")  # Hello : pipo
 ```
 
 - Name to reference module can be changed with :
@@ -57,7 +57,7 @@ test.print_func('pipo') # Hello : pipo
 
 ```python
 import test as t
-t.print_func('pipo') # Hello : pipo
+t.print_func("pipo")  # Hello : pipo
 ```
 
 > `demo01 · importmodule`
@@ -84,7 +84,7 @@ from math import sqrt
 - Now the function `sqrt` can be used without prefix :
 
 ```python
-print(sqrt(9)) # 3.0
+print(sqrt(9))  # 3.0
 ```
 
 - Also possible is to import all names from a module with :
@@ -145,8 +145,8 @@ set PYTHONPATH=/usr/local/lib/python
 ```python
 # Filename: testmodules.py
 def sayhi():
-     print('Hi, this is testmodules speaking.')
-version = '0.1'
+    print("Hi, this is testmodules speaking.")
+version = "0.1"
 ```
 
 - Module can be imported by other module if on `sys.path :`
@@ -189,12 +189,14 @@ print(content)
 - Result :
 
 ```text
-['__doc__', '__name__', '__package__', 'acos', 'acosh', 'asin', 'asinh', 'atan',
-'atan2', 'atanh', 'ceil', 'copysign', 'cos', 'cosh', 'degrees', 'e', 'erf',
-'erfc', 'exp', 'expm1', 'fabs', 'factorial', 'floor', 'fmod', 'frexp', 'fsum',
-'gamma', 'hypot', 'isfinite', 'isinf', 'isnan', 'ldexp', 'lgamma', 'log',
-'log10', 'log1p', 'modf', 'pi', 'pow', 'radians', 'sin', 'sinh', 'sqrt', 'tan',
-'tanh', 'trunc']
+['__doc__', '__loader__', '__name__', '__package__', '__spec__', 'acos', 'acosh',
+'asin', 'asinh', 'atan', 'atan2', 'atanh', 'cbrt', 'ceil', 'comb', 'copysign',
+'cos', 'cosh', 'degrees', 'dist', 'e', 'erf', 'erfc', 'exp', 'exp2', 'expm1',
+'fabs', 'factorial', 'floor', 'fma', 'fmod', 'frexp', 'fsum', 'gamma', 'gcd',
+'hypot', 'inf', 'isclose', 'isfinite', 'isinf', 'isnan', 'isqrt', 'lcm', 'ldexp',
+'lgamma', 'log', 'log10', 'log1p', 'log2', 'modf', 'nan', 'nextafter', 'perm', 'pi',
+'pow', 'prod', 'radians', 'remainder', 'sin', 'sinh', 'sqrt', 'sumprod', 'tan',
+'tanh', 'tau', 'trunc', 'ulp']
 ```
 
 - `__name__` is module's name
@@ -225,7 +227,7 @@ cameras/
 
 ```python
 def canon_info():
-     print ("Canon camera")
+    print("Canon camera")
 ```
 
 - Package is required to have `__init__.py` in its directory :
@@ -308,6 +310,7 @@ leika_info()
 - Syntax :
 
 ```python
+from importlib import reload
 reload(module_name)
 ```
 
@@ -340,12 +343,13 @@ reload(hello)
 
 ```python
 x = 1
-def f() :
-     y = 1
-     print("Globals from f")
-     print(globals().keys()) # dict_keys(['__name__', '__doc__', ..., 'x', 'f'])
-     print("Locals from f")
-print(locals().keys()) # dict_keys(['y'])
+def f():
+    y = 1
+    print("Globals from f")
+    print(globals().keys())  # dict_keys(['__name__', '__doc__', ..., 'x', 'f'])
+    print("Locals from f")
+    print(locals().keys())  # dict_keys(['y'])
+f()
 ```
 
 > `demo09 · localsandglobals`
@@ -353,25 +357,26 @@ print(locals().keys()) # dict_keys(['y'])
 
 ---
 
-# Test Harnass
+# Test Harness
 
 - Used to run code only when script is run, not when imported
 
 ```python
-if __name__ == '__main__' :
+if __name__ == "__main__":
+    main()
 ```
 
-  - Only true only when the file is run
+  - Only true when the file is run
   - Not when the module is imported
   - Good practice to test how module is used
 - Top level code in module only evaluated first time it is imported :
   - Python maintains an internal list of all modules that have been imported
 - When you import a module for the first time :
   - Module script is executed in its own namespace until the end
-  - Internal list is updated, and execution of continues after the import statement
+  - Internal list is updated, and execution continues after the import statement
 - Can use reload to force new import e.g. when module changed
 
-> `demo10 · testharnass`
+> `demo10 · testharness`
 
 
 ---

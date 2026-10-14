@@ -27,7 +27,16 @@ addresult = calculations.add(f1, f2)
 It is inconvenient to put the module name as prefix before the function name. Therefore there is an alternative syntax called `from <module> import <name>`. Now change to this alternative and name all the function names that must be imported :
 
 ```python
-from calculations import faculty, convert_to_int_list, summate, average, add, subtract, multiply, divide
+from calculations import (
+    faculty,
+    convert_to_int_list,
+    summate,
+    average,
+    add,
+    subtract,
+    multiply,
+    divide,
+)
 ```
 
 As a result the prefixes before the method calls can be removed in `calculator6.py`.

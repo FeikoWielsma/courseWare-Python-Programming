@@ -22,9 +22,9 @@ footer: Variables and Data Types
   - Operand to the right of the = operator is the value stored in the variable
 
 ```python
-counter = 100 # An integer assignment
-miles = 1000.0 # A floating point
-name = "John" # A string
+counter = 100  # An integer assignment
+miles = 1000.0  # A floating point
+name = "John"  # A string
 ```
 - Python language does not have constants
 
@@ -235,12 +235,12 @@ del var_a, var_b
 | `oct(x)` | Converts an integer to an octal string |
 
 ```python
-y2 = repr('abc')   # y2 is "'abc'"
-y3 = str('abc')    # y3 is 'abc'
+y2 = repr("abc")  # y2 is "'abc'"
+y3 = str("abc")   # y3 is 'abc'
 i = 65
-print (chr(i))     # A
-print (hex(i))     # 0x41
-print (ord('A'))   # 65
+print(chr(i))    # A
+print(hex(i))    # 0x41
+print(ord("A"))  # 65
 ```
 
 > `demo06 · conversionfunctions`
@@ -276,7 +276,7 @@ print (ord('A'))   # 65
 - Creating strings is as simple as assigning a value to a variable :
 
 ```python
-var1 = 'Hello World!'
+var1 = "Hello World!"
 var2 = "Python Programming"
 ```
 
@@ -285,7 +285,7 @@ var2 = "Python Programming"
   - To access substrings, use square brackets for slicing along with the index
 
 ```python
-print ("var2[1:5]: ", var2[1:5])
+print("var2[1:5]:", var2[1:5])
 ```
 
   - Indexes start at 0 in beginning of the string, then upwards and to -1 at the end
@@ -314,22 +314,22 @@ print ("var2[1:5]: ", var2[1:5])
 - Examples :
 
 ```python
-print(str1) # Prints complete string
-print(str1[0]) # Prints first character of the string
-print(str1[-1]) # Prints last character of the string
-print(str1[2:5]) # Prints characters starting from 3rd to 6th
-print(str1 * 2) # Prints string two times
-print(str1 + "TEST") # Prints concatenated string
-print(str1[::-1]) # Prints string backwards
+print(str1)  # Prints complete string
+print(str1[0])  # Prints first character of the string
+print(str1[-1])  # Prints last character of the string
+print(str1[2:5])  # Prints characters starting from 3rd to 6th
+print(str1 * 2)  # Prints string two times
+print(str1 + "TEST")  # Prints concatenated string
+print(str1[::-1])  # Prints string backwards
 ```
 
 - String updated by assigning part of it to new string :
   - New value can be related to its previous value or to a completely different string
 
 ```python
-var1 = 'Hello World!'
-var2 = var1[:6] + 'Python'
-print("Updated String :- ", var2)
+var1 = "Hello World!"
+var2 = var1[:6] + "Python"
+print("Updated String :-", var2)
 ```
 
 - Result :
@@ -374,20 +374,20 @@ Updated String :- Hello Python
 - In a normal String the backslash can be escaped :
 
 ```python
-print ('C:\\nowhere')
+print("C:\\nowhere")
 ```
 
 - Result : `C:\nowhere`
 - A raw string is made with the `r` in front of the String :
 
 ```python
-print (r'C:\\nowhere')
+print(r"C:\nowhere")
 ```
 
-- Result : `C:\\nowhere`
-- Since Python 3 all strings are stored as Unicode internally :
-  - In Unicode strings consist of (32-bit) code points
-  - Allows more characters, including characters from most languages in the world
+- Result : `C:\nowhere`
+- Python strings are Unicode :
+  - A string is a sequence of code points, so `len("ąć")` is 2
+  - Text in almost every script in the world can be stored and processed
 - `unicodedata` module `:`
   - Provides access to Unicode Character Database (UCD)
   - UCD contains character properties for all Unicode characters
@@ -405,20 +405,20 @@ print (r'C:\\nowhere')
   - Used in Pythons version of C's `printf()` function
 
 ```python
-print ("My name is %s and weight is %d kg!" % ('Albert', 55))
+print("My name is %s and weight is %d kg!" % ("Albert", 55))
 ```
 
   - Result : `My name is Albert and weight is 55 kg!`
 - In Python 3 new style of formatting available with `format()` function :
   - Allows complex variable substitutions and value formatting
 
-```text
-s = '{0}, {1}, {2}'.format('a', 'b', 'c')
-print (s) => 'a, b, c'
-s = '{}, {}, {}'.format('a', 'b', 'c')
-print (s) => 'a, b, c'
-s = '{2}, {1}, {0}'.format('a', 'b', 'c')
-print (s) => 'c, b, a'
+```python
+s = "{0}, {1}, {2}".format("a", "b", "c")
+print(s)  # 'a, b, c'
+s = "{}, {}, {}".format("a", "b", "c")
+print(s)  # 'a, b, c'
+s = "{2}, {1}, {0}".format("a", "b", "c")
+print(s)  # 'c, b, a'
 ```
 
 > `demo10 · stringformatting`
@@ -513,8 +513,8 @@ print (s) => 'c, b, a'
 
 # f Strings
 
-- As of Python 3.6 f-strings are great new way to format strings :
-  - They more readable, faster, more concise and less prone to error than other formatting ways
+- f-strings are the standard way to format strings :
+  - More readable, faster and less prone to error than the older ways
 - f-strings are string literals that have an `f` at the beginning :
   - Inside there are curly braces containing expressions that will be replaced with their values
   - Expressions are evaluated at runtime and then formatted using the `__format__` protocol
@@ -548,22 +548,22 @@ f"{name.upper():40} is the creator of the first fission reactor"
 
 ```python
 para_str = """this string is made up of several lines and non-printable
-   characters such as TAB ( \t ) and they will show up that way when displayed.
-   NEWLINEs within the string, whether explicitly given like this within the
-   brackets [ \n ], or just a NEWLINE
-    within the variable assignment will also show up."""
-print (para_str)
+characters such as TAB ( \t ) and they will show up that way when displayed.
+NEWLINEs within the string, whether explicitly given like this within the
+brackets [ \n ], or just a NEWLINE within
+the variable assignment will also show up."""
+print(para_str)
 ```
 
 - Result :
 
 ```text
 this string is made up of several lines and non-printable
-characters such as TAB ( ) and they will show up that way when
-displayed. NEWLINEs within the string, whether explicitly given like
-this within the brackets [
- ], or just a NEWLINE
-within the variable assignment will also show up.
+characters such as TAB (         ) and they will show up that way when displayed.
+NEWLINEs within the string, whether explicitly given like this within the
+brackets [
+ ], or just a NEWLINE within
+the variable assignment will also show up.
 ```
 
 > `demo13 · triplequotes`

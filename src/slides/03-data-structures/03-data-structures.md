@@ -41,12 +41,12 @@ footer: Data Structures
 - Lists respond to all sequence operations usable on strings :
 
 ```python
-list1 = [ 'abcd', 786 , 2.23, 'john', True ]
-print(list1) # Prints complete list
-print(list1[0]) # Prints first element of the list
-print(list1[1:3]) # Prints elements starting from 2nd to 4th
-print(list1 * 2) # Prints list two times
-print(list1[::-1]) # Prints complete list in reverse order
+list1 = ["abcd", 786, 2.23, "john", True]
+print(list1)  # Prints complete list
+print(list1[0])  # Prints first element of the list
+print(list1[1:3])  # Prints the 2nd and 3rd elements
+print(list1 * 2)  # Prints list two times
+print(list1[::-1])  # Prints complete list in reverse order
 ```
 
 > `demo01 · lists`
@@ -103,10 +103,10 @@ print(list1[::-1]) # Prints complete list in reverse order
 
 
 ```python
-li = ['physics', 'chemistry', 'biology', 'computer science']
+li = ["physics", "chemistry", "biology", "computer science"]
 print("Value available at index 2 : ")
 print(li[2])
-li[2] = 'mathematics'
+li[2] = "mathematics"
 print("New value available at index 2 : ")
 print(li[2])
 ```
@@ -117,14 +117,14 @@ print(li[2])
 list2 = [1, 2, 3]
 list2.append(4)
 list2.append(5)
-print(list2) # [1, 2, 3, 4, 5]
+print(list2)  # [1, 2, 3, 4, 5]
 ```
 
 - Elements can be added to a list at a position with `insert(index, item)` :
 
 ```python
-list2.insert(0,99)
-print(list2) # [99, 1, 2, 3, 4, 5]
+list2.insert(0, 99)
+print(list2)  # [99, 1, 2, 3, 4, 5]
 ```
 
 ---
@@ -135,25 +135,25 @@ print(list2) # [99, 1, 2, 3, 4, 5]
 - Use `del` statement if you know index of element to remove :
 
 ```python
-li = ['physics', 'chemistry', 'biology', 'computer science']
+li = ["physics", "chemistry", "biology", "computer science"]
 del li[2]
 print("After deleting value at index 2 : ")
-print(li) # ['physics', 'chemistry', 'computer science']
+print(li)  # ['physics', 'chemistry', 'computer science']
 ```
 
 - Use `remove()` if want to remove element by value :
 
 ```python
-li.remove('physics')
+li.remove("physics")
 print("After deleting value 'physics' ")
-print(li) # ['chemistry', 'computer science']
+print(li)  # ['chemistry', 'computer science']
 ```
 
 - List itself can also be removed with `del` :
 
 ```python
 del list1
-list1.append(100) # gives NameError, name list1 not defined anymore
+list1.append(100)  # gives NameError, name list1 not defined anymore
 ```
 
 > `demo02 · updatinglists`
@@ -166,22 +166,22 @@ list1.append(100) # gives NameError, name list1 not defined anymore
 - Multidimensional lists created by using other lists as elements :
 
 ```python
-multilist = [['a', 'b', 'c'], [1, 2, 3, 4]]
+multilist = [["a", "b", "c"], [1, 2, 3, 4]]
 # first dimension
-print (multilist[0][0])   # a
-print (multilist[0][2])   # c
+print(multilist[0][0])  # a
+print(multilist[0][2])  # c
 # second dimension
-print (multilist[1][0])   # 1
-print (multilist[1][3])   # 4
+print(multilist[1][0])  # 1
+print(multilist[1][3])  # 4
 # print (multilist[1][4]) # IndexError: list index out of range
 ```
 
 - Delete from a multidimensional list :
 
 ```python
-multilist = [['a', 'b', 'c'], [1, 2, 3, 4]]
-del multilist[0][2]                # [['a', 'b'], [1, 2, 3, 4]]
-multilist.remove(['a', 'b'])       # [[1, 2, 3, 4]]
+multilist = [["a", "b", "c"], [1, 2, 3, 4]]
+del multilist[0][2]           # [['a', 'b'], [1, 2, 3, 4]]
+multilist.remove(["a", "b"])  # [[1, 2, 3, 4]]
 ```
 
 > `demo03 · multidimensionallists`
@@ -245,11 +245,11 @@ multilist.remove(['a', 'b'])       # [[1, 2, 3, 4]]
   - For a tuple containing a single value include a comma, otherwise it is a single value
 
 ```python
-tup1 = ('physics', 'chemistry', 'biology', 'computer science')
+tup1 = ("physics", "chemistry", "biology", "computer science")
 tup2 = (1, 2, 3, 4, 5)
-tup3 = "a", "b", "c", "d" # not recommended
-tup4 = ()                 # empty tuple
-tup5 = (50,)              # single element tuple
+tup3 = "a", "b", "c", "d"  # not recommended
+tup4 = ()                  # empty tuple
+tup5 = (50,)               # single element tuple
 ```
 
 > `demo06 · tuples`
@@ -264,26 +264,26 @@ tup5 = (50,)              # single element tuple
   - Use the + and * operators for concatenation and repetition
 
 ```python
-tup = (1, 2, 3, 4, 5, 6, 7 )
-print(tup[0]) # 1
-print(tup[1:5]) # [2, 3, 4, 5]
-print(len(tup)) # 7
+tup = (1, 2, 3, 4, 5, 6, 7)
+print(tup[0])  # 1
+print(tup[1:5])  # (2, 3, 4, 5)
+print(len(tup))  # 7
 ```
 
 - Tuples are immutable and can be thought of as read-only lists :
   - Cannot update them or change values of tuple elements
 
 ```python
-tuple[2] = 1000 # Invalid syntax with tuple
+tup[2] = 1000  # TypeError: 'tuple' object does not support item assignment
 ```
 
 - Portions of existing tuples can be used to create new tuples :
 
 ```python
 tup1 = (12, 34.56)
-tup2 = ('abc', 'xyz')
+tup2 = ("abc", "xyz")
 tup3 = tup1 + tup2
-print(tup3) # (12, 34.56, 'abc', 'xyz')
+print(tup3)  # (12, 34.56, 'abc', 'xyz')
 ```
 - Tuples can have other tuples or lists as elements
 
@@ -298,8 +298,8 @@ print(tup3) # (12, 34.56, 'abc', 'xyz')
 - Entire tuple can be removed with `del` statement :
 
 ```python
-tup1 = ('physics', 'chemistry', 'biology', 'computer science')
-print(tup) # ('physics', 'chemistry', 'biology', 'computer science')
+tup1 = ("physics", "chemistry", "biology", "computer science")
+print(tup)  # ('physics', 'chemistry', 'biology', 'computer science')
 del tup
 print("After deleting tup : ")
 print(tup)
@@ -333,11 +333,11 @@ NameError: name 'tup' is not defined
 - Tuple can be destructured and contents assigned to variables :
 
 ```python
-t = ('Albert', 'Einstein')
-print(t) # ('Albert', 'Einstein')
+t = ("Albert", "Einstein")
+print(t)  # ('Albert', 'Einstein')
 v, s = t
-print(v) # 'Albert'
-print(s) # 'Einstein'
+print(v)  # 'Albert'
+print(s)  # 'Einstein'
 ```
 
 > `demo08 · destructurewithtuples`
@@ -370,16 +370,16 @@ print(s) # 'Einstein'
 
 ```python
 text = "ABCDE"
-arr = bytes(text, 'utf-8') # string with encoding 'utf-8'
+arr = bytes(text, "utf-8")  # string with encoding 'utf-8'
 print(arr)
-print(arr[0]) # 65
+print(arr[0])  # 65
 ```
 
 - Bytes objects can be decoded to strings via `decode() :`
 
 ```python
 str2 = arr.decode("utf-8")
-print (str2) # ABCD
+print(str2)  # ABCDE
 ```
 
 - Bytearray object is mutable array created `bytearray()` constructor :
@@ -399,14 +399,14 @@ print (str2) # ABCD
 
 ```python
 s1 = {1, 1, 2, 2}
-print(s1) # {1, 2}
+print(s1)  # {1, 2}
 ```
 
 - `set()` constructor expects one iterable object :
 
 ```python
 s2 = set([3, 3, 4, 4])
-print(s2) # {3, 4}
+print(s2)  # {3, 4}
 ```
 
   - Can be modified afterwards by several methods like `add()`
@@ -414,12 +414,12 @@ print(s2) # {3, 4}
 - Supports mathematical operations like union and intersection :
 
 ```python
-a = set('abracadabra')
-b = set('alacazam')
-print(a) # unique letters in a
-                   # {'a', 'r', 'b', 'c', 'd'}
-print(a - b) # letters in a but not in b
-        # {'r', 'd', 'b'}
+a = set("abracadabra")
+b = set("alacazam")
+print(a)  # unique letters in a
+# {'a', 'r', 'b', 'c', 'd'}
+print(a - b)  # letters in a but not in b
+# {'r', 'd', 'b'}
 ```
 
 > `demo10 · setsandfrozensets`
@@ -437,16 +437,16 @@ print(a - b) # letters in a but not in b
 - Dictionaries are enclosed by curly braces `{ }` :
 
 ```python
-dict1 = {'Albert': 2341, 'Robert': 9102, 'Enrico': 3258}
-print(dict1) #{'Albert': 2341, 'Robert': 9102, 'Enrico': 3258}
+dict1 = {"Albert": 2341, "Robert": 9102, "Enrico": 3258}
+print(dict1)  # {'Albert': 2341, 'Robert': 9102, 'Enrico': 3258}
 ```
 
 - Values can be assigned and accessed using square brackets `[]` :
 
 ```python
-dict1['Werner'] = 3490
+dict1["Werner"] = 3490
 dict1[2] = "Data"
-print(dict1) # {'Albert': 2341, 'Robert': 9102, 'Enrico': 3258, 'Werner': 3490, 2: 'Data'}
+print(dict1)  # {'Albert': 2341, 'Robert': 9102, 'Enrico': 3258, 'Werner': 3490, 2: 'Data'}
 ```
 
 - Dictionaries have no concept of order among elements :
@@ -462,22 +462,22 @@ print(dict1) # {'Albert': 2341, 'Robert': 9102, 'Enrico': 3258, 'Werner': 3490, 
 - Use square brackets along with the key to obtain its value :
 
 ```python
-print(dict1["Robert"]) # 9102
-print(dict1[2]) # Data
+print(dict1["Robert"])  # 9102
+print(dict1[2])  # Data
 ```
 
 - Dictionary can be updated by modifying an existing entry :
 
 ```python
-dict1['Enrico'] = 9999
-print(dict1['Enrico']) # 9999
+dict1["Enrico"] = 9999
+print(dict1["Enrico"])  # 9999
 ```
 
 - Dictionary entry can be deleted :
 
 ```python
-del dict1['Albert']
-print(dict1['Albert']) # KeyError
+del dict1["Albert"]
+print(dict1["Albert"])  # KeyError
 ```
 
 - Entire contents of dictionary is cleared with `clear()`
@@ -499,19 +499,18 @@ print(dict1['Albert']) # KeyError
   - Last assignment wins
 
 ```python
-dict1 = {'Albert': 2341, 'Robert': 9102, 'Albert': 3258}
-print (dict['Albert']) # Result : 3258
+dict1 = {"Albert": 2341, "Robert": 9102, "Albert": 3258}
+print(dict1["Albert"])  # Result : 3258
 ```
 
 - Strings, numbers, or tuples can be dictionary keys :
   - But something like `['Name']` is not allowed since a list is mutable
 
 ```python
-dict = {['Albert']: 2341, 'Robert': 9102}
-print (dict[['Albert']])
+dict1 = {["Albert"]: 2341, "Robert": 9102}
 ```
 
-- Result : `TypeError: list objects are unhashable`
+- Result : `TypeError: cannot use 'list' as a dict key (unhashable type: 'list')`
 
 ---
 

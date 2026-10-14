@@ -12,7 +12,7 @@ footer: Python IO
   - Allows you to pass expressions, separated by commas, enclosed in parentheses
 
 ```python
-print ("Python is really a great language,", "isn't it? ")
+print("Python is really a great language,", "isn't it? ")
 ```
 
 - `print` is a function, so its arguments go inside the parentheses
@@ -52,8 +52,8 @@ print ("Python is really a great language,", "isn't it? ")
   - Opens a file to be able to read or write a file later
   - Creates file object which can be used to call other support methods
 
-```python
-file_object = open(file ,mode=r, buffering=-1, Encoding=None )
+```text
+file_object = open(file, mode="r", buffering=-1, encoding=None)
 ```
 
 - `file` :
@@ -152,9 +152,9 @@ file_object = open(file ,mode=r, buffering=-1, Encoding=None )
 
 ```python
 fo = open("test.txt", "wb")
-print("Name of the file: ", fo.name)
-print("Closed or not : ", fo.closed)
-print("Opening mode : ", fo.mode)
+print("Name of the file:", fo.name)
+print("Closed or not :", fo.closed)
+print("Opening mode :", fo.mode)
 ```
 
 - Result :
@@ -202,14 +202,16 @@ print(data)
 - Open binary files for writing without encoding attribute :
 
 ```python
-fw = open('binaryfile04.txt', mode='wb')
+fw = open("binaryfile04.txt", mode="wb")
 ```
 
 - Use `pack` method of `struct` module to prepare buffer for writing :
   - Format string determines how packing takes place
 
 ```python
-nr1 = 1; nr2 = 2; result = nr1 + nr2
+nr1 = 1
+nr2 = 2
+result = nr1 + nr2
 buffer = pack("iii", nr1, nr2, result)
 fw.write(buffer)
 ```
@@ -217,15 +219,15 @@ fw.write(buffer)
 - Data must be read like it is written using same format string :
 
 ```python
-fr = open('binaryfile04.txt', mode='rb')
+fr = open("binaryfile04.txt", mode="rb")
 buffer = fr.read()
 data = unpack("iii", buffer)
 ```
 
-- Returned data is a tuple that can be accessed as follows :
+- Returned data is a tuple that can be unpacked as follows :
 
 ```python
-num1 = data[0], num2 = data[1], res = data[2]
+num1, num2, res = data
 ```
 
 > `demo05 · writebinaryfile`
@@ -238,7 +240,7 @@ num1 = data[0], num2 = data[1], res = data[2]
 - Open file for writing specifying mode and encoding :
 
 ```python
-fw = open('textfilepolish.txt', mode='w', encoding='UTF-8')
+fw = open("textfilepolish.txt", mode="w", encoding="UTF-8")
 ```
 
 - `write` method writes any string to an open file :
@@ -246,7 +248,7 @@ fw = open('textfilepolish.txt', mode='w', encoding='UTF-8')
   - Does not add a newline character ('\n') to the end of the string
 
 ```python
-s = 'Polish text: ąćęłńóśźżĄĆĘŁŃÓŚŹŻ'
+s = "Polish text: ąćęłńóśźżĄĆĘŁŃÓŚŹŻ"
 fw.write(s)
 ```
 
@@ -272,14 +274,14 @@ Polish text: ąćęłńóśźżĄĆĘŁŃÓŚŹŻ
 - Open file for reading specifying mode and encoding :
 
 ```python
-fr = open('textfilepolish.txt', mode='r', encoding='UTF-8')
+fr = open("textfilepolish.txt", mode="r", encoding="UTF-8")
 ```
 
 - `read` method reads a string from an open file :
   - Parameter is the number of bytes to be read from the opened file
 
-```python
-file_object.read([count]);
+```text
+file_object.read([count])
 ```
 
 - `read()` starts reading from the beginning of the file :
@@ -288,7 +290,7 @@ file_object.read([count]);
 
 ```python
 data = fr.read()
-print (data)
+print(data)
 fr.close()
 ```
 
@@ -311,14 +313,14 @@ Polish text: ąćęłńóśźżĄĆĘŁŃÓŚŹŻ
 - Syntax :
 
 ```python
-file_object.close();
+file_object.close()
 ```
 
 - Example :
 
 ```python
 fo = open("foo.txt", "wb")
-print ("Name of the file: ", fo.name)
+print("Name of the file:", fo.name)
 fo.close()
 ```
 
@@ -341,8 +343,7 @@ Name of the file: foo.txt
 
 ```python
 with open("foo.txt", mode="w", encoding="utf-8") as fw:
-    fw.write("one line
-")
+    fw.write("one line\n")
 # the file is closed here, even if write() raised
 ```
 
@@ -415,15 +416,15 @@ with open("foo.txt", mode="w", encoding="utf-8") as fw:
 
 ```python
 fo = open("foo.txt", "r+")
-str = fo.read(10);
-print ("Read String is : ", str)
+text = fo.read(10)
+print("Read String is :", text)
 # Check current position
-position = fo.tell();
-print ("Current file position : ", position)
+position = fo.tell()
+print("Current file position :", position)
 # Reposition pointer at the beginning once again
-position = fo.seek(0, 0);
-str = fo.read(10);
-print ("Again read String is : ", str)
+position = fo.seek(0, 0)
+text = fo.read(10)
+print("Again read String is :", text)
 fo.close()
 ```
 
@@ -446,8 +447,8 @@ Again read String is : Python is
 ```python
 from pathlib import Path
 
-here = Path.cwd()                 # the current working directory
-sample = here / "data" / "one.txt"   # joining, with / instead of concatenation
+here = Path.cwd()                   # the current working directory
+sample = here / "data" / "one.txt"  # joining, with / instead of concatenation
 ```
 
 - The `/` operator joins path segments :
@@ -456,11 +457,11 @@ sample = here / "data" / "one.txt"   # joining, with / instead of concatenation
 - A path answers questions about itself :
 
 ```python
-sample.name       # one.txt
-sample.stem       # one
-sample.suffix     # .txt
-sample.parent     # the containing directory, as a Path
-sample.exists()   # True or False
+sample.name      # one.txt
+sample.stem      # one
+sample.suffix    # .txt
+sample.parent    # the containing directory, as a Path
+sample.exists()  # True or False
 ```
 
 ---
@@ -483,8 +484,7 @@ renamed.unlink()                               # delete it
 - Short reads and writes need no `open` at all :
 
 ```python
-sample.write_text("first
-", encoding="utf-8")
+sample.write_text("first\n", encoding="utf-8")
 content = sample.read_text(encoding="utf-8")
 ```
 
@@ -542,7 +542,7 @@ for entry in work.iterdir():
 for text_file in work.glob("*.txt"):
     print(text_file.name)
 
-for text_file in work.rglob("*.txt"):   # recursively, through subdirectories
+for text_file in work.rglob("*.txt"):  # recursively, through subdirectories
     print(text_file)
 ```
 
