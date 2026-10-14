@@ -24,48 +24,23 @@ line-length = 100
 force-exclude = true
 
 exclude = [
-    # Vendored third-party sample code. Not ours to restyle, and none of it is
-    # referenced from a slide.
-    "demos/Qt-Python-Binding-Examples-master",
-    # Scratch and archive directories that accumulated alongside the course.
-    # 2387 files, none referenced from a slide.
-    "demos/extrademos",
-    "demos/feiko",
-    "demos/casestudy",
     # Written badly on purpose : it is the file the linting slide runs ruff over,
     # and every finding in it is the lesson.
     "demos/01-pythonintro/03_ruff_findings.py",
-    # The archived calculator exercise spine. Kept for trainers, not built,
-    # not shipped, and held to no standard.
+    # archive/ holds what the course no longer uses : the calculator exercise
+    # spine, demo folders no slide referenced (earlier versions of the course
+    # and adjacent courses), and old exercise documents. Kept for trainers,
+    # not built, not shipped, and held to no standard.
     "archive",
     # reference/ is background material for the student to browse: vendored
     # book source, GUI toolkit examples, notebooks. It is not course code and
     # is not held to the course's style.
     "reference",
 
-    # Demo folders that no slide references and that the student bundle does
-    # not ship. They are kept as reference material from earlier versions of
-    # the course and from adjacent courses, and are held to no standard. The
-    # bundle allowlist in .forgejo/workflows/release.yml is the authority on
-    # what does ship; keep these two lists in step.
+    # PyInstaller sources beside the IO demos; not course material and not
+    # shipped. The bundle allowlist in .forgejo/workflows/release.yml is the
+    # authority on what does ship.
     "demos/09-python-io/createexecutable",
-    "demos/12-pythonlibraries-datetime",
-    "demos/12-pythonlibraries-extra",
-    "demos/12-pythonlibraries-json",
-    "demos/12-pythonlibraries-networking",
-    "demos/12-pythonlibraries-numpy",
-    "demos/12-pythonlibraries-regexp",
-    "demos/12-pythonlibraries-selenium",
-    "demos/12-pythonlibraries-threads",
-    "demos/12-pythonlibraries-tkgui",
-    "demos/12-pythonlibraries-unittesting",
-    "demos/12-pythonlibraries-unittesting-pytest",
-    "demos/12-pythonlibraries-xml",
-    "demos/13-appendix-decorators",
-    "demos/13-appendix-generators",
-    "demos/14-appendix-gui-toolkits",
-    "demos/14-gui-toolkits",
-    "demos/15-mocking",
 ]
 
 [lint]
@@ -192,11 +167,4 @@ ignore = [
 # tracked in build/tasks.md.
 "demos/08-exceptionhandling/**" = ["B904", "E722", "SIM115", "UP015", "UP024"]
 
-# SAX and minidom handler methods must carry the names the parser calls.
-"demos/12-pythonlibraries-xml/**" = ["N802"]
 
-# Appendix demo directories are reference material, held to correctness rather
-# than to house naming style.
-"demos/13-appendix-generators/**" = ["N801", "N802", "N803", "N806", "N816", "N999"]
-"demos/14-gui-toolkits/**" = ["N801", "N802", "N803", "N806", "N816", "N999"]
-"demos/12-pythonlibraries-extra/**" = ["N801", "N802", "N803", "N806", "N816", "N999"]

@@ -64,10 +64,6 @@ jobs:
             demos/11-python-classes \
             demos/12-appendix-type-hinting \
             demos/13-appendix-libraries \
-            demos/12-pythonlibraries-datetime \
-            demos/12-pythonlibraries-json \
-            demos/12-pythonlibraries-regexp \
-            demos/12-pythonlibraries-unittesting \
             solutions
 
       # Gating. Extracts every ```python fence from the slides and the exercise
@@ -77,6 +73,13 @@ jobs:
       - name: Check the slide code fences
         shell: bash
         run: uv run python build/check-fences.py
+
+      # Gating. Each exercise starter is the previous exercise's solution plus
+      # that exercise's handouts. They are generated, never edited, and this
+      # fails when someone changed a solution without regenerating them.
+      - name: Check the exercise starters are current
+        shell: bash
+        run: uv run python build/make-starters.py --check
 
       # Gating. The repository is at zero findings inside the ruff.toml scope,
       # and every per-file-ignore there names the lesson it protects. A new
