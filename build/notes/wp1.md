@@ -6,7 +6,7 @@
 - Moved the three superseded calculator solution folders into `archive/calculator/solutions/`.
 - `build/check-solutions.py` passes all 13 stages. Test counts: Ex 5 (9), Ex 6 (4), Ex 7 (8), Ex 8 (11), Ex 9 (9), Ex 10 (9), Ex 11 (12), Ex 12 (12), Ex 13 (17). Exercises 1–4 have no tests. Mypy passes for 12 and 13.
 - `uv sync`, fence check, `ruff check .`, solution compileall, and `make-starters.py --check` pass. The broad `compileall demos solutions` command also reaches non-bundled legacy Python 2 demo folders and fails there; the release workflow's allowlisted demo folders plus `solutions` compile successfully.
-- Remaining: commit the completed work. Coordinator follow-up is listed below.
+- Remaining in WP1: none. Coordinator follow-up is listed below.
 
 ## Decisions
 
