@@ -1,0 +1,13 @@
+Your guess: ********** WORDLE **********
+Secret: CRANE    Guess: CRANE
+ Position   Same place   In secret  
+    0          True         True    
+    1          True         True    
+    2          True         True    
+    3          True         True    
+    4          True         True    
+Five letters: True
+First two: cr, last two: ne
+The secret contains 1 letter e characters.
+Position	Same place	In secret
+The escape sequence \t inserts a tab.
