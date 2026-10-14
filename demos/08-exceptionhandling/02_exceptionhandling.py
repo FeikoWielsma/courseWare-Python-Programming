@@ -1,17 +1,14 @@
+# A bare except is shown here so the next demo can improve it.
 try:
     x = 1
     y = 0
-    z = x / y  # ZeroDivisionError
+    z = x / y
 except:
     print("Cannot divide by zero")
 
 try:
-    tup = (1, 2, 3)
-    tup[0] = 2  # TypeError
-except:
-    print("Cannot change tuple contents")
-
-try:
-    fh = open("somefile", "r")  # IOError
+    fh = open("somefile", "r")
 except:
     print("Cannot open file")
+else:
+    fh.close()

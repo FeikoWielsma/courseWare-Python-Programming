@@ -4,7 +4,7 @@ def test():
         infile = open(infilename, "r")
         for line in infile:
             print(line)
-    except IOError:
+    except OSError:
         print(f'cannot open file "{infilename}"')
 
 

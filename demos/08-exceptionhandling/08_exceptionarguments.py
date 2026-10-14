@@ -1,10 +1,8 @@
-# Define a function here.
-def temp_convert(var):
+def temp_convert(value: str) -> None:
     try:
-        return int(var)
-    except ValueError as e:
-        print("Argument does not contain numbers:", e)
+        print(int(value))
+    except ValueError as error:
+        print("Argument does not contain numbers:", error)
 
 
-# Call above function here.
 temp_convert("xyz")

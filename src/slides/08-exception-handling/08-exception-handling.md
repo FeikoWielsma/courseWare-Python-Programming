@@ -14,7 +14,7 @@ footer: Exception Handling
 - When Python encounters conditions it can't cope with :
   - An exception is raised
   - An exception is a Python object that represents an error
-- Every exception is a class, and the classes form a tree :
+- Exception types are classes, and those classes form a tree :
 
 ```mermaid
 flowchart LR
@@ -27,9 +27,40 @@ flowchart LR
 
 - Catching a class catches everything below it in that tree
 - When a Python script raises an exception :
-  - The exception must be handled immediately otherwise the script terminates
+  - Python looks for a matching handler in the callers; if none exists, the script stops
 - Another feature to handle unexpected errors are assertions :
   - Assertions are tests which must be true to continue
+
+
+
+
+---
+
+# Reading a Traceback
+
+- Run `01_unexpectederrors.py`; it deliberately ends with an uncaught exception.
+
+```python
+def divide(total: int, count: int) -> float:
+    return total / count
+
+
+divide(10, 0)
+```
+
+```text
+Traceback (most recent call last):
+  File "01_unexpectederrors.py", line 5, in <module>
+    divide(10, 0)
+    ~~~~~~^^^^^^^
+  File "01_unexpectederrors.py", line 2, in divide
+    return total / count
+           ~~~~~~^~~~~~~
+ZeroDivisionError: division by zero
+```
+
+- Read bottom-up : the type and message, the failing line, then its caller.
+- File paths are shortened here; line numbers point into the demo.
 
 > `demo01 · unexpectederrors`
 
@@ -38,29 +69,26 @@ flowchart LR
 
 # Exception Handling
 
-- Place code that might raise an exception in a `try` block :
-  - Code in a `try` block is tested for exceptions
-- Include an `except` statement after the `try` block :
-  - Place code to handle the problem as elegantly as possible there
-  - Generic `except` clause handles any exception
+- A `try` block contains code that may fail.
+- A bare `except` catches everything, including keyboard interrupts.
+- Recognise this form, but prefer specific exception types.
 
 ```python
+# A bare except is shown here so the next demo can improve it.
 try:
     x = 1
     y = 0
-    z = x / y  # ZeroDivisionError
+    z = x / y
 except:
     print("Cannot divide by zero")
+
 try:
-    fh = open("somefile", "r")  # IOError
+    fh = open("somefile", "r")
 except:
     print("Cannot open file")
+else:
+    fh.close()
 ```
-
-
-
-- After handling exception in `except` statement :
-  - Normal program flow continues
 
 > `demo02 · exceptionhandling`
 
@@ -69,29 +97,22 @@ except:
 
 # Typed Exception Handling
 
-- Generic `except` statement with no exceptions defined :
-  - Catches all exceptions that occur and is not considered good programming practice
-  - Does not make programmer identify root cause of the problem
-- Better is the usage of `except` clauses with a type :
-  - Single `try` statement can have multiple typed `except` statements
-  - Useful when the `try` block might throw different types of exceptions
+- Catch the errors you can handle.
+- `FileNotFoundError` is a subclass of `OSError`.
+- Put the specific handler first; Python uses the first matching handler.
 
 ```python
 try:
-    x = 1
-    y = 0
-    z = x / y  # ZeroDivisionError
-    tup = (1, 2, 3)
-    tup[0] = 2  # TypeError
-except ZeroDivisionError:
-    print("Division by zero")
-except TypeError:
-    print("Cannot change tuple contents")
+    fh = open("somefile", "r")
+except FileNotFoundError:
+    print("The file does not exist")
+except OSError as error:
+    print(f"Cannot open the file: {error}")
+else:
+    fh.close()
 ```
 
-
-
-- `except` corresponding to exception type executes
+- Other exception types propagate to the caller.
 
 > `demo03 · typedexceptionhandling`
 
@@ -100,27 +121,16 @@ except TypeError:
 
 # Exception Handling with Else
 
-- After `except` clause(s) `else` clause can be included :
-  - Executes if the code in the `try:` block does not raise an exception
-
-```text
-try:
-    Do your operations here
-except:
-    If there is any exception, then execute this block
-else:
-    If there is no exception then execute this block
-```
-
-- Example :
+- `else` runs only when the `try` block finishes without an exception.
+- Keep code that does not need the handler in `else`.
 
 ```python
 try:
     x = int(input("Please enter a number: "))
 except ValueError:
-    print("Oops! That was not valid number")
+    print("Oops! That was not a valid number")
 else:
-    print("Yeah! That was a really good number")
+    print(f"Yeah! {x} was a really good number")
 ```
 
 > `demo04 · exceptionhandlingwithelse`
@@ -164,40 +174,35 @@ for value in (None, "Hi!"):
 
 # Python Standard Exceptions
 
-| Exception | Description |
+| Exception | Typical cause |
 |---|---|
-| `Exception` | Base class for all exceptions |
-| `StopIteration` | Raised when `next()` of iterator does not point to any object |
-| `SystemExit` | Raised by the `sys.exit()` function |
-| `ArithmeticError` | Base class for all errors that occur for numeric calculation |
-| `OverflowError` | When calculation exceeds maximum limit for numeric type |
-| `FloatingPointError` | Raised when a floating point calculation fails |
-| `ZeroDivisionError` | Raised when division by zero occurs for numeric types |
-| `AssertionError` | Raised in case of failure of the assert statement |
-| `AttributeError` | Raised in case of failure of attribute reference or assignment |
-| `EOFError` | Raised when end of file is reached |
-| `ImportError` | Raised when an import statement fails |
-| `TypeError` | Raised when operation attempted that is invalid for data type |
-| `ValueError` | Raised when function for data type has invalid values |
+| `ValueError` | A valid type has an unsuitable value, such as `int("six")`. |
+| `TypeError` | An operation receives an unsuitable type. |
+| `NameError` | A name has not been defined. |
+| `AttributeError` | An object has no such attribute. |
+| `IndexError` | A sequence index is out of range. |
+| `KeyError` | A dictionary has no such key. |
+| `ZeroDivisionError` | Division by zero. |
+| `OSError` | A file or operating system operation fails. |
+| `FileNotFoundError` | A requested file or directory does not exist. |
+| `AssertionError` | An `assert` condition is false. |
 
 ---
 
-# Python Standard Exceptions
+# Assertions Check Programmer Assumptions
 
-| Exception | Description |
-|---|---|
-| `KeyboardInterrupt` | Raised when user interrupts program execution, usually by CTRL-C |
-| `LookupError` | Base class for all lookup errors |
-| `IndexError` | Raised when an index is not found in a sequence |
-| `KeyError` | Raised when the specified key is not found in the dictionary |
-| `NameError` | Raised when an identifier is not found in the namespace |
-| `UnboundLocalError` | Raised when accessing an unassigned local variable |
-| `EnvironmentError` | Base class for exceptions occurring outside Python |
-| `IOError` | Raised when an input/output operation fails |
-| `OSError` | Raised for operating system related errors |
-| `SyntaxError` | Raised when there is an error in Python syntax |
-| `IndentationError` | Raised when indentation is not specified properly |
-| `SystemError` | Raised when the interpreter finds an internal problem |
+- Use `assert` for an internal assumption, not for validating user input.
+- Python can disable assertions with `-O`; raise an exception for required checks.
+
+```python
+def kelvin_to_fahrenheit(temperature: float) -> float:
+    assert temperature >= 0, "Colder than absolute zero!"
+    return (temperature - 273.15) * 1.8 + 32
+
+
+print(f"{kelvin_to_fahrenheit(273.15):.1f}")  # 32.0
+print(kelvin_to_fahrenheit(-5))  # Deliberate AssertionError.
+```
 
 > `demo06 · assertionerror`
 
@@ -238,32 +243,26 @@ flowchart LR
 
 # Example try-finally
 
+- `finally` runs while an exception propagates to a handler.
+- It does not handle the exception itself.
 
 ```python
-try:
-    fh = open("testfile", "w")
-    fh.write("This is my test file for exception handling!!")
-finally:
-    print("This always runs")
-```
+def divide(total: int, count: int) -> float:
+    try:
+        return total / count
+    finally:
+        print("This always runs")
 
-- Result, whether or not the write succeeded :
+
+try:
+    divide(10, 0)
+except ZeroDivisionError:
+    print("Cannot divide by zero")
+```
 
 ```text
 This always runs
-```
-
-- Same example can be written more cleanly as follows :
-
-```python
-try:
-    fh = open("testfile", "w")
-    try:
-        fh.write("This is my test file for exception handling!!")
-    finally:
-        fh.close()
-except IOError:
-    print("Error: can't find file or read data")
+Cannot divide by zero
 ```
 
 > `demo07 · tryfinally`
@@ -273,50 +272,33 @@ except IOError:
 
 # Exception Arguments
 
-- An exception can have an argument :
-  - Value that gives additional information about the problem
-  - Contents of the argument vary by exception
-- Capture argument by supplying a variable in `except` clause :
+- `except ValueError as error` binds the exception object to `error`.
+- `str(error)` gives its message; `print(error)` uses that text.
+- `error.args` holds the constructor arguments as a tuple.
+- Some types expose additional attributes, such as `OSError.filename`.
 
-```text
-try:
-    Do your operations here;
-except ExceptionType as Argument:
-    You can print value of Argument here...
-```
-
-- In case of handling a single exception :
-  - Variable follows the name of the exception in the except statement
-- In case of handling multiple exceptions :
-  - Variable follows the tuple of the exception
-- Variable will receive the value of the exception :
-  - Can receive a single value or multiple values in the form of a tuple
-  - Tuple usually contains the error string, the error number and an error location
 
 ---
 
 # Example Argument of an Exception
 
-
 ```python
-# Define a function here.
-def temp_convert(var):
+def temp_convert(value: str) -> None:
     try:
-        return int(var)
-    except ValueError as e:
-        print("Argument does not contain numbers:", e)
-# Call above function here
+        print(int(value))
+    except ValueError as error:
+        print("Argument does not contain numbers:", error)
+
+
 temp_convert("xyz")
 ```
-
-- Result :
 
 ```text
 Argument does not contain numbers: invalid literal for int() with base 10: 'xyz'
 ```
 
-
 > `demo08 · exceptionarguments`
+
 
 ---
 
@@ -386,7 +368,7 @@ class NetworkError(RuntimeError):
 try:
     raise NetworkError("example.invalid")
 except NetworkError as e:
-    print(e)           # Bad hostname: example.invalid
+    print(e)  # Bad hostname: example.invalid
     print(e.hostname)  # example.invalid
 ```
 
@@ -408,7 +390,7 @@ except NetworkError as e:
 - Exceptions can have an argument :
   - Value that gives additional information about the problem
 - Python has a number of predefined exceptions like :
-  - `IOError, ArithmeticError, KeyError, IndentationError`
+  - `ValueError`, `TypeError`, `KeyError` and `OSError`
 - Exceptions can be raised with the `raise` statement
 - It is possible to create User Defined Exceptions :
   - By deriving classes from standard built-in exceptions
