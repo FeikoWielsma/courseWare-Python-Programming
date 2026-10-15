@@ -1,16 +1,11 @@
-# Filename: simplestclass.py
-
-
 class Person:
-    "Simple Person class"
+    """A person, with nothing in it yet."""
 
-    pass  # An empty block
+    pass  # an empty block
 
 
 p1 = Person()
-print(Person.__doc__)
-print(p1)
-
 p2 = Person()
 print(Person.__doc__)
+print(p1)
 print(p2)

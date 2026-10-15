@@ -190,7 +190,7 @@ with con:
 
 # Retrieving Data
 
-- Data retrieval is done with fetch functions like `fetchall()` :
+- `fetchall()` returns all rows of the result as a list of tuples :
   - The `Cars` table comes from demo03 or demo04, so run one of them first
 
 ```python
@@ -204,16 +204,13 @@ with con:
         print(row)
 ```
 
-- `fetchall()` gets all records and returns a result set :
-  - Actually the result set is a list of tuples
-
 ```text
 (1, 'Audi', 52642)
 (2, 'Mercedes', 57127)
 (3, 'Skoda', 9000)
 ```
 
-- Other `fetch*()` methods read data from result set :
+- Other fetch methods read part of the result :
 
 ```python
 first_row = cur.fetchone()
