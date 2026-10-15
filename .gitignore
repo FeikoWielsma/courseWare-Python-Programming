@@ -75,3 +75,4 @@ __pycache__/
 /PRG400-Python-Programming.html
 /PRG400-Python-Programming-Exercises.pdf
 /PRG400-Python-Programming-Exercises.html
+demos/10-python-database-access/*.db
