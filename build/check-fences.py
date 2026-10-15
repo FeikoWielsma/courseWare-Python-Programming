@@ -34,15 +34,10 @@ RUFF_SELECT = "UP,W6,RUF001,RUF002,RUF003"
 # UP018 : the conversion-functions slide calls `str('abc')` to show what the
 #         function does; rewriting it as a literal deletes the example.
 
-# UP030 : the string-formatting slide numbers its fields, `{0}, {1}, {2}` and then
-#         `{2}, {1}, {0}`, because the numbering is what it is showing.
-# UP031 : the string-formatting slide teaches percent formatting explicitly.
-#         Elsewhere in the deck it is dated style rather than a lesson, and
-#         modernising those fences with their demo files is tracked in
-#         build/tasks.md.
-# UP032 : the format-method slide is about `str.format`, so an f-string there
-#         would replace the subject of the slide.
-RUFF_IGNORE = "UP015,UP018,UP030,UP031,UP032"
+# UP031 : the format-specification slide closes with one `%` example, so the
+#         older style can be recognised in other people's code.
+# UP032 : the same fence shows `str.format` once, for the same reason.
+RUFF_IGNORE = "UP015,UP018,UP031,UP032"
 
 FENCE_OPEN = re.compile(r"^```python[ \t]*$")
 FENCE_CLOSE = re.compile(r"^[ \t]*```[ \t]*$")

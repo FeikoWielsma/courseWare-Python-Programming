@@ -1,4 +1,3 @@
-# ruff: noqa: UP031, UP032
 # The last two lines show the older styles on purpose, for recognising them.
 
 art = 453

@@ -93,15 +93,6 @@ ignore = [
 # The conversion-functions slide calls str('abc') to show what str() does.
 "demos/02-variablesanddatatypes/06_conversionfunctions.py" = ["UP018"]
 
-# These two slides teach str.format itself: the positional field numbers and the
-# method call are the subject, so an f-string would delete the example.
-"demos/02-variablesanddatatypes/10_stringformatting.py" = ["UP030", "UP031", "UP032"]
-"demos/02-variablesanddatatypes/11_formatmethod.py" = ["UP030", "UP031", "UP032"]
-
-# The sets demo writes duplicates on purpose, because dropping them is what a
-# set does, and builds a set from a list literal to show the constructor.
-"demos/03-datastructures/10_setsandfrozensets.py" = ["B033", "C405"]
-
 # The tuple demo calls tuple() to show the constructor beside the literal.
 "demos/03-datastructures/06_tuples.py" = ["C408"]
 
@@ -110,10 +101,6 @@ ignore = [
 "demos/04-controlflow/11_passstatement.py" = ["PIE790"]
 "demos/11-python-classes/01_simplestclass.py" = ["PIE790"]
 
-# The boolean operators demo shows raw precedence, including the short circuit
-# that ruff would rather see written out or simplified away.
-"demos/04-controlflow/14_booleanoperators.py" = ["RUF021", "SIM222", "SIM223"]
-
 # Assigning a lambda to a name is exactly what the anonymous functions slide
 # demonstrates.
 "demos/05-functions/09_lambdafunctions.py" = ["E731"]
@@ -121,15 +108,6 @@ ignore = [
 # The syntactic-sugar slide sets map with a lambda beside the comprehension it
 # becomes; the map half is the form being recognised.
 "demos/07_comprehensions/demo13_syntactic_sugar.py" = ["C417"]
-
-
-# The dictionaries demo ends by deleting the dictionary and using it again, to
-# show the NameError that follows.
-"demos/03-datastructures/11_dictionaries.py" = ["F821"]
-
-# The dictionary-methods demo repeats a key on purpose: the slide's comment is
-# about which of the two values survives.
-"demos/03-datastructures/12_dictionarymethods.py" = ["F601"]
 
 # The IO chapter opens files without a context manager on purpose, so that the
 # slide that introduces `with` has something to improve on, and it spells out
@@ -142,4 +120,14 @@ ignore = [
 # because the IO chapter that follows is about them.
 "demos/08-exceptionhandling/**" = ["B904", "E722", "SIM115", "UP015"]
 
+# The format-specification slide ends by showing the % operator and str.format
+# once, so they can be recognised in older code.
+"demos/02-variablesanddatatypes/13_formatspecs.py" = ["UP031", "UP032"]
 
+# The sets demo writes a duplicate on purpose, because dropping it is what a
+# set does.
+"demos/03-datastructures/09_setsandfrozensets.py" = ["B033"]
+
+# The dictionary-methods demo repeats a key on purpose: the slide's comment is
+# about which of the two values survives.
+"demos/03-datastructures/11_dictionarymethods.py" = ["F601"]

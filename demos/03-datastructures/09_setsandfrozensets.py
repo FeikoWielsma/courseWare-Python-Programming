@@ -1,4 +1,3 @@
-# ruff: noqa: B033
 # The duplicates in the first set literal are the point: a set drops them.
 
 s1 = {1, 1, 2, 2}

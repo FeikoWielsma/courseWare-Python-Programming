@@ -1,4 +1,3 @@
-# ruff: noqa: F601
 # The repeated key in the first line is the point: the last value wins.
 
 di1 = {"Albert": 2341, "Robert": 9102, "Albert": 3258}
