@@ -6,7 +6,7 @@ Continue in your own `wordle` project, or use `exercises/starters/07-comprehensi
 
 ### Step 1 : Build a row from expressions {★★}
 
-In `wordle/display.py`, replace the loop in `render` with a joined sequence of formatted letters. The dictionary below maps each mark to a small function. Complete the expression that calls the appropriate function for each letter and mark :
+In `wordle/display.py`, replace the loop in `render` with a joined sequence. The dictionary maps marks to formatting functions. Complete the call for each letter and mark :
 
 ```python
 def render(guess: str, marks: list[str]) -> str:
@@ -18,7 +18,7 @@ def render(guess: str, marks: list[str]) -> str:
     return "".join(... for letter, mark in zip(guess.upper(), marks, strict=True))
 ```
 
-See *Zip Function* for pairing items from two sequences. `strict=True` rejects sequences of different lengths instead of silently dropping unmatched items. Run the existing display test :
+See *Zip Function*. `strict=True` rejects sequences of different lengths. Run the display test :
 
 ```bash
 uv run pytest tests/test_display.py
@@ -113,9 +113,9 @@ def candidates(words: list[str], history: list[tuple[str, list[str]]]) -> list[s
 
 ### Step 4 : Choose a useful next guess {★★}
 
-Filtering leaves a list of possible answers. Prefer one whose distinct letters occur in many of those words: testing a common letter is more likely to reveal useful information. This is a simple heuristic, not a guarantee of the fewest possible guesses.
+Prefer an answer whose distinct letters occur in many remaining words. This heuristic favours useful information; it does not guarantee the fewest guesses.
 
-Complete these functions in `solver.py`. Count the number of words containing each letter, not the number of occurrences of that letter. A repeated letter in one word contributes only once.
+Complete these functions in `solver.py`. Count words containing each letter; repeated occurrences in one word contribute only once.
 
 ```python
 def letter_counts(words: list[str]) -> dict[str, int]:
@@ -128,7 +128,7 @@ def best_guess(words: list[str]) -> str:
     return max(words, key=lambda word: ...)
 ```
 
-See *Dictionary Comprehensions*, *Set Comprehensions* and *Built-ins that Take a Function*. `best_guess` expects a non-empty list. During normal play the real secret remains a candidate, so the hint command will have at least one word to choose from. If scores tie, `max` chooses the first word with that score.
+See *Dictionary Comprehensions*, *Set Comprehensions* and *Built-ins that Take a Function*. `best_guess` needs a non-empty list; during normal play the secret remains a candidate. On a tie, `max` chooses the first word with that score.
 
 :::hint
 
