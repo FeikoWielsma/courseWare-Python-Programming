@@ -47,7 +47,7 @@ flowchart LR
   D --> E
 ```
 
-- Any value can be tested, not only `True` and `False` :
+- Values other than `True` and `False` can also be tested :
   - `0`, `""`, empty collections and `None` count as false, everything else as true
 - Grouping statements :
   - Statements indented by the same amount form one block
@@ -208,30 +208,28 @@ flowchart LR
 
 # Infinite while Loop
 
-
 ```python
-var = 1
-while var == 1:  # This constructs an infinite loop
-    num = input("Enter a number :")
+while True:  # the condition never becomes false
+    num = input("Enter a number: ")
     print("You entered:", num)
-print("Good bye!")
+print("Good bye!")  # never reached
 ```
 
 - Result :
 
 ```text
-Enter a number :20
+Enter a number: 20
 You entered: 20
-Enter a number :3
+Enter a number: 3
 You entered: 3
-Enter a number :Traceback (most recent call last):
-  File "06_infinitewhile.py", line 3, in <module>
-    num = input("Enter a number :")
+Enter a number: Traceback (most recent call last):
+  File "06_infinitewhile.py", line 2, in <module>
+    num = input("Enter a number: ")
 KeyboardInterrupt
 ```
 
-- Above example will go in an infinite loop :
-  - Use CTRL+C to stop the program
+- A loop written this way continues until interrupted :
+  - Press Ctrl+C to stop the program
 
 > `demo06 · infinitewhile`
 
@@ -240,18 +238,18 @@ KeyboardInterrupt
 
 # for Loop
 
-- Control flow construct to repeat code number of times :
-  - Iterates over the items of any sequence, such as a list or a string
+- Repeats a block for each item of a sequence :
+  - Iterates over any sequence or iterable, such as a list, a string or a range
 - Syntax :
 
 ```python
 for var in sequence:
-    statements(s)
+    statement(s)
 ```
 
-- `for` loop operation :
-  - Each item in the sequence is assigned to iterating variable `var` in turn
-  - Statements(s) block is executed until the entire sequence is finished
+- How a `for` loop works :
+  - Each item is assigned to variable `var` in turn
+  - The block runs once per item until the sequence is exhausted
 
 ```mermaid
 flowchart LR
@@ -261,7 +259,6 @@ flowchart LR
   D --> B
   B -- no --> E[statement after the loop]
 ```
-
 
 ```python
 words = ["one", "way", "ticket", "to", "mars"]
@@ -338,12 +335,11 @@ for number, planet in enumerate(planets, start=1):
 
 # break and continue Statements
 
-- `break` statement terminates the current loop iteration :
-  - Resumes execution at next statement after the loop
-- `continue` statement returns control to the beginning of the loop :
-  - Remaining statements in the current iteration of the loop are skipped
-  - Control is moved back to the top of the loop
-- `break` and `continue` can be used in both `while` and `for` loops
+- `break` leaves the loop immediately :
+  - Execution continues with the statement after the loop
+- `continue` skips the rest of the current iteration :
+  - Control moves directly to the next pass of the loop
+- Both statements work inside `while` and `for` loops
 
 ```python
 for letter in "Python":
@@ -365,14 +361,13 @@ print("After second loop!")
 
 # Loop with else Combination
 
-- `else` statement can be associated with loop statements
-- If `else` statement is used with a `for` loop :
-  - `else` statement executed when loop has exhausted iterating the list but not on a break
-- If `else` statement is used with a `while` loop :
-  - `else` statement is executed when the condition becomes false
-- In following example :
-  - `else` statement is combined with `for` statement
-  - Search is done for a perfect square in the range 99 tot 80, number 81 is found
+- An `else` clause can be attached to a loop :
+  - In a `for` loop, the `else` block runs when the sequence is exhausted
+  - In a `while` loop, the `else` block runs when the condition becomes false
+  - In both cases, the `else` block is skipped if the loop was left via `break`
+- In the following example :
+  - The loop searches for a perfect square downwards from 99
+  - When 81 is found, `break` leaves the loop and skips the `else` block
 
 ```python
 from math import sqrt
@@ -393,15 +388,11 @@ else:
 
 # pass Statement
 
-- Used when a statement is required syntactically :
-  - But it is not desired that any command or code executes
-- `pass` statement is a null operation :
-  - Nothing happens when it executes
-  - Also useful in places where code has not been written yet e.g. in stubs
-- `pass` statement is helpful when :
-  - A code block is created but it is no longer required
-  - Statements inside the block may then be removed
-  - Block may remain with `pass` statement so it doesn't interfere with other code parts
+- Used when Python's syntax requires a statement but no action is needed :
+  - A null operation; nothing happens when it executes
+  - Commonly used as a placeholder in stubs or empty branches
+- When a code block is under construction :
+  - `pass` keeps the file syntactically valid until code is written
 
 ```python
 for letter in "Python":
@@ -556,22 +547,18 @@ match command.split():
 
 ---
 
-# Summary : Control Flow and Operators
+# Summary : Control Flow
 
-- Python has the following control flow constructs :
-  - `if, if...else, elif, loop, while, continue, pass`
-- Pythons `if` statement test a logical expression for `True` or `False` :
-  - `else` may be combined with an `if` statement
-  - `elif` allows checking of multiple expressions
-- Pythons `while` loop is used to repeat code number of times :
-  - Repetition continues until conditional expression becomes false
-- Pythons `for` loop is used to repeat code number of times :
-  - Iterates over the items of any sequence, such as a list or a string
-- Pythons `pass` statement used when syntax requires statement :
-  - Nothing happens when it executes
-- Pythons `break` and `continue` statements :
-  - Used to terminate current iteration and pass control elsewhere
-- Python supports the following operators :
-  - Arithmetic, Comparison, Logical, Assignment and Conditional Operators
+- Branching statements choose which code runs :
+  - `if`, `if...else` and `elif` test conditions in turn
+  - `match` compares data against a series of patterns
+- Iteration statements repeat a block of code :
+  - `while` repeats as long as a condition holds
+  - `for` iterates over each item of a sequence
+- Statements that steer a loop :
+  - `break` exits the loop early
+  - `continue` skips to the next iteration
+  - An `else` clause runs when the loop finishes without a `break`
+- The `pass` statement is a no-op placeholder where a statement is required
 
-> `exercise04 · Control Flow and Operators`
+> `exercise04 · Control Flow`
