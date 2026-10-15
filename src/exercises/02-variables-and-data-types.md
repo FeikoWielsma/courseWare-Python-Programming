@@ -1,84 +1,157 @@
 # Exercise 2 : Variables and Data Types
 
-In this exercise you build the first version of the calculator application that you will extend throughout the course.
+A Wordle game has to compare a guess with the secret word, letter by letter, before it can tell you anything. In this exercise you do that for one guess against one known word, using nothing but strings and f-strings. It takes about 45 minutes.
+
+Continue in your own `wordle` project, or start from `exercises/starters/02-variables-and-data-types/`, which is the finished Exercise 1. Run the program after every step with :
+
+```bash
+uv run python wordle.py
+```
+
+Every step is marked with how much help it gives :
+
+- ★ the code is given; type it in and read it
+- ★★ a skeleton is given; you fill in the body
+- ★★★ only the signature and the tests are given
+
+Steps marked ★★ have a reference solution. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
 
-### Step 1
+### Step 1 : A secret and a guess {★}
 
-Create a directory or project named `exercise2`. Next create a Python module `calculator2.py` in this directory and create two variables `nr1` and `nr2`. Assign integer values to them as follows :
-
-```python
-nr1 = 16
-nr2 = 23
-```
-
-Use your own values if you like. Print the values, the type and the memory location of the variables with :
+Replace the contents of `wordle.py` with a fixed secret word and a guess typed by the player :
 
 ```python
-print(nr1)
-print(nr2)
-print(type(nr1))
-print(type(nr2))
-print(id(nr1))
-print(id(nr2))
+secret = "crane"
+guess = input("Your guess: ").strip().lower()
+
+print(f"{' WORDLE ':*^28}")
+print(f"Secret: {secret.upper()}    Guess: {guess.upper()}")
 ```
 
-You should see that the type of the variables is `<class 'int'>`. The `id` function gives some numeric value which actually indicates the memory address in a default Python implementation.
+`input` always returns a string. `.strip()` removes the spaces a player types by accident around the word, and `.lower()` makes `Slate` and `slate` the same guess. Each method returns a new string, so they can be chained.
 
-Now change the values of the variables by assigning them to a new value and print the memory location of the variables again with the `id` function. Notice that the id of the variables has changed just by assigning them. This illustrates the fact that integer variables are read-only : they cannot change once they are created. When you change an integer variable you actually create a new one.
-
-### Step 2
-
-Next perform arithmetic operations on the variables by adding, subtracting, multiplying and dividing them. Store the result of these operations in other variables. An example for the addition operation is :
-
-```python
-addresult = nr1 + nr2
-```
-
-Display the results of the operations with an explanatory message :
-
-```python
-print("The result of the addition of : " + str(nr1) + " and " + str(nr2) + " is : ")
-print(addresult)
-```
-
-Notice the conversion function `str` that turns an integer into a string, so that it can be added to other strings.
-
-As an alternative you can also use the string format operator `%` for printing values in a string :
-
-```python
-print("The result of the addition of : %d and %d is : " % (nr1, nr2))
-```
-
-A third alternative is to use the new style of formatting in Python 3 with the `format()` function. Figure out using the course manual or documentation how to use this style of string formatting. And a fourth alternative would be to use an f-string. Figure that one out as well.
-
-Also display the types of the results. The first three are of `<class 'int'>`. Notice that the type of the division is `<class 'float'>`.
-
-### Step 3
-
-Now use the `input()` function to ask for the input of two numbers from the user as follows :
-
-```python
-s1 = input("give me number 1 : ")
-s2 = input("give me number 2 : ")
-```
-
-The `input()` function returns a string. Find out about the type of the return values by printing their type. Now perform addition with the `+` operator on the user input. With user input 1 and 3 the result will be 13, because 1 and 3 are seen as strings : the strings are concatenated.
-
-```python
-addresult = s1 + s2  # s1='1', s2='3'
-print(addresult)     # prints 13
-```
-
-Next convert the strings to integers with the `int()` conversion function as follows :
-
-```python
-addresult = int(s1) + int(s2)
-```
-
-With the same input the result will now be 4. When the given input cannot be converted to an int, a runtime error occurs :
+In the banner, `:*^28` is a format specification : centre the text (`^`) in 28 characters, and fill the space on both sides with `*`. Run the program and type `  Slate ` with the spaces :
 
 ```text
-ValueError: invalid literal for int() with base 10: 'w'
+Your guess:   Slate 
+********** WORDLE **********
+Secret: CRANE    Guess: SLATE
 ```
+
+### Step 2 : Letter by letter {★★}
+
+For each of the five positions, the game needs the answer to two questions : is the letter of the guess the same as the letter of the secret in that place, and is the letter of the guess anywhere in the secret? Print the answers as a small table, one row per position.
+
+The header and the shape of the first row are given. Fill in the two questions, then add the rows for positions 1 to 4 :
+
+```python
+print(f"{'Position':^10}{'Same place':^14}{'In secret':^12}")
+print(f"{0:^10}{...:^14}{...:^12}")
+```
+
+The widths 10, 14 and 12 keep every column under its heading.
+
+:::hint
+`guess[0]` is the first letter of the guess. Comparing two letters with `==` gives `True` or `False`, and so does the `in` operator : `"a" in "crane"` is `True`.
+:::
+
+:::hint
+If the table shows `1` and `0` instead of `True` and `False`, the format specification is to blame : with a width, a `bool` is formatted as the number it also is. Add `!s` before the colon, as in `{guess[0] in secret!s:^12}`, to turn the value into a string first.
+:::
+
+:::output
+```text
+Your guess: react
+********** WORDLE **********
+Secret: CRANE    Guess: REACT
+ Position   Same place   In secret  
+    0         False         True    
+    1         False         True    
+    2          True         True    
+    3         False         True    
+    4         False        False    
+```
+:::
+
+:::solution
+```python
+print(f"{'Position':^10}{'Same place':^14}{'In secret':^12}")
+print(f"{0:^10}{guess[0] == secret[0]!s:^14}{guess[0] in secret!s:^12}")
+print(f"{1:^10}{guess[1] == secret[1]!s:^14}{guess[1] in secret!s:^12}")
+print(f"{2:^10}{guess[2] == secret[2]!s:^14}{guess[2] in secret!s:^12}")
+print(f"{3:^10}{guess[3] == secret[3]!s:^14}{guess[3] in secret!s:^12}")
+print(f"{4:^10}{guess[4] == secret[4]!s:^14}{guess[4] in secret!s:^12}")
+```
+
+Five lines that differ only in a number are a loop waiting to be written. Exercise 4 writes it.
+:::
+
+### Step 3 : Length, slices and counts {★★}
+
+Three more questions about the guess and the secret, each answered in one line :
+
+```python
+print(f"Five letters: {...}")
+print(f"First two: {...}, last two: {...}")
+print(f"The secret contains {...} letter e characters.")
+```
+
+The first is a check the game will need on every guess : does it have five letters? The second takes the guess apart with slices. The third counts how often `e` occurs in the secret.
+
+:::hint
+`len` gives the length of a string, and comparing it with `==` gives `True` or `False`. A slice `word[start:stop]` can leave out either end, and a negative index counts from the end : `word[-1]` is the last letter.
+:::
+
+:::hint
+Strings have a method that counts how often a piece of text occurs in them, and it is named after what it does. You call it on the secret, with the letter as its argument.
+:::
+
+:::solution
+```python
+print(f"Five letters: {len(guess) == 5}")
+print(f"First two: {guess[:2]}, last two: {guess[-2:]}")
+print(f"The secret contains {secret.count('e')} letter e characters.")
+```
+
+Inside an f-string that is written with double quotes, a string literal takes single quotes : `'e'`.
+:::
+
+### Step 4 : Tabs and raw strings {★}
+
+A backslash in a string starts an escape sequence : `\t` is a tab and `\n` a line break. Add a second header for the table, laid out with tabs instead of widths, and a line that shows a backslash as it is written :
+
+```python
+print("Position\tSame place\tIn secret")
+print(r"The escape sequence \t inserts a tab.")
+```
+
+The `r` in front of the second string makes it a raw string, in which a backslash is an ordinary character. Remove the `r`, run the program, and see what happens to the line. Then put it back. The slides *Escape Characters* and *Raw and Unicode Strings* list the other sequences.
+
+Run the complete program once more and compare :
+
+:::output
+```text
+Your guess: react
+********** WORDLE **********
+Secret: CRANE    Guess: REACT
+ Position   Same place   In secret  
+    0         False         True    
+    1         False         True    
+    2          True         True    
+    3         False         True    
+    4         False        False    
+Five letters: True
+First two: re, last two: ct
+The secret contains 1 letter e characters.
+Position	Same place	In secret
+The escape sequence \t inserts a tab.
+```
+:::
+
+The complete file is in `solutions/02-variables-and-data-types/wordle.py`.
+
+### If time permits {★★★}
+
+A game has a number of guesses. Ask the player how many they want, convert the answer with `int()`, and print it back in a sentence. Then run the program again and answer `six`. Read the last line of the error that Python prints : which exception is it, and what does its message tell you about what `int()` accepts? The slide *Type Conversions* shows the conversion functions. There is no reference solution for this step.
