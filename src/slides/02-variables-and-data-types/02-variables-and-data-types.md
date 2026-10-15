@@ -268,9 +268,136 @@ print(ord("A"))  # 65
 
 ---
 
+# Python Operators
+
+- An operator combines one or more operands into a new value :
+
+```python
+print(7 / 2)  # 3.5, true division always gives a float
+print(7 // 2)  # 3, floor division drops the fraction
+print(7 % 2)  # 1, the remainder
+print(2**10)  # 1024, exponentiation
+```
+
+- Python groups its operators as follows :
+  - Arithmetic and assignment operators, for numbers and for strings
+  - Comparison operators, which give `True` or `False`
+  - Logical, membership and identity operators
+- Bitwise operators `& | ^ ~ << >>` work on the bits of integers, rarely needed
+- There is no `++` or `--` : write `count += 1` instead
+
+> `demo08 · pythonoperators`
+
+---
+
+# Arithmetic and Assignment Operators
+
+| Operator | Arithmetic Operator Description |
+|---|---|
+| `+` / `-` | Adds or subtracts the values on either side of the operator |
+| `*` | Multiplies the values on either side of the operator |
+| `/` | Divides left operand by right operand, the result is always a float |
+| `//` | Floor division, the quotient rounded down to a whole number |
+| `%` | Modulo, the remainder of the division |
+| `**` | Exponentiation, the left operand raised to the power of the right |
+
+| Operator | Assignment Operator Description |
+|---|---|
+| `=` | Binds the name on the left to the value on the right |
+| `+=` / `-=` | Adds or subtracts the right operand, and assigns the result to the left |
+| `*=` / `/=` | Multiplies or divides by the right operand, and assigns the result |
+| `//=` / `%=` / `**=` | The same for floor division, modulo and exponentiation |
+
+```python
+count = 10
+count += 1
+count *= 2
+print(count)  # 22
+```
+
+---
+
+# Comparison Operators
+
+| Operator | Comparison Operator Description |
+|---|---|
+| `==` / `!=` | True if the two values are equal, or not equal |
+| `>` / `<` | True if the left value is greater, or less, than the right |
+| `>=` / `<=` | True if the left value is greater or equal, or less or equal |
+
+- Comparisons chain, so a range check reads as it would on paper :
+
+```python
+i = 10
+j = 11
+print(i > j)  # False
+print(i != j)  # True
+print(0 < i < 20)  # True, comparisons chain
+print("apple" < "banana")  # True, strings compare letter by letter
+```
+
+- `==` compares values; whether two names are one object is `is`, on the next slide
+
+---
+
+# Logical, Membership, Identity Operators
+
+| Operator | Description |
+|---|---|
+| `and` / `or` | True if both operands are true, or if at least one is |
+| `not` | Reverses the truth value of its operand |
+| `in` / `not in` | True if the value is, or is not, an element of the sequence |
+| `is` / `is not` | True if both sides are, or are not, the very same object |
+
+- `and` and `or` stop as soon as the answer is known, and return an operand :
+
+```python
+name = ""
+print(name or "anonymous")  # anonymous, `or` returns the first truthy operand
+```
+
+- `is` asks whether two names refer to one object, `==` whether values are equal :
+
+```python
+a = [1, 2, 3]
+b = a
+c = [1, 2, 3]
+print(a == c)  # True, equal values
+print(a is c)  # False, two different lists
+print(a is b)  # True, two names for one list
+```
+
+> `demo09 · booleanoperators`
+
+---
+
+# Python Operators Precedence
+
+| Operator | Description, from highest to lowest |
+|---|---|
+| `**` | Exponentiation, which groups from the right |
+| `+x` `-x` `~x` | Unary plus, minus and bitwise not |
+| `*` `/` `//` `%` | Multiplication, division, floor division and modulo |
+| `+` `-` | Addition and subtraction |
+| `<<` `>>` `&` `^` `\|` | Bitwise shifts, and, exclusive or, or |
+| `==` `!=` `<` `<=` `>` `>=` `in` `not in` `is` `is not` | Comparisons, membership and identity |
+| `not` | Logical not |
+| `and` | Logical and |
+| `or` | Logical or |
+
+```python
+print(2 + 3 * 4)  # 14
+print((2 + 3) * 4)  # 20
+print(2**3**2)  # 512, ** groups from the right
+```
+
+- When in doubt, add parentheses : they cost nothing and help the reader
+
+---
+
 # Python Strings
 
-- Strings are sets of characters between quotation marks :
+- Strings are sequences of characters between quotation marks :
   - Pairs of single `'` quotes, of double `"` quotes and of triple (''' or """) quotes supported
   - There is no distinction between single and double quoted strings
 - Creating strings is as simple as assigning a value to a variable :
@@ -305,7 +432,6 @@ print("var2[1:5]:", var2[1:5])
 | `in` | Membership. Returns true if a character exists in the given string |
 | `not in` | Membership. Returns true if a character does not exist in the given string |
 | `r/R` | Raw String. Suppresses actual meaning of escape characters |
-| `%` | Format. Performs string formatting |
 
 ---
 
@@ -341,7 +467,7 @@ Updated String :- Hello Python
 ```
 - New string var2 will have different id
 
-> `demo08 · stringoperations`
+> `demo10 · stringoperations`
 
 ---
 
@@ -350,20 +476,20 @@ Updated String :- Hello Python
 - Escape or non-printable characters :
   - Characters that can be represented with backslash notation
 
-| Backslash Character | Hexadecimal Character | Description |
+| Backslash Notation | Hexadecimal Character | Description |
 |---|---|---|
+| `\` | 0x5c | Backslash |
+| `\'` / `\"` | 0x27 / 0x22 | Single or double quote |
+| `\n` | 0x0a | Newline |
+| `\r` | 0x0d | Carriage return |
+| `\t` | 0x09 | Tab |
 | `\a` | 0x07 | Bell or alert |
 | `\b` | 0x08 | Backspace |
-| `\e` | 0x1b | Escape |
-| `\f` | 0x0c | Formfeed |
-| `\n` | 0x0a | Newline |
-| `\nnn` | | Octal notation, n in range from 0-7 |
-| `\r` | 0x0d | Carriage return |
-| `\s` | 0x20 | Space |
-| `\t` | 0x09 | Tab |
-| `\v` | 0x0b | Vertical Tab |
+| `\ooo` | | Character with octal value ooo, digits 0 to 7 |
+| `\xhh` | | Character with hexadecimal value hh |
+| `\uxxxx` | | Unicode character with 16-bit hexadecimal value xxxx |
 
-> `demo09 · escapecharacters`
+> `demo11 · escapecharacters`
 
 ---
 
@@ -395,91 +521,65 @@ print(r"C:\nowhere")
 
 ---
 
-# String Formatting
+# f-Strings
 
-- String formatting has seen a lot of changes between Python versions :
-  - Earlier version used string formatting using format specifiers like in C
-  - Also available came the `format` method to implement string formatting
-  - Latest Python versions support `f` strings with variable interpolation like in PHP
-- Operator `%` is string format operator an is unique to strings :
-  - Used in Pythons version of C's `printf()` function
+- An f-string is a string literal with an `f` in front of the opening quote :
+  - Each `{expression}` inside it is evaluated, and its value takes its place
+  - Any expression works, including arithmetic and method calls
 
 ```python
-print("My name is %s and weight is %d kg!" % ("Albert", 55))
+name = "Albert"
+age = 55
+print(f"My name is {name} and my age is {age}")
+print(f"{name.upper()} will be {age + 1} next year")
 ```
 
-  - Result : `My name is Albert and weight is 55 kg!`
-- In Python 3 new style of formatting available with `format()` function :
-  - Allows complex variable substitutions and value formatting
+```text
+My name is Albert and my age is 55
+ALBERT will be 56 next year
+```
+
+- Two markers after the expression change what is shown :
+  - `!r` shows the value as `repr()` does, a string with its quotes
+  - `=` shows the expression as well as its value, which helps when debugging
 
 ```python
-s = "{0}, {1}, {2}".format("a", "b", "c")
-print(s)  # 'a, b, c'
-s = "{}, {}, {}".format("a", "b", "c")
-print(s)  # 'a, b, c'
-s = "{2}, {1}, {0}".format("a", "b", "c")
-print(s)  # 'c, b, a'
+print(f"{name!r}")  # 'Albert', the repr() with its quotes
+print(f"{age = }")  # age = 55, the expression and its value
 ```
 
-> `demo10 · stringformatting`
+> `demo12 · f-strings`
 
 ---
 
-# String Format Symbols
+# Format Specifications
 
-| Symbol | Functionality |
-|---|---|
-| `%s` | String conversion via `str()` prior to formatting |
-| `%i` / `%d` | Signed decimal integer |
-| `%o` | Octal integer |
-| `%x` | Hexadecimal integer |
-| `%f` | Floating point real number |
-| `*` | Argument specifies width or precision |
-| `-` | Left justification |
-| `+` | Display the sign |
-| `#` | Add the octal leading zero or hexadecimal leading 0x or 0X |
-| `0` | Pad from left with zeros instead of spaces |
-| `%%` | Leaves you with a single literal % |
-| `m.n.` | m is minimum total width, n is nr. of digits after decimal point |
+- A colon after the expression starts a format specification :
 
----
-
-# Format Method
-
-- Method `str.format` substitutes arguments into replacement fields :
-  - A field is written as `{index:spec}` inside the template string
-  - The index selects the argument, the spec decides how it is rendered
-
-<svg viewBox="0 0 960 250" width="100%" style="width:100%;height:auto;display:block;margin:10px 0 6px" role="img" aria-label="Each replacement field selects one argument of format and renders it into the result string">
+<svg viewBox="0 0 960 240" width="100%" style="width:100%;height:auto;display:block;margin:10px 0 6px" role="img" aria-label="Each replacement field of the f-string renders its expression with its format specification into the result string">
+<g fill="currentColor" font-size="17" opacity="0.75" text-anchor="middle">
+<text x="152" y="52">art is 453</text>
+<text x="488" y="52">price is 59.058</text>
+</g>
 <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="currentColor">
-<text x="20" y="92" textLength="60" lengthAdjust="spacingAndGlyphs">"Art:</text>
-<text x="92" y="92" textLength="72" lengthAdjust="spacingAndGlyphs">{0:5d}</text>
-<text x="164" y="92" textLength="204" lengthAdjust="spacingAndGlyphs">, Price per Unit:</text>
-<text x="380" y="92" textLength="96" lengthAdjust="spacingAndGlyphs">{1:8.2f}</text>
-<text x="476" y="92" textLength="108" lengthAdjust="spacingAndGlyphs">".format(</text>
-<text x="584" y="92" textLength="36" lengthAdjust="spacingAndGlyphs">453</text>
-<text x="620" y="92" textLength="12" lengthAdjust="spacingAndGlyphs">,</text>
-<text x="644" y="92" textLength="72" lengthAdjust="spacingAndGlyphs">59.058</text>
-<text x="716" y="92" textLength="12" lengthAdjust="spacingAndGlyphs">)</text>
+<text x="20" y="92" textLength="72" lengthAdjust="spacingAndGlyphs">f"Art:</text>
+<text x="104" y="92" textLength="96" lengthAdjust="spacingAndGlyphs">{art:5d}</text>
+<text x="200" y="92" textLength="204" lengthAdjust="spacingAndGlyphs">, Price per Unit:</text>
+<text x="416" y="92" textLength="144" lengthAdjust="spacingAndGlyphs">{price:8.2f}</text>
+<text x="560" y="92" textLength="12" lengthAdjust="spacingAndGlyphs">"</text>
 </g>
 <g fill="none" stroke="currentColor" stroke-width="2">
-<rect x="90" y="72" width="76" height="28" rx="3"/>
-<rect x="378" y="72" width="100" height="28" rx="3"/>
-</g>
-<g fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.7" stroke-dasharray="4 4">
-<rect x="582" y="72" width="40" height="28" rx="3"/>
-<rect x="642" y="72" width="76" height="28" rx="3"/>
+<rect x="102" y="72" width="100" height="28" rx="3"/>
+<rect x="414" y="72" width="148" height="28" rx="3"/>
 </g>
 <defs>
-<marker id="fm-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<marker id="fs-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
 <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
 </marker>
 </defs>
-<g fill="none" stroke="currentColor" stroke-width="1.8" marker-end="url(#fm-arrow)">
-<path d="M 128 72 L 128 20 L 602 20 L 602 68"/>
-<path d="M 428 72 L 428 46 L 680 46 L 680 68"/>
-<path d="M 128 100 L 128 140 L 110 140 L 110 186"/>
-<path d="M 428 100 L 428 140 L 404 140 L 404 186"/>
+<g fill="none" stroke="currentColor" stroke-width="1.8" marker-end="url(#fs-arrow)">
+<path d="M 152 100 L 152 140 L 110 140 L 110 186"/>
+<path d="M 488 100 L 488 140 L 404 140 L 404 186"/>
 </g>
 <g fill="currentColor" opacity="0.12">
 <rect x="80" y="188" width="60" height="38"/>
@@ -495,48 +595,30 @@ print(s)  # 'c, b, a'
 <text x="452" y="214" textLength="60" lengthAdjust="spacingAndGlyphs" text-anchor="end">59.06</text>
 </g>
 <g fill="currentColor" font-size="17" opacity="0.75">
-<text x="640" y="124">positional arguments</text>
+<text x="600" y="124">5d : an integer, 5 wide</text>
+<text x="600" y="152">8.2f : a float, 8 wide, 2 decimals</text>
 <text x="480" y="214">result string</text>
 </g>
 </svg>
 
-- Fields may be named instead of numbered :
+- The specification sets the width, the alignment and the decimals :
 
 ```python
-"Art: {a:5d}, Price per Unit: {p:8.2f}".format(a=453, p=59.058)
+print(f"[{'Curie':<10}]")  # [Curie     ]
+print(f"[{'Curie':^10}]")  # [  Curie   ]
+print(f"[{'Curie':>10}]")  # [     Curie]
+print(f"{1234567.891:,.2f}")  # 1,234,567.89
+print(f"{0.25:.0%}")  # 25%
 ```
 
-> `demo11 · formatmethod`
-
-
----
-
-# f Strings
-
-- f-strings are the standard way to format strings :
-  - More readable, faster and less prone to error than the older ways
-- f-strings are string literals that have an `f` at the beginning :
-  - Inside there are curly braces containing expressions that will be replaced with their values
-  - Expressions are evaluated at runtime and then formatted using the `__format__` protocol
-- Syntax is similar to the one used with `str.format()` but less verbose :
+- Older code formats the same way with `%` or `str.format`, recognise them :
 
 ```python
-name = "Albert"
-age = 55
-print(f"My name is {name} and my age is {age}")
+print("Art: %5d, Price per Unit: %8.2f" % (art, price))
+print("Art: {:5d}, Price per Unit: {:8.2f}".format(art, price))
 ```
 
-- f-strings are evaluated at runtime, can put valid Python expressions in them :
-  - And can also call methods
-
-```python
-name = "Enrico Fermi"
-f"{name.upper()} is the creator of the first fission reactor"
-f"{name.upper():40} is the creator of the first fission reactor"
-```
-
-> `demo12 · f-strings`
-
+> `demo13 · formatspecs`
 
 ---
 
@@ -566,48 +648,48 @@ brackets [
 the variable assignment will also show up.
 ```
 
-> `demo13 · triplequotes`
+> `demo14 · triplequotes`
 
 
 ---
 
-# Built-in String Functions
+# Built-in String Methods
 
-| Function | Description |
+- String methods are called with dot notation : `"albert".upper()`
+  - A string never changes, so each method returns a new string or a value
+
+| Method | Description |
 |---|---|
-| `capitalize()` | Capitalizes first letter of string |
-| `isdigit()` | Returns true if string contains only digits and false otherwise |
-| `isnumeric()` | Returns true if string has only numeric characters, false otherwise |
-| `len(string)` | Returns the length of the string |
-| `lower()` / `upper()` | Converts string to all lowercase or all uppercase |
-| `lstrip()` / `rstrip()` | Removes leading or trailing whitespace in string |
-| `maketrans()` | Returns a translation table to be used in translate function |
-| `max(str)` / `min(str)` | Returns the max or min alphabetical character from the string |
-| `swapcase()` | Inverts case for all letters in string |
-| `strip([chars])` | Performs both lstrip() and rstrip() on string |
+| `strip()` | Removes whitespace from both ends, `lstrip()` and `rstrip()` from one |
+| `lower()` / `upper()` | Converts the string to all lowercase or all uppercase |
+| `split(sep)` | Splits the string into a list of words, on whitespace by default |
+| `sep.join(words)` | Joins a list of strings into one, with `sep` between them |
+| `count(sub)` | Returns how many times `sub` occurs in the string |
+| `startswith(prefix)` | Returns `True` if the string starts with `prefix`, see also `endswith()` |
+| `isalpha()` | Returns `True` if the string is not empty and holds only letters |
+| `replace(old, new)` | Returns a copy with every `old` replaced by `new` |
+| `find(sub)` | Returns the index of the first `sub`, or `-1` if it is not there |
 
-- Most functions are members of the `String` class :
-  - Must be called using dot notation : `"albert".upper()`
+- `len(s)` is a function rather than a method, and gives the number of characters
+- All the others : `https://docs.python.org/3/library/stdtypes.html#string-methods`
 
-> `demo14 · stringfunctions`
+> `demo15 · stringfunctions`
 
 ---
 
 # Summary : Variables and Data Types
 
-- Variables represent memory locations to store values :
-  - When a variable is created memory space is reserved
-- Assigning Values to Variables :
-  - Python variables do not have to be explicitly declared to reserve memory space
-- Equal sign `=` is used to assign values to variables :
-  - Operand to the left of the = operator is the name of the variable
-- Python has five standard data types :
-  - Numbers, String, List, Tuple, Dictionary
-- Python supports different types to store numeric values :
-  - `int` , `float, complex`
-- Python boolean type is a subtype of integer :
-  - Only allowed values are 0 and 1 printed as `"True"` and `"False"`
-- Python has built-in functions to convert between data types :
-  - Functions return new object representing converted value
+- A variable is a name bound to an object :
+  - Created on first assignment with `=`, and can be annotated, as in `age: int = 25`
+  - Every object has an identity, `id(x)`, a type, `type(x)`, and a value
+- Python is strongly typed :
+  - Converting between types is explicit, with `int()`, `float()`, `str()` and `bool()`
+- Numbers are `int`, `float` and `complex`; `bool` is a subtype of `int`
+- Operators compute, compare and combine values :
+  - `==` compares values, `is` compares identities
+- Strings are immutable sequences of Unicode characters :
+  - Indexed and sliced with `[]`, and have methods such as `strip()` and `split()`
+- f-strings are the way to format text :
+  - `f"{price:8.2f}"` sets the width and the decimals of the value it shows
 
 > `exercise02 · Variables and Data Types`
