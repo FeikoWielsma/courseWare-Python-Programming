@@ -13,13 +13,13 @@ class InvalidGuess(ValueError):  # noqa: N818  # Contracted name from plan secti
     """Raised when a guess is not an allowed five-letter word."""
 ```
 
-This creates a specific kind of `ValueError`, with a name the game can catch. You do not need to add methods to it. See *User Defined Exceptions*. Classes are covered in detail in Module 11; here you only need this exception pattern. The `noqa` comment preserves the course's agreed name when Ruff would normally prefer an exception name ending in `Error`.
+This creates a specific `ValueError` the game can catch. See *User Defined Exceptions*; Module 11 covers classes in detail. The `noqa` comment permits the course's exception name instead of Ruff's preferred `Error` suffix.
 
-The game still works exactly as before. Next, make the validator raise this exception with a reason.
+Next, make the validator raise this exception with a reason.
 
 ### Step 2 : Explain why a guess is invalid {★★}
 
-Add `check_guess` to `scoring.py`. Check length first, letters second, and membership last. A valid guess returns normally without a value; an invalid one raises `InvalidGuess`. See *Raising Exceptions*.
+Add `check_guess` to `scoring.py`. Check length, letters, then membership. Valid guesses return normally; invalid ones raise `InvalidGuess`. See *Raising Exceptions*.
 
 ```python
 def check_guess(guess: str, words: list[str]) -> None:
@@ -80,7 +80,7 @@ In `wordle/game.py`, replace the scoring import with :
 from wordle.scoring import InvalidGuess, check_guess, score_guess
 ```
 
-Replace the old `if not is_valid(...)` block with a `try`/`except` block. Keep it after command handling and before incrementing the guess count or updating history :
+Replace `if not is_valid(...)` after command handling, before updating the guess count or history :
 
 ```python
 try:
@@ -90,11 +90,11 @@ except InvalidGuess as error:
     continue
 ```
 
-See *Typed Exception Handling*. Enter a short guess, a five-character guess containing a digit, and an unknown five-letter word. All three should leave you on the same turn.
+See *Typed Exception Handling*. Try `cran`, `cr4ne` and `zzzzz`; each should leave you on the same turn.
 
 :::hint
 
-Call `check_guess(guess, words)` in the `try` block and print `error` in the handler. The exception's message is already the explanation you want to display. Keep the rest of the loop outside the `try` block.
+Call `check_guess(guess, words)` inside `try` and print `error` in the handler. Keep the remaining loop outside `try`.
 
 :::
 
