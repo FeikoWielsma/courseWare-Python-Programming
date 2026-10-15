@@ -9,3 +9,5 @@ with con:
     data = cur.fetchone()
 
     print(f"SQLite version: {data}")
+
+con.close()  # `with con:` commits or rolls back, it does not close

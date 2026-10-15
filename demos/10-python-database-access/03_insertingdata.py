@@ -1,9 +1,11 @@
 import sqlite3
 
+# Creates cars.db and its Cars table, which the demos after this one read.
 con = sqlite3.connect("cars.db")
 
 with con:
     cur = con.cursor()
+    cur.execute("DROP TABLE IF EXISTS Cars")
     cur.execute("CREATE TABLE Cars(Id INT, Name TEXT, Price INT)")
     cur.execute("INSERT INTO Cars VALUES(1,'Audi',52642)")
     cur.execute("INSERT INTO Cars VALUES(2,'Mercedes',57127)")
@@ -13,3 +15,5 @@ with con:
     cur.execute("INSERT INTO Cars VALUES(6,'Citroen',21000)")
     cur.execute("INSERT INTO Cars VALUES(7,'Hummer',41400)")
     cur.execute("INSERT INTO Cars VALUES(8,'Volkswagen',21600)")
+
+con.close()

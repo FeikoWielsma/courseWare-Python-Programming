@@ -8,21 +8,19 @@ footer: Python Classes
 
 # Object Orientation in Python
 
-- Python is object-oriented language :
-  - Creating and using classes and objects is built in the language
-  - Classes are created in `Python` with the `class` keyword
+- Python is an object-oriented language :
+  - Every value in Python is an object, and every object has a class
+  - Classes of your own are created with the `class` keyword
 - Class :
-  - Blueprints for a set of related objects with both description and implementation
-  - Defines a set of attributes and methods that characterize any object of the class
-  - Attributes are data members, Methods, accessed via dot notation
-- Object or Instance :
-  - An individual object of a certain class which has own identity
-  - A unique instance of a data structure that's defined by its class
-  - State represents current values of attributes
+  - A blueprint for a set of related objects
+  - Defines the attributes and methods that every object of the class has
+  - Attributes hold data, methods are functions; both are reached with dot notation
+- Object or instance :
+  - An individual object of a certain class, with its own identity
+  - Its state is the current value of its attributes
   - State differs per object, behavior is shared by all instances
 - Inheritance :
-  - Subclass inherits attributes and methods from a superclass
-  - New attributes and methods may be added
+  - A class can extend another class, inheriting its attributes and methods
 
 ---
 
@@ -47,53 +45,41 @@ footer: Python Classes
 
 ---
 
-# OO Terminology Overview
-
-- Instance variable :
-  - Variable defined inside a method and belongs only to current instance of a class.
-  - Also called data member for instance fields
-- Class variable :
-  - Variable that is shared by all instances of a class
-  - Also called data member for class fields
-  - Class variables are defined within a class but outside any of the class's methods
-  - Class variables aren't used as frequently as instance variables are
-- Function overloading :
-  - The assignment of more than one behavior to a particular function
-  - The operation performed varies by the types of objects (arguments) involved.
-- Operator overloading :
-  - The assignment of more than one function to a particular operator
-
----
-
 # Creating Classes
 
-- `class` statement creates a new class definition :
-  - Name of the class immediately follows the keyword `class` followed by a colon :
+- The `class` statement creates a new class :
+  - The name of the class follows the keyword `class`, then a colon
+  - The indented block below it is the body of the class
 
 ```python
-class ClassName:
-    "Optional class documentation string"
-    class_suite
+class Person:
+    """A person, with nothing in it yet."""
+
+    pass  # an empty block
 ```
 
-- The class has a documentation string :
-  - Can be access via `ClassName.__doc__`
-- `class_suite` consists of all the component statements :
-  - Class members
-  - Data attributes
-  - Functions
+- The string on the first line of the body is the documentation string :
+  - It can be read as `Person.__doc__`
+- Calling the class creates an object :
+
+```python
+p1 = Person()
+print(p1)
+```
+
+```text
+<__main__.Person object at 0x000001CECE9D8D70>
+```
 
 > `demo01 · simplestclass`
-
 
 ---
 
 # Example Creating Classes and Objects
 
-
 ```python
 class Employee:
-    "Common base class for all employees"
+    """Common base class for all employees."""
     emp_count = 0
     def __init__(self, name: str, salary: float) -> None:
         self.name = name
@@ -105,39 +91,32 @@ class Employee:
         print(f"Name : {self.name}, Salary: {self.salary}")
 ```
 
-- To create instances of a class :
-  - Call class using class name and pass arguments that `__init__` method accepts
-- Create object of `Employee` class :
+- To create an instance of a class :
+  - Call the class by its name and pass the arguments that `__init__` accepts
+- Create an object of the `Employee` class :
 
 ```python
 emp1 = Employee("Albert", 2000)
 ```
 
-> `demo02 · classwithmethods`
-
-
 ---
 
 # Class Members
 
-- `emp_count` :
-  - Class variable whose value would be shared among all instances of a this class
-  - Accessible as `Employee.emp_count` from inside the class or outside the class
 - `__init__()` :
-  - Special method which is called class constructor or initialization method
+  - The initialization method, often called the constructor
   - Called by Python when you create a new instance of this class
+  - Sets the instance attributes, here `self.name` and `self.salary`
 - Instance methods :
-  - Declared like normal functions but first argument to each method is `self`
-  - No need to include this argument when you call methods since Python adds it
-- `self` must be explicitly listed as first argument to method :
-  - Instance variables are referred to with " `self.XXX` “
+  - Declared like normal functions, but the first parameter of each method is `self`
+  - You do not pass `self` when you call a method, since Python adds it
 - `self` is a reference to the instance :
-  - Reference to the container for state of object
-  - In many OO languages, instance is hidden in method definitions
-  - In Python, instance is visible and explicit in method definitions
-
-> `demo03 · classwithinit`
-
+  - Instance attributes are read and written as `self.name`
+  - `self` is visible and explicit in every method definition
+- `emp_count` :
+  - A class attribute, shared by all instances, read as `Employee.emp_count`
+- Python frees objects for you when nothing refers to them any more :
+  - `__del__` exists and you rarely need it
 
 ---
 
@@ -152,16 +131,11 @@ emp1 = Employee("Albert", 2000)
 emp2 = Employee("Werner", 5000)
 ```
 
-- Access object's attributes using dot operator with object :
+- Access the object's methods and attributes using the dot operator :
 
 ```python
 emp1.display_employee()
 emp2.display_employee()
-```
-
-- Access class variable using class name :
-
-```python
 print(f"Total Employee {Employee.emp_count}")
 ```
 
@@ -173,14 +147,13 @@ Name : Werner, Salary: 5000
 Total Employee 2
 ```
 
-> `demo04 · classdata`
-
+> `demo02 · employee`
 
 ---
 
 # Accessing Attributes
 
-- In Python can add, remove, or modify attributes at any time :
+- In Python you can add, remove, or modify attributes at any time :
 
 ```python
 emp1.age = 7  # Add an 'age' attribute
@@ -188,320 +161,258 @@ emp1.age = 8  # Modify 'age' attribute
 del emp1.age  # Delete 'age' attribute
 ```
 
-- There are alternative functions to access attributes :
-  - `getattr(obj, name[, default])` : Access the attribute of object
-  - `hasattr(obj,name)` : Check if attribute exists or not
-  - `setattr(obj,name,value)` : Set or create attribute
-  - `delattr(obj, name)` : Delete an attribute
-- Example code :
+- Four functions do the same with an attribute name held in a string :
+  - Useful when the name is only known while the program runs
 
 ```python
-hasattr(emp1, "age")  # Returns true if 'age' attribute exists
-getattr(emp1, "age")  # Returns value of 'age' attribute
-setattr(emp1, "age", 8)  # Set attribute 'age' at 8
-delattr(emp1, "age")  # Delete attribute 'age'
+attr = "age"  # an attribute name held in a variable
+print(hasattr(emp1, attr))  # True if the attribute exists
+setattr(emp1, attr, 8)  # Set or create the attribute
+print(getattr(emp1, attr))  # Returns the value of the attribute
+delattr(emp1, attr)  # Delete the attribute
+print(getattr(emp1, attr, "no age"))  # The default, because the attribute is gone
 ```
-
----
-
-# Property Syntax
-
-- Attributes of class can be accessed using get and set functions :
-  - Allow set function to have side effect such as a value check
-
-```python
-class SquareGetterSetter:
-    def get_length(self) -> float:  # Java-style
-        return self._length
-    def set_length(self, length: float) -> None:  # Java-style
-        self._length = length
-```
-
-- However Python also supports property syntax :
-  - Setters and getters are hidden by propery syntax and this is more pythonic way
-  - May be added after class is used by clients without breaking them
-
-```python
-class SquarePropertySyntax:
-    def get_length(self) -> float:
-        return self._length
-    def set_length(self, length: float) -> None:
-        self._length = length
-    length = property(get_length, set_length)
-```
-
-> `demo05 · propertysyntax`
-
-> `demo06 · classproperties`
-
-
----
-
-# Built-In Class Attributes
-
-- Every Python class has following built-in attributes :
-  - `__dict__` : Dictionary containing the class's namespace
-  - `__doc__` : Class documentation string, or None if undefined
-  - `__name__` : Class name.
-  - `__module__` : Module name in which the class is defined
-              This attribute is "__main__" in interactive mode.
-
-  - `__bases__` : A possibly empty tuple containing the base classes
-              In the order of their occurrence in the base class list
-
-- Can be accessed using dot operator like any other attribute
-
----
-
-# Accessing Built-in Class Attributes
-
-
-```python
-print("Employee.__doc__:", Employee.__doc__)
-print("Employee.__name__:", Employee.__name__)
-print("Employee.__module__:", Employee.__module__)
-print("Employee.__bases__:", Employee.__bases__)
-print("Employee.__dict__:", Employee.__dict__)
-```
-
-- Result :
 
 ```text
-Employee.__doc__: Common base class for all employees
-Employee.__name__: Employee
-Employee.__module__: __main__
-Employee.__bases__: (<class 'object'>,)
-Employee.__dict__: {'__module__': '__main__', 'display_count':
-<function display_count at 0xb7c84994>, 'emp_count': 2,
-'display_employee': <function display_employee at 0xb7c8441c>,
-'__doc__': 'Common base class for all employees',
-'__init__': <function __init__ at 0xb7c846bc>}
+False
+8
+no age
 ```
 
-> `demo07 · builtinattributes`
-
-
 ---
 
-# Destroying Objects
-
-- Python deletes unneeded objects automatically to free space :
-  - This process of periodically reclaims of memory is termed Garbage Collection
-- Python's garbage collector runs during program execution :
-  - Triggered when an object's reference count reaches zero
-- Reference count changes as nr of aliases pointing to it change :
-  - Increase when it's assigned a new name
-  - Increase when placed in a container (list, tuple, or dictionary)
-  - Decrease when deleted with `del`
-  - Decrease when reference is reassigned or its reference goes out of scope
-- Reference count reaches zero :
-  - Python collects it automatically
-- `__del__()` destructor :
-  - May print the class name of an instance that is about to be destroyed
-  - Might be used to clean up any non-memory resources used by an instance
-
----
-
-# Example Destructor
+# Class Attributes and Instance Attributes
 
 ```python
-class Point:
-    def __init__(self, x: float = 0, y: float = 0) -> None:
-        self.x = x
-        self.y = y
-    def __del__(self) -> None:
-        class_name = self.__class__.__name__
-        print(class_name, "destroyed")
+class Car:
+    wheels = 4  # class attribute, one value shared by every car
+    def __init__(self, plate: str) -> None:
+        self.plate = plate  # instance attribute, one value per car
 
-pt1 = Point()
-pt2 = pt1
-pt3 = pt1
-print(id(pt1), id(pt2), id(pt3))  # prints ids of the objects
-del pt1
-del pt2
-del pt3
+a = Car("ABC 111")
+b = Car("XYX 123")
+print(a.plate, b.plate)  # ABC 111 XYX 123
+print(a.wheels, b.wheels)  # 4 4
+Car.wheels = 6  # changes the shared value
+print(a.wheels, b.wheels)  # 6 6
+a.wheels = 3  # creates an instance attribute on a only
+print(a.wheels, b.wheels, Car.wheels)  # 3 6 6
 ```
 
-- Result :
+- A class attribute is assigned in the class body; an instance attribute on `self`
+- Reading `a.wheels` looks on the object first, then on the class
+- Assigning `a.wheels` always writes to the object, so change shared data on the class
+- Methods that need no instance exist as well, `@staticmethod` and `@classmethod` :
+  - They are covered in the Advanced Python course
+
+> `demo03 · classattributes`
+
+---
+
+# `__str__` and `__repr__`
+
+```python
+class Car:
+    def __init__(self, plate: str, color: str) -> None:
+        self.plate = plate
+        self.color = color
+    def __repr__(self) -> str:
+        return f"Car({self.plate!r}, {self.color!r})"
+    def __str__(self) -> str:
+        return f"{self.color} car {self.plate}"
+
+car = Car("ABC 111", "Blue")
+print(car)  # str(), for people
+print(repr(car))  # repr(), for developers
+print([car])  # a list shows the repr() of its items
+```
 
 ```text
-3083401324 3083401324 3083401324
-Point destroyed
+Blue car ABC 111
+Car('ABC 111', 'Blue')
+[Car('ABC 111', 'Blue')]
 ```
 
-- The destructor is only called when the last reference is deleted
+- `__str__` is used by `print()`, `str()` and f-strings
+- `__repr__` is used by the interactive prompt, by containers and by `!r` :
+  - Make it look like the call that creates the object; `str()` falls back to it
 
-> `demo08 · destructordemo`
-
-> `demo09 · circularreference`
-
+> `demo04 · strrepr`
 
 ---
 
-# Static Methods
+# Attributes Are Public
 
-- Static methods do not receive `self` as first parameter :
-  - May access data associated with the class instead of instance
-- Method can be made `static` in two ways :
-  - Annotate method with `@staticmethod` decoration
-  - Exporting by calling `staticmethod` with method as parameter and return value
+- An attribute set in `__init__` is public, and that is fine :
+  - Any code that has the object can read it and assign to it
+  - No methods are written to get or set it
 
 ```python
-class Account:
-    interest_rate = 10
+class Square:
+    def __init__(self, length: float) -> None:
+        self.length = length
 
-    def get_interest_rate1() -> int:
-        return Account.interest_rate
-    get_interest_rate1 = staticmethod(get_interest_rate1)
-
-    @staticmethod
-    def get_interest_rate2() -> int:
-        return Account.interest_rate
-
-print(Account.get_interest_rate1())
-print(Account.get_interest_rate2())
+sq = Square(5)
+print(sq.length)  # read it
+sq.length = 6  # write it
+print(sq.length)
 ```
 
-- A static method typically is called through the class
+```text
+5
+6
+```
 
-> `demo10 · staticmethods1`
-
+> `demo05 · publicattributes`
 
 ---
 
-# Encapsulation
+# A Computed Attribute
 
-- Encapsulation is a well known object oriented concept :
-  - Internal class data is hidden behind functions
-  - Result is implementation hiding and modularity
+- The area of a square depends on its length :
+  - As a method, `def area(self)`, it is called as `sq.area()`
+  - With `@property` above the `def`, it is read as `sq.area`, like an attribute
+
+```python
+class Square:
+    def __init__(self, length: float) -> None:
+        self.length = length
+    @property
+    def area(self) -> float:
+        return self.length * self.length
+
+sq = Square(5)
+print(sq.area)  # no parentheses
+sq.length = 6
+print(sq.area)  # always current
+sq.area = 50  # read-only : there is no setter
+```
+
+```text
+25
+36
+AttributeError: property 'area' of 'Square' object has no setter
+```
+
+> `demo06 · computedproperty`
+
+---
+
+# When a Plain Attribute Is Not Enough
+
+- The `Square` so far accepts any length, `sq.length = -3` included
+- The fix makes `length` a property whose setter checks the value :
+
+```python
+class Square:
+    def __init__(self, length: float) -> None:
+        self.length = length  # goes through the setter below
+    @property
+    def length(self) -> float:
+        return self._length
+    @length.setter
+    def length(self, value: float) -> None:
+        if value < 0:
+            raise ValueError(f"length must not be negative, got {value}")
+        self._length = value
+```
+
+- The value is stored in `self._length`, the property's own storage
+- The code that uses the class does not change :
+  - `sq.length = 6` still works, and `sq.length = -3` now raises `ValueError`
+
+> `demo07 · validatingsetter`
+
+---
+
+# The Rule of Thumb
+
+- Start with a plain attribute :
+  - Do not write getter and setter methods in advance
+- Turn it into a property the day it needs a rule :
+  - A check on the value, or a value computed from other attributes
+  - The calling code keeps writing `sq.length`, so nothing else changes
+- The property keeps its value in an attribute with a leading underscore :
+  - `_length` is internal to the class, by convention
 
 ```mermaid
 flowchart LR
-  A[client code] --> B[get_length]
-  A --> C[set_length]
-  B --> D[hidden attribute<br/>_length]
-  C --> D
+  A[calling code] -->|sq.length = 6| B[length property<br/>checks the value] --> C[self._length]
 ```
 
 ---
 
-# Data Hiding
+# Internal Attributes
 
-- Many object oriented languages support data hiding :
-    - Attributes and methods may have modifiers like public, private and protected
-- Python does not support real data hiding as other languages :
-    - Attributes and methods can however be made more difficult to access
-- Attributes made private with double underscore prefix in name :
-
-```python
-__secret_count = 0
-```
-
-- Attributes will not be directly visible to outsiders :
-    - Access of such attributes from outside should include class name
+- Python has no keyword that makes an attribute private :
+  - A leading underscore, `_balance`, means internal, by convention
+  - Code outside the class can reach it, and is expected not to
+- Two leading underscores, `__pin`, make Python rename the attribute to `_Account__pin`
 
 ```python
-print(s._Secretive__secret_count)
+class Account:
+    def __init__(self, owner: str) -> None:
+        self.owner = owner  # public
+        self._balance = 0  # internal, by convention
+        self.__pin = "1234"  # name mangled to _Account__pin
+
+acc = Account("Albert")
+print(acc.owner)
+print(acc._balance)  # works, but the underscore says: not for you
+print(acc._Account__pin)  # the mangled name still works
 ```
-
-- Methods can also be protected with double underscore as prefix :
-
-```python
-def __inaccessible(self):
-    print("Bet you can't see me...")
-```
-
-- Methods can be accessed from the outside in the following way :
-
-```python
-s._Secretive__inaccessible()
-```
-
----
-
-# Example Data Hiding
-
-
-```python
-class Secretive:
-    __secret_count = 0
-    def count(self) -> None:
-        self.__secret_count += 1
-        print(self.__secret_count)
-s = Secretive()
-s.count()
-s.count()
-print(s._Secretive__secret_count)
-print(s.__secret_count)
-```
-
-- Result :
 
 ```text
-1
-2
-2
-Traceback (most recent call last):
-  File "11_datahiding.py", line 10, in <module>
-    print(s.__secret_count)
-          ^^^^^^^^^^^^^^^^
-AttributeError: 'Secretive' object has no attribute '__secret_count'
+Albert
+0
+1234
 ```
 
-> `demo11 · datahiding`
-
+> `demo08 · internalattributes`
 
 ---
 
-# Override Base Methods
-
-- Generic functionality that you can override in your own classes
-- `__init__ ( self [,args...] ) :`
-  - Constructor (with any optional arguments)
+# A Class Can Extend Another
 
 ```python
-obj = ClassName(args)
+class Employee:
+    def __init__(self, name: str, salary: float) -> None:
+        self.name = name
+        self.salary = salary
+    def describe(self) -> str:
+        return f"{self.name} earns {self.salary}"
+
+class Manager(Employee):
+    def __init__(self, name: str, salary: float, team: list[str]) -> None:
+        super().__init__(name, salary)  # the Employee part
+        self.team = team  # what a Manager adds
+    def describe(self) -> str:  # replaces Employee.describe
+        return f"{super().describe()} and leads {len(self.team)} people"
 ```
 
-- `__del__( self ) :`
-  - Destructor, deletes an object
+- `Manager` inherits every method of `Employee`, adds to it and may replace methods
+- `super().__init__(...)` runs the `Employee` initialization, so `name` and `salary` are set
+- `Manager("Marie", 6000, ["Albert", "Werner"]).describe()` returns :
+  - `Marie earns 6000 and leads 2 people`
+- Inheritance in depth is covered in the Advanced Python course
 
-```python
-del obj
-```
-
-- `__repr__( self ) :`
-  - Evaluatable string representation
-
-```python
-repr(obj)
-```
-
-- `__str__( self ) :`
-  - Printable string representation
-
-```python
-str(obj)
-```
+> `demo09 · inheritance`
 
 ---
 
 # Summary : Python Classes
 
 - Classes are blueprints for a set of related objects :
-  - Define both attributes and methods and are created with `class` keyword
+  - Define both attributes and methods and are created with the `class` keyword
 - Objects are instances of classes :
-  - Each object has its own state and identity, instance methods have `self` parameter
-- Constructor is method named `__init__()` :
-  - Creates object and called by assigning a variable of the object type
-- To get and set attributes Python supports property syntax :
-  - Setters and getters are hidden by propery syntax and this is more pythonic way
-- Python deletes unneeded objects automatically to free space :
-  - This process of periodically reclaims of memory is termed Garbage Collection
-- Encapsulation is hiding internal data through methods :
-  - `private` instance variables have double underscores `__var__`
-  - Can be accessed through a scrambled name
-- Static methods and properties bound to class not to object :
-  - Static data only exists once per class rather than per instance
+  - Each object has its own state and identity, instance methods have a `self` parameter
+- The initialization method is named `__init__()` :
+  - Called by Python when the class is called to create an object
+- Class attributes are shared by all instances, instance attributes belong to one object
+- `__str__` and `__repr__` decide how an object is printed
+- Attributes are public; a property adds a rule without changing the calling code :
+  - Start with a plain attribute, turn it into a property the day it needs a rule
+- A leading underscore marks an attribute as internal, by convention
+- A class can extend another, and calls `super().__init__()` to set up the parent part
 
 > `exercise11 · Python Classes`
