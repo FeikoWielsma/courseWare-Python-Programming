@@ -3,32 +3,30 @@ marp: true
 theme: spiraltrain
 size: 16:10
 paginate: true
-footer: Control Flow and Operators
+footer: Control Flow
 ---
 
 # Control Flow Constructs
 
-- Every programming has control flow constructs :
-  - Sequential constructs like statements
-  - Branching constructs to take a certain direction
-  - Iteration construct to repeat code a number of times
-- Branching Statements :
-  - `if`
-  - `if...else`
-  - `elif`
-- Iteration Statements :
-  - `for`
-  - `while`
-  - `continue`
-  - `pass`
+- Statements run one after the other unless a control flow construct intervenes :
+  - Branching constructs choose which block runs
+  - Iteration constructs repeat a block
+- Branching statements :
+  - `if`, `if...else` and `elif`
+  - `match`, which compares one value against a series of patterns
+- Iteration statements :
+  - `while`, which repeats as long as a condition holds
+  - `for`, which takes each item of a sequence in turn
+- Statements that steer a loop or fill a gap :
+  - `break`, `continue`, a loop's `else`, and `pass`
 
 ---
 
 # if Statement
 
-- `if` statement in Python is similar to that of other languages :
-  - Contains a logical expression using which data is compared
-  - Decision is made based on the result of the comparison
+- `if` tests an expression and runs a block only when it is true :
+  - The expression is often a comparison, such as `count > 0`
+  - The block is skipped when the expression is false
 - Syntax `if` statement :
 
 ```python
@@ -37,8 +35,8 @@ if expression:
 ```
 
 - Expression is evaluated first :
-  - If true that is then statement(s) block are executed
-  - Otherwise next statement following statement(s) block is executed
+  - If it is true, the indented block runs
+  - Otherwise execution continues with the statement after the block
 
 ```mermaid
 flowchart LR
@@ -49,12 +47,11 @@ flowchart LR
   D --> E
 ```
 
-- Numbers and strings represent true values :
-  - Except number 0 and empty string
+- Any value can be tested, not only `True` and `False` :
+  - `0`, `""`, empty collections and `None` count as false, everything else as true
 - Grouping statements :
-  - Statements indented by the same number of character spaces :
-    - Considered to be part of a single block of code
-  - Python uses indentation as its method of grouping statements
+  - Statements indented by the same amount form one block
+  - Python uses indentation, four spaces by convention, as its way of grouping
 
 ---
 
@@ -94,9 +91,9 @@ if expression == 1: print("Value of expression is 1")
 # else Statement
 
 - Is combined with an `if` statement :
-  - Contains code that executes in case the `if` statement resolves to 0 or false
-- `else` statement is an optional statement :
-  - Only one `else` statement can follow the `if` statement
+  - Contains the block that runs when the `if` expression is false
+- `else` is optional :
+  - At most one `else` can follow an `if`, and it comes last
 - Syntax `if...else` statement :
 
 ```python
@@ -106,7 +103,7 @@ else:
     statement(s)
 ```
 
-- Example asking input with `input` and `endswith` methods :
+- Example reading input with `input` and testing it with `endswith` :
 
 ```python
 name = input("What is your name? ")
@@ -123,10 +120,10 @@ else:
 
 # elif Statement
 
-- Allows checking of multiple expressions for truth value :
-  - Execute a block of code as soon as one of the conditions evaluates to true
-- `elif` statement is optional :
-  - Arbitrary number of `elif` statements may be following an `if`
+- Tests several expressions in turn :
+  - The block of the first expression that is true runs, and the rest are skipped
+- `elif` is optional :
+  - Any number of `elif` branches may follow an `if`
 - Syntax of the `if...elif` statement :
 
 ```text
@@ -141,7 +138,7 @@ else:
 ```
 
 - Where a chain of `elif` tests one value, `match` often reads better :
-  - Covered two slides on, and available from Python 3.10
+  - Covered at the end of this module
 
 > `demo03 · elif`
 
@@ -150,24 +147,27 @@ else:
 
 # Nested if...elif...else
 
-- `if...elif...else` construct in other `if...elif...else` construct :
-  - Allows checking another condition after condition resolves to true
+- An `if` statement can sit inside the block of another :
+  - The inner condition is only tested once the outer one is true
 - Syntax nested `if...elif...else` :
 
 ```text
 if expression1:
     statement(s)
     if expression2:
-       statement(s)
+        statement(s)
     elif expression3:
-       statement(s)
-    else
-       statement(s)
+        statement(s)
+    else:
+        statement(s)
 elif expression4:
     statement(s)
 else:
     statement(s)
 ```
+
+- Each level of nesting adds four spaces :
+  - More than two levels usually reads better as `and`, or as a function
 
 > `demo04 · nested_if`
 
@@ -176,17 +176,16 @@ else:
 
 # while Loop
 
-- Control flow construct to repeat code number of times :
-  - Repetition continues until conditional expression becomes false
-  - Expression must be a logical expression evaluating to true or false
+- Repeats a block for as long as an expression is true :
+  - The expression is tested before every pass, including the first
 
 ```python
 while expression:
     statement(s)
 ```
 
-- `while` loop ends when conditional expression becomes false :
-  - Control is passed to the statement following the loop
+- The loop ends when the expression is false :
+  - Execution continues with the statement after the loop
 
 ```mermaid
 flowchart LR
@@ -196,20 +195,11 @@ flowchart LR
   B -- False --> D[statement after the loop]
 ```
 
-- In case the condition of a `while` never resolves to a false value :
-  - Result is an infinite loop
-- Infinite loop might be useful in client/server programming :
-  - Server runs continuously on an open port so that clients can communicate with it
-- If `while` clause has only one statement :
-  - Placement on the same line is allowed
-
-```python
-while expression: statement
-```
-
-
-
-- Python does not support `do .. while` construct
+- If the expression never becomes false, the loop never ends :
+  - Sometimes that is the intent, as in a server or a game that waits for input
+  - Such a loop is written `while True:` and left with `break`, covered below
+- A body that must run at least once is written the same way :
+  - `while True:`, then the body, then `if done:` with `break` under it
 
 > `demo05 · while`
 
