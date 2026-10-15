@@ -145,7 +145,7 @@ Run just the five scoring tests for now :
 uv run pytest -k "not is_valid and not render"
 ```
 
-They initially fail during collection, because `score_guess` does not exist yet. Read the report : pytest names each failing test and shows what it expected next to what it got. Write `score_guess` until the five scoring tests pass. The game still uses its old scoring until you connect the new functions in Step 5.
+Collection initially fails if `score_guess` is missing. Once it exists, pytest shows any failed assertions and their expected values. Implement it until all five scoring tests pass. The game still uses its old scoring until you connect the new functions in Step 5.
 
 :::hint
 
@@ -258,7 +258,7 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
     ...  # move the loop here, returning True on a win and False otherwise
 ```
 
-`max_guesses` has a default, so `play(secret, words)` is a normal game and `play(secret, words, max_guesses=8)` is an easy one. `main` becomes short :
+`max_guesses=8` allows an easier game; the default is six. See *Default Arguments*. Replace `main` with :
 
 ```python
 def main() -> None:
@@ -268,11 +268,11 @@ def main() -> None:
     play(secret, words)
 ```
 
-The override keeps debugging repeatable; without it, `random.choice(words)` chooses the secret. See *Default Arguments* for the optional argument to `play`.
+Without `WORDLE_SECRET`, the game chooses a random secret.
 
 :::hint
 
-Inside `play`, a `return True` the moment the word is found replaces the `break` and the `else:` on the loop. Nothing uses the result yet. Exercise 10 will, when it keeps your statistics.
+Return `True` on a win, replacing the loop's `break` and `else`. After the loop, reveal the secret and return `False`. Exercise 10 will use this result for statistics.
 
 :::
 
