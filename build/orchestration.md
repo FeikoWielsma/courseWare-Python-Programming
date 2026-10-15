@@ -21,7 +21,7 @@ Read this first after a context reset or a quota interruption.
 | WP3c slides 07-09 | Codex GPT-6-Astra | **Done, merged**, config follow-ups applied (b232795). |
 | WP3e appendices | Antigravity Gemini 3.8 Flash | **Done, merged.** |
 | WP3a slides 01-03 | Claude Opus 5.5 | Hit the Claude rate limit after one commit; its child thread has a queued run that auto-continues. Task `prg400-wp3a-r1`. |
-| WP3d slides 10-11 | Claude Opus 5.5 | Hit the rate limit with uncommitted work in its worktree (`t3-f473b814`); queued run auto-continues. Task `prg400-wp3d-r1`. |
+| WP3d slides 10-11 | Claude Opus 5.5 | **Done, merged** (581051c). Open : `demos/11-python-classes/extraoo/` (old inheritance and classmethod material) still ships; archive it. |
 | WP3b slides 04-06 | first Cursor Opus (failed : Cursor has only Grok/Auto left), now **Antigravity Gemini 3.8 Flash**, task `prg400-wp3b-r2`, continuing from branch `t3/wp3b-slides-demos` (4f6356a) |
 | WP2a exercises 1-4 | Claude Opus 5.5 | Running, `prg400-wp2a-r1` (queued behind the rate limit) |
 | WP2b exercises 5-8 | Codex GPT-6-Astra | Running, `prg400-wp2b-r1` |
@@ -29,9 +29,8 @@ Read this first after a context reset or a quota interruption.
 
 Notes :
 - Cursor : only Grok and Auto have quota left. Do not route Opus through Cursor.
-- Puppeteer on this machine sometimes fails to launch Chrome (EBUSY on its temp
-  profile), probably when several agents run Chrome at once. Retry; build with
-  `--skip-lint`, then lint separately. A robustness fix belongs in the template.
+- The Chrome EBUSY crash is fixed in Presentation-Template `main` (4917847) : the
+  build gives Chrome a profile directory it owns. Lint and build pass again.
 - `build/site.config.ts` : the "Run the game" row says `uv run python -m wordle`
   for every exercise, wrong for Exercises 1 to 5 (`wordle.py`). Fix per exercise.
 - WP2 exercise texts reference slide titles in italics while WP3a/b/d are still
