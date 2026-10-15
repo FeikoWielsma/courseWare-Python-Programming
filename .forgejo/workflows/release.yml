@@ -81,6 +81,13 @@ jobs:
         shell: bash
         run: uv run python build/make-starters.py --check
 
+      # Gating. Every Wordle solution stage passes its tests (and mypy from
+      # Exercise 12), and a scripted game with a fixed secret prints exactly
+      # the stored transcript in build/transcripts/.
+      - name: Check the exercise solutions
+        shell: bash
+        run: uv run python build/check-solutions.py
+
       # Gating. The repository is at zero findings inside the ruff.toml scope,
       # and every per-file-ignore there names the lesson it protects. A new
       # finding is either a defect or a deliberate teaching pattern that wants

@@ -85,11 +85,7 @@ ignore = [
 # which is the half being taught. `strict=` on zip() is likewise a distraction
 # ahead of the concept it qualifies.
 "demos/07_comprehensions/**" = ["B905", "B912", "PERF401", "PERF402", "PERF403"]
-"solutions/solution07-comprehensions/**" = ["B905", "B912", "PERF401", "PERF402", "PERF403"]
 
-# The exception chapter deliberately shows a bare `except:` before explaining
-# why it is wrong, and raises inside handlers to demonstrate chaining.
-"solutions/solution08-exception-handling/**" = ["B904", "E722"]
 
 # Where the anti-pattern is the lesson, it stays and the rule is turned off for
 # that file with the reason written down. Do not "fix" any of these.
@@ -122,15 +118,9 @@ ignore = [
 # demonstrates.
 "demos/05-functions/09_lambdafunctions.py" = ["E731"]
 
-# The comprehensions chapter shows map and filter first and the comprehension
-# second, so the first half of every pair is the half being taught.
-"demos/07_comprehensions/demo06_syntactic_sugar.py" = ["C417"]
-"demos/07_comprehensions/demo11_dictionary_comprehension.py" = ["C416"]
-
-# The dictionary-from-keys slide shows dict.fromkeys and the equivalent
-# comprehension side by side; collapsing one into the other deletes the
-# comparison that is the point of the slide.
-"demos/07_comprehensions/demo12_dictionary_from_keys.py" = ["C420"]
+# The syntactic-sugar slide sets map with a lambda beside the comprehension it
+# becomes; the map half is the form being recognised.
+"demos/07_comprehensions/demo13_syntactic_sugar.py" = ["C417"]
 
 
 # The dictionaries demo ends by deleting the dictionary and using it again, to
@@ -146,25 +136,10 @@ ignore = [
 # the mode on every call because file modes are what the chapter is about.
 "demos/09-python-io/**" = ["SIM115", "UP015"]
 
-# The reference solutions keep every earlier step of the exercise as a
-# commented-out block, so a student can follow the progression. Those comments
-# are what is long; the live code is within the limit.
-#
-# F403 / F405 : Exercise 6 ends by building a `calcu` package whose __init__
-# re-exports, so every later solution starts `from calcu import *`. That is the
-# shape the exercise arrives at.
-"solutions/**" = ["E501", "F403", "F405"]
 
-# Modules 5 and 6 come before comprehensions are taught in module 7, so their
-# solutions build lists with an explicit loop on purpose.
-"solutions/solution05-functions/**" = ["PERF401"]
-"solutions/solution06-modules/**" = ["PERF401"]
-
-# The exceptions chapter uses the classic IOError name, which its table of
-# standard exceptions also lists, and opens files without a context manager
-# before `with` has been taught. Renaming IOError to OSError here would put the
-# demos out of step with the slides; doing it in both is a content decision,
-# tracked in build/tasks.md.
-"demos/08-exceptionhandling/**" = ["B904", "E722", "SIM115", "UP015", "UP024"]
+# The exceptions chapter shows a bare except before explaining why it is wrong,
+# and closes files by hand before context managers; modes are spelled out
+# because the IO chapter that follows is about them.
+"demos/08-exceptionhandling/**" = ["B904", "E722", "SIM115", "UP015"]
 
 
