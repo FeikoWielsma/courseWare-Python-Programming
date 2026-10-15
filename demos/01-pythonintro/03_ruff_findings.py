@@ -2,11 +2,11 @@
 
 Run the linter over it and read the report :
 
-    uv run ruff check demos/00a-modern-python/02_ruff_findings.py
+    uv run ruff check demos/01-pythonintro/03_ruff_findings.py
 
 Then let it repair what it safely can :
 
-    uv run ruff check demos/00a-modern-python/02_ruff_findings.py --fix
+    uv run ruff check demos/01-pythonintro/03_ruff_findings.py --fix
 
 Every finding below is deliberate, so the whole file is excluded from the
 repository's own ruff run in ruff.toml. Do not "fix" it here.
