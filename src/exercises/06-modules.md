@@ -58,11 +58,11 @@ if __name__ == "__main__":
     main()
 ```
 
-Once all five modules are populated, delete the old root-level `wordle.py`. Run `uv run python -m wordle` to check that the package plays before continuing.
+Delete the old `wordle.py` once the package is complete. Check it with `uv run python -m wordle`.
 
 :::hint
 
-Each module needs imports for the names it uses. `game.py` needs the renderer and the two scoring functions. `scoring.py` and `display.py` need no imports from the game. See *from...import Statement*.
+`game.py` needs the renderer and both scoring functions. Neither of those modules imports the game. See *from...import Statement*.
 
 :::
 
