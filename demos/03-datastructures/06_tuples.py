@@ -1,4 +1,9 @@
 tup1 = ("physics", "chemistry", "biology", "computer science")
+tup2 = (1, 2, 3, 4, 5)
+tup3 = "a", "b", "c", "d"  # not recommended
+tup4 = ()                  # empty tuple
+tup5 = (50,)               # single element tuple
+print(tup2, tup3, tup4, tup5)
 
 t = ()
 print(t)

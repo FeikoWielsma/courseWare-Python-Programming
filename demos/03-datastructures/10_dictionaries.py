@@ -18,4 +18,4 @@ dict1.clear()  # remove all entries in dict
 print(dict1)  # {}
 
 del dict1  # delete entire dictionary
-print(dict1)  # NameError: name 'dict1' is not defined
+# print(dict1)  # NameError: name 'dict1' is not defined

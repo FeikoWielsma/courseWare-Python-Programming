@@ -14,11 +14,11 @@ footer: Data Structures
   - Python distinguishes sequences on the basis of mutability
 - Immutable sequences :
   - Contain objects and content cannot change once created :
-    - Objects may references to other objects and these other objects may be changed
-  - Examples are Strings (Unicode items), Tuples, Bytes (bytes items)
+    - Objects may reference other objects, and those other objects may change
+  - Examples are strings, tuples and bytes, which the IO module covers
 - Mutable sequences :
   - Contain objects and content can be changed once created
-  - Examples are Lists and Byte Arrays
+  - The list is the example used everywhere
 - Operations that work on all sequences types :
   - Indexing, slicing, multiplying, and checking for membership
 - Python has built-in functions for :
@@ -29,9 +29,9 @@ footer: Data Structures
 
 # Lists
 
-- Lists are mutable sequences and similar to arrays in C :
+- Lists are mutable sequences :
   - List contains items separated by commas and enclosed within square brackets `[]`
-  - Difference with arrays in other languages is that list items can be of different data type
+  - The items of one list can be of different data types
 - Values are accessed using the index or slice operator `[ ]` and `[ : ]` :
   - Indexes start at 0, then upwards and with end-1
   - Lists can be sliced, concatenated and so on
@@ -163,25 +163,33 @@ list1.append(100)  # gives NameError, name list1 not defined anymore
 
 # Multidimensional Lists
 
-- Multidimensional lists created by using other lists as elements :
+- A list can hold other lists, which gives a grid of rows and columns :
 
 ```python
-multilist = [["a", "b", "c"], [1, 2, 3, 4]]
-# first dimension
-print(multilist[0][0])  # a
-print(multilist[0][2])  # c
-# second dimension
-print(multilist[1][0])  # 1
-print(multilist[1][3])  # 4
-# print (multilist[1][4]) # IndexError: list index out of range
+grid = [
+    [1, 2, 3],
+    [4, 5, 6],
+]
+print(grid[0])  # [1, 2, 3], the first row
+print(grid[1][2])  # 6, row 1, column 2
+print(len(grid), len(grid[0]))  # 2 3, rows and columns
 ```
 
-- Delete from a multidimensional list :
+- Each row is an ordinary list, so it can be changed in place or added to :
 
 ```python
-multilist = [["a", "b", "c"], [1, 2, 3, 4]]
-del multilist[0][2]           # [['a', 'b'], [1, 2, 3, 4]]
-multilist.remove(["a", "b"])  # [[1, 2, 3, 4]]
+grid[0][0] = 10
+print(grid)  # [[10, 2, 3], [4, 5, 6]]
+grid.append([7, 8, 9])
+print(grid)  # [[10, 2, 3], [4, 5, 6], [7, 8, 9]]
+```
+
+- Repeating a row with `*` repeats one list object, not a copy of it :
+
+```python
+shared = [[0] * 3] * 2
+shared[0][0] = 1
+print(shared)  # [[1, 0, 0], [1, 0, 0]], both rows are one list
 ```
 
 > `demo03 · multidimensionallists`
@@ -235,7 +243,7 @@ multilist.remove(["a", "b"])  # [[1, 2, 3, 4]]
 
 - Tuple is an immutable sequence of Python objects :
   - Consist of a number of values separated by commas
-  - Tuples are sequences, just like lists, but tuples are faster because read-only
+  - Tuples are sequences, just like lists, but cannot be changed once created
 - Main differences between lists and tuples :
   - Lists are enclosed in brackets `[ ]` and their contents and size can be changed
   - Tuples are enclosed in parentheses `( )` and cannot be updated
@@ -298,7 +306,7 @@ print(tup3)  # (12, 34.56, 'abc', 'xyz')
 - Entire tuple can be removed with `del` statement :
 
 ```python
-tup1 = ("physics", "chemistry", "biology", "computer science")
+tup = ("physics", "chemistry", "biology", "computer science")
 print(tup)  # ('physics', 'chemistry', 'biology', 'computer science')
 del tup
 print("After deleting tup : ")
@@ -309,8 +317,9 @@ print(tup)
 
 ```text
 Traceback (most recent call last):
-  File "test.py", line 9, in <module>
-     print(tup)
+  File "C:\course-work\tuples.py", line 5, in <module>
+    print(tup)
+          ^^^
 NameError: name 'tup' is not defined
 ```
 
@@ -323,11 +332,10 @@ NameError: name 'tup' is not defined
 - Tuples have many uses :
   - Coordinate pairs, records from a database
 - Any set of comma-separated objects default to tuples :
-  - Event without identifying symbols like parentheses
-- Tuples are faster than lists :
-  - It is faster to loop through a tuple than through a list
+  - Even without parentheses around them
+- Tuples can be dictionary keys and set members, lists cannot
 - Tuples can make your code safer :
-  - Allows you to “write-protect” data that does not need to be changed
+  - Allows you to "write-protect" data that does not need to be changed
 - A tuple can have lists as items :
   - The items in the lists are mutable however
 - Tuple can be destructured and contents assigned to variables :
@@ -360,69 +368,60 @@ print(s)  # 'Einstein'
 
 ---
 
-# Bytes and Byte Arrays
-
-- Bytes object is an immutable array :
-  - Items are 8-bit bytes, represented by integers in the range `0 <= x < 256`
-- Bytes objects are constructed with :
-  - Bytes literals like `b'abc'` or the built-in function `bytes()`
-- Characters in string become Unicode values in bytes array :
-
-```python
-text = "ABCDE"
-arr = bytes(text, "utf-8")  # string with encoding 'utf-8'
-print(arr)
-print(arr[0])  # 65
-```
-
-- Bytes objects can be decoded to strings via `decode() :`
-
-```python
-str2 = arr.decode("utf-8")
-print(str2)  # ABCDE
-```
-
-- Bytearray object is mutable array created `bytearray()` constructor :
-  - Has same interface as immutable bytes objects
-- Extension modules `array` and `collections` :09_bytesandbytearrays
-  - Provide additional mutable sequence examples
-
-> `demo09 · bytesandbytesarrays`
-
----
-
 # Sets
 
-- Data type representing unordered collection with no duplicates :
-  - Distinguish between mutable sets and immutable sets
-- Mutable set created by `set()` constructor or by using curly braces `{ }` :
+- A set is an unordered collection with no duplicates :
+  - Created with curly braces `{ }` or with the `set()` constructor
+  - `set()` takes one iterable, such as a list, and keeps each value once
 
 ```python
 s1 = {1, 1, 2, 2}
 print(s1)  # {1, 2}
-```
-
-- `set()` constructor expects one iterable object :
-
-```python
-s2 = set([3, 3, 4, 4])
+numbers = [3, 3, 4, 4]
+s2 = set(numbers)
 print(s2)  # {3, 4}
+s2.add(5)
+print(s2)  # {3, 4, 5}
+print(4 in s2)  # True, a fast membership test
 ```
 
-  - Can be modified afterwards by several methods like `add()`
-  - Immutable set created by `frozenset()` constructor
-- Supports mathematical operations like union and intersection :
+- An empty set is written `set()`, because `{}` is an empty dictionary
+- A `frozenset` is a set that cannot be changed after it is created :
 
 ```python
-a = set("abracadabra")
-b = set("alacazam")
-print(a)  # unique letters in a
-# {'a', 'r', 'b', 'c', 'd'}
-print(a - b)  # letters in a but not in b
-# {'r', 'd', 'b'}
+frozen = frozenset(numbers)
+print(frozen)  # frozenset({3, 4})
 ```
 
-> `demo10 · setsandfrozensets`
+> `demo09 · setsandfrozensets`
+
+---
+
+# Set Operations
+
+- Sets support the operations of set theory, each written as an operator :
+
+```python
+physics = {"Einstein", "Bohr", "Curie", "Fermi"}
+chemistry = {"Curie", "Rutherford", "Pauling"}
+print("Curie" in chemistry)  # True
+print(sorted(physics | chemistry))  # union, in either set
+print(sorted(physics & chemistry))  # intersection, in both
+print(sorted(physics - chemistry))  # difference, in physics only
+print(sorted(physics ^ chemistry))  # in one of the two, not both
+```
+
+```text
+True
+['Bohr', 'Curie', 'Einstein', 'Fermi', 'Pauling', 'Rutherford']
+['Curie']
+['Bohr', 'Einstein', 'Fermi']
+['Bohr', 'Einstein', 'Fermi', 'Pauling', 'Rutherford']
+```
+
+- A set has no order, so `sorted()` turns it into a list to print it predictably
+- Each operator has a method form that accepts any iterable :
+  - `union()`, `intersection()`, `difference()` and `symmetric_difference()`
 
 ---
 
@@ -431,9 +430,9 @@ print(a - b)  # letters in a but not in b
 - Dictionaries consist of pairs of keys and values :
   - Keys can be almost any immutable Python type but usually numbers or strings
   - Values can be any arbitrary Python object
-- Python 's dictionaries are of hash table type :
-  - Like associative arrays in Perl and PHP
-  - Consist of key-value pairs separated by comma’s
+- Dictionaries are hash tables :
+  - Looking up a key is fast, however large the dictionary
+  - Consist of key-value pairs separated by commas
 - Dictionaries are enclosed by curly braces `{ }` :
 
 ```python
@@ -449,8 +448,8 @@ dict1[2] = "Data"
 print(dict1)  # {'Albert': 2341, 'Robert': 9102, 'Enrico': 3258, 'Werner': 3490, 2: 'Data'}
 ```
 
-- Dictionaries have no concept of order among elements :
-  - Elements are never "out of order“, they are simply unordered
+- Dictionaries remember insertion order :
+  - Keys come out in the order in which they were first added
 
 ---
 
@@ -480,10 +479,10 @@ del dict1["Albert"]
 print(dict1["Albert"])  # KeyError
 ```
 
-- Entire contents of dictionary is cleared with `clear()`
+- Entire contents of dictionary is cleared with `clear()` :
   - Entire dictionary can be deleted in single operation with del
 
-> `demo11 · dictionaries`
+> `demo10 · dictionaries`
 
 ---
 
@@ -492,7 +491,7 @@ print(dict1["Albert"])  # KeyError
 - Dictionary values have no restrictions :
   - Can be any arbitrary Python object
   - Either standard objects or user-defined objects
-- There two important points to about dictionary keys :
+- There are two important points about dictionary keys :
   - No duplicate keys allowed
   - Keys must be immutable
 - In case duplicate keys are encountered during assignment :
@@ -554,13 +553,13 @@ readings: tuple[float, ...] = (1.5, 2.5, 3.5)
 | `dict.clear()` | Removes all elements of dictionary dict |
 | `dict.copy()` | Returns a shallow copy of dictionary dict |
 | `dict.get(key)` | For key key, returns value or default if key not in dictionary |
-| `dict.popitem()` | Remove and return arbitrary (key, value) pair from dictionary |
-| `dict.items()` | Returns a list of dict's (key, value) tuple pairs |
-| `dict.keys()` | Returns list of dictionary dict's keys |
+| `dict.popitem()` | Removes and returns the (key, value) pair added last |
+| `dict.items()` | Returns a view of dict's (key, value) tuple pairs |
+| `dict.keys()` | Returns a view of dictionary dict's keys |
 | `dict.update(dict2)` | Adds dictionary dict2's key-values pairs to dict |
-| `dict.values()` | Returns list of dictionary dict's values |
+| `dict.values()` | Returns a view of dictionary dict's values |
 
-> `demo12 · dictionarymethods`
+> `demo11 · dictionarymethods`
 
 ---
 
@@ -571,15 +570,15 @@ readings: tuple[float, ...] = (1.5, 2.5, 3.5)
   - First index is zero, the second index is one, and so forth
 - Lists are mutable sequences :
   - Contain items separated by commas and enclosed within square brackets `[]`
-  - Similar to arrays in C but list items can be of different data type
+  - Items can be of different data types, and lists can hold other lists
 - Tuples are immutable sequences :
   - Enclosed in parenthesis ( ) instead of brackets
   - Consist of a number of values separated by commas
 - Sets are unordered collections with no duplicates :
-  - Support mathematical operations like union and intersection
+  - Fast membership tests, and union, intersection and difference
   - Set is mutable and `frozenset` is immutable
-- Dictionaries are comparable to associative arrays :
+- Dictionaries map keys to values, in insertion order :
   - Pairs of keys and values, separated by a comma and a colon
-  - Enclosed by curly braces `{ },` values access with square brackets `[]`
+  - Enclosed by curly braces `{ }`, values accessed with square brackets `[]`
 
 > `exercise03 · Data Structures`
