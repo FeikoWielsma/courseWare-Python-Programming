@@ -14,8 +14,8 @@ appendix: true
   - Collections in Data Structures, `list[int]` and `dict[str, int]`
   - Signatures in Functions, `def area(w: float, h: float) -> float`
   - Constructors and methods in Classes, `def __init__(self, name: str) -> None`
-- This appendix gathers them up and adds the two things left over :
-  - A value that may be absent, and a checker that reads the annotations
+- This appendix gathers them up and adds the three things left over :
+  - A value that may be absent, a closed set of literal values, and a checker
 - Python is dynamically typed and stays that way :
   - A name refers to an object, and the object carries the type
   - Nothing forces a parameter to be the type the author had in mind
@@ -117,6 +117,7 @@ def parse(value: str | int) -> int:
 def double(n: int) -> int:
     return n * 2
 
+
 print(double("ab"))  # prints abab, no error is raised
 ```
 
@@ -148,6 +149,7 @@ uv run mypy 05_mypy_error.py
 def double(n: int) -> int:
     return n * 2
 
+
 result: int = double("ab")
 ```
 
@@ -162,6 +164,36 @@ Found 1 error in 1 file (checked 1 source file)
 
 ---
 
+# Closed Sets with Literal
+
+- `typing.Literal` restricts a type to an exact set of allowed values :
+  - A plain `str` accepts any text, whereas `Literal` rejects any value outside the declared options
+
+```python
+from typing import Literal
+
+type TrafficLight = Literal["red", "amber", "green"]
+
+
+def change_light(color: TrafficLight) -> None:
+    print(f"Traffic light is now {color}")
+
+
+change_light("green")
+change_light("blue")
+```
+
+- When checked with `mypy`, a value outside the set is flagged immediately :
+
+```text
+06_literal.py:23: error: Argument 1 to "change_light" has incompatible type "Literal['blue']"; expected "Literal['red', 'amber', 'green']"
+Found 1 error in 1 file (checked 1 source file)
+```
+
+> `demo06 · literal`
+
+---
+
 # Summary : Type Hinting
 
 - `uv` manages the interpreter, the environment and the packages :
@@ -173,6 +205,7 @@ Found 1 error in 1 file (checked 1 source file)
   - `age: int` for a variable, `def f(a: int) -> str` for a function
   - `list[int]` , `dict[str, int]` and `tuple[int, int]` for containers
   - `str | None` for a value that may be absent
+  - `Literal["red", "amber", "green"]` for a closed set of literal values
 - Annotations are ignored at runtime :
   - Their value comes from the editor and from a checker such as `mypy`
 
