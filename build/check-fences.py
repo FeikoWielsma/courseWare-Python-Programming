@@ -33,7 +33,6 @@ RUFF_SELECT = "UP,W6,RUF001,RUF002,RUF003"
 #         default on purpose rather than leaving the reader to know it.
 # UP018 : the conversion-functions slide calls `str('abc')` to show what the
 #         function does; rewriting it as a literal deletes the example.
-
 # UP031 : the format-specification slide closes with one `%` example, so the
 #         older style can be recognised in other people's code.
 # UP032 : the same fence shows `str.format` once, for the same reason.
