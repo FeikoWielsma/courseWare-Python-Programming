@@ -1,0 +1,9 @@
+Your guess: There are 935 words. The first ten are ['abbey', 'abide', 'abled', 'abort', 'about', 'above', 'abuse', 'acorn', 'actor', 'acute'].
+Crane is in the word list: True.
+Example secret: TRUST.
+Letters in common: ['r']
+Letters ruled out: ['a', 'c', 'e', 'n']
+Letters not tried: ['b', 'd', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'o', 'p', 'q', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+History: ['slate', 'crane']
+Guess and ruled-out letters: ('crane', ['a', 'c', 'e', 'n'])
+Stats: {'played': 1, 'won': 0}; streak: 0

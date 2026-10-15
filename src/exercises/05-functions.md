@@ -39,6 +39,7 @@ Before the scoring can be fixed it needs to be something you can call on its own
 Move the code that reads the word list into a function, and the rest of the script into a function called `main`. Call `main` at the bottom, behind a guard :
 
 ```python
+import os
 import random
 from pathlib import Path
 
@@ -221,7 +222,8 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
 def main() -> None:
     words = load_words()
     print("Guess the five-letter word. Type 'quit' to give up, 'letters' for the letters tried.")
-    play(random.choice(words), words)
+    secret = os.environ.get("WORDLE_SECRET", random.choice(words))
+    play(secret, words)
 ```
 
 This is the moment to put `random.choice(words)` back.

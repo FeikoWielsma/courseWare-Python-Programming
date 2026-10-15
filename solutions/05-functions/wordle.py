@@ -1,5 +1,6 @@
 """Wordle, as it stands at the end of Exercise 5."""
 
+import os
 import random
 from pathlib import Path
 
@@ -90,7 +91,8 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
 def main() -> None:
     words = load_words()
     print("Guess the five-letter word. Type 'quit' to give up, 'letters' for the letters tried.")
-    play(random.choice(words), words)
+    secret = os.environ.get("WORDLE_SECRET", random.choice(words))
+    play(secret, words)
 
 
 if __name__ == "__main__":
