@@ -9,3 +9,7 @@
 - Exercise 6 rewritten and verified: package creation ★, module split ★★, module execution ★, test boundaries ★★; optional rich outside the solution chain.
 - Verified Ex 6 slate/crane transcript and four passing tests. Explicit pytest pythonpath configuration is necessary when continuing from Ex 5.
 - Ex 6 slide references: Packages in Python; from...import Statement; Installing Packages.
+
+- Exercise 7 rewritten: render ★★; consistent ★; candidates ★★★; letter_counts/best_guess ★★; hint integration ★★; optional automatic solver.
+- Verified Ex 7 eight tests and slate/hint/crane output (15 candidates, GRACE). Solver handout imports all four functions, so text explicitly defers collection until Step 4 while the game remains playable.
+- Ex 7 slide references: Zip Function; Filtered List Comprehension; Dictionary Comprehensions; Set Comprehensions; Built-ins that Take a Function.
