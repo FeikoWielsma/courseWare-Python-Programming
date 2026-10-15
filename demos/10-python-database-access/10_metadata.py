@@ -1,5 +1,6 @@
 import sqlite3
 
+# Reads the Cars table; run 03_insertingdata.py or 04_preparedstatements.py first.
 con = sqlite3.connect("cars.db")
 
 with con:
@@ -24,3 +25,5 @@ with con:
 
     for row in rows:
         print(f"{row[0]:>2} {row[1]:<10} {row[2]}")
+
+con.close()
