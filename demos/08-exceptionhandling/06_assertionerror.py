@@ -1,8 +1,7 @@
-def kelvin_to_fahrenheit(temperature):
+def kelvin_to_fahrenheit(temperature: float) -> float:
     assert temperature >= 0, "Colder than absolute zero!"
-    return ((temperature - 273) * 1.8) + 32
+    return (temperature - 273.15) * 1.8 + 32
 
 
-print(kelvin_to_fahrenheit(273))
-print(int(kelvin_to_fahrenheit(505.78)))
-print(kelvin_to_fahrenheit(-5))
+print(f"{kelvin_to_fahrenheit(273.15):.1f}")  # 32.0
+print(kelvin_to_fahrenheit(-5))  # Deliberate AssertionError.

@@ -17,3 +17,9 @@ print("deleted  :", renamed.exists())
 
 # missing_ok avoids an error when the file is already gone.
 renamed.unlink(missing_ok=True)
+
+sample = Path("sample.txt")
+sample.write_text("first\n", encoding="utf-8")
+content = sample.read_text(encoding="utf-8")
+print(content, end="")
+sample.unlink()

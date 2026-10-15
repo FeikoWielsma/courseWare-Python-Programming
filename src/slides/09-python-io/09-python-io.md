@@ -8,21 +8,15 @@ footer: Python IO
 
 # Input and Output
 
-- Simplest way to produce output is `print` function :
-  - Allows you to pass expressions, separated by commas, enclosed in parentheses
+- `print` writes its arguments to standard output.
+- `input` reads one line from standard input and removes the trailing newline.
+- It returns a string; convert it before doing arithmetic.
 
 ```python
-print("Python is really a great language,", "isn't it? ")
+print("Python is really a great language,", "isn't it?")
+text = input("Enter some input : ")
+print(text)
 ```
-
-- `print` is a function, so its arguments go inside the parentheses
-- Standard input default comes from keyboard with input function
-- `input([prompt])` function :
-  - Reads line from standard input, converts it to a string and strips trailing newline
-- Python also has File Object methods :
-  - Most of the file manipulation is done using a file object
-- Python also has OS Object Methods :
-  - Methods to process files as well as directories
 
 > `demo01 · readinput`
 
@@ -90,7 +84,7 @@ file_object = open(file, mode="r", buffering=-1, encoding=None)
 - The object returned varies with the file mode and the buffering :
 
 ```text
->>> open("test.txt", "rt")
+>>> open("test.txt", "rt", encoding="utf-8")
 <_io.TextIOWrapper name='test.txt' mode='rt' encoding='utf-8'>
 >>> open("test.txt", "rb")
 <_io.BufferedReader name='test.txt'>
@@ -143,24 +137,18 @@ file_object = open(file, mode="r", buffering=-1, encoding=None)
 
 # File Object Attributes
 
-- FileIO object represents raw unbuffered binary I/O
-- File object has attributes with information about it
-- `file.closed` : Returns true if file is closed, false otherwise
-- `file.mode` : Returns access mode with which file was opened
-- `file.name` : Returns name of the file
-- Example :
+- File objects expose their name, mode and closed state.
 
 ```python
-fo = open("test.txt", "wb")
+fo = open("test_02.txt", "wb")
 print("Name of the file:", fo.name)
 print("Closed or not :", fo.closed)
 print("Opening mode :", fo.mode)
+fo.close()
 ```
 
-- Result :
-
 ```text
-Name of the file: test.txt
+Name of the file: test_02.txt
 Closed or not : False
 Opening mode : wb
 ```
@@ -170,67 +158,70 @@ Opening mode : wb
 
 ---
 
-# Reading Binary Files
+# Bytes and Byte Arrays
 
-- Opening a file in binary mode is simple but subtle :
-  - Reading bytes not strings, so there’s no conversion for Python to do
-- Difference from opening it in text mode :
-  - b mode parameter
-  - No encoding attribute
-- `read` method reads whole file or a number of bytes :
-  - `tell` moves file pointer to the beginning of the file
-  - `seek` moves file pointer to a certain position in the file
+- `bytes` is immutable; `bytearray` allows individual bytes to change.
+- Indexing returns an integer from 0 to 255, not a character.
+- Encoding converts text to bytes; decoding converts bytes back to text.
 
-```text
-fr = open('trilobyte.jpg', mode='rb')
-fr.tell()
-data = fr.read(3) => read three bytes
-print(type(data)) => type is bytes
-fr.tell()
-fr.seek(0)
-data = fr.read()
-print(data)
+```python
+text = "ABCDE"
+arr = bytes(text, "utf-8")
+print(arr)  # b'ABCDE'
+print(arr[0])  # 65
+print(arr.decode("utf-8"))  # ABCDE
+
+mutable = bytearray(arr)
+mutable[0] = 70
+print(mutable)  # bytearray(b'FBCDE')
+print(mutable.decode("utf-8"))  # FBCDE
 ```
 
-> `demo04 · readbinaryfile`
+- Binary files read and write bytes; text files handle encoding for you.
+
+> `demo04 · bytesandbytesarrays`
+
+---
+
+# Reading Binary Files
+
+- Binary mode (`rb`) reads bytes without decoding them.
+- `read(3)` reads up to three bytes; `read()` reads the remaining contents.
+- Binary mode takes no `encoding` argument.
+
+```python
+fr = open("trilobyte.jpg", mode="rb")
+data = fr.read(3)
+print(type(data))  # <class 'bytes'>
+print(data.hex())  # ffd8ff
+fr.close()
+```
+
+> `demo05 · readbinaryfile`
 
 
 ---
 
 # Writing Binary Files
 
-- Open binary files for writing without encoding attribute :
+- `wb` writes bytes and replaces any existing file.
+- `struct` packs numbers into bytes and unpacks them with the same format.
+- Here `<iii` means three four-byte integers in little-endian order.
 
 ```python
-fw = open("binaryfile04.txt", mode="wb")
+from struct import pack, unpack
+
+payload = pack("<iii", 1, 2, 3)
+fw = open("numbers.bin", mode="wb")
+fw.write(payload)
+fw.close()
+
+fr = open("numbers.bin", mode="rb")
+print(unpack("<iii", fr.read()))  # (1, 2, 3)
+fr.close()
 ```
 
-- Use `pack` method of `struct` module to prepare buffer for writing :
-  - Format string determines how packing takes place
-
-```python
-nr1 = 1
-nr2 = 2
-result = nr1 + nr2
-buffer = pack("iii", nr1, nr2, result)
-fw.write(buffer)
-```
-
-- Data must be read like it is written using same format string :
-
-```python
-fr = open("binaryfile04.txt", mode="rb")
-buffer = fr.read()
-data = unpack("iii", buffer)
-```
-
-- Returned data is a tuple that can be unpacked as follows :
-
-```python
-num1, num2, res = data
-```
-
-> `demo05 · writebinaryfile`
+> `demo06 · writebinaryfile`
 
 
 ---
@@ -264,7 +255,7 @@ fw.close()
 Polish text: ąćęłńóśźżĄĆĘŁŃÓŚŹŻ
 ```
 
-> `demo06 · writetextfile`
+> `demo07 · writetextfile`
 
 
 ---
@@ -278,13 +269,13 @@ fr = open("textfilepolish.txt", mode="r", encoding="UTF-8")
 ```
 
 - `read` method reads a string from an open file :
-  - Parameter is the number of bytes to be read from the opened file
+  - In text mode the count is a number of characters, not bytes
 
 ```text
 file_object.read([count])
 ```
 
-- `read()` starts reading from the beginning of the file :
+- `read()` starts at the current file position :
   - If count is missing then it tries to read as much as possible, may be until end of file
 - Example of reading and closing file `textfilepolish.txt` :
 
@@ -309,7 +300,7 @@ Polish text: ąćęłńóśźżĄĆĘŁŃÓŚŹŻ
 
 - `close` method flushes unwritten data and closes file object :
   - No more writing can be done after calling `close`
-  - File is closed automatically when reference file object is reassigned to another file
+  - Do not rely on garbage collection to close a file promptly
 - Syntax :
 
 ```python
@@ -336,105 +327,90 @@ Name of the file: foo.txt
 
 # Using with
 
-- Calling `close()` by hand is easy to get wrong :
-  - An exception between `open` and `close` skips the `close` entirely
-  - An early `return` does the same
-- A `with` statement closes the file when the block ends, whatever happens :
+- `with` closes the file when the block ends, even after an exception or `return`.
+- Prefer this form whenever you open a file.
 
 ```python
 with open("foo.txt", mode="w", encoding="utf-8") as fw:
     fw.write("one line\n")
-# the file is closed here, even if write() raised
+# The file is closed here, even if write() raised.
+print(fw.closed)  # True
+
+with open("foo.txt", encoding="utf-8") as fr:
+    print(fr.read(), end="")  # one line
 ```
 
-- This is the normal way to open a file in Python :
-  - The manual `open` and `close` above is shown so that you recognise it
-  - Prefer `with` in everything you write
-- The file is closed on the way out of the block, not at the end of the program
-- Any object with the same protocol can be used this way :
-  - A database connection, a lock, a network socket
+> `demo08 · usingwith`
 
-> `demo07 · usingwith`
 
 ---
 
 # File Positions
 
-- `tell` method retrieves current position within the file :
-  - Next read or write will occur at that many bytes from the beginning of the file
-- `seek(offset[, from])` method changes the current file position :
-  - Offset argument indicates the number of bytes to be moved
-  - From argument specifies reference position from where bytes are to be moved
+- `tell()` reports the current position; `seek(0)` returns to the start.
+- Binary file positions count bytes from the beginning.
+- Text file positions are opaque values; use `seek(0)` or a value from `tell()`.
 
-<svg viewBox="0 0 960 175" width="100%" style="width:100%;height:auto;display:block;margin:6px 0 4px" role="img" aria-label="After reading ten bytes tell reports position ten, and seek zero moves the position back to the start">
-<defs>
-<marker id="fp-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-<path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
-</marker>
-</defs>
-<g fill="currentColor" opacity="0.12">
-<rect x="60" y="56" width="320" height="44"/>
-</g>
-<g fill="none" stroke="currentColor" stroke-width="2">
-<rect x="60" y="56" width="832" height="44"/>
-</g>
-<g fill="currentColor" font-size="22" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
-<text x="60" y="86" textLength="832" lengthAdjust="spacingAndGlyphs">Python is a great language</text>
-</g>
-<g fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.6">
-<path d="M 60 44 L 60 56"/>
-<path d="M 380 44 L 380 56"/>
-<path d="M 892 44 L 892 56"/>
-</g>
-<g fill="currentColor" font-size="18" text-anchor="middle" opacity="0.75">
-<text x="60" y="36">byte 0</text>
-<text x="380" y="36">byte 10</text>
-<text x="892" y="36">byte 26</text>
-</g>
-<g fill="none" stroke="currentColor" stroke-width="1.8" marker-end="url(#fp-arrow)">
-<path d="M 380 130 L 380 106"/>
-<path d="M 372 148 L 66 148"/>
-</g>
-<g fill="currentColor" font-size="19">
-<text x="392" y="136">tell() reports 10, the next read starts here</text>
-<text x="392" y="155">seek(0) moves the position back to the start</text>
-</g>
-</svg>
+```python
+with open("positions.bin", "wb") as fw:
+    fw.write(b"ABCDE")
 
-- If from is set to 0 :
-  - Use beginning of the file as the reference position
-- If from is set to 1 :
-  - Use current position as the reference position
-- If from is set to 2 :
-  - Use end of the file as the reference position
+with open("positions.bin", "rb") as fr:
+    print(fr.read(2))  # b'AB'
+    print(fr.tell())  # 2
+    fr.seek(0)
+    print(fr.read(2))  # b'AB'
+```
+
+> `demo09 · file_positions`
+
 
 ---
 
-# Example File Positioning
+# The csv Module
 
-- Consider file `foo.txt` that was created before :
+- Use `csv` for tabular text; it handles quoted commas and embedded newlines.
+- Open CSV files with `newline=""` so `csv` controls newline handling.
 
 ```python
-fo = open("foo.txt", "r+")
-text = fo.read(10)
-print("Read String is :", text)
-# Check current position
-position = fo.tell()
-print("Current file position :", position)
-# Reposition pointer at the beginning once again
-position = fo.seek(0, 0)
-text = fo.read(10)
-print("Again read String is :", text)
-fo.close()
+import csv
+
+with open("planets.csv", "w", newline="", encoding="utf-8") as fw:
+    writer = csv.writer(fw)
+    writer.writerow(["name", "moons"])
+    writer.writerows([["Earth", 1], ["Mars", 2]])
+
+with open("planets.csv", newline="", encoding="utf-8") as fr:
+    for row in csv.reader(fr):
+        print(row)
 ```
 
-- Result :
+> `demo10 · csv_module`
+
+---
+
+# Reading CSV Rows by Name
+
+- `DictReader` uses the first row as column names.
+- Field values are strings; convert numeric fields explicitly.
+- The demo creates the same CSV file, then reads it by column name :
+
+```python
+with open("planets.csv", newline="", encoding="utf-8") as fr:
+    for row in csv.DictReader(fr):
+        name = row["name"]
+        moons = int(row["moons"])
+        print(f"{name}: {moons} moons")
+```
 
 ```text
-Read String is : Python is
-Current file position : 10
-Again read String is : Python is
+Earth: 1 moons
+Mars: 2 moons
 ```
+
+- `csv.reader` returns lists instead : `['Earth', '1']`.
+
+> `demo11 · csv_dictionary`
 
 ---
 
@@ -474,9 +450,9 @@ sample.exists()  # True or False
 from pathlib import Path
 
 data_file = Path("datafile1.txt")
-data_file.touch()                              # create it, empty
-renamed = data_file.rename("renamedfile.txt")  # returns the new path
-renamed.unlink()                               # delete it
+data_file.touch()
+renamed = data_file.rename("renamedfile.txt")
+renamed.unlink()
 ```
 
 - `touch` creates an empty file, `unlink` removes one :
@@ -484,6 +460,7 @@ renamed.unlink()                               # delete it
 - Short reads and writes need no `open` at all :
 
 ```python
+sample = Path("sample.txt")
 sample.write_text("first\n", encoding="utf-8")
 content = sample.read_text(encoding="utf-8")
 ```
@@ -491,7 +468,7 @@ content = sample.read_text(encoding="utf-8")
 - The `os` module still has `os.rename` and `os.remove` :
   - They take strings and are what older code uses
 
-> `demo08 · renaming_files`
+> `demo12 · renaming_files`
 
 
 ---
@@ -503,7 +480,7 @@ content = sample.read_text(encoding="utf-8")
 ```python
 from pathlib import Path
 
-Path("test1").mkdir()
+Path("test1").mkdir(exist_ok=True)
 Path("test1").rmdir()
 ```
 
@@ -519,46 +496,37 @@ Path("test2/nested/deeper").mkdir(parents=True, exist_ok=True)
   - Remove the contents first, from the leaf upwards
   - `shutil.rmtree` removes a whole tree at once, and does not ask twice
 
-> `demo09 · creatingandremoving_directories`
+> `demo13 · creatingandremoving_directories`
 
 
 ---
 
 # Directory Contents
 
-- `iterdir` yields every entry of one directory :
+- `iterdir` lists direct entries; `glob` selects matching names.
+- Each entry is a `Path` that you can inspect or open.
+- `rglob` searches subdirectories too.
 
 ```python
 from pathlib import Path
 
-work = Path("justtesting")
-for entry in work.iterdir():
-    print(entry.name)
+here = Path.cwd()
+work = here / "justtesting"
+work.mkdir(exist_ok=True)
+(work / "one.txt").write_text("first\n", encoding="utf-8")
+(work / "two.txt").write_text("second\n", encoding="utf-8")
+print("contents          :", sorted(p.name for p in work.iterdir()))
+print("only the text     :", sorted(p.name for p in work.glob("*.txt")))
 ```
 
-- `glob` yields the entries matching a pattern :
-
-```python
-for text_file in work.glob("*.txt"):
-    print(text_file.name)
-
-for text_file in work.rglob("*.txt"):  # recursively, through subdirectories
-    print(text_file)
-```
-
-- Each entry is itself a `Path`, so it can be inspected or opened straight away :
-  - `entry.is_file()`, `entry.is_dir()`, `entry.stat().st_size`
-- `Path.cwd()` gives the current working directory :
-  - `os.chdir` still changes it, but passing paths around beats changing directory
-
-> `demo10 · directorymethods`
+> `demo14 · directorymethods`
 
 
 ---
 
 # Summary : Python IO
 
-- Simplest way to produce output is to use the `print` statement :
+- Simplest way to produce output is to use the `print` function :
   - Allows you to pass zero or more expressions, separated by commas
 - The `input` function reads a line of text from standard input :
   - It always returns a string, so convert it before doing arithmetic with it
@@ -566,8 +534,8 @@ for text_file in work.rglob("*.txt"):  # recursively, through subdirectories
   - Creating, opening files, closing files, reading, writing, renaming and deleting files
 - Files can be opened in several modes :
   - For reading, for writing, for appending or combinations thereof
-- File Positioning :
-  - Methods can retrieve and change the current file position
+- Binary files contain bytes; text files encode and decode strings.
+- Use `csv.reader`, `csv.writer` and `DictReader` for tabular text.
 - Open files with `with`, which closes them whatever happens :
   - The manual `open` and `close` pair is shown so that you recognise older code
 - `pathlib` represents a path as an object :
