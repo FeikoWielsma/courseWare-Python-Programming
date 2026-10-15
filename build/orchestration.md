@@ -12,25 +12,30 @@ Read this first after a context reset or a quota interruption.
 - Quotas are $20 plans on each provider; 5-hour and weekly limits will be hit.
   Auto-continue is on. Claude runs out first.
 
-## Running
+## Status (2026-10-15, early morning)
 
-| WP | Where | Model | Branch / id | Started |
-|---|---|---|---|---|
-| WP0 site port | top-level thread in Presentation-Template | Codex GPT-6.1-Sol, high | thread `mcp:636593ff-b576-4437-b045-639c669484a5`, branch `exercise-site` | 2026-10-14 |
-| WP1 solutions chain | delegated, worktree | Codex GPT-6-Luna, high | client id `prg400-wp1-r1` | 2026-10-14 |
-| WP3a slides 01-03 | delegated, worktree | Claude Opus 5.5, medium | `prg400-wp3a-r1` | 2026-10-14 |
-| WP3b slides 04-06 | delegated, worktree | Cursor Claude Opus 5.5, medium | `prg400-wp3b-r1` | 2026-10-14 |
-| WP3c slides 07-09 | delegated, worktree | Codex GPT-6-Astra, medium | `prg400-wp3c-r1` | 2026-10-14 |
-| WP3d slides 10-11 | delegated, worktree | Claude Opus 5.5, medium | `prg400-wp3d-r1` | 2026-10-14 |
-| WP3e appendices 12-13 | delegated, worktree | Antigravity Gemini 3.8 Flash High | `prg400-wp3e-r1` | 2026-10-14 |
+| WP | Model | State |
+|---|---|---|
+| WP0 site port | Codex GPT-6.1-Sol | **Done, merged** : Presentation-Template `main` 27549e1 (local, not pushed). PySpark branch `shared-exercise-site` (d71b35d, 2c55b86) left unmerged for the trainer : PySpark `main` has unrelated uncommitted files. PRG400 wiring merged (fc2ed95). |
+| WP1 solutions chain | Codex GPT-6-Luna | **Done, merged.** 13 stages, `build/check-solutions.py` in CI. |
+| WP3c slides 07-09 | Codex GPT-6-Astra | **Done, merged**, config follow-ups applied (b232795). |
+| WP3e appendices | Antigravity Gemini 3.8 Flash | **Done, merged.** |
+| WP3a slides 01-03 | Claude Opus 5.5 | Hit the Claude rate limit after one commit; its child thread has a queued run that auto-continues. Task `prg400-wp3a-r1`. |
+| WP3d slides 10-11 | Claude Opus 5.5 | Hit the rate limit with uncommitted work in its worktree (`t3-f473b814`); queued run auto-continues. Task `prg400-wp3d-r1`. |
+| WP3b slides 04-06 | first Cursor Opus (failed : Cursor has only Grok/Auto left), now **Antigravity Gemini 3.8 Flash**, task `prg400-wp3b-r2`, continuing from branch `t3/wp3b-slides-demos` (4f6356a) |
+| WP2a exercises 1-4 | Claude Opus 5.5 | Running, `prg400-wp2a-r1` (queued behind the rate limit) |
+| WP2b exercises 5-8 | Codex GPT-6-Astra | Running, `prg400-wp2b-r1` |
+| WP2c exercises 9-13 | Cursor Grok 4.7 | Running, `prg400-wp2c-r1` |
 
-All delegated packages branched from `19409a7`. The shared brief is in each
-task prompt : coordinator-only files, gates, notes in `build/notes/<wp>.md`.
-
-## Done by the coordinator
-
-- `19409a7` Round 7 and 8, the prototype, the plan
-- `e7d329d` archive of unreferenced demos and stray exercise files; starters check in CI
+Notes :
+- Cursor : only Grok and Auto have quota left. Do not route Opus through Cursor.
+- Puppeteer on this machine sometimes fails to launch Chrome (EBUSY on its temp
+  profile), probably when several agents run Chrome at once. Retry; build with
+  `--skip-lint`, then lint separately. A robustness fix belongs in the template.
+- `build/site.config.ts` : the "Run the game" row says `uv run python -m wordle`
+  for every exercise, wrong for Exercises 1 to 5 (`wordle.py`). Fix per exercise.
+- WP2 exercise texts reference slide titles in italics while WP3a/b/d are still
+  renaming slides : after all merges, check every italic reference resolves.
 
 ## Next, in order
 
