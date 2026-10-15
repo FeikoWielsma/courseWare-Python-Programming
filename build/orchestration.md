@@ -12,6 +12,22 @@ Read this first after a context reset or a quota interruption.
 - Quotas are $20 plans on each provider; 5-hour and weekly limits will be hit.
   Auto-continue is on. Claude runs out first.
 
+## PAUSED by the trainer (2026-10-15)
+
+Four packages were stopped mid-run with `task_cancel`, and their uncommitted work
+saved as a WIP commit on their own branch. To resume, delegate each again with
+its original brief (the client ids below, suffix `-r2` / `-r3`) plus one line :
+"Continue from branch X : `git merge X` first, then read `build/notes/<wp>.md`".
+
+| WP | Branch (worktree) | State at pause |
+|---|---|---|
+| WP2a exercises 1-4 (Claude Opus) | `t3/wordle-exercises-1-to-4` (t3-1522ee25), WIP 7e16656 | 3 commits + WIP |
+| WP2b exercises 5-8 (Codex Astra) | `t3/wp2b-exercise-texts` (t3-bf58baee), WIP 1034e20 | 8 commits + WIP; WIP includes `build/site/dist`, drop it on merge |
+| WP2c exercises 9-13 (Cursor Grok) | `t3/wp2c-exercises-9-to-13` (t3-4d482653) | nothing committed; restart |
+| WP3b slides 04-06 (Antigravity) | `t3/wp3b-slides-demos-1` (t3-947a50aa), WIP 452f2ab | 2 commits + WIP; WIP includes `build/site/dist`, drop it on merge |
+
+Everything else in the table below is merged into `prg400-wordle`.
+
 ## Status (2026-10-15, early morning)
 
 | WP | Model | State |
