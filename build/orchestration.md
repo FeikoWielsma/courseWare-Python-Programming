@@ -20,7 +20,7 @@ Read this first after a context reset or a quota interruption.
 | WP1 solutions chain | Codex GPT-6-Luna | **Done, merged.** 13 stages, `build/check-solutions.py` in CI. |
 | WP3c slides 07-09 | Codex GPT-6-Astra | **Done, merged**, config follow-ups applied (b232795). |
 | WP3e appendices | Antigravity Gemini 3.8 Flash | **Done, merged.** |
-| WP3a slides 01-03 | Claude Opus 5.5 | Hit the Claude rate limit after one commit; its child thread has a queued run that auto-continues. Task `prg400-wp3a-r1`. |
+| WP3a slides 01-03 | Claude Opus 5.5 | **Done, merged** (15abf7e, follow-ups 4fab5be). Open : module 04's summary still names operators (WP3b's); the `List Operations` slide carries a `listsasstacks` pill it does not show; Exercise 1 runs `uv run ruff` without adding ruff (WP2a); the code font renders `!=` and `<=` as ligatures in tables. |
 | WP3d slides 10-11 | Claude Opus 5.5 | **Done, merged** (581051c). Open : `demos/11-python-classes/extraoo/` (old inheritance and classmethod material) still ships; archive it. |
 | WP3b slides 04-06 | first Cursor Opus (failed : Cursor has only Grok/Auto left), now **Antigravity Gemini 3.8 Flash**, task `prg400-wp3b-r2`, continuing from branch `t3/wp3b-slides-demos` (4f6356a) |
 | WP2a exercises 1-4 | Claude Opus 5.5 | Running, `prg400-wp2a-r1` (queued behind the rate limit) |
