@@ -23,10 +23,15 @@ Your game wants one word per line : lower case, five letters, ASCII letters only
 ```python
 def clean_words(lines: list[str]) -> list[str]:
     """Return unique lowercase five-letter ASCII words in sorted order."""
-    ...
+    kept = set()
+    for line in lines:
+        word = line.strip().lower()
+        if ...:
+            kept.add(word)
+    return ...
 ```
 
-The handout `tests/test_words.py` checks it. Run `uv run pytest tests/test_words.py` and see it fail, because `clean_words` does not exist yet. Write the function until it passes. Read the slide *Reading Text Files* if you want to see how lines come out of a file.
+Replace each `...` : the condition that keeps a word, and the sorted list that is returned. The handout `tests/test_words.py` checks it. Run `uv run pytest tests/test_words.py` and see it fail, because `clean_words` does not exist yet. Write the function until it passes. Read the slide *Reading Text Files* if you want to see how lines come out of a file.
 
 :::hint
 Strip the whitespace from each line before you look at it. `str.isalpha()` is also `True` for letters with an accent, so a five-letter word such as `étage` would pass it. `str.isascii()` rules it out.
@@ -127,6 +132,16 @@ def load_words() -> list[str]:
 
 Leave Python with `exit()`, then run `uv run python -m wordle` in the terminal. The game now finds its package data without a `words.txt` in the project folder.
 
+One more thing still points at the old file. The `except FileNotFoundError` in `main` of `wordle/__main__.py` tells the player to restore `words.txt`, which you just deleted. The word lists now live in `wordle/data/`, and Step 4 adds a second one, so change the message to name both :
+
+```python
+    except FileNotFoundError:
+        print(
+            "A word list is missing. Restore wordle/data/words.txt "
+            "and wordle/data/allowed.txt and try again."
+        )
+```
+
 ### Step 4 : Two lists, answers and allowed guesses {★★}
 
 You have been using one list for two jobs : the words the game can pick as a secret, and the words it accepts as a guess. A player should not be told that a perfectly good word is not a word, but the secret should be a word they have a fair chance of knowing. The real game uses two lists for this, and now your project does too :
@@ -202,10 +217,11 @@ def history_path() -> Path:
 ```python
 def record_history(secret: str, guesses: int, won: bool) -> None:
     """Append one finished game to the CSV history file."""
-    ...
+    with history_path().open(..., encoding="utf-8", newline="") as history_file:
+        ...
 ```
 
-Open the file for **appending** with `"a"`, so earlier games stay. See *File Open Modes* and *Using with*. Open it with `newline=""` and give `csv.writer` the row `[secret, guesses, int(won)]`. Then call `record_history` in `play` : once with `True` just before the `return True` of a win, and once with `False` after the loop, before the final `return False`. A game you give up with `quit` counts as lost.
+Open the file for **appending** with `"a"`, so earlier games stay. See *File Open Modes* and *Using with*. Inside the `with`, give `csv.writer` the row `[secret, guesses, int(won)]`. Then call `record_history` in `play` : once with `True` just before the `return True` of a win, and once with `False` after the loop, before the final `return False`. A game you give up with `quit` counts as lost.
 
 Play two games with `WORDLE_SECRET=crane` : guess `slate` and then `crane` in the first, and `slate` followed by `quit` in the second. Open `history.txt`:
 
@@ -215,7 +231,7 @@ crane,1,0
 ```
 
 :::hint
-`csv.writer(history_file).writerow([...])` writes one row and adds the line ending itself. Open the file in `"a"` mode with `encoding="utf-8"` as well, to be explicit about the text encoding.
+`csv.writer(history_file).writerow([...])` writes one row and adds the line ending itself. `newline=""` stops Python from adding its own line ending on top of the one the `csv` module writes.
 :::
 
 :::hint
@@ -243,7 +259,7 @@ The calls in `play`:
 ```
 :::
 
-### Step 6 : A stats command {★★}
+### Step 6 : A stats command {★}
 
 Reading the file back is the other half. Add a new command to `play`, next to `quit`, `letters` and `hint`, so that typing `stats` prints how many games were played and how many were won :
 
@@ -253,20 +269,28 @@ Reading the file back is the other half. Add a new command to `play`, next to `q
                 continue
 ```
 
-Write `print_stats` in `wordle/game.py` :
+The function is given, because Exercise 10 replaces it with a database query within the hour. Add it to `wordle/game.py` :
 
 ```python
 def print_stats() -> None:
     """Read the CSV history and print game and win totals."""
     path = history_path()
     if not path.exists():
-        ...
+        print("Games played: 0; won: 0.")
+        return
     with path.open(encoding="utf-8", newline="") as history_file:
         rows = list(csv.reader(history_file))
-    ...
+    wins = sum(row[2] == "1" for row in rows)
+    print(f"Games played: {len(rows)}; won: {wins}.")
 ```
 
-Print `Games played: 0; won: 0.` when there is no history file yet. Otherwise count the rows, and count the rows whose third column is `"1"`. Every field read from a CSV file is a string, so compare with `"1"` and not with the number `1`. Also change the welcome line in `wordle/__main__.py` so it lists the commands the game now knows :
+Read it line by line :
+
+- The `return` on its own line leaves the function early when there is no history file yet, so the rest does not need an `else`.
+- Every field read from a CSV file is a string, so the wins are the rows whose third column equals `"1"`, not the number `1`.
+- `sum(...)` over conditions counts how many are true, because `True` is `1`.
+
+Also change the welcome line in `wordle/__main__.py` so it lists the commands the game now knows :
 
 ```python
         print(
@@ -281,30 +305,7 @@ The game is playable again, with a memory. After the two games of Step 5, type `
 Games played: 2; won: 1.
 ```
 
-:::hint
-Return early from the `if` when the file is missing, the way a guard clause does, so the rest of the function does not have to be indented in an `else`.
-:::
-
-:::hint
-`sum(...)` over a generator expression of conditions counts how many are true, because `True` is `1` : `sum(row[2] == "1" for row in rows)`.
-:::
-
-:::solution
-```python
-def print_stats() -> None:
-    """Read the CSV history and print game and win totals."""
-    path = history_path()
-    if not path.exists():
-        print("Games played: 0; won: 0.")
-        return
-    with path.open(encoding="utf-8", newline="") as history_file:
-        rows = list(csv.reader(history_file))
-    wins = sum(row[2] == "1" for row in rows)
-    print(f"Games played: {len(rows)}; won: {wins}.")
-```
-
-The `return` on its own line leaves the function early. The complete project is in `solutions/09-python-io/`.
-:::
+The complete project is in `solutions/09-python-io/`.
 
 ### If time permits
 

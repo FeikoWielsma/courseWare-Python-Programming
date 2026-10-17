@@ -21,7 +21,10 @@ def main() -> None:
         with connect() as connection:
             record_game(connection, secret, guesses, won)
     except FileNotFoundError:
-        print("The word list is missing. Restore words.txt and try again.")
+        print(
+            "A word list is missing. Restore wordle/data/words.txt "
+            "and wordle/data/allowed.txt and try again."
+        )
     except (KeyboardInterrupt, EOFError):
         print("\nGame stopped.")
 
