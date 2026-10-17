@@ -46,3 +46,14 @@ saying what it does.
   Note : *match Statement* says "no `break` is needed"; in Step 4 `break` inside a
   `case` leaves the `while`. The existing hint says `break` leaves the loop; a line on
   the slide would settle it.
+
+## Exercise 5
+
+- Step 2 : new hint (*Function Syntax*, *return Statement*); it had none.
+- Step 3 : new first hint (*Built-in String Methods* for `isalpha`, *return Statement*).
+- Step 4 : new first hint (*List Operations* for `['go']*3`, *List Functions and
+  Methods* for `append` / `remove`, *Iterating with enumerate*). The pytest part of
+  the step is unchanged.
+- Step 5 : new first hint (Exercise 4's row, *match Statement*).
+- Step 6 : new first hint (*return Statement* : `return` inside the loop ends it).
+- Nothing missing.

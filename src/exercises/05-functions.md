@@ -65,6 +65,12 @@ Run the game again with `uv run python wordle.py` and confirm it plays exactly a
 
 The `if __name__ == "__main__":` line means : only start a game when this file is run, not when another file imports it. The test file you use in Step 4 imports `wordle`, and without the guard every test run would sit waiting for a guess. Module 6 explains how this works.
 
+:::hint
+
+The slide *Function Syntax* shows the shape : everything indented under the `def` line is the body of the function. *return Statement* shows how `load_words` hands its list back.
+
+:::
+
 ### Step 3 : Checking a guess
 
 The game loop rejects a guess that is the wrong length or not in the word list. Give that check a name. Add `WORD_LENGTH = 5` beside the imports, then fill in the body. See *Annotating a Function* for the signature :
@@ -82,6 +88,12 @@ if not is_valid(guess, words):
     print("That is not a five-letter word I know.")
     continue
 ```
+
+:::hint
+
+The slide *Built-in String Methods*, in module 02, lists a method that tells whether a string holds only letters. *return Statement* shows a function that returns the value of an expression.
+
+:::
 
 :::hint
 
@@ -140,6 +152,12 @@ uv run pytest -k "not is_valid and not render"
 ```
 
 Collection initially fails if `score_guess` is missing. Once it exists, pytest shows any failed assertions and their expected values. Implement it until all five scoring tests pass. The game still uses its old scoring until you connect the new functions in Step 5.
+
+:::hint
+
+The slide *List Operations* builds a list by repetition, `['go']*3`, and *List Functions and Methods* has `append` and `remove`. *Iterating with enumerate*, in module 04, gives the position with each letter.
+
+:::
 
 :::hint
 
@@ -209,6 +227,12 @@ def render(guess: str, marks: list[str]) -> str:
 
 :::hint
 
+Your Exercise 4 code built this row already. The slide *match Statement* shows a `case` for each literal value and the wildcard `case _` for the rest.
+
+:::
+
+:::hint
+
 A `match` on `marks[position]` reads well here.
 
 :::
@@ -253,6 +277,12 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
 ```
 
 `max_guesses=8` allows an easier game; the default is six. See *Default Arguments*. Keep loading the words and choosing the secret in `main`, then call `play(secret, words)`. Without `WORDLE_SECRET`, the secret is random.
+
+:::hint
+
+The slide *return Statement* shows that `return` exits the function at once, so a `return` inside the loop ends the loop as well.
+
+:::
 
 :::hint
 
