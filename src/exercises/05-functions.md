@@ -162,7 +162,7 @@ collected 9 items / 4 deselected / 5 selected
 
 test_wordle.py .....                                                     [100%]
 
-======================= 5 passed, 4 deselected in 0.02s =======================
+======================= 5 passed, 4 deselected in 0.01s =======================
 ```
 
 :::
@@ -219,7 +219,7 @@ A `match` on `marks[position]` reads well here.
 
 :::
 
- The game loop then shrinks to a single line where the scoring used to be :
+The game loop then shrinks to a single line where the scoring used to be :
 
 ```python
 print(render(guess, score_guess(secret, guess)))
@@ -258,21 +258,11 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
     ...  # move the loop here, returning True on a win and False otherwise
 ```
 
-`max_guesses=8` allows an easier game; the default is six. See *Default Arguments*. Replace `main` with :
-
-```python
-def main() -> None:
-    words = load_words()
-    print("Guess the five-letter word. Type 'quit' to give up, 'letters' for the letters tried.")
-    secret = os.environ.get("WORDLE_SECRET", random.choice(words))
-    play(secret, words)
-```
-
-Without `WORDLE_SECRET`, the game chooses a random secret.
+`max_guesses=8` allows an easier game; the default is six. See *Default Arguments*. Keep loading the words and choosing the secret in `main`, then call `play(secret, words)`. Without `WORDLE_SECRET`, the secret is random.
 
 :::hint
 
-Return `True` on a win, replacing the loop's `break` and `else`. After the loop, reveal the secret and return `False`. Exercise 10 will use this result for statistics.
+Return `True` on a win, replacing the loop's `break` and `else`. In the `quit` case, keep only `break`; remove its old print so the secret is not shown twice. After the loop, reveal the secret and return `False`. Exercise 10 will use this result for statistics.
 
 :::
 
@@ -308,6 +298,16 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
 
     print(f"The word was {secret.upper()}.")
     return False
+```
+
+Replace `main` with :
+
+```python
+def main() -> None:
+    words = load_words()
+    print("Guess the five-letter word. Type 'quit' to give up, 'letters' for the letters tried.")
+    secret = os.environ.get("WORDLE_SECRET", random.choice(words))
+    play(secret, words)
 ```
 
 The complete file is in `solutions/05-functions/wordle.py`.
