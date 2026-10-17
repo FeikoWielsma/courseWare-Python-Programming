@@ -22,6 +22,11 @@ Read this first after a context reset or a quota interruption.
 | WP3b slides 04-06, from `t3/wp3b-slides-demos-1` | Antigravity Gemini 3.8 Flash | `prg400-wp3b-r3` |
 | WP6 site extras : quiz, Wordle egg, per-exercise run rows | Codex GPT-6-Luna | `prg400-wp6-r1` |
 
+**Result of the wave (2026-10-17) :** WP2a, WP2b, WP2c, WP3b and WP6 merged; the full
+build passes (slides, lint, exercises PDF, site with quiz). WP7 (Claude Sonnet 5.5,
+`prg400-wp7-r1`) is fixing the solution / text mismatches WP2c found in Exercises
+9 to 13. After it : WP5, the student review, on Codex GPT-6.1-Sol (wrote no texts).
+
 Done by the coordinator meanwhile : `extraoo/` archived, the List Operations slide
 shows its stack demo, README / MAINTAINING / AGENTS document the spine (7956916).
 
