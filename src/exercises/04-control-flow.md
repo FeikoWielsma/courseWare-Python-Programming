@@ -8,7 +8,7 @@ Continue in your own `wordle` project, or start from `exercises/starters/04-cont
 uv run python wordle.py
 ```
 
-Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
+Some steps give you the code, some a skeleton to complete, and one only the rules and three games to check it with. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
 
@@ -252,7 +252,7 @@ The game has to end properly. These are the rules :
 - when the player types `quit`, print `The word was CRANE.` and end the game
 - in every case, the program prints exactly one of those lines
 
-The line below the loop that prints the word goes. Win with `break`, and lose with an `else:` on the `while` loop. The tests are three games against `crane` : one won, one given up and one lost. Play all three and compare with the expected output.
+The line below the loop that prints the word goes. Win with `break`, and lose with an `else:` on the `while` loop. Check it with three games against `crane` : one won, one given up and one lost. Play all three and compare with the expected output.
 
 ```text
 Game 1 : slate, error, crane
