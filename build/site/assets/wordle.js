@@ -73,7 +73,7 @@
     var rows = dialog.querySelectorAll('.prg-wordle-row');
     for (var r = 0; r < 6; r++) {
       var tiles = rows[r].children;
-      var word = guesses[r] || (r === guesses.length && !ended ? guess : '');
+      var word = guesses[r] ? guesses[r].word : (r === guesses.length && !ended ? guess : '');
       for (var c = 0; c < 5; c++) {
         tiles[c].textContent = word[c] || '';
         tiles[c].dataset.state = guesses[r] ? guesses[r].states[c] : '';
@@ -105,6 +105,7 @@
         else if (!event.shiftKey && document.activeElement === focusables[focusables.length - 1]) { event.preventDefault(); focusables[0].focus(); }
       }
       if (event.key.length === 1 && /^[a-z]$/i.test(event.key)) { event.preventDefault(); onKey(event.key.toLowerCase()); }
+      else if (event.key === 'Enter' && event.target && event.target.closest && event.target.closest('button')) return;
       else if (event.key === 'Enter' || event.key === 'Backspace') { event.preventDefault(); onKey(event.key); }
       return;
     }
