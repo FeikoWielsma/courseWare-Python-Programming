@@ -8,18 +8,15 @@ footer: Variables and Data Types
 
 # Variables
 
-- Variables represent memory locations to store values :
-  - When a variable is created memory space is reserved
-- Variables can have different data types like integers, decimal or string :
-  - Based on the data type of a variable, the interpreter allocates memory
-  - Type of the variable can change and is found with `type` function
-- Variable `x` represents an object :
-  - Unique identifier of an object is an integer and is returned by `id(x)`
-- Assigning values to variables :
-  - Variables do not have to be declared; declaration happens on first assignment
-- Equal sign `=` is used to assign values to variables :
-  - Operand to the left of the = operator is the name of the variable
-  - Operand to the right of the = operator is the value stored in the variable
+- Variables are names bound to objects :
+  - Assignment binds a name to the object produced by an expression
+  - Several names can refer to the same object
+- Objects have types, such as `int`, `float` and `str` :
+  - `type(x)` returns the type of the object currently bound to `x`
+  - Rebinding `x` can make it refer to an object of a different type
+- `id(x)` identifies the object while it exists
+- The `=` operator binds the name on its left to the object on its right :
+  - A name does not need a separate declaration before assignment
 
 ```python
 counter = 100  # An integer assignment
@@ -28,7 +25,7 @@ name = "John"  # A string
 ```
 - Python language does not have constants
 
-> `demo01 · variables`
+> `demo01 Â· variables`
 
 ---
 
@@ -43,7 +40,7 @@ name = "John"  # A string
   - Zero or more names
 - Objects have individuality :
   - Multiple names in multiple scopes can be bound to the same object
-  - This is known as aliasing in other languages
+  - This is known as aliasing
 - Variable names are not properties of an object :
   - A namespace maps each name to the object it refers to
 
@@ -83,7 +80,7 @@ name = "John"  # A string
 </g>
 </svg>
 
-> `demo02 · typeandid`
+> `demo02 Â· typeandid`
 
 
 ---
@@ -96,13 +93,12 @@ name = "John"  # A string
 a = b = c = 1
 ```
 
-- Integer object is created with value 1 :
-  - All three variables are assigned to the same memory location
-- As soon as one variable changes new object is created :
-  - Changed variable points to this new object
-- In fact once Integer object with value is created :
-  - Value is a constant object that cannot be changed
-  - Change leads to the creation of a new object
+- All three names are bound to the same integer object
+- Reassigning one name changes only that binding :
+  - The other names still refer to the original object
+- Integers are immutable :
+  - Rebinding a name does not change the integer it previously named
+  - The new binding may refer to an already existing object
 - Assignment of multiple objects to multiple variables :
 
 ```python
@@ -114,7 +110,7 @@ a, b, c = 1, 2, "john"
 - One string object with the value "john" :
   - Assigned to the variable c
 
-> `demo03 · multipleassignment`
+> `demo03 Â· multipleassignment`
 
 
 ---
@@ -139,7 +135,7 @@ a, b, c = 1, 2, "john"
 - Important Python data types :
   - Numbers, String, List, Tuple, Set and Dictionary
 
-> `demo04 · strongtyping`
+> `demo04 Â· strongtyping`
 
 
 ---
@@ -171,7 +167,7 @@ is_student: bool = True
 
 # Python Numbers
 
-- Number objects are created when you assign a value to them :
+- Assignment binds names to number objects :
 
 ```python
 var1 = 1
@@ -179,7 +175,7 @@ var2 = 10
 ```
 
 - Numbers are immutable data types :
-  - Changing the value of a number data type results in a newly allocated object
+  - Reassignment binds a name to another number; it does not modify the old one
 
 ```python
 var1 = 11
@@ -187,7 +183,7 @@ var1 = 2
 var2 = 1
 ```
 
-- Delete single object or multiple objects with `del` statement :
+- Remove one or more name bindings with `del`; other references keep the objects alive :
 
 ```python
 del var
@@ -215,7 +211,7 @@ del var_a, var_b
   - Boolean values behave like values 0 and 1
   - When converted to a string in string context `"False"` or `"True"` are returned
 
-> `demo05 · numbertypeconversion`
+> `demo05 Â· numbertypeconversion`
 
 
 ---
@@ -243,7 +239,7 @@ print(hex(i))    # 0x41
 print(ord("A"))  # 65
 ```
 
-> `demo06 · conversionfunctions`
+> `demo06 Â· conversionfunctions`
 
 ---
 
@@ -259,12 +255,12 @@ print(ord("A"))  # 65
 | `log(x)` | The natural logarithm of x, for x > 0 |
 | `log10(x)` | The base-10 logarithm of x, for x > 0 |
 | `pow(x, y)` | The value of x**y |
-| `sqrt(x)` | The square root of x, for x > 0 |
+| `sqrt(x)` | The square root of x, for x >= 0 |
 | `max(x, y, ..)` / `min(x, y, ..)` | The maximum or minimum of a list of numbers |
 
 - For some of these functions the `math` module must be imported
 
-> `demo07 · numberfunctions`
+> `demo07 Â· numberfunctions`
 
 ---
 
@@ -286,7 +282,7 @@ print(2**10)  # 1024, exponentiation
 - Bitwise operators `& | ^ ~ << >>` work on the bits of integers, rarely needed
 - There is no `++` or `--` : write `count += 1` instead
 
-> `demo08 · pythonoperators`
+> `demo08 Â· pythonoperators`
 
 ---
 
@@ -367,7 +363,7 @@ print(a is c)  # False, two different lists
 print(a is b)  # True, two names for one list
 ```
 
-> `demo09 · booleanoperators`
+> `demo09 Â· booleanoperators`
 
 ---
 
@@ -443,7 +439,7 @@ print("var2[1:5]:", var2[1:5])
 print(str1)  # Prints complete string
 print(str1[0])  # Prints first character of the string
 print(str1[-1])  # Prints last character of the string
-print(str1[2:5])  # Prints characters starting from 3rd to 6th
+print(str1[2:5])  # Prints characters starting from 3rd through 5th
 print(str1 * 2)  # Prints string two times
 print(str1 + "TEST")  # Prints concatenated string
 print(str1[::-1])  # Prints string backwards
@@ -467,7 +463,7 @@ Updated String :- Hello Python
 ```
 - New string var2 will have different id
 
-> `demo10 · stringoperations`
+> `demo10 Â· stringoperations`
 
 ---
 
@@ -489,7 +485,7 @@ Updated String :- Hello Python
 | `\xhh` | | Character with hexadecimal value hh |
 | `\uxxxx` | | Unicode character with 16-bit hexadecimal value xxxx |
 
-> `demo11 · escapecharacters`
+> `demo11 Â· escapecharacters`
 
 ---
 
@@ -512,7 +508,7 @@ print(r"C:\nowhere")
 
 - Result : `C:\nowhere`
 - Python strings are Unicode :
-  - A string is a sequence of code points, so `len("ąć")` is 2
+  - A string is a sequence of code points, so `len("Ä…Ä‡")` is 2
   - Text in almost every script in the world can be stored and processed
 - `unicodedata` module `:`
   - Provides access to Unicode Character Database (UCD)
@@ -548,7 +544,7 @@ print(f"{name!r}")  # 'Albert', the repr() with its quotes
 print(f"{age = }")  # age = 55, the expression and its value
 ```
 
-> `demo12 · f-strings`
+> `demo12 Â· f-strings`
 
 ---
 
@@ -618,7 +614,7 @@ print("Art: %5d, Price per Unit: %8.2f" % (art, price))
 print("Art: {:5d}, Price per Unit: {:8.2f}".format(art, price))
 ```
 
-> `demo13 · formatspecs`
+> `demo13 Â· formatspecs`
 
 ---
 
@@ -648,7 +644,7 @@ brackets [
 the variable assignment will also show up.
 ```
 
-> `demo14 · triplequotes`
+> `demo14 Â· triplequotes`
 
 
 ---
@@ -673,7 +669,7 @@ the variable assignment will also show up.
 - `len(s)` is a function rather than a method, and gives the number of characters
 - All the others : `https://docs.python.org/3/library/stdtypes.html#string-methods`
 
-> `demo15 · stringfunctions`
+> `demo15 Â· stringfunctions`
 
 ---
 
@@ -692,4 +688,4 @@ the variable assignment will also show up.
 - f-strings are the way to format text :
   - `f"{price:8.2f}"` sets the width and the decimals of the value it shows
 
-> `exercise02 · Variables and Data Types`
+> `exercise02 Â· Variables and Data Types`
