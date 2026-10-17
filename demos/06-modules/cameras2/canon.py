@@ -1,2 +1,2 @@
-def canon_info():
+def canon_info() -> None:
     print("Canon camera")
