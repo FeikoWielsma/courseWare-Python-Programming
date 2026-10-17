@@ -51,6 +51,7 @@ Compare `len(guess)` with `WORD_LENGTH`, use `guess.isalpha()`, and then test me
 :::
 
 :::solution
+
 ```python
 def check_guess(guess: str, words: list[str]) -> None:
     """Raise InvalidGuess with a reason when guess cannot be played."""
@@ -61,6 +62,7 @@ def check_guess(guess: str, words: list[str]) -> None:
     if guess not in words:
         raise InvalidGuess("That word is not in the word list.")
 ```
+
 ```python
 def is_valid(guess: str, words: list[str]) -> bool:
     """Return whether guess is valid, for compatibility with Exercise 6."""
@@ -70,6 +72,7 @@ def is_valid(guess: str, words: list[str]) -> bool:
         return False
     return True
 ```
+
 :::
 
 ### Step 3 : Recover without spending a turn {★★}
@@ -90,11 +93,9 @@ except InvalidGuess as error:
     continue
 ```
 
-See *Typed Exception Handling*. Try `cran`, `cr4ne` and `zzzzz`; each should leave you on the same turn.
-
 :::hint
 
-Call `check_guess(guess, words)` inside `try` and print `error` in the handler. Keep the remaining loop outside `try`.
+Call `check_guess(guess, words)`; catch and print `InvalidGuess`. See *Typed Exception Handling*.
 
 :::
 
@@ -133,6 +134,7 @@ The game can recover from one bad guess, so that handler belongs inside `play`. 
 :::
 
 :::solution
+
 ```python
 def main() -> None:
     """Load the words and play one game."""
@@ -148,6 +150,7 @@ def main() -> None:
     except (KeyboardInterrupt, EOFError):
         print("\nGame stopped.")
 ```
+
 :::
 
 ### Step 5 : Write your first exception tests {★★★}
@@ -194,12 +197,13 @@ tests\test_exceptions.py ...                                             [ 36%]
 tests\test_scoring.py ...                                                [ 63%]
 tests\test_solver.py ....                                                [100%]
 
-============================= 11 passed in 0.09s ==============================
+============================= 11 passed in 0.05s ==============================
 ```
 
 :::
 
 :::solution
+
 ```python
 import pytest
 from wordle.scoring import InvalidGuess, check_guess
@@ -221,6 +225,7 @@ def test_unknown_words_have_a_specific_reason() -> None:
     with pytest.raises(InvalidGuess, match="not in the word list"):
         check_guess("zzzzz", WORDS)
 ```
+
 :::
 
 Finally, set `WORDLE_SECRET` to `crane` and play again :
