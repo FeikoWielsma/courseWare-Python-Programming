@@ -145,7 +145,9 @@ game.is_won = False
 
 ```text
 False False 2
+['grey', 'grey', 'green', 'grey', 'green']
 False False 1
+['green', 'green', 'green', 'green', 'green']
 True True 0
 AttributeError: property 'is_won' of 'Game' object has no setter
 ```
@@ -277,6 +279,8 @@ print(game)
 ```
 
 ```text
+['grey', 'grey', 'green', 'grey', 'green']
+['green', 'green', 'green', 'green', 'green']
  S  L [A] T [E]
 [C][R][A][N][E]
 ```
@@ -291,7 +295,7 @@ Now let `play` do less. Change it so that it creates a `Game` and loops until th
 - after the loop, `game.is_won` decides the message : `Got it in N!` after a win, and `The word was ...` after a loss
 - return `len(game.history), game.is_won`, the same two values as in Exercise 10, so that `__main__` still has what it needs for `record_game`
 
-Run `uv run pytest`. All three tests of `tests/test_game.py` pass now, and so does the rest of the project. Then play a game with `WORDLE_SECRET=crane`; it must behave as before, except that the secret is no longer repeated after you win.
+Run `uv run pytest`. All three tests of `tests/test_game.py` pass now, and so does the rest of the project. Then play a game with `WORDLE_SECRET=crane`; it must behave as before.
 
 :::hint
 The loop body shrinks to : read the guess, handle the commands, `check_guess` and `marks = game.guess(guess)` inside `try`, update `used_letters`, print `render(guess, marks)`. The win test and the counter are gone, because the loop condition and `game.is_won` now know.
