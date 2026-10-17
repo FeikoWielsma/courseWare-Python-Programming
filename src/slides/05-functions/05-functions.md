@@ -348,9 +348,9 @@ show_arg_lists(44)
 ```python
 words = ["banana", "pie", "Washington", "book"]
 
-# Sort by length
-by_length = sorted(words, key=lambda w: len(w))
-print("By length       :", by_length)
+# Sort by last letter
+by_last = sorted(words, key=lambda w: w[-1])
+print("By last letter  :", by_last)
 
 # Sort case-insensitively
 by_case = sorted(words, key=lambda w: w.lower())
@@ -360,7 +360,7 @@ print("Case-insensitive:", by_case)
 - Output :
 
 ```text
-By length       : ['pie', 'book', 'banana', 'Washington']
+By last letter  : ['banana', 'pie', 'book', 'Washington']
 Case-insensitive: ['banana', 'book', 'pie', 'Washington']
 ```
 
@@ -427,38 +427,24 @@ flowchart LR
 
 # Example Variable Scope
 
-```python
-x = 50  # a global variable
-y = 50  # a global variable
-```
-
-- Function definitions :
+- Global variables are shadowed by local bindings unless declared `global` :
 
 ```python
+x = 50
+y = 50
+
 def func1() -> None:
     x = 2
-    print("Changed local x to", x)
-
+    print("Local x   :", x)
 
 def func2() -> None:
-    print("Access global x as", x)
-
-
-def func3() -> None:
     global y
     y = 2
-    print("Changed global y to", y)
-```
 
-- Function calls :
-
-```python
-func1()                 # prints: Changed local x to 2
-print("x is still", x)  # prints: x is still 50
-func2()                 # prints: Access global x as 50
-print("x is still", x)  # prints: x is still 50
-func3()                 # prints: Changed global y to 2
-print("Value of y is", y)  # prints: Value of y is 2
+func1()
+print("x is still:", x)  # 50: global x unchanged
+func2()
+print("y is now  :", y)  # 2: global y modified
 ```
 
 > `demo11 · variablescope`
