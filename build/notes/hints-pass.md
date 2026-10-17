@@ -57,3 +57,10 @@ saying what it does.
 - Step 5 : new first hint (Exercise 4's row, *match Statement*).
 - Step 6 : new first hint (*return Statement* : `return` inside the loop ends it).
 - Nothing missing.
+
+## Exercise 6
+
+- Step 2 : the slide reference moved out of the end of the hint into a new first hint
+  (*from...import Statement*, *Running Packages with python -m*).
+- Step 1 gives its code; Step 4 is a test step, left as it is.
+- Nothing missing.

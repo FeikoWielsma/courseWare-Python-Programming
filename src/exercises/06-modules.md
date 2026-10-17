@@ -62,7 +62,13 @@ Delete the old `wordle.py` once the package is complete. Check it with `uv run p
 
 :::hint
 
-`game.py` needs the renderer and both scoring functions. Neither of those modules imports the game. See *from...import Statement*.
+The slide *from...import Statement* shows the import form, and *Running Packages with python -m* shows a package with a `__main__.py` like this one.
+
+:::
+
+:::hint
+
+`game.py` needs the renderer and both scoring functions. Neither of those modules imports the game.
 
 :::
 
