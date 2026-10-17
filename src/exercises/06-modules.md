@@ -130,7 +130,7 @@ Got it in 2!
 
 ### Step 4 : Test the new boundaries {★★}
 
-The old `test_wordle.py` imports from the single-file version. Remove that test file and use `tests/test_scoring.py` and `tests/test_display.py` from `exercises/handouts/06-modules/`. They are already present in the starter. The handouts regroup the earlier checks into four tests; the smaller count is intentional.
+The old `test_wordle.py` imports from the single-file version. Remove that test file and use `tests/test_scoring.py` and `tests/test_display.py` from `exercises/handouts/06-modules/`. They are already present in the starter. Until this step, the mixed old and new test imports cannot all collect; finish the package before running the complete test suite. The handouts regroup the earlier checks into four tests; the smaller count is intentional.
 
 Before inspecting their imports, fill these two import lines yourself, one for each test file :
 
@@ -164,7 +164,7 @@ Import each function from the module that defines it, not from `wordle` itself. 
 The final line from a passing run is shown below; timings vary.
 
 ```text
-============================== 4 passed in 0.07s ==============================
+============================== 4 passed in 0.04s ==============================
 ```
 
 :::
