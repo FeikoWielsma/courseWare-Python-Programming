@@ -19,7 +19,7 @@ Next, make the validator raise this exception with a reason.
 
 ### Step 2 : Explain why a guess is invalid
 
-Add `check_guess` to `scoring.py`. Check length, letters, then membership. Valid guesses return normally; invalid ones raise `InvalidGuess`. See *Raising Exceptions*.
+Add `check_guess` to `scoring.py`. Check length, letters, then membership. Valid guesses return normally; invalid ones raise `InvalidGuess`.
 
 ```python
 def check_guess(guess: str, words: list[str]) -> None:
@@ -43,6 +43,12 @@ def is_valid(guess: str, words: list[str]) -> bool:
 ```
 
 Run `uv run pytest`. The eight existing tests should still pass. They do not yet check the exception reasons; you will add that coverage yourself.
+
+:::hint
+
+The slide *Raising Exceptions* shows `raise` with a message, and *Typed Exception Handling* catches one exception type by name.
+
+:::
 
 :::hint
 
@@ -95,7 +101,13 @@ except InvalidGuess as error:
 
 :::hint
 
-Call `check_guess(guess, words)`; catch and print `InvalidGuess`. See *Typed Exception Handling*.
+The slide *Example Argument of an Exception* catches an exception `as error` and prints it; *Exception Arguments* says `print(error)` shows the message.
+
+:::
+
+:::hint
+
+Call `check_guess(guess, words)`; catch and print `InvalidGuess`.
 
 :::
 
@@ -126,6 +138,12 @@ def main() -> None:
 ```
 
 For a missing file, print `The word list is missing. Restore words.txt and try again.` For interrupted input, print `\nGame stopped.` Try Ctrl+C while the game waits for a guess. End-of-input is Ctrl+D on Unix terminals, or Ctrl+Z followed by Enter on Windows. To test the missing-file case, temporarily rename `words.txt`, run the game, and restore the filename immediately afterwards.
+
+:::hint
+
+The slide *Typed Exception Handling* shows several `except` clauses after one `try`, and *except Clause Multiple Exceptions* catches a tuple of types in one clause.
+
+:::
 
 :::hint
 

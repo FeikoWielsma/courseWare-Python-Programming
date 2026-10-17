@@ -78,3 +78,17 @@ saying what it does.
   dictionary, `symbols[mark](letter)`, is on no slide or demo; the second hint says
   it. The double `for` in one comprehension (`for word in words for letter in word`)
   is not on *Nested List Comprehensions* but the skeleton gives it.
+
+## Exercise 8
+
+- Step 2 : the step's *Raising Exceptions* pointer moved into a new first hint, with
+  *Typed Exception Handling* for the wrapper.
+- Step 3 : new first hint (*Example Argument of an Exception*, *Exception
+  Arguments*); the old hint's "See *Typed Exception Handling*" dropped, since the
+  step needs `as error`, which the new first hint names.
+- Step 4 : new first hint (*Typed Exception Handling*, *except Clause Multiple
+  Exceptions*).
+- Step 5 (the student's own tests) left as it is.
+- Missing : `EOFError` is on no slide or demo, and `KeyboardInterrupt` appears only
+  as output on *Infinite while Loop*. The skeleton gives both and the step says when
+  each happens, so nothing is required of the student.
