@@ -12,21 +12,25 @@ Read this first after a context reset or a quota interruption.
 - Quotas are $20 plans on each provider; 5-hour and weekly limits will be hit.
   Auto-continue is on. Claude runs out first.
 
-## PAUSED by the trainer (2026-10-15)
+## Resumed (2026-10-17) : the finishing wave
 
-Four packages were stopped mid-run with `task_cancel`, and their uncommitted work
-saved as a WIP commit on their own branch. To resume, delegate each again with
-its original brief (the client ids below, suffix `-r2` / `-r3`) plus one line :
-"Continue from branch X : `git merge X` first, then read `build/notes/<wp>.md`".
-
-| WP | Branch (worktree) | State at pause |
+| WP | Model | Task id |
 |---|---|---|
-| WP2a exercises 1-4 (Claude Opus) | `t3/wordle-exercises-1-to-4` (t3-1522ee25), WIP 7e16656 | 3 commits + WIP |
-| WP2b exercises 5-8 (Codex Astra) | `t3/wp2b-exercise-texts` (t3-bf58baee), WIP 1034e20 | 8 commits + WIP; WIP includes `build/site/dist`, drop it on merge |
-| WP2c exercises 9-13 (Cursor Grok) | `t3/wp2c-exercises-9-to-13` (t3-4d482653) | nothing committed; restart |
-| WP3b slides 04-06 (Antigravity) | `t3/wp3b-slides-demos-1` (t3-947a50aa), WIP 452f2ab | 2 commits + WIP; WIP includes `build/site/dist`, drop it on merge |
+| WP2a exercises 1-4, from `t3/wordle-exercises-1-to-4` | Claude Opus 5.5 | `prg400-wp2a-r2` |
+| WP2b exercises 5-8, from `t3/wp2b-exercise-texts` | Codex GPT-6-Astra | `prg400-wp2b-r2` |
+| WP2c exercises 9-13, fresh | Claude Sonnet 5.5 | `prg400-wp2c-r2` |
+| WP3b slides 04-06, from `t3/wp3b-slides-demos-1` | Antigravity Gemini 3.8 Flash | `prg400-wp3b-r3` |
+| WP6 site extras : quiz, Wordle egg, per-exercise run rows | Codex GPT-6-Luna | `prg400-wp6-r1` |
 
-Everything else in the table below is merged into `prg400-wordle`.
+Done by the coordinator meanwhile : `extraoo/` archived, the List Operations slide
+shows its stack demo, README / MAINTAINING / AGENTS document the spine (7956916).
+
+Still to do after this wave : merge each branch (drop any `build/site/dist/`),
+check every italic slide reference in the exercises resolves, build the site and
+both PDFs, CI wiring for `check-quiz.py` and for building the site into the
+release and the bundle, then WP5 (a student review on a provider that wrote none
+of the texts) and a fix round. Pushing Presentation-Template `main` (CI clones it)
+and merging into PRG400 `master` wait for the trainer.
 
 ## Status (2026-10-15, early morning)
 
