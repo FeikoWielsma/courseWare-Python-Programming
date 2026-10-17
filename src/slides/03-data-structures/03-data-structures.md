@@ -206,13 +206,16 @@ print(shared)  # [[1, 0, 0], [1, 0, 0]], both rows are one list
 | `3 in [1,2,3]` | `True` | Membership |
 | `for x in [1,2,3]: print(x)` | `1 2 3` | Iteration |
 
-- Assuming the following input list : `list1 = ['one','two','three']`
+- A list also works as a stack : `append` puts an item on top, `pop` takes the top one off
 
-| Python Expression | Results | Description |
-|---|---|---|
-| `list1[2]` | `'three'` | Offsets start at zero |
-| `list1[-2]` | `'two'` | Negative : count from the right |
-| `list1[1:]` | `['two', 'three']` | Slicing fetches sections |
+```python
+stack = [3, 4, 5]
+stack.append(6)
+stack.append(7)
+print(stack)  # [3, 4, 5, 6, 7]
+print(stack.pop())  # 7
+print(stack)  # [3, 4, 5, 6]
+```
 
 > `demo04 · listsasstacks`
 
