@@ -42,8 +42,8 @@ table of contents.
 **All code in the course is PEP 8 named and Pythonic.** The material inherited a set
 of Java-isms, camelCase names and trailing bare `return` statements, and they were
 removed across the slides, demos, exercise text and solutions together. Do not
-reintroduce them. Where an unpythonic form is the lesson, such as the Java-style
-accessors that the property slide improves on, keep it and say so in a comment.
+reintroduce them. Where an unpythonic form is the lesson, such as the `%` formatting example kept
+for recognition, keep it and say so in a comment or a `ruff.toml` entry.
 
 ## First-time setup
 
@@ -99,7 +99,29 @@ Demo files are named `NN_name.py` here, matching the `> \`demoNN · name\`` pill
 than the `demoNN_name.py` form the sibling Advanced Python course uses.
 
 `src/exercises/01-environment-configuration.md` is Exercise 1, and belongs to
-module 01. It sets up `uv`, `ruff` and the editor.
+module 01. It sets up `uv`, `ruff` and the editor, and creates the `wordle` project.
+
+## Exercises : the Wordle spine
+
+The exercises build one Wordle game from Exercise 2 to Exercise 13
+(`build/plan.md` sections 2, 4 and 6). Slides and demos never become Wordle-themed;
+the exercises apply the module's idea to the game, so they never repeat a demo.
+
+- `solutions/NN-<exercise stem>/` is the game at the end of Exercise NN, a complete
+  uv project. `exercises/starters/` is **generated** from the solutions and
+  `exercises/handouts/` by `build/make-starters.py`; never edit a starter by hand.
+- Exercise text quotes the solution code verbatim and shows only output produced by
+  running it (`WORDLE_SECRET=crane` fixes the secret). `build/check-solutions.py`
+  runs every stage's tests, mypy from Exercise 12, and a scripted game against
+  `build/transcripts/`.
+- Names (`score_guess`, `play`, `Game`, the module names) are a contract between the
+  text, the solutions, the handed-out tests and the starters.
+- Markup : `{★}` / `{★★}` / `{★★★}` at the end of a step heading, `:::hint`,
+  `:::output`, `:::solution`, a closing `### If time permits` with no solution.
+  Documented in `../Presentation-Template/docs/exercise-site.md`.
+- Properties are taught one way only : plain attributes first, `@property` when a
+  value is computed or needs a rule. No `get_x` / `set_x`, no `property(get, set)`.
+- `archive/` holds the retired calculator exercises and old demos. Do not build on it.
 
 **A new module means two edits to `.forgejo/workflows/release.yml`** : its demo folder
 joins the `compileall` list and the bundle `for item in` list. The bundle is an

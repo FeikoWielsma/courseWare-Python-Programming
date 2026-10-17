@@ -24,16 +24,41 @@ The `uv` and `ruff` material inside module 01, and the two appendices,
 src/slides/00-preamble/00-preamble.md      title and logistics, carries pdfName: and language:
 src/slides/NN-topic/NN-topic.md            one Marp Markdown file per module
 src/slides/12-appendix-type-hinting/       appendix, the type hinting recap
-src/slides/13-appendix-libraries/          appendix, datetime, json, re, unittest
-src/exercises/NN-topic.md                  one exercise guide per module
+src/slides/13-appendix-libraries/          appendix, datetime, json, re, sys.argv, pytest
+src/exercises/NN-topic.md                  one exercise guide per module, ::: markup
 demos/<same name as the slide module>/     runnable demo code, files named NN_name.py
-solutions/                                 reference solutions
+solutions/NN-<exercise stem>/              the Wordle game at the end of each exercise
+exercises/handouts/NN-<exercise stem>/     what an exercise hands out (tests, data)
+exercises/starters/NN-<exercise stem>/     GENERATED : previous solution + handouts
+archive/                                   retired material, not built, linted or shipped
+build/make-starters.py                     regenerates the starters; --check in CI
+build/check-solutions.py                   tests, mypy and a scripted game per stage
+build/transcripts/                         the expected output of those scripted games
+build/site.config.ts                       the offline exercise site (shared builder)
 appendices/                                appendix decks the exercises point at
 reference/                                 background reading, shipped to students
 build/package.json                         thin wrapper over the shared template build
 build/check-fences.py                      the python fences on the slides, gating in CI
 build/plan.md, build/tasks.md              working notes
+build/orchestration.md                     the multi-agent rework log, October 2026
 ```
+
+**The exercises are one continuous project**, a Wordle game, from Exercise 2 to
+Exercise 13. `build/plan.md` sections 2 and 4 are the design. Three rules keep it
+coherent :
+
+- A solution stage is a complete uv project and is the next exercise's starter.
+  Change a solution, then run `uv run python build/make-starters.py` and commit
+  the regenerated starters; never edit a starter by hand.
+- Exercise text quotes the solutions verbatim and shows only output produced by
+  running them. `WORDLE_SECRET=crane` fixes the secret for a reproducible game.
+- Function, module and class names are a contract between the text, the
+  solutions, the handed-out tests and the starters. Rename in all four or not at all.
+
+Exercise guides use the shared markup documented in
+`../Presentation-Template/docs/exercise-site.md` : step tiers `{★}` to `{★★★}`,
+`:::hint`, `:::output`, `:::solution`, italic slide references. The same source
+builds the exercises PDF and the offline site (`bun run --cwd build site`).
 
 The toolchain material, `uv` and `ruff` and the editor, sits inside module 01. It
 spent a while as a separate `00a-python-tooling` module, which worked but meant two
@@ -75,6 +100,8 @@ slide as fitting when it does not. Run `build` first to populate
 ```bash
 uv run python build/check-fences.py    # gating in CI
 uv run ruff check .                    # gating in CI, see below
+uv run python build/make-starters.py --check   # gating in CI
+uv run python build/check-solutions.py         # gating in CI
 uv run python -m compileall -q demos/01-pythonintro ... solutions
 ```
 
@@ -87,9 +114,8 @@ in `[lint.per-file-ignores]` names the lesson it protects, so before silencing a
 new finding, check whether the code is teaching the pattern deliberately. If it
 is, add a scoped entry with the reason; if it is not, fix the code.
 
-The scope deliberately excludes the demo folders no slide references and the two
-orphan solution folders. `ruff.toml` and the bundle allowlist in the workflow
-should name the same set; keep them in step.
+The scope excludes `archive/` and `reference/`. Retired demo folders live in
+`archive/`, not beside the live ones.
 
 ## Releasing
 
@@ -142,8 +168,5 @@ and embedding guides and the porting notes.
 
 ## Known rough edges
 
-- `solutions/xextra` and `solutions/solutions-generators` solve exercises this
-  course does not have, and still ship in the bundle. They are outside the ruff
-  scope, so they still hold camelCase names. Worth deciding on.
-- The `demos/12-pythonlibraries-*` folders are superseded by
-  `demos/13-appendix-libraries` and no longer ship.
+- `demos/*/extra/` folders still ship. They hold older side examples that no
+  slide references. Worth a pass to keep or archive each.

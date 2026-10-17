@@ -19,9 +19,16 @@ material, so a `git pull` always gives you the latest version.
   file `demos/05-functions/03_overwritingreferences.py`.
 - Type annotations appear from module 2 onwards, and
   **`demos/12-appendix-type-hinting/`** gathers them up in the appendix.
-- **`solutions/`** : reference solutions for the exercises, in case you get stuck
-  or want to compare. Try the exercise first.
-- **`exercises/`** : supporting files for a few of the exercises.
+- **The exercises build one project, a Wordle game**, from Exercise 2 to the end.
+  Each step says how much help it gives : ★ the code is given, ★★ a skeleton to
+  fill in, ★★★ only the signature and the tests.
+- **`solutions/`** : the finished game as it stands at the end of each exercise,
+  one folder per exercise. Try the exercise first.
+- **`exercises/starters/`** : if you fell behind, start an exercise from its
+  starter folder instead of your own code. The starter for an exercise is the
+  solution of the one before, plus anything that exercise hands out.
+- **`exercises/handouts/`** : files an exercise hands out, such as the tests you
+  run from Exercise 5 on and the word lists.
 - **`appendices/`** : the appendix decks and their exercises.
 - **`reference/`** : background reading, none of it required. The official
   Python 3.14 documentation as PDFs, articles on single topics, books,
@@ -84,22 +91,27 @@ You build your own project for the code you write this week, the same way you
 would at work. The bundle deliberately ships no `pyproject.toml`, you create one :
 
 ```bash
-uv init course-work
-cd course-work
+uv init wordle
+cd wordle
 ```
 
 `uv init` writes a `pyproject.toml` and pins the project to a Python version.
-When an exercise needs a package, add it from inside that folder :
+Exercise 1 walks through it. When an exercise needs a tool or a package, add it
+from inside that folder, for example the test runner in Exercise 5 :
 
 ```bash
-uv add requests
+uv add --dev pytest
 ```
 
-The last module uses a type checker, which you add the same way :
+and the type checker in the type hinting appendix :
 
 ```bash
 uv add --dev mypy
 ```
+
+A starter folder is a complete project of its own : `cd` into it and
+`uv run python -m wordle` (or `uv run python wordle.py` before Exercise 6) works
+straight away.
 
 The bundle does ship a `ruff.toml`. That is the linter configuration the course
 material is written against, so the Ruff extension will not flag the demo files
