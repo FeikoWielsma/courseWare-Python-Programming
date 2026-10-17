@@ -13,6 +13,9 @@ material, so a `git pull` always gives you the latest version.
   available as `.html` if you prefer reading in a browser.
 - **`PRG400-Python-Programming-Exercises.pdf`** : the lab guide, one exercise per
   module.
+- **`site/index.html`** : the same exercises as a small website that opens from
+  disk. Each step has hints and its solution behind a click, you can tick steps
+  off as you go, and there is a quiz for the end of the course.
 - **`demos/`** : the runnable example programs shown on the slides, one folder
   per module (for example `demos/05-functions/`). A slide that shows a demo names
   it at the bottom, for example `demo03 · overwritingreferences`, which is the

@@ -119,6 +119,7 @@ jobs:
           cd build
           bun run build -- --force
           bun run build -- --exercises --force
+          bun run site
 
       - name: Name the slides HTML
         shell: bash
@@ -166,6 +167,11 @@ jobs:
           # resolve. No pyproject.toml, though: the student creates that one.
           # .devcontainer/ is the GitHub Codespaces setup for online students,
           # used by the GitHub copy of the student repository (see below).
+          # The offline exercise site : one page per exercise with hints and
+          # click-to-reveal solutions, a quiz, and the slides. It opens from
+          # disk, so students double-click site/index.html.
+          cp -r build/site/dist "${BUNDLE}/site"
+
           for item in solutions exercises appendices reference README.md ruff.toml .devcontainer; do
             if [ -e "${item}" ]; then
               cp -r "${item}" "${BUNDLE}/"
