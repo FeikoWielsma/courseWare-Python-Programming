@@ -27,6 +27,13 @@ build passes (slides, lint, exercises PDF, site with quiz). WP7 (Claude Sonnet 5
 `prg400-wp7-r1`) is fixing the solution / text mismatches WP2c found in Exercises
 9 to 13. After it : WP5, the student review, on Codex GPT-6.1-Sol (wrote no texts).
 
+**WP5 review (Codex GPT-6.1-Sol), merged 0fafe8b :** no blockers, 12 major and 14
+minor findings in `build/notes/wp5.md`; Day 4 estimated at 280 against 195 minutes.
+Fix round running : WP8a solutions and texts (Claude Sonnet, `prg400-wp8a-r1`),
+WP8b factual slide errors (Codex Astra, `prg400-wp8b-r1`), WP8c site egg, starter
+rows and PDF pagination on template branch `exercise-pdf-pagination` (Codex Luna,
+`prg400-wp8c-r1`). F25 (README) fixed by the coordinator.
+
 Done by the coordinator meanwhile : `extraoo/` archived, the List Operations slide
 shows its stack demo, README / MAINTAINING / AGENTS document the spine (7956916).
 
