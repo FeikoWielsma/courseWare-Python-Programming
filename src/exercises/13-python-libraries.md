@@ -1,7 +1,7 @@
 <!-- appendix -->
 # Exercise 13 : Python Libraries
 
-Your Wordle plays well, but it is still a game for one person, one sitting and one list of rules. The standard library has what it takes to change that without installing anything : `datetime` gives everybody the same word on the same day, `json` lets a game wait until you come back, `re` checks input with a pattern, `sys.argv` turns options on and off from the command line, and `pytest` lets you check your own work. Each step uses one of them.
+Your Wordle plays well, but it is still a game for one person, one sitting and one list of rules. The standard library has what it takes to change that without installing anything : `datetime` gives everybody the same word on the same day, `json` lets a game wait until you come back, `re` checks input with a pattern, and `sys.argv` turns options on and off from the command line. The third-party test runner `pytest`, installed in Exercise 5, lets you check your own work. Each step uses one of them.
 
 Continue in your own `wordle` project, or start from `exercises/starters/13-python-libraries/`. The starter is the finished Exercise 12; this exercise hands out nothing. Keep running commands beside `pyproject.toml`.
 
