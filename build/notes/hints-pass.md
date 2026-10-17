@@ -32,3 +32,17 @@ saying what it does.
 - Step 3 : new first hint (`demo01 · lists`, *List Functions and Methods*, *Tuples*).
 - Step 4 : new first hint (*Dictionaries*, *Accessing Values in Dictionary*); the
   `int(True)` hint now names *Type Conversions*, which says a bool behaves as 0 and 1.
+
+## Exercise 4
+
+- Step 2 : new first hint (*if Statement*, *Logical, Membership, Identity Operators*).
+- Step 3 : the step's pointer to *Iterating with enumerate* and *elif Statement*
+  moved into a new first hint.
+- Step 4 : the step's pointer to *match Statement* moved into a new first hint, which
+  also names *break and continue Statements*, *Built-in String Methods* (`join`) and
+  *Set Operations* (`sorted`).
+- Step 5 : the hint's slide reference (*Loop with else Combination*) moved to the front.
+- Nothing missing. Step 1's `os.environ.get` is given as code with an explanation.
+  Note : *match Statement* says "no `break` is needed"; in Step 4 `break` inside a
+  `case` leaves the `while`. The existing hint says `break` leaves the loop; a line on
+  the slide would settle it.

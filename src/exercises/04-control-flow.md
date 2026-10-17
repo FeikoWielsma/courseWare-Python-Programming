@@ -76,6 +76,10 @@ A guess of the wrong length, or one that is not in the word list, should not cos
 `continue` ends the current pass of the loop and starts the next one, so nothing below it runs for a rejected guess. The slide *break and continue Statements* shows it next to `break`, which you need in Step 5.
 
 :::hint
+The slide *if Statement* shows the shape of the check. *Logical, Membership, Identity Operators*, in module 02, has `or` and `not in`.
+:::
+
+:::hint
 There are two reasons to reject a guess, and either one is enough, so join them with `or`. `len(guess) != 5` is the first. For the second, `not in` is the opposite of `in`.
 :::
 
@@ -126,7 +130,11 @@ Build the row one letter at a time, starting from an empty string :
     print(row)
 ```
 
-`enumerate` gives each letter together with its position, 0 to 4, which is what you need to compare it with the letter in the same place of the secret. The slide *Iterating with enumerate* shows it, and *elif Statement* shows the chain of conditions.
+`enumerate` gives each letter together with its position, 0 to 4, which is what you need to compare it with the letter in the same place of the secret.
+
+:::hint
+The slide *Iterating with enumerate* shows the loop, and *elif Statement* shows the chain of conditions.
+:::
 
 :::hint
 The first condition is the "same place" question of Exercise 2, asked with `letter` and `position` : `letter == secret[position]`. The second is the "in secret" question.
@@ -194,7 +202,11 @@ Then check for the commands straight after reading the guess, before the check o
             ...
 ```
 
-For now, `quit` only has to leave the loop; the line below the loop then prints the word. The slide *match Statement* shows the syntax.
+For now, `quit` only has to leave the loop; the line below the loop then prints the word.
+
+:::hint
+The slide *match Statement* shows the syntax, and *break and continue Statements* shows `break`. *Built-in String Methods* has `sep.join(words)`, and *Set Operations* turns a set into a sorted list with `sorted()`.
+:::
 
 :::hint
 `break` leaves the loop at once. For `letters`, `sorted(used_letters)` gives a list of the letters in alphabetical order, and `" ".join(...)` turns that list into one string with a space between the letters : `print("Tried :", " ".join(sorted(used_letters)))`.
@@ -249,7 +261,7 @@ Game 3 : slate, error, house, ghost, world, money
 ```
 
 :::hint
-A loop can have an `else:` block, at the same indentation as the `while`. It runs when the loop ends because its condition became false, and it does not run when the loop is left with `break`. That is exactly the difference between running out of guesses and finding the word. The slide *Loop with else Combination* shows it.
+The slide *Loop with else Combination* shows it : a loop can have an `else:` block, at the same indentation as the `while`. It runs when the loop ends because its condition became false, and it does not run when the loop is left with `break`. That is exactly the difference between running out of guesses and finding the word.
 :::
 
 :::hint
