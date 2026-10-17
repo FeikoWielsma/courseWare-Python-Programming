@@ -144,7 +144,7 @@ def load_allowed() -> list[str]:
 
 Then change `play` in `wordle/game.py`. Load the allowed list once, at the top of the function, and check guesses against it, instead of against `words`. Everything else keeps using `words`.
 
-Play with `WORDLE_SECRET=crane` set. `crone` is a word the game used to reject, and it is accepted now :
+Play with `WORDLE_SECRET=crane` set. This is the environment variable that `main` has read since Exercise 5, and it fixes the secret word. In a bash shell, put it in front of the command : `WORDLE_SECRET=crane uv run python -m wordle`. In PowerShell, set it once with `$env:WORDLE_SECRET = "crane"` and then run the command as usual. `crone` is a word the game used to reject, and it is accepted now :
 
 ```text
 [C][R] O [N][E]

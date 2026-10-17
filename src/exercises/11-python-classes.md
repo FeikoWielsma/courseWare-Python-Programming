@@ -261,7 +261,7 @@ That is the run of `uv run pytest tests/test_game.py -k max_guesses`.
 
 ### Step 5 : Draw the board and shrink play {★★}
 
-A `Game` that can draw itself helps you debug it. Python asks an object for its text with `__str__`; `print(game)` and f-strings call it. Add one to `Game` that draws every scored guess on its own row with `render`. See *`__str__` and `__repr__`*.
+A `Game` that can draw itself helps you debug it. Python asks an object for its text with `__str__`; `print(game)` and f-strings call it. Add one to `Game` that draws every scored guess on its own row with `render`. The slide *Class Attributes and Instance Attributes* leads into the one on `__str__` and `__repr__` in module 11.
 
 ```python
     def __str__(self) -> str:
