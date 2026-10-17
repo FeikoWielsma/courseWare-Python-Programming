@@ -2,9 +2,9 @@
 
 Look at `play` in `wordle/game.py`. The state of one game is spread over a handful of loose variables : `secret`, `words`, `history`, `guess_count`, `max_guesses`. Every new feature, the hint, the statistics and the next one you add, has to pass them around or reach into them, and nothing stops a function from putting a nonsense value in one of them. In this exercise you gather them in a class, `Game`, which owns its state and the rules about it. On the way you meet properties and the one question that decides when to use them.
 
-Continue in your own `wordle` project, or start from `exercises/starters/11-python-classes/`. The starter is the finished Exercise 10 plus the test file this exercise hands out, `tests/test_game.py`. If you continue in your own project, copy that file in from `exercises/handouts/11-python-classes/`.
+Continue in your own `wordle` project, or start from `exercises/starters/11-python-classes/`. The starter is the finished Exercise 10.
 
-Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
+Some steps give you the code, some a skeleton to complete, and one only the signatures and a few examples of what they should do. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
 
@@ -74,7 +74,11 @@ game.guess("zzzzz")
 wordle.scoring.InvalidGuess: That word is not in the word list.
 ```
 
-Run `uv run pytest tests/test_game.py`. One of the four tests passes, the one that checks that a rejected guess leaves the history alone. The other three need the next steps.
+The rejected guess left the history alone : `game.history` still holds only `slate`.
+
+:::hint
+The slide *Class Members* shows a method that works on `self`, and *List Functions and Methods*, in module 03, has `append`.
+:::
 
 :::hint
 The method has three lines of real work : `check_guess(word, self.words)`, then `marks = score_guess(self.secret, word)`, then an `append` of the pair `(word, marks)` to `self.history`. Return `marks`.
@@ -147,6 +151,10 @@ AttributeError: property 'is_won' of 'Game' object has no setter
 ```
 
 :::hint
+The slide *A Computed Attribute* shows `@property` on a method that returns a value worked out from other attributes.
+:::
+
+:::hint
 `is_won` is true when there is at least one guess and the last one is the secret. `self.history[-1][0]` is the word of the last guess. An empty list has no last item, so check `self.history` first; `bool(self.history and ...)` returns a real `bool`.
 :::
 
@@ -206,19 +214,27 @@ The fix is to turn `max_guesses` into a property with a setter, and to let the s
 
 The setter raises `ValueError("max_guesses must be between 1 and 10")` for any other value, and stores a valid one in `self._max_guesses`. The leading underscore says that the attribute is the property's own storage and not for outside use; see *The Rule of Thumb*.
 
-The tests are in `tests/test_game.py` already :
+In a new session, `10` is still accepted, but `0`, and a limit of `11` given to the constructor, now stop with the error :
 
 ```python
-def test_max_guesses_is_validated() -> None:
-    game = Game("crane", WORDS)
-    game.max_guesses = 10
-    with pytest.raises(ValueError):
-        game.max_guesses = 0
-    with pytest.raises(ValueError):
-        Game("crane", WORDS, max_guesses=11)
+game = Game("crane", ["crane", "slate"])
+game.max_guesses = 10
+print(game.max_guesses)
+game.max_guesses = 0
+Game("crane", ["crane", "slate"], max_guesses=11)
 ```
 
-Make it pass **without changing a line anywhere else**. `__init__` still says `self.max_guesses = max_guesses`, and `play` still reads `game.max_guesses`. That is the lesson : callers could not tell the plain attribute from the property, so nobody had to write `get_max_guesses` and `set_max_guesses` in advance. You start with the plain attribute, and you turn it into a property on the day it needs a rule.
+```text
+10
+ValueError: max_guesses must be between 1 and 10
+ValueError: max_guesses must be between 1 and 10
+```
+
+Make it work **without changing a line anywhere else**. `__init__` still says `self.max_guesses = max_guesses`, and `play` still reads `game.max_guesses`. That is the lesson : callers could not tell the plain attribute from the property, so nobody had to write `get_max_guesses` and `set_max_guesses` in advance. You start with the plain attribute, and you turn it into a property on the day it needs a rule.
+
+:::hint
+The slide *When a Plain Attribute Is Not Enough* turns `length` into a property whose setter checks the value; `demo07 · validatingsetter` runs it.
+:::
 
 :::hint
 The getter returns `self._max_guesses`. The setter checks `1 <= value <= 10`, raises `ValueError` when that is false and assigns `self._max_guesses = value` otherwise.
@@ -226,15 +242,6 @@ The getter returns `self._max_guesses`. The setter checks `1 <= value <= 10`, ra
 
 :::hint
 Assign to `self._max_guesses` in the setter, with the underscore. `self.max_guesses = value` inside the setter calls the setter again, forever, until Python stops with a `RecursionError`.
-:::
-
-:::output
-```text
-.                                                                        [100%]
-1 passed, 3 deselected in 0.03s
-```
-
-That is the run of `uv run pytest tests/test_game.py -k max_guesses`.
 :::
 
 :::solution
@@ -257,7 +264,7 @@ That is the run of `uv run pytest tests/test_game.py -k max_guesses`.
 
 ### Step 5 : Draw the board and shrink play
 
-A `Game` that can draw itself helps you debug it. Python asks an object for its text with `__str__`; `print(game)` and f-strings call it. Add one to `Game` that draws every scored guess on its own row with `render`. The slide *Class Attributes and Instance Attributes* leads into the one on `__str__` and `__repr__` in module 11.
+A `Game` that can draw itself helps you debug it. Python asks an object for its text with `__str__`; `print(game)` and f-strings call it. Add one to `Game` that draws every scored guess on its own row with `render`.
 
 ```python
     def __str__(self) -> str:
@@ -289,7 +296,11 @@ Now let `play` do less. Change it so that it creates a `Game` and loops until th
 - after the loop, `game.is_won` decides the message : `Got it in N!` after a win, and `The word was ...` after a loss
 - return `len(game.history), game.is_won`, the same two values as in Exercise 10, so that `__main__` still has what it needs for `record_game`
 
-Run `uv run pytest`. All four tests of `tests/test_game.py` pass now, and so does the rest of the project. Then play a game with `WORDLE_SECRET=crane`; it must behave as before.
+Play a game with `WORDLE_SECRET=crane`; it must behave as before.
+
+:::hint
+The slide *`__str__` and `__repr__`* shows `__str__` returning the text that `print` shows, and *Generator Expressions*, in module 07, writes an expression inside `join`.
+:::
 
 :::hint
 The loop body shrinks to : read the guess, handle the commands, `check_guess` and `marks = game.guess(guess)` inside `try`, update `used_letters`, print `render(guess, marks)`. The win test and the counter are gone, because the loop condition and `game.is_won` now know.
