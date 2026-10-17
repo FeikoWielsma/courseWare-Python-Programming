@@ -222,6 +222,35 @@ all_remaining_rows = cur.fetchall()
 
 ---
 
+# Filtering and Grouping Data
+
+- `WHERE` filters rows; `?` binds the value from the parameter tuple
+- `GROUP BY` forms groups; `COUNT(*)` counts rows and `SUM` adds non-NULL values
+- `COALESCE(value, 0)` replaces SQL `NULL` with zero, including an empty `SUM`
+- `ORDER BY` sorts results; `DESC` puts the largest total first
+
+```python
+import sqlite3
+
+# Run demo03 or demo04 first to create the Cars table.
+con = sqlite3.connect("cars.db")
+try:
+    cur = con.cursor()
+    cur.execute("""
+        SELECT Name, COUNT(*), COALESCE(SUM(Price), 0)
+        FROM Cars WHERE Price >= ?
+        GROUP BY Name ORDER BY SUM(Price) DESC
+        """, (50000,))
+    for row in cur.fetchall():
+        print(row)
+finally:
+    con.close()
+```
+
+> `demo07 · aggregatingdata`
+
+---
+
 # Rows by Column Name
 
 - A row is a tuple by default, so a column is read by its position :
@@ -246,7 +275,7 @@ with con:
 2 Mercedes 57127
 ```
 
-> `demo07 · rowfactory`
+> `demo08 · rowfactory`
 
 
 ---
@@ -272,7 +301,7 @@ with con:
 - `fetchone()` method returns next row from the table :
   - If there is no more data left, it returns `None`
 
-> `demo08 · fetchone`
+> `demo09 · fetchone`
 
 
 ---
@@ -296,7 +325,7 @@ with con:
     print(f"Number of rows updated: {cur.rowcount}")
 ```
 
-> `demo09 · parameterizedqueries`
+> `demo10 · parameterizedqueries`
 
 
 ---
@@ -327,7 +356,7 @@ with con:
   - SQLite objects may have attributes, which are metadata
   - Obtain specific metadata from querying the SQLite system `sqlite_master` table
 
-> `demo10 · metadata`
+> `demo11 · metadata`
 
 
 ---
@@ -384,7 +413,7 @@ finally:
         con.close()
 ```
 
-> `demo11 · transactions`
+> `demo12 · transactions`
 
 ---
 
