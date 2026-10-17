@@ -25,7 +25,7 @@ def letter_counts(words: list[str]) -> dict[str, int]:
 
 def best_guess(words: list[str]) -> str | None:
     """Choose the word with the most frequently occurring distinct letters."""
-    counts = letter_counts(words)
     if not words:
         return None
+    counts = letter_counts(words)
     return max(words, key=lambda word: sum(counts[letter] for letter in set(word)))
