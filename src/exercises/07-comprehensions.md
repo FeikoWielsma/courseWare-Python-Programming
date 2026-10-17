@@ -6,7 +6,7 @@ Continue in your own `wordle` project, or use `exercises/starters/07-comprehensi
 
 ### Step 1 : Build a row from expressions {★★}
 
-In `wordle/display.py`, replace the loop in `render` with a joined sequence. The dictionary maps marks to formatting functions. Complete the call for each letter and mark :
+In `wordle/display.py`, replace the loop with a joined sequence. Complete the call for each letter and mark :
 
 ```python
 def render(guess: str, marks: list[str]) -> str:
@@ -26,11 +26,12 @@ uv run pytest tests/test_display.py
 
 :::hint
 
-`symbols[mark]` selects a function. Call that function with `letter`, then let `join` concatenate the returned strings without separators.
+Call `symbols[mark]` with `letter`; `join` concatenates the results.
 
 :::
 
 :::solution
+
 ```python
 def render(guess: str, marks: list[str]) -> str:
     """Draw green letters in brackets, yellow in parentheses and grey padded."""
@@ -41,6 +42,7 @@ def render(guess: str, marks: list[str]) -> str:
     }
     return "".join(symbols[mark](letter) for letter, mark in zip(guess.upper(), marks, strict=True))
 ```
+
 :::
 
 The expression inside `join` is a generator expression: it produces values as they are consumed, without building a separate list. You will use the same form inside `all` and `sum`; writing generators is covered further in Advanced Python.
@@ -60,7 +62,7 @@ def consistent(word: str, guess: str, marks: list[str]) -> bool:
     return score_guess(word, guess) == marks
 ```
 
-Read `test_consistent_reuses_scoring_rules` in the handout. It scores `slate` against `crane`, then checks whether the same guess would have produced those marks for another proposed secret. The test file also imports the functions you will add in Steps 3 and 4, so it will not collect successfully yet. The game remains playable while you build its solver.
+Read `test_consistent_reuses_scoring_rules` in the handout. It scores `slate` against `crane`, then accepts that word-and-guess combination and rejects the same marks for the guess `raise`. The test file also imports the functions you will add in Steps 3 and 4, so it will not collect successfully yet. The game remains playable while you build its solver.
 
 ### Step 3 : Keep every answer that fits {★★★}
 
@@ -94,12 +96,13 @@ After Step 4, the solver tests pass. In the full `uv run pytest` run, the final 
 ```text
 tests\test_solver.py ....                                                [100%]
 
-============================== 8 passed in 0.08s ==============================
+============================== 8 passed in 0.04s ==============================
 ```
 
 :::
 
 :::solution
+
 ```python
 def candidates(words: list[str], history: list[tuple[str, list[str]]]) -> list[str]:
     """Return words consistent with every guess and its marks."""
@@ -109,6 +112,7 @@ def candidates(words: list[str], history: list[tuple[str, list[str]]]) -> list[s
         if all(consistent(word, guess, marks) for guess, marks in history)
     ]
 ```
+
 :::
 
 ### Step 4 : Choose a useful next guess {★★}
@@ -137,18 +141,21 @@ For each letter, sum `letter in word` over the words. Booleans contribute 1 or 0
 :::
 
 :::solution
+
 ```python
 def letter_counts(words: list[str]) -> dict[str, int]:
     """Count how many candidate words contain each letter."""
     letters = {letter for word in words for letter in word}
     return {letter: sum(letter in word for word in words) for letter in letters}
 ```
+
 ```python
 def best_guess(words: list[str]) -> str:
     """Choose the word with the most frequently occurring distinct letters."""
     counts = letter_counts(words)
     return max(words, key=lambda word: sum(counts[letter] for letter in set(word)))
 ```
+
 :::
 
 Run `uv run pytest tests/test_solver.py`, then `uv run pytest`. The four new solver tests and all four earlier tests should pass. In particular, the `cacao` case checks that repeated letters are not counted as extra information.
