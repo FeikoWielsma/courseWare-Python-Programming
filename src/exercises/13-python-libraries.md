@@ -1,13 +1,13 @@
 <!-- appendix -->
 # Exercise 13 : Python Libraries
 
-Your Wordle plays well, but it is still a game for one person, one sitting and one list of rules. The standard library has what it takes to change that without installing anything : `datetime` gives everybody the same word on the same day, `json` lets a game wait until you come back, `re` checks input with a pattern, and `sys.argv` turns options on and off from the command line. The third-party test runner `pytest`, installed in Exercise 5, lets you check your own work. Each step uses one of them.
+Your Wordle plays well, but it is still a game for one person, one sitting and one list of rules. The standard library has what it takes to change that without installing anything : `datetime` gives everybody the same word on the same day, `json` lets a game wait until you come back, `re` checks input with a pattern, and `sys.argv` turns options on and off from the command line. The third-party test runner `pytest`, which you add in Step 3, lets you check your own work. Each step uses one of them.
 
 Continue in your own `wordle` project, or start from `exercises/starters/13-python-libraries/`. The starter is the finished Exercise 12; this exercise hands out nothing. Keep running commands beside `pyproject.toml`.
 
-The steps are small and separate, one library each. Do Steps 1 to 3 in order, because they build up `main` and the options of the game. Step 4 (`json`) and Step 5 (`re`) can then be done in either order. Step 6 and Step 7 (`pytest`) come last, because they test what the earlier steps wrote.
+The steps are small and separate, one library each. Do Steps 1 to 3 in order, because they build up `main` and the options of the game. Step 4 (`json`) and Step 5 (`re`) can then be done in either order. Step 6 and Step 7 (`pytest`) come last, because they test what the earlier steps wrote; Step 3 sets `pytest` up.
 
-Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards. This exercise is an appendix : pick the libraries you want.
+Some steps give you the code, some a skeleton to complete, and some only a signature and the test it must pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards. This exercise is an appendix : pick the libraries you want.
 
 ---
 
@@ -92,6 +92,10 @@ def play(secret: str, words: list[str], max_guesses: int = 6, hard: bool = False
 Run `uv run python -m wordle --easy`. The prompt now reads `Guess 1/10`. A guess limit of 10 is allowed by the property you wrote in Exercise 11, and 11 would not be.
 
 :::hint
+Exercise 10 gave a conditional expression for the win percentage, and the slide *Logical, Membership, Identity Operators*, in module 02, shows `in` giving `True` or `False`.
+:::
+
+:::hint
 A conditional expression fits on one line : `10 if "--easy" in options else 6`. A membership test is already a `bool`, so `hard = "--hard" in options` needs no `if`.
 :::
 
@@ -128,6 +132,19 @@ For every earlier guess and its marks :
 - a letter that was green must be in the same place in the new guess
 - a letter that was yellow must be somewhere in the new guess
 
+This is the first function of this exercise that gets a test. `pytest` is a development tool, like `ruff`, so add it the same way; see *Testing with pytest* :
+
+```bash
+uv add --dev pytest
+```
+
+The tests live in a folder of their own, `tests/`, and import the `wordle` package from the project folder. Tell `pytest` to look there by adding this section to `pyproject.toml` :
+
+```toml
+[tool.pytest.ini_options]
+pythonpath = ['.']
+```
+
 Create `tests/test_ex13.py` for the tests of this exercise, and put this first one in it :
 
 ```python
@@ -146,9 +163,13 @@ def test_follows_hints_keeps_green_letters_and_uses_yellow_letters() -> None:
     assert not follows_hints("clink", history)
 ```
 
-The history says that after `crane`, the C was in the right place, and the A was in the word but not in the third place. `caper` obeys both. `paper` moves the C, and `clink` leaves out the A. Make the test pass. If you wrote a `follows_hints` in the last step of Exercise 5, compare it with this one.
+The history says that after `crane`, the C was in the right place, and the A was in the word but not in the third place. `caper` obeys both. `paper` moves the C, and `clink` leaves out the A. Run `uv run pytest` and make the test pass. If you wrote a `follows_hints` in the last step of Exercise 5, compare it with this one.
 
 Then use it in `play`. When `hard` is true and there is a history, a guess that does not follow the hints is refused with `That guess does not follow the revealed hints.` and does not count. Do the check after the word is known to be valid, because the function indexes into the guess and a word of three letters would break it. Play with `uv run python -m wordle --hard`, with `WORDLE_SECRET=crane` set : guess `slate`, then `trick`.
+
+:::hint
+The slide *Zip Function*, in module 07, pairs two sequences, and *Iterating with enumerate*, in module 04, adds the position.
+:::
 
 :::hint
 Loop over the history with `for previous, marks in history`. Then loop over the positions with `enumerate(zip(previous, marks, strict=True))`, which gives `position, (letter, mark)`. A `return False` the moment a rule breaks, and a `return True` after the loops.
@@ -159,9 +180,12 @@ Each rule is one condition that says when it is broken : `mark == "green" and gu
 :::
 
 :::output
+The end of a passing run; timings vary.
+
 ```text
-.                                                                        [100%]
-1 passed in 0.02s
+tests\test_ex13.py .                                                     [100%]
+
+============================== 1 passed in 0.03s ==============================
 ```
 :::
 
@@ -301,6 +325,10 @@ Try the same with `--easy`, and stop after a guess : the resumed game still says
 A game that ends with `quit` is over and is cleared too. Only an interruption leaves a save behind.
 
 :::hint
+The slide *The json Module* turns a dictionary into text with `json.dumps` and back with `json.loads`, and *Renaming and Deleting Files*, in module 09, removes a file with `unlink`.
+:::
+
+:::hint
 `SAVE_PATH.write_text(json.dumps(data, indent=2), encoding="utf-8")` writes the file. `json.loads(SAVE_PATH.read_text(encoding="utf-8"))` reads it back as dictionaries and lists.
 :::
 
@@ -361,7 +389,11 @@ See *Regular Expressions with re* and *Matching and Searching*. Run the session 
 wordle.scoring.InvalidGuess: A guess must contain letters only.
 ```
 
-Run `uv run pytest`. The tests of Exercise 8 still pass.
+Run `uv run pytest`; the hard-mode test of Step 3 still passes.
+
+:::hint
+The slide *Matching and Searching* uses `re.fullmatch` with a character class, `[a-z]+`.
+:::
 
 :::hint
 `[a-z]` is one lower-case letter and `{5}` repeats the previous item five times. Write the pattern as a raw string, `r"[a-z]{5}"`, as you would a path, so that backslashes in later patterns mean what they say.
@@ -378,7 +410,7 @@ import re
 
 ### Step 6 : Write your own tests
 
-In Exercise 8 you wrote tests for a function that already existed. Tests of this kind are small : a function whose name starts with `test_`, and a plain `assert`. See *Testing with pytest*. You wrote this exercise's functions yourself, so write the tests too. Add two to `tests/test_ex13.py`, which Step 3 created. Their imports go at the top of the file, next to the ones that are there, and the tests go at the bottom :
+In Step 3 the test was given. Tests of this kind are small : a function whose name starts with `test_`, and a plain `assert`. See *Testing with pytest*. You wrote this exercise's functions yourself, so write the tests too. Add two to `tests/test_ex13.py`, which Step 3 created. Their imports go at the top of the file, next to the ones that are there, and the tests go at the bottom :
 
 ```python
 import pytest
@@ -403,6 +435,10 @@ The first is one `assert` : with no candidates, `best_guess` returns `None` (the
 ```
 
 Anything raised inside the `with` block must be an `InvalidGuess` whose message contains `letters only`, or the test fails. The pattern of Step 5 refuses capital letters. See *Exceptions and Parametrized Tests*. Read a failure before you move on : change an expected value in one test on purpose, run `uv run pytest tests/test_ex13.py`, read what pytest shows next to the failing `assert`, and change it back. See *Reading a Test Failure*.
+
+:::hint
+The slide *Testing with pytest* shows a test that is one `assert`, and *Exceptions and Parametrized Tests* puts the call that must fail inside `with pytest.raises(...)`.
+:::
 
 :::hint
 `assert best_guess([]) is None`. The second test calls `check_guess("CRANE", ["crane"])` inside the `with` block; the length is fine, so the pattern is what fails.
