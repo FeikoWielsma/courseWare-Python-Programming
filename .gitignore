@@ -78,3 +78,9 @@ __pycache__/
 demos/10-python-database-access/*.db
 build/site/dist/
 exercises/starters/*/uv.lock
+
+# Optional libraries deck build outputs
+libraries/build/
+libraries/PRG400-Python-Libraries-and-Tools*.pdf
+libraries/PRG400-Python-Libraries-and-Tools*.html
+libraries/data/*.db

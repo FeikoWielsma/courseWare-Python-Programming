@@ -1,4 +1,4 @@
-keys = ["a", "b", "c"]
-values = [1, 2, 3]
-counts = dict(zip(keys, values))
-print(counts)  # {'a': 1, 'b': 2, 'c': 3}
+products = ["tea", "coffee", "cocoa"]
+quantities = [12, 8, 5]
+stock = dict(zip(products, quantities))
+print(stock)  # {'tea': 12, 'coffee': 8, 'cocoa': 5}

@@ -1,0 +1,52 @@
+# Ruff configuration for the day-four tour.
+#
+# Kept in its own file rather than in pyproject.toml so the student bundle can
+# ship the rules without shipping the project file, matching PRG400. The paths
+# below are relative to this file and the bundle keeps the same layout, so the
+# one file is correct in both places.
+#
+# The rule set is pinned explicitly rather than riding on ruff's defaults,
+# which widen between releases and would make the courseware appear to rot.
+
+target-version = "py314"
+line-length = 100
+
+# Editors pass file names explicitly, and ruff lints a named file even when it
+# is excluded. Without this the vendored material below is still underlined.
+force-exclude = true
+
+exclude = [
+    # Background reading shipped for the student to browse. Not course code and
+    # not held to the course's style.
+    "reference",
+]
+
+[lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # import sorting
+    "UP",   # pyupgrade, keeps the code idiomatic for the target version
+    "B",    # bugbear
+    "C4",   # comprehensions
+    "SIM",  # simplify
+    "RET",  # return statements
+    "PTH",  # prefer pathlib over os.path
+    "N",    # PEP 8 naming
+]
+
+ignore = [
+    # The demos print rather than log, which is the point of a demo.
+    "T201",
+]
+
+[lint.per-file-ignores]
+# Every entry here names the lesson it protects. Before silencing a new
+# finding, check whether the code is teaching the pattern deliberately.
+
+[lint.isort]
+known-first-party = ["scrapers"]
+
+[format]
+quote-style = "double"

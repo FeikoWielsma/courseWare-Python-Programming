@@ -144,3 +144,17 @@ uv run pytest            # run the tests (Exercise 13)
 ```
 
 Enjoy the course.
+
+## Optional libraries and tools
+
+[libraries/README.md](libraries/README.md) describes the optional topics, their
+setup and runnable demos. This is a separate selection for the trainer to choose
+with the group: command-line tools, third-party libraries, scraping, SQLAlchemy,
+NumPy, pandas, desktop windows and subprocesses. Inheritance is an optional
+preview of Advanced Python.
+
+The slides and exercises are separate PDFs in `libraries/`, named
+`PRG400-Python-Libraries-and-Tools.pdf` and
+`PRG400-Python-Libraries-and-Tools-Exercises.pdf`. The folder has its own
+`pyproject.toml` and lockfile; run `uv sync` from inside `libraries/` before using
+its examples.

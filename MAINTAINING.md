@@ -174,3 +174,25 @@ and embedding guides and the porting notes.
 - `demos/*/extra/` folders still ship. They hold older side examples that no
   slide references, kept on purpose as extra practice material (ported to
   Python 3 and held to the ruff rules).
+
+## Optional libraries and tools
+
+`libraries/` imports the teaching sources from Python-Day4-Tour and is maintained
+here. The original repository is unchanged. Its own `src/`, `demos/`, `solutions/`
+and `data/` preserve the relative paths the examples use. Its dependencies and
+lockfile stay separate from the standard-library fundamentals project. Books from
+the old repository are not part of this import.
+
+```bash
+bun run --cwd build libraries -- --skip-lint
+bun run --cwd build lint:libraries
+bun run --cwd build libraries -- --exercises
+uv sync --project libraries
+uv run ruff check libraries
+```
+
+The course-local `build/libraries.ts` runs the shared template with `libraries/`
+as its working directory. Add new optional topics there; they do not enter the
+fundamentals PDF, schedule, exercise site or Wordle exercise chain. CI builds and
+publishes both optional PDFs and HTML files and ships `libraries/` in the student
+bundle. Keep optional demo code linted by `libraries/ruff.toml`.

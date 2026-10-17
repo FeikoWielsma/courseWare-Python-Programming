@@ -1,7 +1,3 @@
-import cameras1.canon
-import cameras1.leika
-import cameras1.nikon
+import reports.shipping
 
-cameras1.nikon.nikon_info()
-cameras1.canon.canon_info()
-cameras1.leika.leika_info()
+print(reports.shipping.delivery_cost(35.0))  # 4.95

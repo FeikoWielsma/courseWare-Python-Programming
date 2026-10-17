@@ -1,14 +1,4 @@
-from math import sqrt
+from shipping import FREE_SHIPPING, delivery_cost
 
-# from math import *
-
-n = int(input("Enter range:  "))
-
-count = 1
-while count < n:
-    r = sqrt(count)
-    print("square root of " + str(count) + "=", end="")
-    count = count + 1
-    print(r)
-
-# print(dir())
+print(delivery_cost(35.0))  # 4.95
+print(FREE_SHIPPING)  # 50.0

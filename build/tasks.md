@@ -493,3 +493,29 @@ Still open, for the trainer :
       or start module 09 on day 3.
 - [ ] Push Presentation-Template `main` (CI clones it), review PySpark's
       `shared-exercise-site` branch, merge `prg400-wordle` into `master`.
+
+
+## Trainer feedback : diagrams, examples and optional topics (2026-10-17)
+
+- [x] Give the `if` diagram room and separate the `for` diagram from its example.
+- [x] Teach `match` with string literals and a final wildcard; remove sequence
+      patterns, captures, guards and shape matching from the beginner demo.
+- [x] Rework Modules around one delivery-cost function, then reuse it from a
+      report, a package and its entry point. Keep every slide fence in its demo.
+- [x] Replace abstract comprehension examples with filenames, order totals,
+      stock and readings. Separate nested rows from flattening and show the
+      equivalent loops for flattening.
+- [x] Import Python-Day4-Tour teaching material into `libraries/`, with separate
+      slides and exercises PDFs and a separate uv project. Preserve its runnable
+      paths; omit books, generated databases and old build tooling.
+- [x] Add a local build wrapper, CI builds, release assets and bundle inclusion.
+      Shared Presentation-Template sources and the original tour repo are unchanged.
+- [x] Keep the fundamentals schedule, Wordle chain and exercise site separate.
+- [x] Verify fences, slide references, Ruff, starters, all 13 solution stages,
+      quiz, both slide decks, both exercises PDFs and the offline site.
+
+Verification details : 25 fundamentals demos ran; 113 non-GUI optional demo smoke
+checks passed, with command-line entry points checked via `--help`. Six tkinter
+window demos were compiled but not launched. Import fixes include an offline HTTP
+client, an offline robots.txt parser in place of an unrelated live API call, and
+a CSV reader that no longer skips its header. Rendered PDF pages were inspected.

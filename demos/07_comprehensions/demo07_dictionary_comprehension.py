@@ -1,5 +1,6 @@
-squares = {number: number**2 for number in range(1, 6)}
-print(squares)  # {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
-counts = {"a": 2, "b": 0, "c": 3}
-positive = {key.upper(): value for key, value in counts.items() if value > 0}
-print(positive)  # {'A': 2, 'C': 3}
+stock = {"tea": 12, "coffee": 0, "cocoa": 5}
+available = {name: count for name, count in stock.items() if count > 0}
+print(available)  # {'tea': 12, 'cocoa': 5}
+prices = {"tea": 2.0, "coffee": 4.0}
+with_tax = {name: round(price * 1.21, 2) for name, price in prices.items()}
+print(with_tax)  # {'tea': 2.42, 'coffee': 4.84}

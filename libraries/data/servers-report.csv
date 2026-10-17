@@ -1,0 +1,15 @@
+hostname,site,role,disk_gb,used_pct
+log01,EIN,logging,8000,82.5
+db02,RTM,database,2000,81.0
+build01,EIN,build,4000,78.0
+db01,AMS,database,2000,72.5
+nas01,EIN,storage,16000,70.0
+web02,AMS,web,120,59.3
+web01,AMS,web,120,53.8
+web03,RTM,web,120,46.5
+mon01,AMS,monitoring,500,42.1
+proxy01,RTM,web,40,30.2
+mail01,AMS,mail,80,28.0
+vpn01,BRU,network,40,24.0
+cache01,RTM,cache,240,12.9
+build02,EIN,build,4000,

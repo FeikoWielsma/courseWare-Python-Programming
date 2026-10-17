@@ -1,9 +1,9 @@
-numbers = [1, 2, 3, 4, 5, 6]
-labels = []
-for number in numbers:
-    if number % 2 == 0:
-        labels.append(str(number))
-print(labels)  # ['2', '4', '6']
+filenames = ["sales.csv", "notes.txt", "stock.csv"]
+csv_files = []
+for name in filenames:
+    if name.endswith(".csv"):
+        csv_files.append(name)
+print(csv_files)  # ['sales.csv', 'stock.csv']
 
-labels = [str(number) for number in numbers if number % 2 == 0]
-print(labels)  # ['2', '4', '6']
+csv_files = [name for name in filenames if name.endswith(".csv")]
+print(csv_files)  # ['sales.csv', 'stock.csv']

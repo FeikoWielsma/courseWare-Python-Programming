@@ -1,7 +1,4 @@
 import sys
 
-print("\n_the PYTHONPATH is", sys.path)
-
-print("The command line arguments are:")
-for i in sys.argv:
-    print(i)
+print(sys.path[0])
+print(sys.executable)

@@ -1,10 +1,8 @@
-from cameras3 import canon_info, nikon_info
+from reports.shipping import delivery_cost
 
 
 def main() -> None:
-    print("Cameras package entry point:")
-    canon_info()
-    nikon_info()
+    print(f"Delivery: {delivery_cost(35.0):.2f}")
 
 
 if __name__ == "__main__":

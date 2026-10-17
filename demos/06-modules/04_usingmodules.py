@@ -1,13 +1,6 @@
-import testmodules
+from shipping import delivery_cost
 
-print(testmodules.version)
-testmodules.sayhi()
-p = testmodules.Person("Albert", "Einstein")
-print(p)
-
-from testmodules import *
-
-print(version)
-sayhi()
-p = Person("Werner", "Heisenberg")
-print(p)
+order_totals = [35.0, 75.0]
+for total in order_totals:
+    fee = delivery_cost(total)
+    print(f"Order {total:.2f}: delivery {fee:.2f}")

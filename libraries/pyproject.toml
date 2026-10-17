@@ -1,0 +1,33 @@
+[project]
+name = "python-libraries-and-tools"
+version = "0.1.0"
+description = "Optional libraries and tools for Python Programming"
+readme = "README.md"
+requires-python = ">=3.14"
+
+# Unlike PRG400, which is deliberately standard-library only, this day is about
+# third-party libraries. The student runs `uv sync` once at the start of the day
+# and every demo in the tree works from then on.
+dependencies = [
+    "beautifulsoup4>=4.12",
+    "httpx>=0.28",
+    "lxml>=5.3",
+    "matplotlib>=3.9",
+    "numpy>=2.1",
+    "openpyxl>=3.1",
+    "pandas>=2.2",
+    "requests>=2.32",
+    "rich>=13.9",
+    "sqlalchemy>=2.0",
+    "tqdm>=4.67",
+    "typer>=0.15",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.11",
+    "ruff>=0.14.0",
+]
+
+# Ruff is configured in ruff.toml so the student bundle can ship the rules
+# without shipping a pyproject.toml, matching how PRG400 does it.

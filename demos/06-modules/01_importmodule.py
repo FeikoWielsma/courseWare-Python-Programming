@@ -1,7 +1,8 @@
-import test  # Now you can call defined function
+import shipping
 
-test.print_func("pipo")  # Hello : pipo
+print(shipping.delivery_cost(35.0))  # 4.95
+print(shipping.delivery_cost(75.0))  # 0.0
 
-import test as t
+import shipping as delivery
 
-t.print_func("maloe")  # Hello : maloe
+print(delivery.FREE_SHIPPING)  # 50.0

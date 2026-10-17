@@ -1,5 +1,7 @@
-numbers = [1, 2, 2, 3, 4]
-squares = {number**2 for number in numbers}
-print(sorted(squares))  # [1, 4, 9, 16]
-even_squares = {number**2 for number in numbers if number % 2 == 0}
-print(sorted(even_squares))  # [4, 16]
+names = [" Sales ", "Stock", "sales", "Prices "]
+unique = {name.strip().lower() for name in names}
+print(sorted(unique))  # ['prices', 'sales', 'stock']
+
+csv_files = ["sales.csv", "notes.txt", "sales.csv", "stock.csv"]
+unique_csv = {name for name in csv_files if name.endswith(".csv")}
+print(sorted(unique_csv))  # ['sales.csv', 'stock.csv']

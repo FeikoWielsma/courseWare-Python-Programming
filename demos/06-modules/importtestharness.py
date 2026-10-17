@@ -1,6 +1,5 @@
 import testharness
 
-# The import ran the module's top-level code, but not main(): inside the
-# imported module __name__ is "testharness", not "__main__".
-print(testharness.__name__)
-print(testharness.version)
+print(testharness.__name__)  # testharness
+# Importing did not print the delivery report.
+testharness.main()  # Delivery: 4.95

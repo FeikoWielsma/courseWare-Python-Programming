@@ -519,3 +519,15 @@ blocks the current build knows.
 | Q13 | Solutions in the PDF : next page (as now) or at the back (as PySpark)? | **Resolved** : next page |
 | Q14 | Easter eggs in PRG400? | **Resolved** : yes |
 | Q15 | Who does WP0 : a thread in `Presentation-Template` now, before the rest? | **Resolved** : yes, now, by GPT-6.1-Sol in its own thread |
+
+
+## 12. Optional libraries and tools (2026-10-17)
+
+Trainer feedback requests a practical optional topic selection alongside the
+fundamentals course. `libraries/` imports the Python-Day4-Tour teaching sources
+and preserves their directory layout and independent dependencies. Its local
+wrapper, `build/libraries.ts`, invokes the shared template from that directory,
+producing `PRG400-Python-Libraries-and-Tools.pdf` and the matching exercises PDF.
+New library material belongs there. It does not extend the required Wordle path
+or change the four-day fundamentals schedule. The inheritance module is a
+skippable preview of Advanced Python; all nine topics are trainer-selected.

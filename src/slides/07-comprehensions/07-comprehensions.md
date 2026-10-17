@@ -12,11 +12,9 @@ footer: Comprehensions
 - Read the `for` part first, then the expression on its left.
 
 ```python
-numbers: list[int] = [1, 2, 3, 4, 5]
-doubled = [number * 2 for number in numbers]
-print(doubled)  # [2, 4, 6, 8, 10]
-labels = [str(number) for number in numbers]
-print(labels)  # ['1', '2', '3', '4', '5']
+filenames: list[str] = ["sales", "stock", "prices"]
+csv_files = [f"{name}.csv" for name in filenames]
+print(csv_files)  # ['sales.csv', 'stock.csv', 'prices.csv']
 ```
 
 
@@ -27,50 +25,22 @@ print(labels)  # ['1', '2', '3', '4', '5']
 
 # Syntax List Comprehensions
 
-- Syntax of a list comprehension may involve :
-  - `for` loop, an `in` operation and an `if` statement
-- Python's notation is `[ expression for name in list ]` :
-
-<svg viewBox="0 0 960 210" width="100%" style="width:100%;height:auto;display:block;margin:6px 0 4px" role="img" aria-label="The three parts of a list comprehension: the expression, the name bound to each item and the source sequence">
-<g fill="currentColor" font-size="23" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
-<text x="194" y="46" textLength="14" lengthAdjust="spacingAndGlyphs">[</text>
-<text x="214" y="46" textLength="84" lengthAdjust="spacingAndGlyphs">elem*2</text>
-<text x="312" y="46" textLength="42" lengthAdjust="spacingAndGlyphs">for</text>
-<text x="368" y="46" textLength="56" lengthAdjust="spacingAndGlyphs">elem</text>
-<text x="438" y="46" textLength="28" lengthAdjust="spacingAndGlyphs">in</text>
-<text x="480" y="46" textLength="28" lengthAdjust="spacingAndGlyphs">li</text>
-<text x="514" y="46" textLength="14" lengthAdjust="spacingAndGlyphs">]</text>
-</g>
-<g fill="none" stroke="currentColor" stroke-width="2">
-<rect x="210" y="24" width="92" height="30" rx="3"/>
-<rect x="364" y="24" width="64" height="30" rx="3"/>
-<rect x="476" y="24" width="34" height="30" rx="3"/>
-</g>
-<g fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.7">
-<path d="M 494 54 L 494 100 L 554 100"/>
-<path d="M 396 54 L 396 140 L 554 140"/>
-<path d="M 256 54 L 256 180 L 554 180"/>
-</g>
-<g fill="currentColor" font-size="19">
-<text x="566" y="106">the source sequence</text>
-<text x="566" y="146">the name bound to each item</text>
-<text x="566" y="186">the expression, evaluated per item</text>
-</g>
-</svg>
-
-- Reads as the loop that would otherwise be written out in full :
+- A comprehension has the form `[expression for name in source]`.
+- `source` supplies the items; `name` receives one item at a time.
+- `expression` computes the value added to the new list.
 
 ```python
-li = [3, 6, 2, 7]
-li_new = [elem * 2 for elem in li]  # [6, 12, 4, 14]
+filenames: list[str] = ["sales", "stock", "prices"]
+csv_files = []
+for name in filenames:
+    csv_files.append(f"{name}.csv")
+print(csv_files)  # ['sales.csv', 'stock.csv', 'prices.csv']
+
+csv_files = [f"{name}.csv" for name in filenames]
+print(csv_files)  # ['sales.csv', 'stock.csv', 'prices.csv']
 ```
 
-- `if` statement acts as a filter and is optional :
-
-```python
-grades = [12, 0, 18]
-print([x - 10 for x in grades if x > 0])  # [2, 8]
-```
+- Both forms create a new list and leave `filenames` unchanged.
 
 ---
 
@@ -80,15 +50,15 @@ print([x - 10 for x in grades if x > 0])  # [2, 8]
 - These two forms produce the same list :
 
 ```python
-numbers = [1, 2, 3, 4, 5, 6]
-labels = []
-for number in numbers:
-    if number % 2 == 0:
-        labels.append(str(number))
-print(labels)  # ['2', '4', '6']
+filenames = ["sales.csv", "notes.txt", "stock.csv"]
+csv_files = []
+for name in filenames:
+    if name.endswith(".csv"):
+        csv_files.append(name)
+print(csv_files)  # ['sales.csv', 'stock.csv']
 
-labels = [str(number) for number in numbers if number % 2 == 0]
-print(labels)  # ['2', '4', '6']
+csv_files = [name for name in filenames if name.endswith(".csv")]
+print(csv_files)  # ['sales.csv', 'stock.csv']
 ```
 
 
@@ -99,27 +69,41 @@ print(labels)  # ['2', '4', '6']
 
 # Nested List Comprehensions
 
-- The inner comprehension creates one row; the outer one creates the rows.
-- Keep nesting short enough to read at a glance.
+- A nested comprehension builds a list of lists, preserving the row structure.
 
 ```python
-list_a = ["A", "B"]
-list_b = ["C", "D"]
-rows = [[x + y for x in list_a] for y in list_b]
-print(rows)  # [['AC', 'BC'], ['AD', 'BD']]
+readings = [[18.2, 19.6], [20.1, 21.8]]
+rounded = [[round(value) for value in row] for row in readings]
+print(rounded)  # [[18, 20], [20, 22]]
 ```
 
-- A comprehension can also have two `for` clauses, and the second runs for each item of the first :
-
-```python
-words = ["one", "two"]
-letters = [letter for word in words for letter in word]
-print(letters)  # ['o', 'n', 'e', 't', 'w', 'o']
-```
-
-
+- Each row holds the temperature readings from one location.
+- The inner comprehension rounds the readings in one row.
+- The outer comprehension repeats that operation for every row.
+- Use an ordinary loop when the nesting needs more explanation.
 
 > `demo03 · nested_comprehensions`
+
+---
+
+# Flattening a List of Lists
+
+- Two `for` clauses collect all the readings into one list.
+- Their order is the same as in the equivalent nested loops.
+
+```python
+readings = [[18.2, 19.6], [20.1, 21.8]]
+flat = []
+for row in readings:
+    for value in row:
+        flat.append(value)
+print(flat)  # [18.2, 19.6, 20.1, 21.8]
+
+flat = [value for row in readings for value in row]
+print(flat)  # [18.2, 19.6, 20.1, 21.8]
+```
+
+- The result can be used to calculate a minimum or maximum across all locations.
 
 ---
 
@@ -129,13 +113,13 @@ print(letters)  # ['o', 'n', 'e', 't', 'w', 'o']
 - The expression can call a function.
 
 ```python
-def subtract(a: int, b: int) -> int:
-    return a - b
+def line_total(price: float, quantity: int) -> float:
+    return round(price * quantity, 2)
 
 
-pairs = [(6, 3), (1, 7), (5, 5)]
-differences = [subtract(y, x) for x, y in pairs]
-print(differences)  # [-3, 6, 0]
+items = [(12.50, 2), (4.00, 3), (7.25, 1)]
+totals = [line_total(price, quantity) for price, quantity in items]
+print(totals)  # [25.0, 12.0, 7.25]
 ```
 
 
@@ -151,12 +135,12 @@ print(differences)  # [-3, 6, 0]
 - `strict=True` raises a `ValueError` when the inputs differ in length, instead of stopping early :
 
 ```python
-keys = ["a", "b", "c"]
-values = [1, 2, 3]
-pairs = list(zip(keys, values))
-print(pairs)  # [('a', 1), ('b', 2), ('c', 3)]
-checked = list(zip(keys, values, strict=True))  # the lengths match, so no error
-print(checked)  # [('a', 1), ('b', 2), ('c', 3)]
+products = ["tea", "coffee", "cocoa"]
+quantities = [12, 8, 5]
+pairs = list(zip(products, quantities))
+print(pairs)  # [('tea', 12), ('coffee', 8), ('cocoa', 5)]
+checked = list(zip(products, quantities, strict=True))
+print(checked)  # [('tea', 12), ('coffee', 8), ('cocoa', 5)]
 ```
 
 
@@ -170,10 +154,10 @@ print(checked)  # [('a', 1), ('b', 2), ('c', 3)]
 - Pass pairs of keys and values to `dict` to build a dictionary.
 
 ```python
-keys = ["a", "b", "c"]
-values = [1, 2, 3]
-counts = dict(zip(keys, values))
-print(counts)  # {'a': 1, 'b': 2, 'c': 3}
+products = ["tea", "coffee", "cocoa"]
+quantities = [12, 8, 5]
+stock = dict(zip(products, quantities))
+print(stock)  # {'tea': 12, 'coffee': 8, 'cocoa': 5}
 ```
 
 
@@ -188,11 +172,12 @@ print(counts)  # {'a': 1, 'b': 2, 'c': 3}
 - Add an `if` to keep only some entries.
 
 ```python
-squares = {number: number**2 for number in range(1, 6)}
-print(squares)  # {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
-counts = {"a": 2, "b": 0, "c": 3}
-positive = {key.upper(): value for key, value in counts.items() if value > 0}
-print(positive)  # {'A': 2, 'C': 3}
+stock = {"tea": 12, "coffee": 0, "cocoa": 5}
+available = {name: count for name, count in stock.items() if count > 0}
+print(available)  # {'tea': 12, 'cocoa': 5}
+prices = {"tea": 2.0, "coffee": 4.0}
+with_tax = {name: round(price * 1.21, 2) for name, price in prices.items()}
+print(with_tax)  # {'tea': 2.42, 'coffee': 4.84}
 ```
 
 
@@ -207,11 +192,12 @@ print(positive)  # {'A': 2, 'C': 3}
 - Use a comprehension when each key needs its own mutable value.
 
 ```python
-counts = dict.fromkeys(["a", "b", "c"], 0)
-print(counts)  # {'a': 0, 'b': 0, 'c': 0}
-groups: dict[str, list[int]] = {key: [] for key in ["a", "b", "c"]}
-groups["a"].append(1)
-print(groups)  # {'a': [1], 'b': [], 'c': []}
+sites = ["AMS", "RTM"]
+counts = dict.fromkeys(sites, 0)
+print(counts)  # {'AMS': 0, 'RTM': 0}
+groups: dict[str, list[str]] = {site: [] for site in sites}
+groups["AMS"].append("web01")
+print(groups)  # {'AMS': ['web01'], 'RTM': []}
 ```
 
 - Avoid `dict.fromkeys(keys, [])` : every key would share the same list.
@@ -226,11 +212,13 @@ print(groups)  # {'a': [1], 'b': [], 'c': []}
 - Duplicate results disappear; sets have no defined display order.
 
 ```python
-numbers = [1, 2, 2, 3, 4]
-squares = {number**2 for number in numbers}
-print(sorted(squares))  # [1, 4, 9, 16]
-even_squares = {number**2 for number in numbers if number % 2 == 0}
-print(sorted(even_squares))  # [4, 16]
+names = [" Sales ", "Stock", "sales", "Prices "]
+unique = {name.strip().lower() for name in names}
+print(sorted(unique))  # ['prices', 'sales', 'stock']
+
+csv_files = ["sales.csv", "notes.txt", "sales.csv", "stock.csv"]
+unique_csv = {name for name in csv_files if name.endswith(".csv")}
+print(sorted(unique_csv))  # ['sales.csv', 'stock.csv']
 ```
 
 
@@ -245,10 +233,10 @@ print(sorted(even_squares))  # [4, 16]
 - As the only argument of a call, it needs no extra parentheses.
 
 ```python
-numbers = [4, 8, 15, 16, 23, 42]
-print(sum(n * n for n in numbers))  # 2854
-print(any(n > 40 for n in numbers))  # True
-print(all(n % 2 == 0 for n in numbers))  # False
+sizes_mb = [120, 80, 250]
+print(sum(size for size in sizes_mb if size >= 100))  # 370
+print(any(size > 200 for size in sizes_mb))  # True
+print(all(size <= 200 for size in sizes_mb))  # False
 print(any([]), all([]))  # False True
 ```
 

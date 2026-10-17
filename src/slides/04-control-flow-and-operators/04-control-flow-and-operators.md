@@ -24,34 +24,26 @@ footer: Control Flow
 
 # if Statement
 
-- `if` tests an expression and runs a block only when it is true :
-  - The expression is often a comparison, such as `count > 0`
-  - The block is skipped when the expression is false
-- Syntax `if` statement :
+- `if` runs an indented block when its condition is true.
+- Execution continues after the block whether the condition is true or false.
 
 ```python
-if expression:
-    statement(s)
+count = 3
+if count > 0:
+    print("Items available")
+print("Check complete")
 ```
-
-- Expression is evaluated first :
-  - If it is true, the indented block runs
-  - Otherwise execution continues with the statement after the block
 
 ```mermaid
 flowchart LR
-  A[statement before] --> B{expression}
-  B -- True --> C[indented block]
-  B -- False --> D[block is skipped]
-  C --> E[statement after]
-  D --> E
+  A[before] --> B{count > 0}
+  B -- True --> C[print Items available]
+  B -- False --> D[print Check complete]
+  C --> D
 ```
 
-- Values other than `True` and `False` can also be tested :
-  - `0`, `""`, empty collections and `None` count as false, everything else as true
-- Grouping statements :
-  - Statements indented by the same amount form one block
-  - Python uses indentation, four spaces by convention, as its way of grouping
+- Four spaces of indentation group the statements in the block.
+- `0`, `""`, empty collections and `None` also count as false in a condition.
 
 ---
 
@@ -238,40 +230,43 @@ KeyboardInterrupt
 
 # for Loop
 
-- Repeats a block for each item of a sequence :
-  - Iterates over any sequence or iterable, such as a list, a string or a range
-- Syntax :
-
-```python
-for var in sequence:
-    statement(s)
-```
-
-- How a `for` loop works :
-  - Each item is assigned to variable `var` in turn
-  - The block runs once per item until the sequence is exhausted
+- `for` runs a block once for each item in a list, string or other iterable.
+- The loop variable receives the next item before the block runs.
 
 ```mermaid
 flowchart LR
-  A[sequence] --> B{items left}
-  B -- yes --> C[assign next item to var]
-  C --> D[loop body]
+  A[start] --> B{next file?}
+  B -- Yes --> C[assign filename]
+  C --> D[run the block]
   D --> B
-  B -- no --> E[statement after the loop]
+  B -- No --> E[after the loop]
 ```
 
+- An empty sequence skips the block entirely.
+- The loop stops automatically when there are no items left.
+
+---
+
+# Processing Each File
+
+- `filename` takes each name from `files` in turn.
+- The unindented `print` runs once, after the loop.
+
 ```python
-words = ["one", "way", "ticket", "to", "mars"]
-for word in words:
-    print(word, end=" ")
-print()
-list1 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-for number in list1:
-    print(number)
+files = ["sales.csv", "stock.csv", "prices.csv"]
+for filename in files:
+    print(f"Processing {filename}")
+print("All files processed")
+```
+
+```text
+Processing sales.csv
+Processing stock.csv
+Processing prices.csv
+All files processed
 ```
 
 > `demo07 · for`
-
 
 ---
 
@@ -410,26 +405,28 @@ print("Good bye!")
 
 # match Statement
 
-- Python 3.10 added structural pattern matching, `match` and `case` :
-  - It compares a value against a series of patterns and runs the first that fits
-  - Older Python has no such statement, which is why chains of `elif` are common
+- `match` compares one value with the cases in order.
+- Only the first matching case runs.
 
 ```python
-match command.split():
-    case ["quit"]:  # a literal pattern
-        return "leaving"
-    case ["go", direction]:  # captures the second word
-        return f"walking {direction}"
-    case ["take" | "get", item] if item != "moon":  # or-pattern with a guard
-        return f"picking up the {item}"
-    case _:  # the wildcard, matched last
-        return "I do not understand"
+command = "help"
+match command:
+    case "help":
+        print("Available commands: help, quit")
+    case "quit":
+        print("Goodbye")
+    case _:
+        print("Unknown command")
 ```
 
-- It matches the shape of the data as well as its value :
-  - A pattern can bind names out of a sequence, as `direction` and `item` do
-  - `case _` is the catch-all, and belongs last
-- There is no fall through between cases, so a case needs no `break` to end it; a `break` inside a case still leaves the loop around the `match`
+```text
+Available commands: help, quit
+```
+
+- Quoted strings match those exact values.
+- `case _` matches anything left over and belongs last.
+- Cases need no `break`; execution continues after the `match` block.
+- Python 3.10 or later is required.
 
 > `demo12 · matchstatement`
 

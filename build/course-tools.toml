@@ -1,5 +1,5 @@
 [tool.check-fences]
-roots = ["src/slides", "src/exercises"]
+roots = ["src/slides", "src/exercises", "libraries/src/slides", "libraries/src/exercises"]
 ruff-select = "UP,W6,RUF001,RUF002,RUF003"
 # UP015 keeps explicit file modes in the IO lesson.
 # UP018 preserves the str() conversion example.

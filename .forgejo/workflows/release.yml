@@ -39,7 +39,9 @@ jobs:
       # below is installing something other than what the project declares.
       - name: Check the lockfile is current
         shell: bash
-        run: uv lock --check
+        run: |
+          uv lock --check
+          uv lock --check --project libraries
 
       - name: Install the project
         shell: bash
@@ -64,7 +66,9 @@ jobs:
             demos/11-python-classes \
             demos/12-appendix-type-hinting \
             demos/13-appendix-libraries \
-            solutions
+            solutions \
+            libraries/demos \
+            libraries/solutions
 
       - name: Checkout Presentation Template
         run: |
@@ -124,6 +128,9 @@ jobs:
           bun run build -- --force
           bun run build -- --exercises --force
           bun run site
+          bun run libraries -- --skip-lint --force
+          bun run lint:libraries
+          bun run libraries -- --exercises --force
 
       - name: Name the slides HTML
         shell: bash
@@ -176,12 +183,16 @@ jobs:
           # disk, so students double-click site/index.html.
           cp -r build/site/dist "${BUNDLE}/site"
 
-          for item in solutions exercises appendices reference README.md ruff.toml .devcontainer; do
+          for item in solutions exercises appendices reference libraries README.md ruff.toml .devcontainer; do
             if [ -e "${item}" ]; then
               cp -r "${item}" "${BUNDLE}/"
             fi
           done
 
+
+          # Optional topics have their own project and PDFs. Only teaching
+          # sources and runtime files travel; caches and authoring sources do not.
+          rm -rf "${BUNDLE}/libraries/build" "${BUNDLE}/libraries/src"
 
           # Strip build and editor droppings that travelled along with the copies.
           find "${BUNDLE}" -type d \( \
@@ -229,7 +240,7 @@ jobs:
 
           RELEASE_ID=$(echo "${RELEASE}" | bun -e "const fs = require('fs'); console.log(JSON.parse(fs.readFileSync(0, 'utf-8')).id);")
 
-          for asset in "${SLIDES_PDF}" "${SLIDES_HTML}" "${EXERCISES_PDF}" "${EXERCISES_HTML}"; do
+          for asset in "${SLIDES_PDF}" "${SLIDES_HTML}" "${EXERCISES_PDF}" "${EXERCISES_HTML}" libraries/PRG400-Python-Libraries-and-Tools*.pdf libraries/PRG400-Python-Libraries-and-Tools*.html; do
             echo "Uploading ${asset}..."
             curl -sf -X POST \
               -H "Authorization: token ${GITHUB_TOKEN}" \

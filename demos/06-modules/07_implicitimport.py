@@ -1,11 +1,7 @@
-import cameras2
+import reports
 
-cameras2.nikon_info()
-cameras2.canon_info()
-cameras2.leika_info()
+print(reports.delivery_cost(35.0))  # 4.95
 
-# from cameras2 import nikon_info, canon_info, leika_info
-#
-# nikon_info()
-# canon_info()
-# leika_info()
+from reports import delivery_cost
+
+print(delivery_cost(75.0))  # 0.0

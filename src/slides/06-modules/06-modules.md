@@ -8,328 +8,226 @@ footer: Modules
 
 # Modules
 
-- Modules organize Python definitions across separate files :
-  - Grouping related functions and classes makes code easier to read and maintain
-  - Code defined in a module can be imported and reused across multiple programs
-- A module is simply a file containing Python code :
-  - Definitions include functions, classes, variables and runnable statements
-  - The module name is the file name without the `.py` extension
-- For example, `test.py` defines `print_func` :
+- A module is a Python file containing related functions and variables.
+- Other files import the module to reuse those definitions.
+- `shipping.py` holds the delivery rule for an order :
 
 ```python
-def print_func(par: str) -> None:
-    print("Hello :", par)
+FREE_SHIPPING: float = 50.0
+
+
+def delivery_cost(total: float) -> float:
+    if total >= FREE_SHIPPING:
+        return 0.0
+    return 4.95
 ```
 
-- Any Python file can import `test.py` and call its functions
+- The module name is the file name without `.py`.
+- Put `shipping.py` and the script that imports it in the same directory.
 
 ---
 
 # import Statement
 
-- The `import` statement makes a module available to the calling file :
-  - Python searches for the module in the directories listed on `sys.path`
-  - The module's top-level code runs once when imported for the first time
-- Syntax of the `import` statement :
-
-```text
-import module1[, module2[, ... moduleN]]
-```
-
-- Accessing definitions through the module prefix :
-  - Functions, classes and variables are prefixed with the module name
+- `import shipping` loads the module and binds the name `shipping`.
+- The module prefix identifies where a function or constant comes from.
+- `as` gives a module an alternative name in the calling file.
 
 ```python
-import test  # Now you can call defined function
+import shipping
 
-test.print_func("pipo")  # Hello : pipo
-```
+print(shipping.delivery_cost(35.0))  # 4.95
+print(shipping.delivery_cost(75.0))  # 0.0
 
-- Modules can be renamed upon import using `as` :
+import shipping as delivery
 
-```python
-import test as t
-
-t.print_func("pipo")  # Hello : pipo
+print(delivery.FREE_SHIPPING)  # 50.0
 ```
 
 > `demo01 · importmodule`
-
 
 ---
 
 # from...import Statement
 
-- `from...import` makes specific names accessible directly without prefix :
-
-```text
-from modname import name1[, name2[, ... nameN]]
-```
-
-- For example, importing `sqrt` from module `math` :
+- `from ... import` binds selected names directly in the calling file.
+- Call the function without the module prefix.
+- Both import forms load the same module; they differ in the names they bind.
+- Explicit names keep dependencies visible; avoid `from shipping import *`.
 
 ```python
-from math import sqrt
+from shipping import FREE_SHIPPING, delivery_cost
+
+print(delivery_cost(35.0))  # 4.95
+print(FREE_SHIPPING)  # 50.0
 ```
-
-- The statement imports only the named items into the current namespace :
-  - The module object itself is not bound, only `sqrt`
-  - The function is called directly without a module prefix :
-
-```python
-print(sqrt(9))  # 3.0
-```
-
-- Importing all names with `*` is also possible :
-
-```python
-from math import *
-```
-
-- Wildcard imports should be used sparingly :
-  - They clutter the namespace and risk name collisions
 
 > `demo02 · usingfromimport`
-
 
 ---
 
 # Locating Modules
 
-- For modules found through `sys.path`, the normal search order is :
+- Python searches the directories in `sys.path` for local modules.
+- A script's directory is searched before installed packages.
+- With `python -m`, the current directory is searched first.
+- Keep `shipping.py` beside the script that imports it.
+- A file named `json.py` can hide the standard library's `json` module.
+- `ModuleNotFoundError` means the requested module could not be found.
 
-```mermaid
-flowchart LR
-  A[import mymod] --> B[script directory<br/>or current directory]
-  B --> C[each directory in<br/>PYTHONPATH]
-  C --> D[the default path,<br/>OS dependent]
-  D --> E[ModuleNotFoundError]
-```
+```python
+import sys
 
-- The first directory depends on how Python starts :
-  - Running a script uses its directory; the REPL and `python -m` use the current directory
-- Inspect the search path with `sys.path` after `import sys`
-- `PYTHONPATH` environment variable :
-  - Extra directories inserted after that first directory on startup
-  - Follows standard operating system path list conventions
-- Setting `PYTHONPATH` in Windows Command Prompt (CMD) :
-
-```bash
-set PYTHONPATH=C:\course\modules
-```
-
-- Setting `PYTHONPATH` on UNIX :
-
-```bash
-export PYTHONPATH=/usr/local/lib/python
+print(sys.path[0])
+print(sys.executable)
 ```
 
 > `demo03 · pythonpath`
-
 
 ---
 
 # Using Modules
 
-- Any Python file can be imported by other files on `sys.path` :
-  - `import mod` imports the module; `from mod import ...` imports specific names
+- Several programs can reuse `shipping.py` without copying the function.
+- The order report supplies the data; the shipping module applies the rule.
+- Changing the delivery rule in one module updates every caller.
 
 ```python
-# Filename: testmodules.py
-def sayhi() -> None:
-    print("Hi, this is testmodules speaking.")
+from shipping import delivery_cost
 
-
-version = "0.1"
-```
-
-- Importing `testmodules` and calling its functions :
-
-```python
-import testmodules
-
-testmodules.sayhi()
-print(testmodules.version)
-
-from testmodules import sayhi, version
-
-sayhi()
+order_totals = [35.0, 75.0]
+for total in order_totals:
+    fee = delivery_cost(total)
+    print(f"Order {total:.2f}: delivery {fee:.2f}")
 ```
 
 > `demo04 · usingmodules`
-
 
 ---
 
 # dir Function
 
-- Returns a sorted list of attribute names accessible on an object or module :
-  - Lists module variables, functions, classes and imported names
-  - Useful in the interactive REPL to explore an unfamiliar library
-- Inspecting a module :
+- `dir(module)` lists the names available on a module.
+- Explore a module in the REPL before calling an unfamiliar function.
+- Names starting and ending with double underscores include module metadata.
 
 ```python
-import math
+import shipping
 
-print(dir(math)[:6])
+print("delivery_cost" in dir(shipping))  # True
+print("FREE_SHIPPING" in dir(shipping))  # True
 ```
-
-- Result :
-
-```text
-['__doc__', '__loader__', '__name__', '__package__', '__spec__', 'acos']
-```
-
-- Special attributes start and end with double underscores, such as `__name__` and `__doc__`
 
 > `demo05 · usingdir`
-
 
 ---
 
 # Packages in Python
 
-- A package organizes multiple modules together under a shared directory :
-  - Provides a hierarchical namespace using dotted module names
-  - Prevents naming collisions between modules in different packages
-- A directory is recognised as a package by having an `__init__.py` file :
+- A package groups related modules in one directory.
+- A regular package contains an `__init__.py` file; it may be empty.
 
 ```text
-cameras/
-├── __init__.py     marks the directory as a package
-├── canon.py        defines canon_info()
-├── leika.py        defines leika_info()
-└── nikon.py        defines nikon_info()
+reports/
+├── __init__.py
+├── shipping.py     the delivery_cost function
+└── __main__.py     the command-line entry point
 ```
 
-- For example, `canon.py` defines a function :
-
-```python
-def canon_info() -> None:
-    print("Canon camera")
-```
-
-- `__init__.py` runs when the package is imported :
-  - It can be empty or used to expose package-level exports
+- Move the existing `shipping.py` into `reports/` to group reporting code.
+- `__init__.py` runs when the package is first imported.
+- A module's top-level code runs on its first import in a Python process.
 
 ---
 
 # Explicit Import of Package Modules
 
-- When `__init__.py` is empty, modules inside the package are imported explicitly :
+- Dots in an import follow directories in the package.
+- `reports.shipping` refers to `reports/shipping.py`.
+- The full call is `package.module.function()`.
 
 ```python
-import cameras.canon
-import cameras.leika
-import cameras.nikon
+import reports.shipping
+
+print(reports.shipping.delivery_cost(35.0))  # 4.95
 ```
-
-- Functions inside the modules are called using the full dotted path :
-
-```python
-cameras.nikon.nikon_info()
-cameras.canon.canon_info()
-cameras.leika.leika_info()
-```
-
-- Dotted names follow the file structure :
-  - `package.module.function()`
-  - Explicit imports keep it clear which module each function originates from
 
 > `demo06 · explicitimport`
 
-
 ---
 
-# Implicit Import of Package Modules
+# Importing Names from a Package
 
-- `__init__.py` can import names from its internal modules to re-export them :
+- A package can expose selected functions from its internal modules.
+- `reports/__init__.py` contains this import :
 
 ```python
-from cameras.canon import canon_info
-from cameras.leika import leika_info
-from cameras.nikon import nikon_info
+from reports.shipping import delivery_cost
 ```
 
-- Callers can then import the package directly without naming submodules :
+- Callers can then use the shorter package-level name.
 
 ```python
-import cameras
+import reports
 
-cameras.nikon_info()
-cameras.canon_info()
-cameras.leika_info()
-```
+print(reports.delivery_cost(35.0))  # 4.95
 
-- Callers can also import the re-exported functions directly :
+from reports import delivery_cost
 
-```python
-from cameras import canon_info, leika_info, nikon_info
-
-nikon_info()
-canon_info()
-leika_info()
+print(delivery_cost(75.0))  # 0.0
 ```
 
 > `demo07 · implicitimport`
 
-
 ---
 
-# Test Harness
+# Running a Module Directly
 
-- Python sets `__name__` to `"__main__"` when run directly, or the module name when imported :
-  - The `if __name__ == "__main__":` guard separates library code from execution
-  - Functions and classes can be imported without unwanted side effects
-  - Exercise 5 uses this guard so `wordle.py` can be imported in the interpreter without starting a game
+- `__name__` is `"__main__"` when a file runs directly.
+- When imported, `__name__` is the module's name.
+- The guard runs `main()` only for direct execution.
+- Importing defines `main` without printing the delivery report.
 
 ```python
-def sayhi() -> None:
-    print("Hi, this is testmodules speaking.")
+from shipping import delivery_cost
 
 
 def main() -> None:
-    sayhi()
+    print(f"Delivery: {delivery_cost(35.0):.2f}")
 
 
 if __name__ == "__main__":
     main()
 ```
 
-- Direct execution runs `main()`; importing `testharness` defines `sayhi()` without running `main()`
-
 > `demo08 · testharness`
-
 
 ---
 
 # Running Packages with python -m
 
-- Packages can be executed as a script using `python -m package_name` :
-  - Python executes `__main__.py` inside the package directory
-  - Serves as the package entry point, like `if __name__ == "__main__":` in a single file
-- Package layout with `__main__.py` :
-  - `cameras3/` contains `__init__.py`, `__main__.py`, `canon.py`, `nikon.py`
+- A package's `__main__.py` is its entry point.
+- The following code belongs in `reports/__main__.py`.
+- Run from the directory containing `reports/` :
+
+```bash
+uv run python -m reports
+```
+
 
 ```python
-# cameras3/__main__.py
-from cameras3 import canon_info, nikon_info
+from reports.shipping import delivery_cost
 
 
 def main() -> None:
-    print("Cameras package entry point:")
-    canon_info()
-    nikon_info()
+    print(f"Delivery: {delivery_cost(35.0):.2f}")
 
 
 if __name__ == "__main__":
     main()
 ```
 
-- Run from the terminal with `uv run python -m cameras3`
-
 > `demo09 · package_main`
-
 
 ---
 

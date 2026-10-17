@@ -154,7 +154,7 @@ Start the interpreter from the project root with `uv run python`, type your two 
 
 :::hint
 
-The slide *Implicit Import of Package Modules* shows `from cameras.canon import canon_info` : the package, a dot, the module, then the name.
+The slide *Importing Names from a Package* shows `from cameras.canon import canon_info` : the package, a dot, the module, then the name.
 
 :::
 

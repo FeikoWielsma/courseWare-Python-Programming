@@ -1,0 +1,15 @@
+hostname,site,role,os,cpu_cores,memory_gb,disk_gb,used_gb,last_patched
+web01,AMS,web,Debian 12,4,8,120,64.5,2026-06-14
+web02,AMS,web,Debian 12,4,8,120,71.2,2026-06-14
+db01,AMS,database,RHEL 9,16,128,2000,1450.0,2026-05-02
+db02,RTM,database,RHEL 9,16,128,2000,1620.5,
+cache01,RTM,cache,Debian 12,8,64,240,31.0,2026-06-20
+web03,RTM,web,Ubuntu 24.04,4,8,120,55.8,2026-06-20
+build01,EIN,build,Ubuntu 24.04,32,64,4000,3120.0,2026-04-11
+build02,EIN,build,Ubuntu 24.04,32,64,4000,,2026-04-11
+log01,EIN,logging,Debian 12,8,32,8000,6600.0,2026-06-01
+mail01,AMS,mail,Debian 12,2,4,80,22.4,2026-03-09
+proxy01,RTM,web,Debian 12,2,4,40,12.1,2026-06-20
+nas01,EIN,storage,Debian 12,4,16,16000,11200.0,2026-02-17
+vpn01,BRU,network,Debian 12,2,4,40,9.6,2026-06-05
+mon01,AMS,monitoring,Ubuntu 24.04,8,16,500,210.3,

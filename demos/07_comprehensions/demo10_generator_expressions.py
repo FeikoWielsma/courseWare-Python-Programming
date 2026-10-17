@@ -1,5 +1,5 @@
-numbers = [4, 8, 15, 16, 23, 42]
-print(sum(n * n for n in numbers))  # 2854
-print(any(n > 40 for n in numbers))  # True
-print(all(n % 2 == 0 for n in numbers))  # False
+sizes_mb = [120, 80, 250]
+print(sum(size for size in sizes_mb if size >= 100))  # 370
+print(any(size > 200 for size in sizes_mb))  # True
+print(all(size <= 200 for size in sizes_mb))  # False
 print(any([]), all([]))  # False True
