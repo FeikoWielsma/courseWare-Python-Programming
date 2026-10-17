@@ -88,6 +88,12 @@ jobs:
         shell: bash
         run: uv run python build/check-solutions.py
 
+      # Gating. Every quiz question with code is run, so the answer marked
+      # correct is what Python 3.14 actually prints.
+      - name: Check the quiz
+        shell: bash
+        run: uv run python build/site/check-quiz.py
+
       # Gating. The repository is at zero findings inside the ruff.toml scope,
       # and every per-file-ignore there names the lesson it protects. A new
       # finding is either a defect or a deliberate teaching pattern that wants
