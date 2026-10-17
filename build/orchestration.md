@@ -12,6 +12,13 @@ Read this first after a context reset or a quota interruption.
 - Quotas are $20 plans on each provider; 5-hour and weekly limits will be hit.
   Auto-continue is on. Claude runs out first.
 
+## DONE (2026-10-18)
+
+Every package is merged into `prg400-wordle` (last : WP8a, b30458a). All gates pass
+(fences, ruff, 13 solution stages, starters, quiz), the slides build and lint clean,
+the exercises PDF and the site build, and every italic slide reference resolves.
+What remains is the trainer's : see `build/tasks.md` Round 9.
+
 ## Resumed (2026-10-17) : the finishing wave
 
 | WP | Model | Task id |

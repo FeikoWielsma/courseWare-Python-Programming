@@ -125,7 +125,7 @@ def summary(connection: sqlite3.Connection) -> dict:
 
 The docstring already names all that the function will return after Step 5. For now the dictionary has three keys : `"played"`, `"won"` and `"win_percentage"`.
 
-The query is in the skeleton. `COUNT(*)` counts the rows of the table, and `SUM(won)` adds up the `won` column, so the `1`s are the wins. One query gives both numbers as a single result row. On an empty table `SUM` has nothing to add and returns `NULL`, which Python sees as `None`; `COALESCE(x, 0)` replaces a `NULL` by `0`. See *Retrieving Data*. What is left for you is the Python : `fetchone()` returns that row as a tuple, which the skeleton unpacks into two names, and then you build the dictionary and work out the percentage.
+The query is in the skeleton. `COUNT(*)` counts the rows of the table, and `SUM(won)` adds up the `won` column, so the `1`s are the wins. One query gives both numbers as a single result row. On an empty table `SUM` has nothing to add and returns `NULL`, which Python sees as `None`; `COALESCE(x, 0)` replaces a `NULL` by `0`. See *Filtering and Grouping Data*. What is left for you is the Python : `fetchone()` returns that row as a tuple, which the skeleton unpacks into two names, and then you build the dictionary and work out the percentage.
 
 Start a test file, `tests/test_stats.py`. It builds a throwaway database in memory, which disappears when the connection does :
 

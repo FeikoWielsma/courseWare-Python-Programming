@@ -464,3 +464,32 @@ The plan for this round onwards is `build/plan.md`.
       handout (`test_wordle.py`, 9 tests); `build/make-starters.py` with a
       `--check` mode for CI
 - [ ] Everything else : see `build/plan.md` section 9
+
+
+---
+
+## Round 9 : the Wordle spine, built by agents (2026-10-14 to 2026-10-18)
+
+The plan was `build/plan.md`; the run is logged in `build/orchestration.md`, the
+agents' own notes in `build/notes/`.
+
+- [x] The shared exercise site, ported from PySpark into Presentation-Template, with
+      `:::` markup, ★ tiers, a quiz engine and plug-ins; PRG400 wired to it
+- [x] Wordle solutions for all 13 exercises, starters generated from them,
+      `build/check-solutions.py` (tests, mypy, scripted games) in CI
+- [x] All 13 exercise texts rewritten for the spine, every output produced by running
+- [x] Slides 01 to 13 reworked (plan section 5), properties re-taught (section 6)
+- [x] A 39-question quiz checked by `build/site/check-quiz.py`, and a hidden Wordle
+- [x] A student review (no blockers, 26 findings), and a fix round for all of them
+      except F13's last continuation paragraph and the timing decision below
+- [x] Template fixes : Chrome EBUSY, PDF pagination
+
+Still open, for the trainer :
+
+- [ ] **Day 4 timing.** After the fixes the reviewer and the fixer estimate Exercise 9
+      at about 65 minutes (45 stated), 10 at about 80 (60), 11 at about 110 (90).
+      None of their steps can become optional without breaking the solution chain.
+      Options : give Exercises 9 and 10 more time and treat 12 and 13 as take-home,
+      or start module 09 on day 3.
+- [ ] Push Presentation-Template `main` (CI clones it), review PySpark's
+      `shared-exercise-site` branch, merge `prg400-wordle` into `master`.
