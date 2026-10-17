@@ -34,6 +34,11 @@ WP8b factual slide errors (Codex Astra, `prg400-wp8b-r1`), WP8c site egg, starte
 rows and PDF pagination on template branch `exercise-pdf-pagination` (Codex Luna,
 `prg400-wp8c-r1`). F25 (README) fixed by the coordinator.
 
+**Fix round :** WP8b (slide facts) and WP8c (site egg, starter rows) merged; the
+template's `exercise-pdf-pagination` is merged into its `main` (3d146e1). WP8a
+(solutions and texts) hit the Claude limit; its queued run resumes on its own.
+All gates and the full build pass on the merged state.
+
 Done by the coordinator meanwhile : `extraoo/` archived, the List Operations slide
 shows its stack demo, README / MAINTAINING / AGENTS document the spine (7956916).
 
