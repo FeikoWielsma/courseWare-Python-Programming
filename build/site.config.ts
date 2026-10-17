@@ -18,7 +18,7 @@ export default {
       { label: 'Handouts', value: 'exercises/handouts/{slug}/', exists: 'exercises/handouts/{slug}/' },
       { label: 'Run the game', value: exercise < 6 ? 'uv run python wordle.py' : 'uv run python -m wordle' },
     ];
-    if (exercise >= 5) rows.push({ label: 'Run the tests (from Step 4)', value: 'uv run pytest' });
+    if (exercise === 13) rows.push({ label: 'Run the tests', value: 'uv run pytest' });
     if (exercise >= 12) rows.push({ label: 'Type-check (after Step 1 installs mypy)', value: 'uv run mypy wordle' });
     return rows;
   },

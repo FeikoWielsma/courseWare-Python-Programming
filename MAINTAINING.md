@@ -28,11 +28,12 @@ src/slides/13-appendix-libraries/          appendix, datetime, json, re, sys.arg
 src/exercises/NN-topic.md                  one exercise guide per module, ::: markup
 demos/<same name as the slide module>/     runnable demo code, files named NN_name.py
 solutions/NN-<exercise stem>/              the Wordle game at the end of each exercise
-exercises/handouts/NN-<exercise stem>/     what an exercise hands out (tests, data)
+exercises/handouts/NN-<exercise stem>/     what an exercise hands out (data, word lists)
 exercises/starters/NN-<exercise stem>/     GENERATED : previous solution + handouts
 archive/                                   retired material, not built, linted or shipped
 ../Presentation-Template/build/tools/make-starters.py regenerates the starters; --check in CI
-build/check-solutions.py                   tests, mypy and a scripted game per stage
+build/solution-tests/NN-<exercise stem>/   reference tests run by CI against solutions 05 to 12
+build/check-solutions.py                   tests (from build/solution-tests/ and stage 13), mypy and a scripted game per stage
 build/transcripts/                         the expected output of those scripted games
 build/site.config.ts                       the offline exercise site (shared builder)
 appendices/                                appendix decks the exercises point at
@@ -53,11 +54,11 @@ coherent :
 - Exercise text quotes the solutions verbatim and shows only output produced by
   running them. `WORDLE_SECRET=crane` fixes the secret for a reproducible game.
 - Function, module and class names are a contract between the text, the
-  solutions, the handed-out tests and the starters. Rename in all four or not at all.
+  solutions, the tests and the starters. Rename across all or not at all.
 
 Exercise guides use the shared markup documented in
 `../Presentation-Template/docs/exercise-site.md` : `:::hint`, `:::output`,
-`:::solution`, italic slide references. The template's `{★}` step markers are
+`:::solution`, italic slide references. The template's `{\u2605}` step markers are
 deliberately not used in this course. The same source
 builds the exercises PDF and the offline site (`bun run --cwd build site`).
 

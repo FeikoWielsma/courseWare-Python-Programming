@@ -36,7 +36,7 @@ build one Wordle game. Modules 01 to 11 were converted from the original deck
 - **f-strings everywhere**; `%` and `str.format` appear once, to be recognised.
 - **Properties are taught one way** : plain attributes first, `@property` when a value
   is computed or needs a rule. No `get_x` / `set_x`, no `property(get, set)`.
-- **pytest, not unittest.**
+- **pytest, not unittest** (taught in the Exercise 13 libraries appendix).
 - Inheritance in depth, generators, decorators, `dataclass` and `collections` in
   depth belong to the Advanced Python course.
 - Demo files are `NN_name.py` (module 07 uses `demoNN_name.py`).
@@ -52,13 +52,15 @@ The general pattern is `../Presentation-Template/docs/agents/exercise-spine.md`
   solutions and `exercises/handouts/`; never edit a starter by hand.
 - Exercise text quotes the solution code verbatim and shows only output produced by
   running it. `WORDLE_SECRET=crane` fixes the secret. `build/check-solutions.py` runs
-  every stage's tests, mypy from Exercise 12, and a scripted game against
+  every stage's tests (from `build/solution-tests/` for 05 to 12, and from its
+  solution folder for 13), mypy from Exercise 12, and a scripted game against
   `build/transcripts/`.
 - Names (`score_guess`, `play`, `Game`, the module names) are a contract between the
-  text, the solutions, the handed-out tests and the starters.
+  text, the solutions, the tests and the starters.
 - Steps vary in how much they give : the code itself (at most about 20 lines), a
-  skeleton with hints and a solution, or only the signature and the tests. Mix all
-  three in an exercise. **Do not label steps** with stars or difficulty words.
+  skeleton with hints and a solution, or only the signature and expected output (Exercise 13
+  teaches writing tests). Mix these in an exercise. **Do not label steps** with stars
+  or difficulty words.
 - **Nothing new on the required path** : a required step uses only what a slide, a
   demo or an earlier exercise showed. The exercise may explain the *problem*; the
   language is taught on the slides. Every step where the student writes code gets

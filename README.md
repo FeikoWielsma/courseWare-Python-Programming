@@ -24,14 +24,14 @@ material, so a `git pull` always gives you the latest version.
   **`demos/12-appendix-type-hinting/`** gathers them up in the appendix.
 - **The exercises build one project, a Wordle game**, from Exercise 2 to the end.
   Some steps give you the code, some a skeleton to complete, and some only the
-  tests to pass, with the solution behind a click.
+  signature and expected output, with the solution behind a click.
 - **`solutions/`** : the finished game as it stands at the end of each exercise,
   one folder per exercise. Try the exercise first.
 - **`exercises/starters/`** : if you fell behind, start an exercise from its
   starter folder instead of your own code. The starter for an exercise is the
   solution of the one before, plus anything that exercise hands out.
-- **`exercises/handouts/`** : files an exercise hands out, such as the tests you
-  run from Exercise 5 on and the word lists.
+- **`exercises/handouts/`** : files an exercise hands out, such as the word lists
+  and data files.
 - **`appendices/`** : the appendix decks and their exercises.
 - **`reference/`** : background reading, none of it required. The official
   Python 3.14 documentation as PDFs, articles on single topics, books,
@@ -100,16 +100,16 @@ cd wordle
 
 `uv init` writes a `pyproject.toml` and pins the project to a Python version.
 Exercise 1 walks through it. When an exercise needs a tool or a package, add it
-from inside that folder, for example the test runner in Exercise 5 :
-
-```bash
-uv add --dev pytest
-```
-
-and the type checker in the type hinting appendix :
+from inside that folder, for example the type checker in the type hinting appendix :
 
 ```bash
 uv add --dev mypy
+```
+
+and the test runner in the libraries appendix (Exercise 13) :
+
+```bash
+uv add --dev pytest
 ```
 
 A starter folder is a complete project of its own : `cd` into it and
@@ -135,12 +135,12 @@ its packages, so you never have to activate an environment by hand.
 ## Checking your own code
 
 Three commands are worth getting into the habit of. Ruff arrives in Exercise 1,
-pytest in Exercise 5 and mypy in the type hinting appendix :
+mypy in the type hinting appendix and pytest in the libraries appendix :
 
 ```bash
 uv run ruff check .      # style and correctness, without running anything
-uv run pytest            # run the tests
 uv run mypy wordle       # type checking, once you have added annotations
+uv run pytest            # run the tests (Exercise 13)
 ```
 
 Enjoy the course.
