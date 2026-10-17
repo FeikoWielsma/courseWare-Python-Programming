@@ -2,7 +2,7 @@
 
 Your game plays well, but it lives on borrowed data and it has no memory. The word list is a file you typed by hand, it is only found when you start the game from the right folder, and the moment a game ends the result is gone. In this exercise you clean a real word list, make the game find its data wherever it is started from, and keep a history of every game on disk.
 
-Continue in your own `wordle` project, or start from `exercises/starters/09-python-io/`. The starter is the finished Exercise 8 plus this exercise's handouts : `raw-words.txt`, `allowed.txt` and `tests/test_words.py`. If you continue in your own project, copy those three files in from `exercises/handouts/09-python-io/`.
+Continue in your own `wordle` project, or start from `exercises/starters/09-python-io/`. The starter is the finished Exercise 8 plus this exercise's handouts : `raw-words.txt`, `allowed.txt`, `SOURCES.md` and `tests/test_words.py`. If you continue in your own project, copy those four files in from `exercises/handouts/09-python-io/`.
 
 Every step is marked with how much help it gives :
 
@@ -90,7 +90,7 @@ The session answers with the number of lines read and the number of words kept. 
 
 The folder `wordle/data/` is inside the package, next to the code that reads it. Data that belongs to the program travels with the program. Now `wordle/data/words.txt` is the answer list, and the old `words.txt` in the project folder is no longer needed : delete it, so that nothing can keep using it by accident. It held the same 935 words.
 
-Also copy the handed-out `allowed.txt` into `wordle/data/`. You use it in Step 4.
+Also copy the handed-out `allowed.txt` and `SOURCES.md` into `wordle/data/`. You use `allowed.txt` in Step 4; `SOURCES.md` records where the word lists come from.
 
 ### Step 3 : Find the file from the package {★}
 

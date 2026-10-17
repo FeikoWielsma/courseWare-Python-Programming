@@ -333,10 +333,10 @@ Remove the override with `Remove-Item Env:WORDLE_SECRET` in PowerShell, or `unse
 
 ### If time permits
 
-Add a hard mode, in which every guess must use what the previous guess revealed. A green letter must stay in its place, and a yellow letter must appear somewhere. Write
+Add a hard mode, in which every guess must use what the earlier guesses revealed. A green letter must stay in its place, and a yellow letter must appear somewhere. Write
 
 ```python
-def follows_hints(guess: str, previous: str, marks: list[str]) -> bool:
+def follows_hints(guess: str, history: list[tuple[str, list[str]]]) -> bool:
 ```
 
-add a parameter `hard: bool = False` to `play`, and reject a guess that breaks the rule when it is `True`. Try guesses that obey and break each rule. Exercise 8 will introduce writing your own tests. There is no reference solution for this step.
+where `history` holds every earlier guess with its marks as `(guess, marks)` pairs, which `play` has to keep as a list. Add a parameter `hard: bool = False` to `play`, and reject a guess that breaks the rule when it is `True`. Try guesses that obey and break each rule. Exercise 8 will introduce writing your own tests. There is no reference solution for this step.

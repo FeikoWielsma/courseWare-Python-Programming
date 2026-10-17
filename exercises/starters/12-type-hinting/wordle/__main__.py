@@ -4,6 +4,7 @@ import os
 import random
 
 from wordle.game import play
+from wordle.stats import connect, record_game
 from wordle.words import load_words
 
 
@@ -15,7 +16,10 @@ def main() -> None:
             "Guess the five-letter word. Type 'quit', 'letters', "
             "'hint' or 'stats'."
         )
-        play(os.environ.get("WORDLE_SECRET", random.choice(words)), words)
+        secret = os.environ.get("WORDLE_SECRET", random.choice(words))
+        guesses, won = play(secret, words)
+        with connect() as connection:
+            record_game(connection, secret, guesses, won)
     except FileNotFoundError:
         print("The word list is missing. Restore words.txt and try again.")
     except (KeyboardInterrupt, EOFError):

@@ -274,23 +274,33 @@ Add `"streak": streak` to the dictionary. The finished function is in `solutions
 
 Everything is ready to replace the history file. In `wordle/game.py`:
 
-- import `connect`, `record_game` and `summary` from `wordle.stats`
+- import `connect` and `summary` from `wordle.stats`; `print_stats` needs both
 - remove `history_path`, `record_history` and the `csv` and `pathlib` imports that only they used
-- in `play`, replace the two `record_history(...)` calls with a call to `record_game` on a connection
+- in `play`, remove the two `record_history(...)` calls
 
-The result of the game decides the last argument, and that is the `bool` that `play` has returned since Exercise 5 :
+`play` has returned a `bool` since Exercise 5, and nothing has used it yet. It is what the last argument of `record_game` needs, but `record_game` also needs the number of guesses, and `play` is the only place that knows it. Let `play` return both, as a tuple, and let the program that called `play` record the game :
 
 ```python
+def play(secret: str, words: list[str], max_guesses: int = 6) -> tuple[int, bool]:
+    """Play one game and return the guesses used and whether the secret was found."""
+    ...
         if guess == secret:
             print(f"Got it in {guess_count}!")
-            with connect() as connection:
-                record_game(connection, secret, guess_count, True)
-            return True
+            return guess_count, True
     print(f"The word was {secret.upper()}.")
-    with connect() as connection:
-        record_game(connection, secret, guess_count, False)
-    return False
+    return guess_count, False
 ```
+
+In `wordle/__main__.py`, keep the secret in a variable, unpack what `play` returns and record the game. Add `from wordle.stats import connect, record_game` :
+
+```python
+        secret = os.environ.get("WORDLE_SECRET", random.choice(words))
+        guesses, won = play(secret, words)
+        with connect() as connection:
+            record_game(connection, secret, guesses, won)
+```
+
+A game you stop with Ctrl+C or Ctrl+D never reaches the `record_game` line, so it is not recorded. A game you give up with `quit` ends the loop and counts as lost.
 
 `with connect() as connection:` makes the changes of the block permanent when the block ends without an error, and undoes them when it ends with one. See *Transactions*.
 

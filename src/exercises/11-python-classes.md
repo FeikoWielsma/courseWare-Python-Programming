@@ -288,9 +288,10 @@ Now let `play` do less. Change it so that it creates a `Game` and loops until th
 - show the prompt number with `len(game.history) + 1` and the limit with `game.max_guesses`
 - give `candidates(words, game.history)` the history for the hint
 - in the `try` block, keep the `check_guess(guess, allowed_words)` line, and let `marks = game.guess(guess)` replace the scoring and recording below it
-- after the loop, `won = game.is_won` decides the message and the value that goes to `record_game`
+- after the loop, `game.is_won` decides the message : `Got it in N!` after a win, and `The word was ...` after a loss
+- return `len(game.history), game.is_won`, the same two values as in Exercise 10, so that `__main__` still has what it needs for `record_game`
 
-Run `uv run pytest`. All three tests of `tests/test_game.py` pass now, and so does the rest of the project. Then play a game with `WORDLE_SECRET=crane`; it must behave exactly as before.
+Run `uv run pytest`. All three tests of `tests/test_game.py` pass now, and so does the rest of the project. Then play a game with `WORDLE_SECRET=crane`; it must behave as before, except that the secret is no longer repeated after you win.
 
 :::hint
 The loop body shrinks to : read the guess, handle the commands, `check_guess` and `marks = game.guess(guess)` inside `try`, update `used_letters`, print `render(guess, marks)`. The win test and the counter are gone, because the loop condition and `game.is_won` now know.
@@ -308,8 +309,8 @@ A single `"\n".join(...)` over a generator expression is the whole of `__str__`.
 ```
 
 ```python
-def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
-    """Play one game and return whether the player found the secret."""
+def play(secret: str, words: list[str], max_guesses: int = 6) -> tuple[int, bool]:
+    """Play one game and return the guesses used and whether the secret was found."""
     allowed_words = load_allowed()
     game = Game(secret, allowed_words, max_guesses)
     used_letters = set()
@@ -336,13 +337,11 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
             continue
         used_letters.update(guess)
         print(render(guess, marks))
-    won = game.is_won
-    if won:
+    if game.is_won:
         print(f"Got it in {len(game.history)}!")
-    print(f"The word was {secret.upper()}.")
-    with connect() as connection:
-        record_game(connection, secret, len(game.history), won)
-    return won
+    else:
+        print(f"The word was {secret.upper()}.")
+    return len(game.history), game.is_won
 ```
 :::
 
@@ -351,4 +350,4 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
 ### If time permits
 
 - Add a `board` command to `play` that prints the game with `print(game)`.
-- Write a `class Stats` that wraps the database connection of Exercise 10, with methods `record(secret, guesses, won)` and `summary()`, and let `play` receive a `Stats` object instead of calling `connect()` itself. There is no reference solution for these steps.
+- Write a `class Stats` that wraps the database connection of Exercise 10, with methods `record(secret, guesses, won)` and `summary()`, and let `__main__` use a `Stats` object instead of calling `connect()` and `record_game` itself. There is no reference solution for these steps.

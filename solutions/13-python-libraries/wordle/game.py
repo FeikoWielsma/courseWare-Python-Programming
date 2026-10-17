@@ -3,7 +3,7 @@
 from wordle.display import render
 from wordle.scoring import InvalidGuess, Mark, check_guess, score_guess
 from wordle.solver import best_guess, candidates
-from wordle.stats import connect, record_game, summary
+from wordle.stats import connect, summary
 from wordle.storage import clear_saved_game, save_game
 from wordle.words import load_allowed
 
@@ -65,14 +65,14 @@ def follows_hints(guess: str, history: list[tuple[str, list[Mark]]]) -> bool:
         for position, (letter, mark) in enumerate(zip(previous, marks, strict=True)):
             if mark == "green" and guess[position] != letter:
                 return False
-            if mark == "yellow" and (letter not in guess or guess[position] == letter):
+            if mark == "yellow" and letter not in guess:
                 return False
     return True
 
 
 def play(secret: str, words: list[str], max_guesses: int = 6, hard: bool = False,
-         history: list[tuple[str, list[Mark]]] | None = None) -> bool:
-    """Play one game and return whether the player found the secret."""
+         history: list[tuple[str, list[Mark]]] | None = None) -> tuple[int, bool]:
+    """Play one game and return the guesses used and whether the secret was found."""
     allowed_words = load_allowed()
     game = Game(secret, allowed_words, max_guesses)
     if history:
@@ -83,8 +83,6 @@ def play(secret: str, words: list[str], max_guesses: int = 6, hard: bool = False
         guess = input(f"Guess {len(game.history) + 1}/{game.max_guesses} : ").strip().lower()
         match guess:
             case "quit":
-                save_game(game.secret, game.history)
-                print("Game saved. Run Wordle again to resume.")
                 break
             case "letters":
                 print("Tried :", " ".join(sorted(used_letters)))
@@ -112,14 +110,12 @@ def play(secret: str, words: list[str], max_guesses: int = 6, hard: bool = False
         used_letters.update(guess)
         print(render(guess, marks))
         save_game(game.secret, game.history)
-    won = game.is_won
-    if won:
+    if game.is_won:
         print(f"Got it in {len(game.history)}!")
-    print(f"The word was {secret.upper()}.")
+    else:
+        print(f"The word was {secret.upper()}.")
     clear_saved_game()
-    with connect() as connection:
-        record_game(connection, secret, len(game.history), won)
-    return won
+    return len(game.history), game.is_won
 
 
 def print_stats() -> None:
