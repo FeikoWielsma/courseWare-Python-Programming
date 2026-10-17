@@ -20,7 +20,8 @@ appendix: true
   - A name refers to an object, and the object carries the type
   - Nothing forces a parameter to be the type the author had in mind
 - What an annotation buys is that the intent cannot drift from the code :
-  - A comment saying "price is a float" goes stale, an annotation does not
+  - Annotations can also go stale; Python does not enforce them at runtime
+  - A checker such as mypy detects code that contradicts an annotation
   - The editor completes, renames and navigates with far more confidence
   - A checker reads the whole program and finds the mismatches
 
