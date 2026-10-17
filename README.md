@@ -134,12 +134,13 @@ its packages, so you never have to activate an environment by hand.
 
 ## Checking your own code
 
-Two commands are worth getting into the habit of. The course sets both up in
-module 1 and uses them throughout :
+Three commands are worth getting into the habit of. Ruff arrives in Exercise 1,
+pytest in Exercise 5 and mypy in the type hinting appendix :
 
 ```bash
 uv run ruff check .      # style and correctness, without running anything
-uv run mypy .            # type checking, once you have added annotations
+uv run pytest            # run the tests
+uv run mypy wordle       # type checking, once you have added annotations
 ```
 
 Enjoy the course.
