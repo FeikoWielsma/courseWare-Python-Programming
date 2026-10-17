@@ -186,6 +186,8 @@ for value in (None, "Hi!"):
 | `OSError` | A file or operating system operation fails. |
 | `FileNotFoundError` | A requested file or directory does not exist. |
 | `AssertionError` | An `assert` condition is false. |
+| `EOFError` | `input()` reaches the end of the input, with Ctrl+D on Linux and macOS, or Ctrl+Z and Enter on Windows. |
+| `KeyboardInterrupt` | The user presses Ctrl+C. It is a `BaseException`, so `except Exception` does not catch it. |
 
 ---
 

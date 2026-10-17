@@ -109,6 +109,14 @@ rows = [[x + y for x in list_a] for y in list_b]
 print(rows)  # [['AC', 'BC'], ['AD', 'BD']]
 ```
 
+- A comprehension can also have two `for` clauses, and the second runs for each item of the first :
+
+```python
+words = ["one", "two"]
+letters = [letter for word in words for letter in word]
+print(letters)  # ['o', 'n', 'e', 't', 'w', 'o']
+```
+
 
 
 > `demo03 · nested_comprehensions`
@@ -140,12 +148,15 @@ print(differences)  # [-3, 6, 0]
 
 - `zip` pairs items from its input iterables.
 - By default it stops when the shortest input runs out.
+- `strict=True` raises a `ValueError` when the inputs differ in length, instead of stopping early :
 
 ```python
 keys = ["a", "b", "c"]
 values = [1, 2, 3]
 pairs = list(zip(keys, values))
 print(pairs)  # [('a', 1), ('b', 2), ('c', 3)]
+checked = list(zip(keys, values, strict=True))  # the lengths match, so no error
+print(checked)  # [('a', 1), ('b', 2), ('c', 3)]
 ```
 
 

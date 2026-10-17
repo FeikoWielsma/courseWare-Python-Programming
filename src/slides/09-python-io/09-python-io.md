@@ -442,6 +442,24 @@ sample.exists()  # True or False
 
 ---
 
+# Paths Relative to a Module
+
+- `Path(__file__)` is the path of the running module, so `parent` is its folder :
+  - `resolve()` makes the path absolute, and follows any symbolic links
+- `path.open()` works like `open()`, and takes the same arguments :
+
+```python
+from pathlib import Path
+
+here = Path(__file__).resolve().parent  # the folder of this module
+print(here.is_absolute())  # True
+
+with Path(__file__).open(encoding="utf-8") as source:
+    print(source.readline().strip())  # from pathlib import Path
+```
+
+---
+
 # Renaming and Deleting Files
 
 - A `Path` renames and deletes itself :

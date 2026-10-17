@@ -356,6 +356,22 @@ print(s)  # 'Einstein'
 
 ---
 
+# Unpacking in for Loops
+
+- A `for` loop unpacks each item the same way, and the unpacking can nest :
+
+```python
+rows = [(1,), (2,)]
+for (number,) in rows:
+    print(number)  # 1, then 2
+
+records = [(1, ("Albert", "Einstein"))]
+for number, (first, last) in records:
+    print(number, first, last)  # 1 Albert Einstein
+```
+
+---
+
 # Tuple Functions
 
 - Only functions and methods that do not modify tuple available

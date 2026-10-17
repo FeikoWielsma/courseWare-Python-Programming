@@ -7,6 +7,10 @@ print(not sunny)  # False
 
 name = ""
 print(name or "anonymous")  # anonymous, `or` returns the first truthy operand
+print(name and "anonymous")  # an empty line, `and` returns the first falsy operand
+
+age = 17
+print("adult" if age >= 18 else "minor")  # minor
 
 # Membership
 s = "ABC"

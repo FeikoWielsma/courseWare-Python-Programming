@@ -350,6 +350,14 @@ print("apple" < "banana")  # True, strings compare letter by letter
 ```python
 name = ""
 print(name or "anonymous")  # anonymous, `or` returns the first truthy operand
+print(name and "anonymous")  # an empty line, `and` returns the first falsy operand
+```
+
+- `x if c else y` gives `x` when `c` is true, and `y` when it is false :
+
+```python
+age = 17
+print("adult" if age >= 18 else "minor")  # minor
 ```
 
 - `is` asks whether two names refer to one object, `==` whether values are equal :
@@ -665,6 +673,8 @@ the variable assignment will also show up.
 | `isalpha()` | Returns `True` if the string is not empty and holds only letters |
 | `replace(old, new)` | Returns a copy with every `old` replaced by `new` |
 | `find(sub)` | Returns the index of the first `sub`, or `-1` if it is not there |
+| `isascii()` | Returns `True` if every character is plain ASCII, so `False` for a letter such as `é` |
+| `splitlines()` | Splits the string at line breaks, one item per line, without the line breaks |
 
 - `len(s)` is a function rather than a method, and gives the number of characters
 - All the others : `https://docs.python.org/3/library/stdtypes.html#string-methods`
