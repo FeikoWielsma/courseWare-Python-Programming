@@ -170,4 +170,5 @@ and embedding guides and the porting notes.
 ## Known rough edges
 
 - `demos/*/extra/` folders still ship. They hold older side examples that no
-  slide references. Worth a pass to keep or archive each.
+  slide references, kept on purpose as extra practice material (ported to
+  Python 3 and held to the ruff rules).

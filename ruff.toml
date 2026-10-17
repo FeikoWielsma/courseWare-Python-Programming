@@ -37,10 +37,6 @@ exclude = [
     # is not held to the course's style.
     "reference",
 
-    # PyInstaller sources beside the IO demos; not course material and not
-    # shipped. The bundle allowlist in .forgejo/workflows/release.yml is the
-    # authority on what does ship.
-    "demos/09-python-io/createexecutable",
 ]
 
 [lint]

@@ -178,11 +178,6 @@ jobs:
             fi
           done
 
-          # A tkinter demo for building an executable, which the IO module
-          # never shows. Its 12 MB of PyInstaller output has been deleted from
-          # the repository; the source is left behind but is still not course
-          # material, so it does not travel.
-          rm -rf "${BUNDLE}/demos/09-python-io/createexecutable"
 
           # Strip build and editor droppings that travelled along with the copies.
           find "${BUNDLE}" -type d \( \
