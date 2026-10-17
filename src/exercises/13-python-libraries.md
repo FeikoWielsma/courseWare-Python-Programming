@@ -56,10 +56,10 @@ Now give the game an option. In `wordle/__main__.py` add `import sys` and `from 
             "Guess the five-letter word. Type 'quit', 'letters', "
             "'hint' or 'stats'."
         )
-        play(secret, words)
+        guesses, won = play(secret, words)
 ```
 
-`sys.argv` is the list of words typed on the command line; Step 2 looks at it properly. Start the game twice with `uv run python -m wordle --daily`, type `quit` each time and compare the word it reveals. It is the same word both times.
+The lines that record the game stay as they are. `sys.argv` is the list of words typed on the command line; Step 2 looks at it properly. Start the game twice with `uv run python -m wordle --daily`, type `quit` each time and compare the word it reveals. It is the same word both times.
 
 ### Step 2 : Options from the command line {★★}
 
@@ -89,10 +89,10 @@ Give the game two more options : `--easy` gives the player ten guesses instead o
         hard = ...
 ```
 
-Fill in `max_guesses` (`10` with `--easy`, otherwise `6`) and `hard` (a `bool`). Then pass both to `play(secret, words, max_guesses, hard)`. `play` has the `max_guesses` parameter already; give it the new one, which does nothing yet :
+Fill in `max_guesses` (`10` with `--easy`, otherwise `6`) and `hard` (a `bool`). Then pass both to `play`, as `guesses, won = play(secret, words, max_guesses, hard)`. `play` has the `max_guesses` parameter already; give it the new one, which does nothing yet :
 
 ```python
-def play(secret: str, words: list[str], max_guesses: int = 6, hard: bool = False) -> bool:
+def play(secret: str, words: list[str], max_guesses: int = 6, hard: bool = False) -> tuple[int, bool]:
 ```
 
 Run `uv run python -m wordle --easy`. The prompt now reads `Guess 1/10`. A guess limit of 10 is allowed by the property you wrote in Exercise 11, and 11 would not be.
@@ -116,7 +116,7 @@ A conditional expression fits on one line : `10 if "--easy" in options else 6`. 
             "Guess the five-letter word. Type 'quit', 'letters', "
             "'hint' or 'stats'."
         )
-        play(secret, words, max_guesses, hard)
+        guesses, won = play(secret, words, max_guesses, hard)
 ```
 :::
 
@@ -132,7 +132,7 @@ def follows_hints(guess: str, history: list[tuple[str, list[Mark]]]) -> bool:
 For every earlier guess and its marks :
 
 - a letter that was green must be in the same place in the new guess
-- a letter that was yellow must be in the new guess, but not in the place where it was already shown to be wrong
+- a letter that was yellow must be somewhere in the new guess
 
 Create `tests/test_ex13.py` for the tests of this exercise, and put this first one in it :
 
@@ -150,10 +150,9 @@ def test_follows_hints_keeps_green_letters_and_uses_yellow_letters() -> None:
     assert follows_hints("caper", history)
     assert not follows_hints("paper", history)
     assert not follows_hints("clink", history)
-    assert not follows_hints("crabs", history)
 ```
 
-The history says that after `crane`, the C was in the right place, and the A was in the word but not in the third place. `caper` obeys both. `paper` moves the C, `clink` leaves out the A, and `crabs` puts the A back in the third place. Make the test pass.
+The history says that after `crane`, the C was in the right place, and the A was in the word but not in the third place. `caper` obeys both. `paper` moves the C, and `clink` leaves out the A. Make the test pass. If you wrote a `follows_hints` in the last step of Exercise 5, compare it with this one.
 
 Then use it in `play`. When `hard` is true and there is a history, a guess that does not follow the hints is refused with `That guess does not follow the revealed hints.` and does not count. Do the check after the word is known to be valid, because the function indexes into the guess and a word of three letters would break it. Play with `uv run python -m wordle --hard`, with `WORDLE_SECRET=crane` set : guess `slate`, then `trick`.
 
@@ -162,7 +161,7 @@ Loop over the history with `for previous, marks in history`. Then loop over the 
 :::
 
 :::hint
-The yellow rule has two halves, and one condition can hold both : `mark == "yellow" and (letter not in guess or guess[position] == letter)` is a broken rule.
+Each rule is one condition that says when it is broken : `mark == "green" and guess[position] != letter` for the green rule, and `mark == "yellow" and letter not in guess` for the yellow rule.
 :::
 
 :::output
@@ -180,7 +179,7 @@ def follows_hints(guess: str, history: list[tuple[str, list[Mark]]]) -> bool:
         for position, (letter, mark) in enumerate(zip(previous, marks, strict=True)):
             if mark == "green" and guess[position] != letter:
                 return False
-            if mark == "yellow" and (letter not in guess or guess[position] == letter):
+            if mark == "yellow" and letter not in guess:
                 return False
     return True
 ```
@@ -234,7 +233,7 @@ In `wordle/game.py`, import the functions with `from wordle.storage import clear
 
 ```python
 def play(secret: str, words: list[str], max_guesses: int = 6, hard: bool = False,
-         history: list[tuple[str, list[Mark]]] | None = None) -> bool:
+         history: list[tuple[str, list[Mark]]] | None = None) -> tuple[int, bool]:
 ```
 
 ```python
@@ -245,7 +244,7 @@ def play(secret: str, words: list[str], max_guesses: int = 6, hard: bool = False
     used_letters.update(letter for word, _ in game.history for letter in word)
 ```
 
-Save after each printed row, with `save_game(game.secret, game.history)`, and call `clear_saved_game()` once the loop has ended, before the result is recorded in the database.
+Save after each printed row, with `save_game(game.secret, game.history)`, and call `clear_saved_game()` once the loop has ended, so that a finished game leaves no save behind.
 
 In `wordle/__main__.py`, add `from wordle.storage import load_saved_game`, and put the saved game first, before the options decide on a new one :
 
@@ -267,7 +266,7 @@ In `wordle/__main__.py`, add `from wordle.storage import load_saved_game`, and p
         hard = "--hard" in options
 ```
 
-and call `play(secret, words, max_guesses, hard, history)`.
+and call `guesses, won = play(secret, words, max_guesses, hard, history)`.
 
 Play with `WORDLE_SECRET=crane`, guess `slate` and then stop the game with Ctrl+C. Open `save.json` :
 
