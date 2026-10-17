@@ -429,7 +429,7 @@ match command.split():
 - It matches the shape of the data as well as its value :
   - A pattern can bind names out of a sequence, as `direction` and `item` do
   - `case _` is the catch-all, and belongs last
-- There is no fall through between cases, so no `break` is needed
+- There is no fall through between cases, so a case needs no `break` to end it; a `break` inside a case still leaves the loop around the `match`
 
 > `demo12 · matchstatement`
 
