@@ -34,3 +34,12 @@ def test_invalid_guess_does_not_change_history() -> None:
     with pytest.raises(InvalidGuess):
         game.guess("wrong")
     assert game.history == []
+
+
+def test_game_is_over_when_the_limit_drops_below_the_history() -> None:
+    game = Game("crane", WORDS, max_guesses=3)
+    game.guess("slate")
+    game.guess("raise")
+    game.max_guesses = 1
+    assert game.guesses_left == -1
+    assert game.is_over

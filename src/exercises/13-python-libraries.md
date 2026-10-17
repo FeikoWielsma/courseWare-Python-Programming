@@ -197,7 +197,7 @@ In `play`, inside the `try` block, after `check_guess`:
 
 ### Step 4 : Save and resume {★★}
 
-A game should survive being interrupted. `json` turns lists, dictionaries, strings and numbers into text and back again; see *The json Module*. Save the secret and the guesses after every guess, and load them when the game starts. Create `wordle/storage.py`. The path of the save file is given, built from the module's own location as in Exercise 9 :
+A game should survive being interrupted. `json` turns lists, dictionaries, strings and numbers into text and back again; see *The json Module*. Save the secret, the guesses and the game's settings (the guess limit and hard mode) after every guess, and load them when the game starts. The settings matter : a game that was started with `--easy` must still have ten guesses when it is resumed without the flag. Create `wordle/storage.py`. The path of the save file is given, built from the module's own location as in Exercise 9 :
 
 ```python
 """Save and restore an unfinished game in JSON format."""
@@ -213,11 +213,13 @@ SAVE_PATH = Path(__file__).resolve().parents[1] / "save.json"
 Write three functions with these signatures :
 
 ```python
-def save_game(secret: str, history: list[tuple[str, list[Mark]]]) -> None:
-    """Write the secret and scored guesses to the save file."""
+def save_game(
+    secret: str, history: list[tuple[str, list[Mark]]], max_guesses: int, hard: bool
+) -> None:
+    """Write the secret, the scored guesses and the game's settings to the save file."""
 
 
-def load_saved_game() -> tuple[str, list[tuple[str, list[Mark]]]] | None:
+def load_saved_game() -> tuple[str, list[tuple[str, list[Mark]]], int, bool] | None:
     """Read a saved game, returning None when no save exists."""
 
 
@@ -225,7 +227,7 @@ def clear_saved_game() -> None:
     """Remove the save after a game is complete."""
 ```
 
-Save a dictionary with the keys `"secret"` and `"history"`, written with `json.dumps(data, indent=2)` so that you can read it. JSON has no tuples : the `(word, marks)` pairs are written as lists, and `load_saved_game` must turn them back into tuples. See *Reading and Writing JSON Files* and *JSON and Python Types*.
+Save a dictionary with the keys `"secret"`, `"history"`, `"max_guesses"` and `"hard"`, written with `json.dumps(data, indent=2)` so that you can read it. JSON has no tuples : the `(word, marks)` pairs are written as lists, and `load_saved_game` must turn them back into tuples, and return the secret, the history, the guess limit and the hard flag, in that order. See *Reading and Writing JSON Files* and *JSON and Python Types*.
 
 Then connect the module to the game. This part is given.
 
@@ -240,11 +242,12 @@ def play(secret: str, words: list[str], max_guesses: int = 6, hard: bool = False
     game = Game(secret, allowed_words, max_guesses)
     if history:
         game.history.extend(history)
+        print(game)
     used_letters: set[str] = set()
     used_letters.update(letter for word, _ in game.history for letter in word)
 ```
 
-Save after each printed row, with `save_game(game.secret, game.history)`, and call `clear_saved_game()` once the loop has ended, so that a finished game leaves no save behind.
+The `print(game)` shows the restored board before the first prompt, so that a player who comes back sees where the game stood; it uses the `__str__` of Exercise 11. Save after each printed row, with `save_game(game.secret, game.history, game.max_guesses, hard)`, and call `clear_saved_game()` once the loop has ended, so that a finished game leaves no save behind.
 
 In `wordle/__main__.py`, add `from wordle.storage import load_saved_game`, and put the saved game first, before the options decide on a new one :
 
@@ -253,7 +256,7 @@ In `wordle/__main__.py`, add `from wordle.storage import load_saved_game`, and p
         options = set(sys.argv[1:])
         saved = load_saved_game()
         if saved is not None:
-            secret, history = saved
+            secret, history, max_guesses, hard = saved
             print("Resuming your saved game.")
         else:
             history = []
@@ -262,11 +265,11 @@ In `wordle/__main__.py`, add `from wordle.storage import load_saved_game`, and p
                 secret = words[day_number % len(words)]
             else:
                 secret = os.environ.get("WORDLE_SECRET", random.choice(words))
-        max_guesses = 10 if "--easy" in options else 6
-        hard = "--hard" in options
+            max_guesses = 10 if "--easy" in options else 6
+            hard = "--hard" in options
 ```
 
-and call `guesses, won = play(secret, words, max_guesses, hard, history)`.
+The limit and the hard flag now come from the save when there is one, and from the options only for a new game. Then call `guesses, won = play(secret, words, max_guesses, hard, history)`.
 
 Play with `WORDLE_SECRET=crane`, guess `slate` and then stop the game with Ctrl+C. Open `save.json` :
 
@@ -284,17 +287,22 @@ Play with `WORDLE_SECRET=crane`, guess `slate` and then stop the game with Ctrl+
         "green"
       ]
     ]
-  ]
+  ],
+  "max_guesses": 6,
+  "hard": false
 }
 ```
 
-Start the game again. It announces the saved game, continues at guess 2, and removes the save file when the game is finished :
+Start the game again, without any option. It announces the saved game, draws the board so far, continues at guess 2 with the same settings as before, and removes the save file when the game is finished :
 
 ```text
 Resuming your saved game.
 Guess the five-letter word. Type 'quit', 'letters', 'hint' or 'stats'.
+ S  L [A] T [E]
 Guess 2/6 :
 ```
+
+Try the same with `--easy`, and stop after a guess : the resumed game still says `Guess 2/10`.
 
 A game that ends with `quit` is over and is cleared too. Only an interruption leaves a save behind.
 
@@ -308,19 +316,21 @@ Return `None` when `SAVE_PATH.exists()` is false. `SAVE_PATH.unlink(missing_ok=T
 
 :::solution
 ```python
-def save_game(secret: str, history: list[tuple[str, list[Mark]]]) -> None:
-    """Write the secret and scored guesses to the save file."""
-    data = {"secret": secret, "history": history}
+def save_game(
+    secret: str, history: list[tuple[str, list[Mark]]], max_guesses: int, hard: bool
+) -> None:
+    """Write the secret, the scored guesses and the game's settings to the save file."""
+    data = {"secret": secret, "history": history, "max_guesses": max_guesses, "hard": hard}
     SAVE_PATH.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 
-def load_saved_game() -> tuple[str, list[tuple[str, list[Mark]]]] | None:
+def load_saved_game() -> tuple[str, list[tuple[str, list[Mark]]], int, bool] | None:
     """Read a saved game, returning None when no save exists."""
     if not SAVE_PATH.exists():
         return None
     data = json.loads(SAVE_PATH.read_text(encoding="utf-8"))
     history = [(word, marks) for word, marks in data["history"]]
-    return data["secret"], history
+    return data["secret"], history, data["max_guesses"], data["hard"]
 
 
 def clear_saved_game() -> None:

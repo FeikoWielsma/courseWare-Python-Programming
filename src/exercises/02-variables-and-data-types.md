@@ -42,6 +42,8 @@ Secret: CRANE    Guess: SLATE
 
 ### Step 2 : Letter by letter {★★}
 
+Until Exercise 4 adds the `if` statement, the program cannot check the length of the guess, so type a guess of exactly five letters. A shorter guess stops this step with an `IndexError`, because `guess[4]` does not exist.
+
 For each of the five positions, the game needs the answer to two questions : is the letter of the guess the same as the letter of the secret in that place, and is the letter of the guess anywhere in the secret? Print the answers as a small table, one row per position.
 
 The header and the shape of the first row are given. Fill in the two questions, then add the rows for positions 1 to 4 :
@@ -98,7 +100,7 @@ print(f"First two: {...}, last two: {...}")
 print(f"The secret contains {...} letter e characters.")
 ```
 
-The first is a check the game will need on every guess : does it have five letters? The second takes the guess apart with slices. The third counts how often `e` occurs in the secret.
+The first is a check the game will need on every guess : does it have five letters? It only prints `True` or `False` for now. It does not protect the table of Step 2, which indexes the guess before this line runs, so keep typing five letters. The second takes the guess apart with slices. The third counts how often `e` occurs in the secret.
 
 :::hint
 `len` gives the length of a string, and comparing it with `==` gives `True` or `False`. A slice `word[start:stop]` can leave out either end, and a negative index counts from the end : `word[-1]` is the last letter.

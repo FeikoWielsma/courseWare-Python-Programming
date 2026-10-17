@@ -1,5 +1,7 @@
 """Run one Wordle game."""
 
+from contextlib import closing
+
 from wordle.display import render
 from wordle.scoring import InvalidGuess, Mark, check_guess, score_guess
 from wordle.solver import best_guess, candidates
@@ -38,7 +40,7 @@ class Game:
     @property
     def is_over(self) -> bool:
         """Return whether the game was won or has no guesses left."""
-        return self.is_won or self.guesses_left == 0
+        return self.is_won or self.guesses_left <= 0
 
     @property
     def guesses_left(self) -> int:
@@ -77,6 +79,7 @@ def play(secret: str, words: list[str], max_guesses: int = 6, hard: bool = False
     game = Game(secret, allowed_words, max_guesses)
     if history:
         game.history.extend(history)
+        print(game)
     used_letters: set[str] = set()
     used_letters.update(letter for word, _ in game.history for letter in word)
     while not game.is_over:
@@ -109,7 +112,7 @@ def play(secret: str, words: list[str], max_guesses: int = 6, hard: bool = False
             continue
         used_letters.update(guess)
         print(render(guess, marks))
-        save_game(game.secret, game.history)
+        save_game(game.secret, game.history, game.max_guesses, hard)
     if game.is_won:
         print(f"Got it in {len(game.history)}!")
     else:
@@ -120,7 +123,7 @@ def play(secret: str, words: list[str], max_guesses: int = 6, hard: bool = False
 
 def print_stats() -> None:
     """Print database totals, a guess chart and the current winning streak."""
-    with connect() as connection:
+    with closing(connect()) as connection:
         totals = summary(connection)
     print(
         f"Games played: {totals['played']}; won: {totals['won']}; "

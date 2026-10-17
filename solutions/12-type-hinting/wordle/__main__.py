@@ -2,6 +2,7 @@
 
 import os
 import random
+from contextlib import closing
 
 from wordle.game import play
 from wordle.stats import connect, record_game
@@ -18,10 +19,13 @@ def main() -> None:
         )
         secret = os.environ.get("WORDLE_SECRET", random.choice(words))
         guesses, won = play(secret, words)
-        with connect() as connection:
+        with closing(connect()) as connection, connection:
             record_game(connection, secret, guesses, won)
     except FileNotFoundError:
-        print("The word list is missing. Restore words.txt and try again.")
+        print(
+            "A word list is missing. Restore wordle/data/words.txt "
+            "and wordle/data/allowed.txt and try again."
+        )
     except (KeyboardInterrupt, EOFError):
         print("\nGame stopped.")
 
