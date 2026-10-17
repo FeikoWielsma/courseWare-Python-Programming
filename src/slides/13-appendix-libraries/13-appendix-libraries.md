@@ -18,7 +18,7 @@ appendix: true
   - `re` , regular expressions for searching and rewriting text
   - `sys.argv` , inspecting command-line arguments passed to a script
 - `pytest` is third-party software for testing with plain assertions :
-  - Exercise 5 installs it with `uv add --dev pytest`
+  - Exercise 13 installs it with `uv add --dev pytest`
 - Others worth knowing about :
   - `pathlib` for filesystem paths, `csv` for tabular files
   - `collections` for counters, deques and default dictionaries
@@ -49,7 +49,7 @@ print(launch.weekday())  # Monday is 0, so this prints 5
 - The current moment comes from the class itself :
   - `date.today()` and `datetime.now()`
 
-> `demo01 Â· datetime_basics`
+> `demo01 · datetime_basics`
 
 ---
 
@@ -76,7 +76,7 @@ launch.isoformat()  # 2026-08-15T12:30:00
 datetime.fromisoformat("2026-12-24T18:00:00")
 ```
 
-> `demo02 Â· datetime_format`
+> `demo02 · datetime_format`
 
 ---
 
@@ -105,7 +105,7 @@ start - timedelta(days=1)    # 2026-08-14
   - `days` , `hours` , `minutes` , `seconds` , `weeks`
   - It normalises itself, so 25 hours becomes one day and one hour
 
-> `demo03 Â· datetime_arithmetic`
+> `demo03 · datetime_arithmetic`
 
 ---
 
@@ -134,7 +134,7 @@ restored = json.loads(text)
 }
 ```
 
-> `demo04 Â· json_strings`
+> `demo04 · json_strings`
 
 ---
 
@@ -161,7 +161,7 @@ with path.open(encoding="utf-8") as f:
 - The four names are worth memorising :
   - `dumps` and `loads` for strings, `dump` and `load` for files
 
-> `demo05 Â· json_files`
+> `demo05 · json_files`
 
 ---
 
@@ -228,7 +228,7 @@ print(re.fullmatch(r"[a-z]+", "hello!") is not None)  # False
 - Flags change how the pattern is applied :
   - `re.IGNORECASE` , `re.MULTILINE` , `re.DOTALL`
 
-> `demo06 Â· regex_search`
+> `demo06 · regex_search`
 
 ---
 
@@ -253,7 +253,7 @@ named.group("level")    # ERROR
 named.group("message")  # disk full
 ```
 
-> `demo07 Â· regex_groups`
+> `demo07 · regex_groups`
 
 ---
 
@@ -282,7 +282,7 @@ re.split(r"\s+or\s+", text)
 # ['Call 020-1234567', '010-7654321 today']
 ```
 
-> `demo08 Â· regex_sub`
+> `demo08 · regex_sub`
 
 ---
 
@@ -306,7 +306,7 @@ print(f"Arguments   : {sys.argv[1:]}")
   - `argparse` handles `--flag` options, generates `--help` and parses types
   - `sys.argv` is the underlying list `argparse` reads from
 
-> `demo09 Â· sys_argv`
+> `demo09 · sys_argv`
 
 ---
 
@@ -336,7 +336,7 @@ def test_with_zero() -> None:
 uv run pytest -v
 ```
 
-> `demo10 Â· pytest_basic`
+> `demo10 · pytest_basic`
 
 ---
 
@@ -362,7 +362,7 @@ FAILED 11_pytest_failure.py::test_wrong_sum - assert 5 == 6
 - The report shows the source line, the evaluated values, and the summary line :
   - No custom assertion methods like `assertEqual` are needed for clear output
 
-> `demo11 Â· pytest_failure`
+> `demo11 · pytest_failure`
 
 ---
 
@@ -392,7 +392,7 @@ def test_divide(a: int, b: int, expected: float) -> None:
     assert divide(a, b) == expected
 ```
 
-> `demo12 Â· pytest_features`
+> `demo12 · pytest_features`
 
 ---
 
@@ -414,4 +414,4 @@ def test_divide(a: int, b: int, expected: float) -> None:
   - Test functions named `test_` and plain `assert` statements
   - `pytest.raises` for exceptions and `@pytest.mark.parametrize` for tables
 
-> `exercise13 Â· Python Libraries`
+> `exercise13 · Python Libraries`

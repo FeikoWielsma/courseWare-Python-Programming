@@ -25,7 +25,7 @@ name = "John"  # A string
 ```
 - Python language does not have constants
 
-> `demo01 Â· variables`
+> `demo01 · variables`
 
 ---
 
@@ -80,7 +80,7 @@ name = "John"  # A string
 </g>
 </svg>
 
-> `demo02 Â· typeandid`
+> `demo02 · typeandid`
 
 
 ---
@@ -110,7 +110,7 @@ a, b, c = 1, 2, "john"
 - One string object with the value "john" :
   - Assigned to the variable c
 
-> `demo03 Â· multipleassignment`
+> `demo03 · multipleassignment`
 
 
 ---
@@ -135,7 +135,7 @@ a, b, c = 1, 2, "john"
 - Important Python data types :
   - Numbers, String, List, Tuple, Set and Dictionary
 
-> `demo04 Â· strongtyping`
+> `demo04 · strongtyping`
 
 
 ---
@@ -211,7 +211,7 @@ del var_a, var_b
   - Boolean values behave like values 0 and 1
   - When converted to a string in string context `"False"` or `"True"` are returned
 
-> `demo05 Â· numbertypeconversion`
+> `demo05 · numbertypeconversion`
 
 
 ---
@@ -239,7 +239,7 @@ print(hex(i))    # 0x41
 print(ord("A"))  # 65
 ```
 
-> `demo06 Â· conversionfunctions`
+> `demo06 · conversionfunctions`
 
 ---
 
@@ -260,7 +260,7 @@ print(ord("A"))  # 65
 
 - For some of these functions the `math` module must be imported
 
-> `demo07 Â· numberfunctions`
+> `demo07 · numberfunctions`
 
 ---
 
@@ -282,7 +282,7 @@ print(2**10)  # 1024, exponentiation
 - Bitwise operators `& | ^ ~ << >>` work on the bits of integers, rarely needed
 - There is no `++` or `--` : write `count += 1` instead
 
-> `demo08 Â· pythonoperators`
+> `demo08 · pythonoperators`
 
 ---
 
@@ -363,7 +363,7 @@ print(a is c)  # False, two different lists
 print(a is b)  # True, two names for one list
 ```
 
-> `demo09 Â· booleanoperators`
+> `demo09 · booleanoperators`
 
 ---
 
@@ -463,7 +463,7 @@ Updated String :- Hello Python
 ```
 - New string var2 will have different id
 
-> `demo10 Â· stringoperations`
+> `demo10 · stringoperations`
 
 ---
 
@@ -485,7 +485,7 @@ Updated String :- Hello Python
 | `\xhh` | | Character with hexadecimal value hh |
 | `\uxxxx` | | Unicode character with 16-bit hexadecimal value xxxx |
 
-> `demo11 Â· escapecharacters`
+> `demo11 · escapecharacters`
 
 ---
 
@@ -544,7 +544,7 @@ print(f"{name!r}")  # 'Albert', the repr() with its quotes
 print(f"{age = }")  # age = 55, the expression and its value
 ```
 
-> `demo12 Â· f-strings`
+> `demo12 · f-strings`
 
 ---
 
@@ -614,7 +614,7 @@ print("Art: %5d, Price per Unit: %8.2f" % (art, price))
 print("Art: {:5d}, Price per Unit: {:8.2f}".format(art, price))
 ```
 
-> `demo13 Â· formatspecs`
+> `demo13 · formatspecs`
 
 ---
 
@@ -644,7 +644,7 @@ brackets [
 the variable assignment will also show up.
 ```
 
-> `demo14 Â· triplequotes`
+> `demo14 · triplequotes`
 
 
 ---
@@ -669,7 +669,7 @@ the variable assignment will also show up.
 - `len(s)` is a function rather than a method, and gives the number of characters
 - All the others : `https://docs.python.org/3/library/stdtypes.html#string-methods`
 
-> `demo15 Â· stringfunctions`
+> `demo15 · stringfunctions`
 
 ---
 
@@ -688,4 +688,4 @@ the variable assignment will also show up.
 - f-strings are the way to format text :
   - `f"{price:8.2f}"` sets the width and the decimals of the value it shows
 
-> `exercise02 Â· Variables and Data Types`
+> `exercise02 · Variables and Data Types`

@@ -281,7 +281,7 @@ leika_info()
 - Python sets `__name__` to `"__main__"` when run directly, or the module name when imported :
   - The `if __name__ == "__main__":` guard separates library code from execution
   - Functions and classes can be imported without unwanted side effects
-  - Exercise 5 used this guard on `play()` so `pytest` could import functions without starting a game
+  - Exercise 5 uses this guard so `wordle.py` can be imported in the interpreter without starting a game
 
 ```python
 def sayhi() -> None:
