@@ -2,9 +2,9 @@
 
 The history file of Exercise 9 can tell you how many games you played, but not much more. What is your win rate? In how many guesses do you usually win? How many games in a row have you won? Every question means another loop over the file. A database answers them in one query. In this exercise you move the statistics into SQLite and let the game report them. The SQL statements are given, because the course is about Python : your work is the Python around them, which passes the values in, fetches the rows and turns them into numbers, a bar chart and a streak.
 
-Continue in your own `wordle` project, or start from `exercises/starters/10-database-access/`. The starter is the finished Exercise 9; this exercise hands out nothing, you write the tests yourself.
+Continue in your own `wordle` project, or start from `exercises/starters/10-database-access/`. The starter is the finished Exercise 9; this exercise hands out nothing.
 
-Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
+Some steps give you the code, some a skeleton to complete, and some only a description and a few examples of what it should return. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
 
@@ -89,6 +89,10 @@ connection.close()
 The `id` is filled in by the database, and your time is of course a different one. Nothing was committed, so closing the connection threw the row away; this experiment leaves no game behind in `wordle.db`.
 
 :::hint
+The slide *Parameterized Queries* writes `?` in the statement and passes the values as a tuple after it.
+:::
+
+:::hint
 The statement is `INSERT INTO games (played_at, secret, guesses, won) VALUES (?, ?, ?, ?)`. The database has no `bool`, so pass `int(won)`.
 :::
 
@@ -121,52 +125,39 @@ The docstring already names all that the function will return after Step 5. For 
 
 The query is in the skeleton. `COUNT(*)` counts the rows of the table, and `SUM(won)` adds up the `won` column, so the `1`s are the wins. One query gives both numbers as a single result row. On an empty table `SUM` has nothing to add and returns `NULL`, which Python sees as `None`; `COALESCE(x, 0)` replaces a `NULL` by `0`. See *Filtering and Grouping Data*. What is left for you is the Python : `fetchone()` returns that row as a tuple, which the skeleton unpacks into two names, and then you build the dictionary and work out the percentage.
 
-Start a test file, `tests/test_stats.py`. It builds a throwaway database in memory, which disappears when the connection does :
+With no games the percentage would divide by zero. Divide only when there are games :
 
 ```python
-"""Checks for the game statistics."""
-
-import sqlite3
-
-from wordle.stats import connect, record_game, summary
-
-
-def make_db(results: list[tuple[int, bool]]) -> sqlite3.Connection:
-    """Return an in-memory database holding one game per result."""
-    connection = connect(":memory:")
-    for guesses, won in results:
-        record_game(connection, "crane", guesses, won)
-    return connection
-
-
-def test_summary_counts_games_and_wins() -> None:
-    totals = summary(make_db([(2, True), (6, False), (4, True), (3, True)]))
-    assert totals["played"] == 4
-    assert totals["won"] == 3
-    assert totals["win_percentage"] == 75.0
-
-
-def test_summary_of_an_empty_database() -> None:
-    totals = summary(connect(":memory:"))
-    assert totals["played"] == 0
-    assert totals["win_percentage"] == 0.0
+percentage = won / played * 100 if played else 0.0
 ```
 
-The second test is there for a reason : with no games the percentage would divide by zero. Run `uv run pytest tests/test_stats.py` and make both pass.
+This is a conditional expression : it is the value before `if` when the condition is true, and the value after `else` when it is not.
+
+Try it in a Python session on a throwaway database. `connect(":memory:")` builds one in memory, which disappears when the connection does; the slide *Last inserted row id* uses one too. Record four games, three of them won, and ask for the totals; then ask an empty database :
+
+```python
+from wordle.stats import connect, record_game, summary
+
+connection = connect(":memory:")
+record_game(connection, "crane", 2, True)
+record_game(connection, "crane", 6, False)
+record_game(connection, "crane", 4, True)
+record_game(connection, "crane", 4, True)
+summary(connection)
+summary(connect(":memory:"))
+```
+
+```text
+{'played': 4, 'won': 3, 'win_percentage': 75.0}
+{'played': 0, 'won': 0, 'win_percentage': 0.0}
+```
+
+:::hint
+The slide *Retrieving Data* shows `fetchone()`, and *Dictionaries*, in module 03, builds a dictionary from keys and values.
+:::
 
 :::hint
 `played, won = connection.execute("...").fetchone()` unpacks the one result row into two names.
-:::
-
-:::hint
-Guard the division : `won / played * 100 if played else 0.0`.
-:::
-
-:::output
-```text
-..                                                                       [100%]
-2 passed in 0.02s
-```
 :::
 
 :::solution
@@ -189,15 +180,7 @@ def summary(connection: sqlite3.Connection) -> dict:
 
 How quickly do you win? Add a key `"distribution"` to the dictionary `summary` returns : a dictionary from the number of guesses to the number of games **won** in that many, in order of guesses. Losses are left out. Four games won in 2, 4, 4 and lost, for example, give `{2: 1, 4: 2}`.
 
-The test goes in `tests/test_stats.py` :
-
-```python
-def test_distribution_counts_wins_per_guess_count() -> None:
-    totals = summary(make_db([(2, True), (4, True), (4, True), (6, False)]))
-    assert totals["distribution"] == {2: 1, 4: 2}
-```
-
-Make it pass without breaking the first two. The chart comes in Step 6, where `print_stats` turns each count into a row of `#` characters.
+The chart comes in Step 6, where `print_stats` turns each count into a row of `#` characters.
 
 The query is given :
 
@@ -214,15 +197,14 @@ Read it from the inside out. `WHERE won = 1` keeps only the won games. `GROUP BY
     distribution = ...
 ```
 
+The Python session reads `stats.py` once, so start a new one after the change and record the same four games as in Step 3. `summary(connection)["distribution"]` is then `{2: 1, 4: 2}`, and the three totals are as before.
+
 :::hint
-`fetchall()` returns a list of `(guesses, count)` tuples, and `dict(...)` turns a list of pairs straight into a dictionary.
+The slide *Dictionary Construction with zip*, in module 07, passes pairs of keys and values to `dict`.
 :::
 
-:::output
-```text
-...                                                                      [100%]
-3 passed in 0.02s
-```
+:::hint
+`fetchall()` returns a list of `(guesses, count)` tuples, and `dict(...)` turns a list of pairs straight into a dictionary.
 :::
 
 :::solution
@@ -240,32 +222,33 @@ Add `"distribution": distribution` to the dictionary that `summary` returns.
 
 The last statistic is the one players care about : how many games in a row have you won, up to now? Add the key `"streak"` to the dictionary : the number of wins since the most recent loss, `0` if the last game was lost or there are no games.
 
-The test goes in `tests/test_stats.py` :
-
-```python
-def test_streak_counts_wins_since_the_last_loss() -> None:
-    assert summary(make_db([(6, False), (3, True), (4, True)]))["streak"] == 2
-    assert summary(make_db([(3, True), (6, False)]))["streak"] == 0
-    assert summary(make_db([]))["streak"] == 0
-```
-
 SQL can do this too, but the clearest solution reads the games newest first and counts in Python until it meets a loss. The query is given :
 
 ```python
 "SELECT won FROM games ORDER BY id DESC"
 ```
 
-`id` grows with every game, so `ORDER BY id DESC` puts the newest game first. A cursor can be looped over directly, without `fetchall`, and every result row is a tuple, even with one column.
+`id` grows with every game, so `ORDER BY id DESC` puts the newest game first. A cursor can be looped over directly, without `fetchall`, and every result row is a tuple, even with one column. This loop gives one `won` value per game; the parentheses unpack the one-item tuple :
+
+```python
+for (game_won,) in connection.execute("SELECT won FROM games ORDER BY id DESC"):
+```
+
+In a new Python session, record the four games of Step 3 : the last two were won, so the streak is `2`. Record one more lost game and it drops to `0`. An empty database has a streak of `0` too :
+
+```python
+summary(connection)["streak"]                          # 2
+record_game(connection, "crane", 6, False)
+summary(connection)["streak"]                          # 0
+summary(connect(":memory:"))["streak"]                 # 0
+```
 
 :::hint
-`for (game_won,) in connection.execute("SELECT won FROM games ORDER BY id DESC"):` gives one `won` value per loop; the parentheses unpack the one-item tuple. Count the wins, and `break` at the first `0`.
+The slide *break and continue Statements*, in module 04, leaves a loop early with `break`.
 :::
 
-:::output
-```text
-....                                                                     [100%]
-4 passed in 0.02s
-```
+:::hint
+Start the streak at `0`, add one for every won game, and `break` at the first `0`.
 :::
 
 :::solution
@@ -337,6 +320,10 @@ Games played: 4; won: 3; win rate: 75.0%.
 Wins by guesses: 1: # 2: # 3: #
 Current streak: 1
 ```
+
+:::hint
+The slide *String Operators*, in module 02, lists `*` for repetition, *Format Specifications* shows a number with a fixed count of decimals, and *Generator Expressions*, in module 07, writes an expression inside `join`.
+:::
 
 :::hint
 A chart for one guess count is `f"{guesses}: {'#' * count}"`, and a string can be multiplied by a number. Join the pieces with `" ".join(...)` over `totals["distribution"].items()`.

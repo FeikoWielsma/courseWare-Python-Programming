@@ -2,9 +2,9 @@
 
 Your Wordle works, but it is one long script from top to bottom. In this exercise you cut it into functions, and on the way you find and fix a bug that has been in the game since Exercise 2.
 
-Continue in your own `wordle` project, or start from `exercises/starters/05-functions/`. The starter is the finished Exercise 4 plus the test file this exercise hands out.
+Continue in your own `wordle` project, or start from `exercises/starters/05-functions/`. The starter is the finished Exercise 4.
 
-Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
+Some steps give you the code, some a skeleton to complete, and one only the function's signature and a few examples of what it should return. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
 
@@ -63,7 +63,13 @@ if __name__ == "__main__":
 
 Run the game again with `uv run python wordle.py` and confirm it plays exactly as before.
 
-The `if __name__ == "__main__":` line means : only start a game when this file is run, not when another file imports it. The test file you use in Step 4 imports `wordle`, and without the guard every test run would sit waiting for a guess. Module 6 explains how this works.
+The `if __name__ == "__main__":` line means : only start a game when this file is run, not when another file imports it. In Step 4 you import `wordle` into the interactive interpreter to try a function on its own, and without the guard the import would start a game and sit waiting for a guess. Module 6 explains how this works.
+
+:::hint
+
+The slide *Function Syntax* shows the shape : everything indented under the `def` line is the body of the function. *return Statement* shows how `load_words` hands its list back.
+
+:::
 
 ### Step 3 : Checking a guess
 
@@ -82,6 +88,12 @@ if not is_valid(guess, words):
     print("That is not a five-letter word I know.")
     continue
 ```
+
+:::hint
+
+The slide *Built-in String Methods*, in module 02, lists a method that tells whether a string holds only letters. *return Statement* shows a function that returns the value of an expression.
+
+:::
 
 :::hint
 
@@ -120,44 +132,33 @@ The rules :
 - anything else is `"grey"`
 - each letter of the secret can colour **one** letter of the guess, and a green match uses it up first
 
-The starter folder has a test file, `test_wordle.py`. If you are working in your own project, copy it in from `exercises/handouts/05-functions/`, and add `pytest` as a development dependency :
-
-```bash
-uv add --dev pytest
-```
-
-The handout imports `render` as well. Add this temporary definition so pytest can collect the tests; leave the existing game display in place until Step 5 :
+Here is what it should return for three guesses. The first is the bug from Step 1 : only the R in the right place is coloured. In the last, SPEED has two E's, so GEESE may colour two of its three and no more :
 
 ```python
-def render(guess: str, marks: list[str]) -> str:
-    return ""
+score_guess("crane", "error")   # ['yellow', 'green', 'grey', 'grey', 'grey']
+score_guess("crane", "react")   # ['yellow', 'yellow', 'green', 'yellow', 'grey']
+score_guess("speed", "geese")   # ['grey', 'yellow', 'green', 'yellow', 'grey']
 ```
 
-Run just the five scoring tests for now :
+Try your function in the interactive interpreter, the slide *Python in Interactive Mode*. Start it with `uv run python`, import the function, and call it :
 
-```bash
-uv run pytest -k "not is_valid and not render"
+```text
+>>> from wordle import score_guess
+>>> score_guess("crane", "error")
+['yellow', 'green', 'grey', 'grey', 'grey']
 ```
 
-Collection initially fails if `score_guess` is missing. Once it exists, pytest shows any failed assertions and their expected values. Implement it until all five scoring tests pass. The game still uses its old scoring until you connect the new functions in Step 5.
+`from wordle import score_guess` makes the function in `wordle.py` available in the interpreter; module 06 explains it. The interpreter reads the file once, so after a change leave it with `exit()` and start it again. The game itself still uses its old scoring until you connect the new function in Step 5.
+
+:::hint
+
+The slide *List Operations* builds a list by repetition, `['go']*3`, and *List Functions and Methods* has `append` and `remove`. *Iterating with enumerate*, in module 04, gives the position with each letter.
+
+:::
 
 :::hint
 
 The last rule is hard to get right in a single loop. Two loops make it easy. The first finds the greens, and keeps a list of the secret's letters that were not matched. The second goes over the remaining letters of the guess and marks one yellow only if its letter is still in that list, removing it when it does.
-
-:::
-
-:::output
-
-The end of a passing run of the command above is shown below. Timings vary.
-
-```text
-collected 9 items / 4 deselected / 5 selected
-
-test_wordle.py .....                                                     [100%]
-
-======================= 5 passed, 4 deselected in 0.01s =======================
-```
 
 :::
 
@@ -209,6 +210,12 @@ def render(guess: str, marks: list[str]) -> str:
 
 :::hint
 
+Your Exercise 4 code built this row already. The slide *match Statement* shows a `case` for each literal value and the wildcard `case _` for the rest.
+
+:::
+
+:::hint
+
 A `match` on `marks[position]` reads well here.
 
 :::
@@ -219,7 +226,7 @@ The game loop then shrinks to a single line where the scoring used to be :
 print(render(guess, score_guess(secret, guess)))
 ```
 
-Run `uv run pytest` : `test_render_marks_each_letter` passes too.
+In the interpreter, `render("react", ["yellow", "yellow", "green", "yellow", "grey"])` now returns `'(R)(E)[A](C) T '`.
 
 :::solution
 
@@ -253,6 +260,12 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
 ```
 
 `max_guesses=8` allows an easier game; the default is six. See *Default Arguments*. Keep loading the words and choosing the secret in `main`, then call `play(secret, words)`. Without `WORDLE_SECRET`, the secret is random.
+
+:::hint
+
+The slide *return Statement* shows that `return` exits the function at once, so a `return` inside the loop ends the loop as well.
+
+:::
 
 :::hint
 
@@ -310,7 +323,7 @@ The complete file is in `solutions/05-functions/wordle.py`.
 
 ---
 
-Run `uv run pytest` again; all nine tests should pass. Play with `error`, then `crane`, against the fixed secret. The captured output now shows only one coloured R :
+Play with `error`, then `crane`, against the fixed secret. The captured output now shows only one coloured R :
 
 :::output
 
@@ -333,4 +346,4 @@ Add a hard mode, in which every guess must use what the earlier guesses revealed
 def follows_hints(guess: str, history: list[tuple[str, list[str]]]) -> bool:
 ```
 
-where `history` holds every earlier guess with its marks as `(guess, marks)` pairs, which `play` has to keep as a list. Add a parameter `hard: bool = False` to `play`, and reject a guess that breaks the rule when it is `True`. Try guesses that obey and break each rule. Exercise 8 will introduce writing your own tests. There is no reference solution for this step.
+where `history` holds every earlier guess with its marks as `(guess, marks)` pairs, which `play` has to keep as a list. Add a parameter `hard: bool = False` to `play`, and reject a guess that breaks the rule when it is `True`. Try guesses that obey and break each rule. There is no reference solution for this step.

@@ -2,7 +2,7 @@
 
 Your game can judge a guess, but it cannot yet use the feedback to choose its next move. In this exercise you turn the same scoring function into a solver: it will rule out impossible answers and recommend a guess from the words that remain.
 
-Continue in your own `wordle` project, or use `exercises/starters/07-comprehensions/`, the finished Exercise 6 with `tests/test_solver.py` added. If using your own project, copy that test file from `exercises/handouts/07-comprehensions/tests/`. Keep running commands beside `pyproject.toml`.
+Continue in your own `wordle` project, or use `exercises/starters/07-comprehensions/`, the finished Exercise 6. Keep running commands beside `pyproject.toml`.
 
 ### Step 1 : Build a row from expressions
 
@@ -18,11 +18,19 @@ def render(guess: str, marks: list[str]) -> str:
     return "".join(... for letter, mark in zip(guess.upper(), marks, strict=True))
 ```
 
-See *Zip Function*. `strict=True` rejects sequences of different lengths. Run the display test :
+See *Zip Function*. `strict=True` rejects sequences of different lengths. The row must come out exactly as before. Check it in the interpreter, as in Exercise 6 :
 
-```bash
-uv run pytest tests/test_display.py
+```text
+>>> from wordle.display import render
+>>> render("react", ["yellow", "yellow", "green", "yellow", "grey"])
+'(R)(E)[A](C) T '
 ```
+
+:::hint
+
+The slide *Generator Expressions* shows an expression written straight inside a call, and *Lambda Functions*, in module 05, shows what each value of `symbols` is.
+
+:::
 
 :::hint
 
@@ -49,7 +57,7 @@ The expression inside `join` is a generator expression: it produces values as th
 
 ### Step 2 : Turn the scorer around
 
-Imagine that a candidate word really is the secret. Would it give exactly the feedback you saw? If it would, the word is still possible. This reuses the duplicate-letter rules you already tested, rather than inventing another set of rules for the solver.
+Imagine that a candidate word really is the secret. Would it give exactly the feedback you saw? If it would, the word is still possible. This reuses the duplicate-letter rules you already wrote, rather than inventing another set of rules for the solver.
 
 Create `wordle/solver.py` with :
 
@@ -62,7 +70,19 @@ def consistent(word: str, guess: str, marks: list[str]) -> bool:
     return score_guess(word, guess) == marks
 ```
 
-Read `test_consistent_reuses_scoring_rules` in the handout. It scores `slate` against `crane`, then accepts that word-and-guess combination and rejects the same marks for the guess `raise`. The test file also imports the functions you will add in Steps 3 and 4, so it will not collect successfully yet. The game remains playable while you build its solver.
+Try it in the interpreter. Score `slate` against the secret `crane`; `crane` would give those marks, but a guess of `raise` would not :
+
+```text
+>>> from wordle.scoring import score_guess
+>>> from wordle.solver import consistent
+>>> marks = score_guess("crane", "slate")
+>>> consistent("crane", "slate", marks)
+True
+>>> consistent("crane", "raise", marks)
+False
+```
+
+The game remains playable while you build its solver.
 
 ### Step 3 : Keep every answer that fits
 
@@ -73,31 +93,27 @@ def candidates(words: list[str], history: list[tuple[str, list[str]]]) -> list[s
     """Return words consistent with every guess and its marks."""
 ```
 
-`history` contains pairs of a guess and its marks. Keep a word only if it agrees with every pair, preserving the order of `words`. An empty history rules out nothing. See *Filtered List Comprehension*.
+`history` contains pairs of a guess and its marks. Keep a word only if it agrees with every pair, preserving the order of `words`. An empty history rules out nothing.
 
-Run the given solver tests after implementing the remaining imported functions in Step 4 :
+After `slate` was scored against `crane`, only `crane` of these three words still fits; with no history, all three do :
 
-```bash
-uv run pytest tests/test_solver.py
+```python
+marks = score_guess("crane", "slate")
+candidates(["crane", "slate", "trace"], [("slate", marks)])   # ['crane']
+candidates(["crane", "slate", "trace"], [])                   # ['crane', 'slate', 'trace']
 ```
 
-`test_candidates_match_all_history` is the test for this function. Read its concrete history and expected list before implementing it. For a quick check before Step 4, you can also import `candidates` directly in `uv run python` and evaluate the assertion from that test.
+Try them in the interpreter, importing `candidates` from `wordle.solver` and `score_guess` from `wordle.scoring`.
+
+:::hint
+
+The slide *Filtered List Comprehension* shows a comprehension that keeps only some items, and *Generator Expressions* shows `all`.
+
+:::
 
 :::hint
 
 Use an outer list comprehension over `words` and an `all(...)` condition over the pairs in `history`. `all` is true for an empty sequence, which gives the required empty-history behaviour automatically.
-
-:::
-
-:::output
-
-After Step 4, the solver tests pass. In the full `uv run pytest` run, the final lines are as follows; timings vary.
-
-```text
-tests\test_solver.py ....                                                [100%]
-
-============================== 8 passed in 0.04s ==============================
-```
 
 :::
 
@@ -132,7 +148,13 @@ def best_guess(words: list[str]) -> str:
     return max(words, key=lambda word: ...)
 ```
 
-See *Dictionary Comprehensions*, *Set Comprehensions* and *Built-ins that Take a Function*. `best_guess` needs a non-empty list; during normal play the secret remains a candidate. On a tie, `max` chooses the first word with that score.
+`best_guess` needs a non-empty list; during normal play the secret remains a candidate. On a tie, `max` chooses the first word with that score.
+
+:::hint
+
+The slides *Set Comprehensions* and *Dictionary Comprehensions* show the two comprehensions, *Generator Expressions* shows `sum` over a generator, and *Built-ins that Take a Function* shows `max` with a `key`.
+
+:::
 
 :::hint
 
@@ -158,7 +180,14 @@ def best_guess(words: list[str]) -> str:
 
 :::
 
-Run `uv run pytest tests/test_solver.py`, then `uv run pytest`. The four new solver tests and all four earlier tests should pass. In particular, the `cacao` case checks that repeated letters are not counted as extra information.
+Try both in the interpreter. CACAO has two A's but counts once for `a`, and its repeated letters earn it no extra score :
+
+```python
+counts = letter_counts(["cacao", "crane"])
+counts["a"]                         # 2 : each word counts once
+counts["o"]                         # 1
+best_guess(["cacao", "crane"])      # 'crane'
+```
 
 ### Step 5 : Ask the game for help
 
@@ -182,6 +211,12 @@ uv run python -m wordle
 ```
 
 In Bash, use `WORDLE_SECRET=crane uv run python -m wordle`. Enter `slate`, `hint`, then `crane`.
+
+:::hint
+
+This is Exercise 5's `play` with one more `case`; the slide *match Statement* shows the form, and *List Functions and Methods* has `append`.
+
+:::
 
 :::hint
 

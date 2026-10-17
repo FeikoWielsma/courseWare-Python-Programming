@@ -2,9 +2,9 @@
 
 Your game plays well, but it lives on borrowed data and it has no memory. The word list is a file you copied in Exercise 1, it is only found when you start the game from the right folder, and the moment a game ends the result is gone. In this exercise you clean a real word list, make the game find its data wherever it is started from, and keep a history of every game on disk.
 
-Continue in your own `wordle` project, or start from `exercises/starters/09-python-io/`. The starter is the finished Exercise 8 plus this exercise's handouts : `raw-words.txt`, `allowed.txt`, `SOURCES.md` and `tests/test_words.py`. If you continue in your own project, copy those four files in from `exercises/handouts/09-python-io/`.
+Continue in your own `wordle` project, or start from `exercises/starters/09-python-io/`. The starter is the finished Exercise 8 plus this exercise's handouts : `raw-words.txt`, `allowed.txt` and `SOURCES.md`. If you continue in your own project, copy those three files in from `exercises/handouts/09-python-io/`.
 
-Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
+Some steps give you the code, some a skeleton to complete, and some only a description of what to write. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
 
@@ -25,21 +25,25 @@ def clean_words(lines: list[str]) -> list[str]:
     return ...
 ```
 
-Replace each `...` : the condition that keeps a word, and the sorted list that is returned. The handout `tests/test_words.py` checks it. Run `uv run pytest tests/test_words.py` and see it fail, because `clean_words` does not exist yet. Write the function until it passes. Read the slide *Reading Text Files* if you want to see how lines come out of a file.
+Replace each `...` : the condition that keeps a word, and the sorted list that is returned. `str.isalpha()` is also `True` for letters with an accent, so a five-letter word such as `étage` would pass it; `str.isascii()` is `True` only when every character is plain ASCII, which rules it out.
+
+Try the function in the interpreter, as in Exercise 8. Capitals, duplicates and empty lines disappear, and so do words of the wrong length, numbers and accents :
+
+```python
+clean_words(["Slate", "crane", "CRANE", ""])              # ['crane', 'slate']
+clean_words(["cranes", "12345", "étage", " adieu "])      # ['adieu']
+```
 
 :::hint
-Strip the whitespace from each line before you look at it. `str.isalpha()` is also `True` for letters with an accent, so a five-letter word such as `étage` would pass it. `str.isascii()` rules it out.
+The slide *Built-in String Methods*, in module 02, has `strip`, `lower` and `isalpha`, and *Set Operations*, in module 03, shows that a set keeps each value once and that `sorted` returns a list.
+:::
+
+:::hint
+Strip the whitespace from each line before you look at it, then check its length, `isascii()` and `isalpha()`.
 :::
 
 :::hint
 A set throws duplicates away and `sorted(...)` turns it back into a list. A set comprehension can hold the whole filter : `{line.strip().lower() for line in lines if ...}`.
-:::
-
-:::output
-```text
-.                                                                        [100%]
-1 passed in 0.01s
-```
 :::
 
 :::solution
@@ -80,7 +84,7 @@ Path("wordle/data").mkdir(exist_ok=True)
 Path("wordle/data/words.txt").write_text("\n".join(words) + "\n", encoding="utf-8")
 ```
 
-The session answers with the number of lines read and the number of words kept. The last line returns the number of characters written. Leave Python with `exit()`.
+`splitlines()` cuts the text into a list with one line per item. The session answers with the number of lines read and the number of words kept. The last line returns the number of characters written. Leave Python with `exit()`.
 
 ```text
 (981, 935)
@@ -99,7 +103,7 @@ Your `load_words` still opens `words.txt` as a path relative to wherever the pro
 import os
 from wordle.words import load_words
 
-os.chdir("tests")
+os.chdir("wordle")
 load_words()
 ```
 
@@ -107,7 +111,7 @@ load_words()
 FileNotFoundError: [Errno 2] No such file or directory: 'words.txt'
 ```
 
-A relative path is resolved against the working directory, and the working directory belongs to whoever starts the program, not to the program. The same holds for a game started from a shortcut, from a test runner or from an editor in another folder. Leave this Python session with `exit()` before editing the loader.
+A relative path is resolved against the working directory, and the working directory belongs to whoever starts the program, not to the program. The same holds for a game started from a shortcut, from a scheduled task or from an editor in another folder. Leave this Python session with `exit()` before editing the loader.
 
 The fix is to ask the module where it lives. Every module knows its own file name in `__file__`, and `pathlib` turns that into a folder you can build a path from. Replace `load_words` in `wordle/words.py`:
 
@@ -118,7 +122,7 @@ def load_words() -> list[str]:
     return data_path.read_text(encoding="utf-8").split()
 ```
 
-`Path(__file__).parent` is `wordle/`; `/` joins path parts (see *Paths with pathlib*). The loader now finds its own data, so the `path` parameter is gone. Start a fresh `uv run python` session from the project folder, repeat the import and `os.chdir("tests")`, then evaluate `len(load_words())` :
+`Path(__file__).parent` is `wordle/`; `/` joins path parts (see *Paths with pathlib*). The loader now finds its own data, so the `path` parameter is gone. Start a fresh `uv run python` session from the project folder, repeat the import and `os.chdir("wordle")`, then evaluate `len(load_words())` :
 
 ```text
 935
@@ -160,7 +164,7 @@ Play with `WORDLE_SECRET=crane` set. This is the environment variable that `main
 ```
 
 :::hint
-The body of `load_allowed` is `load_words` with another file name. You may copy it.
+The slide *Paths with pathlib* shows `/` joining the parts of a path. The body of `load_allowed` is `load_words` with another file name; you may copy it.
 :::
 
 :::hint
@@ -225,6 +229,10 @@ crane,1,0
 ```
 
 :::hint
+The slide *The csv Module* writes rows with `csv.writer` inside a `with` block, and *File Open Modes* lists `a` for appending.
+:::
+
+:::hint
 `csv.writer(history_file).writerow([...])` writes one row and adds the line ending itself. `newline=""` stops Python from adding its own line ending on top of the one the `csv` module writes.
 :::
 
@@ -263,7 +271,7 @@ Reading the file back is the other half. Add a new command to `play`, next to `q
                 continue
 ```
 
-The function is given, because Exercise 10 replaces it with a database query within the hour. Add it to `wordle/game.py` :
+The function is given, because Exercise 10 replaces it with a database query. Add it to `wordle/game.py` :
 
 ```python
 def print_stats() -> None:

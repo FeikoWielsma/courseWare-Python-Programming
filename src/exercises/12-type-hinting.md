@@ -5,13 +5,13 @@ Your code has carried type hints since Exercise 2, and nobody has ever checked t
 
 Continue in your own `wordle` project, or start from `exercises/starters/12-type-hinting/`. The starter is the finished Exercise 11; this exercise hands out nothing. Keep running commands beside `pyproject.toml`.
 
-Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards. This exercise is an appendix : do the steps in order.
+Some steps give you the code, some a list of changes to make, and one only a signature and what it should do. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards. This exercise is an appendix : do the steps in order.
 
 ---
 
 ### Step 1 : Run mypy
 
-`mypy` is a development tool, not something the game needs when it runs, so add it to the development dependencies, the way you added `pytest`, and run it on the package :
+`mypy` is a development tool, not something the game needs when it runs, so add it to the development dependencies, the way you added `ruff` in Exercise 1, and run it on the package :
 
 ```bash
 uv add --dev mypy
@@ -72,7 +72,11 @@ Run `uv run mypy wordle` until it reports `Success`. To see what you gained, mis
 wordle\scoring.py:44: error: No overload variant of "__setitem__" of "list" matches argument types "int", "str"  [call-overload]
 ```
 
-The message is not friendly, but the file and line are right. Run `uv run pytest` as well; the tests do not care about annotations and still pass.
+The message is not friendly, but the file and line are right. Play a game as well : Python ignores annotations, so it plays as before.
+
+:::hint
+The slide *Closed Sets with Literal* defines a `Literal` type with `type` and uses it in a signature.
+:::
 
 :::hint
 A `type` statement and a `Literal` need `from typing import Literal` and nothing else. Other modules import the alias like any name : `from wordle.scoring import Mark`.
@@ -131,7 +135,7 @@ def best_guess(words: list[str]) -> str | None:
     """Choose the word with the most frequently occurring distinct letters."""
 ```
 
-Make it return `None` for an empty list. Then run `uv run mypy wordle`. The checker does not need a test run to find the next problem : `play` calls `.upper()` on the result, and `None` has no `.upper()`.
+Make it return `None` for an empty list. Then run `uv run mypy wordle`. The checker does not need to run the game to find the next problem : `play` calls `.upper()` on the result, and `None` has no `.upper()`.
 
 ```text
 wordle\game.py:76: error: Item "None" of "str | None" has no attribute "upper"  [union-attr]
@@ -145,7 +149,11 @@ That is the whole use of `| None` : the checker makes every caller deal with the
 No candidate words remain.
 ```
 
-The first line is the row for the guess `crane`; the second is the answer to `hint`. Finish with `uv run pytest`; all the tests still pass.
+The first line is the row for the guess `crane`; the second is the answer to `hint`.
+
+:::hint
+The slide *Optional Values* writes `| None` for a value that may be absent, and tests `is None` before it uses the value.
+:::
 
 :::hint
 `if not words: return None` at the top of `best_guess` is enough. The rest of the function stays as it is.

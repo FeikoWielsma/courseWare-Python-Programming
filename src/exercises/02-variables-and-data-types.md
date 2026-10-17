@@ -8,7 +8,7 @@ Continue in your own `wordle` project, or start from `exercises/starters/02-vari
 uv run python wordle.py
 ```
 
-Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
+Some steps give you the code, some a skeleton to complete, and some only a description of what to write. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
 
@@ -44,17 +44,17 @@ The header and the shape of the first row are given. Fill in the two questions, 
 
 ```python
 print(f"{'Position':^10}{'Same place':^14}{'In secret':^12}")
-print(f"{0:^10}{...:^14}{...:^12}")
+print(f"{0:^10}{...!s:^14}{...!s:^12}")
 ```
 
-The widths 10, 14 and 12 keep every column under its heading.
+The widths 10, 14 and 12 keep every column under its heading. The `!s` before each colon turns the answer into a string first : with a width and without `!s`, a `bool` is formatted as the number it also is, and the table shows `1` and `0` instead of `True` and `False`.
 
 :::hint
-`guess[0]` is the first letter of the guess. Comparing two letters with `==` gives `True` or `False`, and so does the `in` operator : `"a" in "crane"` is `True`.
+The slide *String Operations* takes one character out of a string with `str1[0]`, and *Logical, Membership, Identity Operators* has the `in` operator.
 :::
 
 :::hint
-If the table shows `1` and `0` instead of `True` and `False`, the format specification is to blame : with a width, a `bool` is formatted as the number it also is. Add `!s` before the colon, as in `{guess[0] in secret!s:^12}`, to turn the value into a string first.
+`guess[0]` is the first letter of the guess. Comparing two letters with `==` gives `True` or `False`, and so does the `in` operator : `"a" in "crane"` is `True`.
 :::
 
 :::output
@@ -95,6 +95,10 @@ print(f"The secret contains {...} letter e characters.")
 ```
 
 The first is a check the game will need on every guess : does it have five letters? It only prints `True` or `False` for now. It does not protect the table of Step 2, which indexes the guess before this line runs, so keep typing five letters. The second takes the guess apart with slices. The third counts how often `e` occurs in the secret.
+
+:::hint
+The slide *String Operations* shows slices, including ones that count from the end, and *Built-in String Methods* has `len` and the string methods.
+:::
 
 :::hint
 `len` gives the length of a string, and comparing it with `==` gives `True` or `False`. A slice `word[start:stop]` can leave out either end, and a negative index counts from the end : `word[-1]` is the last letter.

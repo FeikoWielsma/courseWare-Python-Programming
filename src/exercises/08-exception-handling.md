@@ -1,8 +1,8 @@
 # Exercise 8 : Exception Handling
 
-The game gives the same rejection for every bad guess, and a missing word list or an interrupted input ends in a traceback. Give each failure a useful response, then write your first tests to check those responses at the validation boundary.
+The game gives the same rejection for every bad guess, and a missing word list or an interrupted input ends in a traceback. Give each failure a useful response.
 
-Continue in your own `wordle` project, or use `exercises/starters/08-exception-handling/`, the finished Exercise 7 plus this exercise's handouts. If continuing your own project, copy `tests/test_scoring.py` from `exercises/handouts/08-exception-handling/`, replacing the earlier version and retaining your other tests. Read the handout's `README.txt`: the exception tests are deliberately not provided. You write them in Step 5.
+Continue in your own `wordle` project, or use `exercises/starters/08-exception-handling/`, the finished Exercise 7.
 
 ### Step 1 : Name an invalid guess
 
@@ -19,7 +19,7 @@ Next, make the validator raise this exception with a reason.
 
 ### Step 2 : Explain why a guess is invalid
 
-Add `check_guess` to `scoring.py`. Check length, letters, then membership. Valid guesses return normally; invalid ones raise `InvalidGuess`. See *Raising Exceptions*.
+Add `check_guess` to `scoring.py`. Check length, letters, then membership. Valid guesses return normally; invalid ones raise `InvalidGuess`.
 
 ```python
 def check_guess(guess: str, words: list[str]) -> None:
@@ -31,7 +31,7 @@ def check_guess(guess: str, words: list[str]) -> None:
         raise InvalidGuess("That word is not in the word list.")
 ```
 
-Keep `is_valid` so the earlier tests and the current game still work, but make it a wrapper around the new validator :
+Keep `is_valid` so the current game still works, but make it a wrapper around the new validator :
 
 ```python
 def is_valid(guess: str, words: list[str]) -> bool:
@@ -42,7 +42,29 @@ def is_valid(guess: str, words: list[str]) -> bool:
     return True
 ```
 
-Run `uv run pytest`. The eight existing tests should still pass. They do not yet check the exception reasons; you will add that coverage yourself.
+Try the validator in the interpreter. A valid guess returns `None`; each invalid one stops with a traceback whose last line gives its reason, and `is_valid` turns the same failure into `False` :
+
+```text
+>>> from wordle.scoring import check_guess, is_valid
+>>> print(check_guess("crane", ["crane", "slate"]))
+None
+>>> check_guess("cran", ["crane", "slate"])
+Traceback (most recent call last):
+  ...
+wordle.scoring.InvalidGuess: A guess must have five letters.
+>>> check_guess("cr4ne", ["crane", "slate"])
+Traceback (most recent call last):
+  ...
+wordle.scoring.InvalidGuess: A guess must contain letters only.
+>>> is_valid("zzzzz", ["crane", "slate"])
+False
+```
+
+:::hint
+
+The slide *Raising Exceptions* shows `raise` with a message, and *Typed Exception Handling* catches one exception type by name.
+
+:::
 
 :::hint
 
@@ -95,7 +117,13 @@ except InvalidGuess as error:
 
 :::hint
 
-Call `check_guess(guess, words)`; catch and print `InvalidGuess`. See *Typed Exception Handling*.
+The slide *Example Argument of an Exception* catches an exception `as error` and prints it; *Exception Arguments* says `print(error)` shows the message.
+
+:::
+
+:::hint
+
+Call `check_guess(guess, words)`; catch and print `InvalidGuess`.
 
 :::
 
@@ -125,7 +153,13 @@ def main() -> None:
         ...  # print a newline followed by a friendly stopping message
 ```
 
-For a missing file, print `The word list is missing. Restore words.txt and try again.` For interrupted input, print `\nGame stopped.` Try Ctrl+C while the game waits for a guess. End-of-input is Ctrl+D on Unix terminals, or Ctrl+Z followed by Enter on Windows. To test the missing-file case, temporarily rename `words.txt`, run the game, and restore the filename immediately afterwards.
+For a missing file, print `The word list is missing. Restore words.txt and try again.` For interrupted input, print `\nGame stopped.` Try Ctrl+C while the game waits for a guess. End-of-input is Ctrl+D on Unix terminals, or Ctrl+Z followed by Enter on Windows. To try the missing-file case, temporarily rename `words.txt`, run the game, and restore the filename immediately afterwards.
+
+:::hint
+
+The slide *Typed Exception Handling* shows several `except` clauses after one `try`, and *except Clause Multiple Exceptions* catches a tuple of types in one clause.
+
+:::
 
 :::hint
 
@@ -149,81 +183,6 @@ def main() -> None:
         print("The word list is missing. Restore words.txt and try again.")
     except (KeyboardInterrupt, EOFError):
         print("\nGame stopped.")
-```
-
-:::
-
-### Step 5 : Write your first exception tests
-
-Create `tests/test_exceptions.py`. So far you have run tests written for you. Now you will specify the three ways a guess can be rejected.
-
-Import `pytest`, and import `InvalidGuess` and `check_guess` from `wordle.scoring`. Set `WORDS = ["crane", "slate"]`. Write these test functions :
-
-```python
-def test_wrong_length_has_a_specific_reason() -> None:
-    ...
-
-
-def test_non_letters_have_a_specific_reason() -> None:
-    ...
-
-
-def test_unknown_words_have_a_specific_reason() -> None:
-    ...
-```
-
-Use `cran`, `cr4ne` and `zzzzz`, respectively. Check both the exception type and a distinctive part of its message. `pytest.raises` is a context manager: the indented call must raise the expected exception. If no exception occurs, or the type or message is wrong, the test fails. The `match=` argument checks a regular-expression match within the message; use the simple phrases `five letters`, `letters only` and `not in the word list` here.
-
-Run your new file, then all tests :
-
-```bash
-uv run pytest tests/test_exceptions.py
-uv run pytest
-```
-
-:::hint
-
-Use a `with pytest.raises(InvalidGuess, match="..."):` block around each call to `check_guess`. Choose a five-character input for the letters-only test, otherwise the earlier length check will reject it for a different reason.
-
-:::
-
-:::output
-
-With these three tests added, the end of a complete run looks like this. Timings vary.
-
-```text
-tests\test_display.py .                                                  [  9%]
-tests\test_exceptions.py ...                                             [ 36%]
-tests\test_scoring.py ...                                                [ 63%]
-tests\test_solver.py ....                                                [100%]
-
-============================= 11 passed in 0.05s ==============================
-```
-
-:::
-
-:::solution
-
-```python
-import pytest
-from wordle.scoring import InvalidGuess, check_guess
-
-WORDS = ["crane", "slate"]
-
-
-def test_wrong_length_has_a_specific_reason() -> None:
-    with pytest.raises(InvalidGuess, match="five letters"):
-        check_guess("cran", WORDS)
-
-
-def test_non_letters_have_a_specific_reason() -> None:
-    with pytest.raises(InvalidGuess, match="letters only"):
-        check_guess("cr4ne", WORDS)
-
-
-def test_unknown_words_have_a_specific_reason() -> None:
-    with pytest.raises(InvalidGuess, match="not in the word list"):
-        check_guess("zzzzz", WORDS)
 ```
 
 :::
@@ -254,4 +213,4 @@ All three invalid guesses leave the first turn available. Remove the override wi
 
 ### If time permits
 
-Add tests for a valid guess returning `None`, for a too-long guess, and for an input that fails more than one rule. Decide which reason should take priority and check that the implementation follows that decision. Keep the game playable and rerun all tests after each change.
+Try a too-long guess and an input that fails more than one rule, such as `cr4n`, in the game and in the interpreter. Decide which reason should take priority and check that the implementation follows that decision. Keep the game playable after each change.

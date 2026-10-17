@@ -1,8 +1,8 @@
 # Exercise 6 : Modules
 
-The scoring can now be tested on its own, but loading words, drawing rows and running the game still share one file. Split those responsibilities into a package so the solver in the next exercise has a clear place to live.
+The scoring can now be called on its own, but loading words, drawing rows and running the game still share one file. Split those responsibilities into a package so the solver in the next exercise has a clear place to live.
 
-Continue in your own `wordle` project, or use `exercises/starters/06-modules/`, the finished Exercise 5 plus this exercise's handouts. Run commands from the project root, beside `pyproject.toml` and `words.txt`, not from inside the new package directory.
+Continue in your own `wordle` project, or use `exercises/starters/06-modules/`, the finished Exercise 5. Run commands from the project root, beside `pyproject.toml` and `words.txt`, not from inside the new package directory.
 
 ### Step 1 : Start a package
 
@@ -62,7 +62,13 @@ Delete the old `wordle.py` once the package is complete. Check it with `uv run p
 
 :::hint
 
-`game.py` needs the renderer and both scoring functions. Neither of those modules imports the game. See *from...import Statement*.
+The slide *from...import Statement* shows the import form, and *Running Packages with python -m* shows a package with a `__main__.py` like this one.
+
+:::
+
+:::hint
+
+`game.py` needs the renderer and both scoring functions. Neither of those modules imports the game.
 
 :::
 
@@ -128,58 +134,40 @@ Got it in 2!
 
 :::
 
-### Step 4 : Test the new boundaries
+### Step 4 : Import from the new modules
 
-The old `test_wordle.py` imports from the single-file version. Remove that test file and use `tests/test_scoring.py` and `tests/test_display.py` from `exercises/handouts/06-modules/`. They are already present in the starter. Until this step, the mixed old and new test imports cannot all collect; finish the package before running the complete test suite. The handouts regroup the earlier checks into four tests; the smaller count is intentional.
-
-Before inspecting their imports, fill these two import lines yourself, one for each test file :
+In Exercise 5 you imported `score_guess` from `wordle.py` into the interactive interpreter. That file has gone, so the functions are now imported from the modules that hold them. Fill these two import lines yourself :
 
 ```python
-# tests/test_scoring.py
 from wordle.scoring import ...
-```
-
-```python
-# tests/test_display.py
 from wordle.display import ...
 ```
 
-Add this section to `pyproject.toml` so pytest can import the local package from the project root :
+Start the interpreter from the project root with `uv run python`, type your two imports, and score and draw the guess from Step 3 :
 
-```toml
-[tool.pytest.ini_options]
-pythonpath = ['.']
+```text
+>>> score_guess("crane", "slate")
+['grey', 'grey', 'green', 'grey', 'green']
+>>> render("slate", score_guess("crane", "slate"))
+' S  L [A] T [E]'
 ```
-
-Run `uv run pytest` and fix any import errors before changing function bodies.
 
 :::hint
 
-Import each function from the module that defines it, not from `wordle` itself. An empty `__init__.py` does not automatically import the other modules. Check that the old `test_wordle.py` has gone.
+The slide *Implicit Import of Package Modules* shows `from cameras.canon import canon_info` : the package, a dot, the module, then the name.
 
 :::
 
-:::output
+:::hint
 
-The final line from a passing run is shown below; timings vary.
-
-```text
-============================== 4 passed in 0.04s ==============================
-```
+Import each function from the module that defines it, not from `wordle` itself. An empty `__init__.py` does not automatically import the other modules.
 
 :::
 
 :::solution
 
-The scoring tests import :
-
 ```python
-from wordle.scoring import is_valid, score_guess
-```
-
-The display test imports :
-
-```python
+from wordle.scoring import score_guess
 from wordle.display import render
 ```
 
@@ -196,9 +184,6 @@ wordle/
         scoring.py
         display.py
         game.py
-    tests/
-        test_scoring.py
-        test_display.py
 ```
 
 :::
@@ -207,6 +192,6 @@ Remove the fixed-secret override with `Remove-Item Env:WORDLE_SECRET` in PowerSh
 
 ### If time permits
 
-Try colour as an optional display experiment. Install `rich` with `uv add rich`, then use its printing support to colour a row when displaying it. Keep the text returned by `render` unchanged so the existing display test still passes. See *Installing Packages* for dependencies.
+Try colour as an optional display experiment. Install `rich` with `uv add rich`, then use its printing support to colour a row when displaying it. Keep the text returned by `render` unchanged, so that the rest of the game does not notice. See *Installing Packages* for dependencies.
 
 The following exercises and reference solutions continue with the text markers; colour is not required to proceed.
