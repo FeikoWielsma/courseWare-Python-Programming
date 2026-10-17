@@ -10,29 +10,37 @@ Every step is marked with how much help it gives :
 - ★★ a skeleton is given; you fill in the body
 - ★★★ only the signature and the tests are given
 
-Steps marked ★★ and ★★★ have a reference solution on the page after them. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
+Steps marked ★★ and ★★★ have a solution to reveal on the site, or on the next page in the PDF. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
 
-### Step 1 ★ : Find the bug
+### Step 1 : Find the bug {★}
 
-Play one round where you already know the answer. Change the line that picks the secret word to a fixed word for a moment :
+Play one round where you know the answer. The starter supports `WORDLE_SECRET`, an environment variable that overrides the random choice. In PowerShell, run :
 
-```python
-secret = "crane"
+```powershell
+$env:WORDLE_SECRET = "crane"
+uv run python wordle.py
 ```
 
-Then guess `error`. Your game prints something like :
+In Bash, use `WORDLE_SECRET=crane uv run python wordle.py`. If your own script does not have the override yet, temporarily set `secret = "crane"`.
+
+Enter `error`, then `crane`. Here is the captured output, with typed input omitted :
+
+:::output
 
 ```text
-(E)[R](R) O (R)
+Guess the five-letter word. Type 'quit' to give up, 'letters' for the letters tried.
+Guess 1/6 : (E)[R](R) O (R)
+Guess 2/6 : [C][R][A][N][E]
+Got it in 2!
 ```
 
-CRANE has one R, and it is already accounted for by the green R in second place. The other two R's should be grey. The scoring code only asks "is this letter anywhere in the secret?", and that question cannot tell one R from three.
+:::
 
-Keep `crane` for now; you will need a known word again in Step 4. Put `random.choice(words)` back in Step 6.
+CRANE has one R, and the green R in second place already uses it. The other two R's should be grey. Asking whether a letter occurs anywhere in the secret cannot tell one R from three. Keep the fixed secret until the end of the exercise.
 
-### Step 2 ★ : A main function
+### Step 2 : A main function {★}
 
 Before the scoring can be fixed it needs to be something you can call on its own, and before anything can be called on its own the script must stop running a whole game the moment it is loaded.
 
@@ -51,7 +59,7 @@ def load_words(path: str = "words.txt") -> list[str]:
 
 def main() -> None:
     words = load_words()
-    secret = "crane"
+    secret = os.environ.get("WORDLE_SECRET", random.choice(words))
     ...  # the rest of the game, indented one level further
 
 
@@ -63,14 +71,14 @@ Run the game again with `uv run python wordle.py` and confirm it plays exactly a
 
 The `if __name__ == "__main__":` line means : only start a game when this file is run, not when another file imports it. The test file you use in Step 4 imports `wordle`, and without the guard every test run would sit waiting for a guess. Module 6 explains how this works.
 
-### Step 3 ★★ : Checking a guess
+### Step 3 : Checking a guess {★★}
 
-The game loop rejects a guess that is the wrong length or not in the word list. Give that check a name. Fill in the body :
+The game loop rejects a guess that is the wrong length or not in the word list. Give that check a name. Add `WORD_LENGTH = 5` beside the imports, then fill in the body. See *Annotating a Function* for the signature :
 
 ```python
 def is_valid(guess: str, words: list[str]) -> bool:
     """A guess must be a known word of the right length."""
-    ...
+    return ...  # combine the length, letters-only and membership checks
 ```
 
 Then replace the check in the game loop with a call to it :
@@ -81,10 +89,13 @@ if not is_valid(guess, words):
     continue
 ```
 
-Two hints. A word made of letters only is something a string method can tell you. And a condition is already `True` or `False`, so it can be returned as it is; there is no need for `if ... : return True` followed by `return False`.
+:::hint
 
-<details open>
-<summary>Reference solution</summary>
+A word made of letters only is something a string method can tell you. And a condition is already `True` or `False`, so it can be returned as it is; there is no need for `if ... : return True` followed by `return False`.
+
+:::
+
+:::solution
 
 ```python
 WORD_LENGTH = 5
@@ -97,9 +108,9 @@ def is_valid(guess: str, words: list[str]) -> bool:
 
 `WORD_LENGTH` is a constant : a module-level name in capitals, which tells the reader it is not meant to change. Use it wherever the game says `5`.
 
-</details>
+:::
 
-### Step 4 ★★★ : Scoring a guess
+### Step 4 : Scoring a guess {★★★}
 
 This is the function the bug lives in. Here is its signature :
 
@@ -121,18 +132,42 @@ The starter folder has a test file, `test_wordle.py`. If you are working in your
 uv add --dev pytest
 ```
 
-Run the tests :
+The handout imports `render` as well. Add this temporary definition so pytest can collect the tests; leave the existing game display in place until Step 5 :
 
-```bash
-uv run pytest
+```python
+def render(guess: str, marks: list[str]) -> str:
+    return ""
 ```
 
-They fail, because `score_guess` does not exist yet. Read the report : pytest names each failing test and shows what it expected next to what it got. Write `score_guess` until the five scoring tests pass. Then run the game and guess `error` against `crane` again.
+Run just the five scoring tests for now :
 
-If you are stuck : the last rule is hard to get right in a single loop. Two loops make it easy. The first finds the greens, and keeps a list of the secret's letters that were *not* matched. The second goes over the remaining letters of the guess and marks one yellow only if its letter is still in that list, removing it when it does.
+```bash
+uv run pytest -k "not is_valid and not render"
+```
 
-<details open>
-<summary>Reference solution</summary>
+Collection initially fails if `score_guess` is missing. Once it exists, pytest shows any failed assertions and their expected values. Implement it until all five scoring tests pass. The game still uses its old scoring until you connect the new functions in Step 5.
+
+:::hint
+
+The last rule is hard to get right in a single loop. Two loops make it easy. The first finds the greens, and keeps a list of the secret's letters that were not matched. The second goes over the remaining letters of the guess and marks one yellow only if its letter is still in that list, removing it when it does.
+
+:::
+
+:::output
+
+The end of a passing run of the command above is shown below. Timings vary.
+
+```text
+collected 9 items / 4 deselected / 5 selected
+
+test_wordle.py .....                                                     [100%]
+
+======================= 5 passed, 4 deselected in 0.01s =======================
+```
+
+:::
+
+:::solution
 
 ```python
 def score_guess(secret: str, guess: str) -> list[str]:
@@ -163,9 +198,9 @@ def score_guess(secret: str, guess: str) -> list[str]:
 
 `["grey"] * WORD_LENGTH` builds a list of five `"grey"` strings, so every letter starts grey and only the two loops change that.
 
-</details>
+:::
 
-### Step 5 ★★ : Drawing a row
+### Step 5 : Drawing a row {★★}
 
 The code that builds `[A]`, `(A)` and ` A ` now has the marks to work from instead of working them out itself. Move it into a function :
 
@@ -178,7 +213,13 @@ def render(guess: str, marks: list[str]) -> str:
     return row
 ```
 
-A `match` on `marks[position]` reads well here. The game loop then shrinks to a single line where the scoring used to be :
+:::hint
+
+A `match` on `marks[position]` reads well here.
+
+:::
+
+The game loop then shrinks to a single line where the scoring used to be :
 
 ```python
 print(render(guess, score_guess(secret, guess)))
@@ -186,8 +227,7 @@ print(render(guess, score_guess(secret, guess)))
 
 Run `uv run pytest` : `test_render_marks_each_letter` passes too.
 
-<details open>
-<summary>Reference solution</summary>
+:::solution
 
 ```python
 def render(guess: str, marks: list[str]) -> str:
@@ -204,34 +244,29 @@ def render(guess: str, marks: list[str]) -> str:
     return row
 ```
 
-</details>
+:::
 
-### Step 6 ★★ : One game, as a function
+### Step 6 : One game, as a function {★★}
 
 What is left in `main` is the game itself. Move it into a function that plays one game and reports whether it was won :
 
 ```python
 def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
     """Play one game. Returns True when the word was found."""
-    ...
+    used_letters: set[str] = set()
+    guess_count = 0
+    ...  # move the loop here, returning True on a win and False otherwise
 ```
 
-`max_guesses` has a default, so `play(secret, words)` is a normal game and `play(secret, words, max_guesses=8)` is an easy one. `main` becomes short :
+`max_guesses=8` allows an easier game; the default is six. See *Default Arguments*. Keep loading the words and choosing the secret in `main`, then call `play(secret, words)`. Without `WORDLE_SECRET`, the secret is random.
 
-```python
-def main() -> None:
-    words = load_words()
-    print("Guess the five-letter word. Type 'quit' to give up, 'letters' for the letters tried.")
-    secret = os.environ.get("WORDLE_SECRET", random.choice(words))
-    play(secret, words)
-```
+:::hint
 
-This is the moment to put `random.choice(words)` back.
+Return `True` on a win, replacing the loop's `break` and `else`. In the `quit` case, keep only `break`; remove its old print so the secret is not shown twice. After the loop, reveal the secret and return `False`. Exercise 10 will use this result for statistics.
 
-Inside `play`, a `return True` the moment the word is found replaces the `break` and the `else:` on the loop. Nothing uses the result yet. Exercise 10 will, when it keeps your statistics.
+:::
 
-<details open>
-<summary>Reference solution</summary>
+:::solution
 
 ```python
 def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
@@ -265,16 +300,43 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
     return False
 ```
 
+Replace `main` with :
+
+```python
+def main() -> None:
+    words = load_words()
+    print("Guess the five-letter word. Type 'quit' to give up, 'letters' for the letters tried.")
+    secret = os.environ.get("WORDLE_SECRET", random.choice(words))
+    play(secret, words)
+```
+
 The complete file is in `solutions/05-functions/wordle.py`.
 
-</details>
+:::
 
 ---
 
-**If time permits** ★★★ : add a hard mode, in which every guess must use what the previous guess revealed. A green letter must stay in its place, and a yellow letter must appear somewhere. Write
+Run `uv run pytest` again; all nine tests should pass. Play with `error`, then `crane`, against the fixed secret. The captured output now shows only one coloured R :
+
+:::output
+
+```text
+Guess the five-letter word. Type 'quit' to give up, 'letters' for the letters tried.
+Guess 1/6 : (E)[R] R  O  R 
+Guess 2/6 : [C][R][A][N][E]
+Got it in 2!
+```
+
+:::
+
+Remove the override with `Remove-Item Env:WORDLE_SECRET` in PowerShell, or `unset WORDLE_SECRET` if you exported it in Bash, and play a random game.
+
+### If time permits
+
+Add a hard mode, in which every guess must use what the previous guess revealed. A green letter must stay in its place, and a yellow letter must appear somewhere. Write
 
 ```python
 def follows_hints(guess: str, previous: str, marks: list[str]) -> bool:
 ```
 
-add a parameter `hard: bool = False` to `play`, and reject a guess that breaks the rule when it is `True`. Write a test or two for `follows_hints` in `test_wordle.py` first, in the same style as the ones you were given. There is no reference solution for this step.
+add a parameter `hard: bool = False` to `play`, and reject a guess that breaks the rule when it is `True`. Try guesses that obey and break each rule. Exercise 8 will introduce writing your own tests. There is no reference solution for this step.
