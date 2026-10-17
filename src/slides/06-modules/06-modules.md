@@ -96,26 +96,26 @@ from math import *
 
 # Locating Modules
 
-- On import the interpreter searches these places in order, first hit wins :
+- For modules found through `sys.path`, the normal search order is :
 
 ```mermaid
 flowchart LR
-  A[import mymod] --> B[current directory]
+  A[import mymod] --> B[script directory<br/>or current directory]
   B --> C[each directory in<br/>PYTHONPATH]
   C --> D[the default path,<br/>OS dependent]
   D --> E[ModuleNotFoundError]
 ```
 
-- The search path is stored in `sys.path` in the `sys` module :
-  - Import `sys` to access or inspect the list of directories
-  - Modifying `sys.path` at runtime allows loading modules from non-standard locations
+- The first directory depends on how Python starts :
+  - Running a script uses its directory; the REPL and `python -m` use the current directory
+- Inspect the search path with `sys.path` after `import sys`
 - `PYTHONPATH` environment variable :
-  - A list of directory paths prepended to `sys.path` on startup
+  - Extra directories inserted after that first directory on startup
   - Follows standard operating system path list conventions
-- Setting `PYTHONPATH` on Windows :
+- Setting `PYTHONPATH` in Windows Command Prompt (CMD) :
 
 ```bash
-set PYTHONPATH=c:\python314\lib;
+set PYTHONPATH=C:\course\modules
 ```
 
 - Setting `PYTHONPATH` on UNIX :
@@ -388,7 +388,7 @@ uv run python app.py
   - A module is a `.py` file defining functions, classes and variables
   - `import` and `from ... import` bring names into the calling file
 - Python locates modules using `sys.path` :
-  - Current directory, `PYTHONPATH` directories, and system defaults
+  - Script directory (current directory for REPL or `-m`), then `PYTHONPATH` and defaults
   - `dir()` lists the names defined or imported in a module
 - Packages group modules into directories with `__init__.py` :
   - Modules inside packages use dotted import paths
