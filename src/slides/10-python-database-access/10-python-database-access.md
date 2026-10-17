@@ -94,6 +94,14 @@ con.close()  # `with con:` commits or rolls back, it does not close
 
 - The connection stays open after the block :
   - Close it yourself with `con.close()` when you are done
+- `closing()` from `contextlib` calls `close()` when the block ends, so one `with` line can commit and close :
+
+```python
+with closing(sqlite3.connect("test.db")) as con, con:
+    cur = con.cursor()
+    cur.execute("SELECT SQLITE_VERSION()")
+    print(f"SQLite version: {cur.fetchone()}")
+```
 
 > `demo02 · usingwith`
 
