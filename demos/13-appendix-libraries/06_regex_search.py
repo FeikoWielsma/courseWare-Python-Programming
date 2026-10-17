@@ -10,3 +10,6 @@ print(re.search(r"shipped", text))       # found, search scans the whole string
 
 print(re.findall(r"\d+", text))          # every run of digits
 print(re.findall(r"order", text, re.IGNORECASE))
+
+print(re.fullmatch(r"[a-z]+", "hello") is not None)  # True; whole string
+print(re.fullmatch(r"[a-z]+", "hello!") is not None)  # False

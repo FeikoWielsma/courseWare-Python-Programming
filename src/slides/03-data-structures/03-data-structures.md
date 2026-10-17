@@ -233,10 +233,10 @@ print(stack)  # [3, 4, 5, 6]
 | `list.extend(seq)` | Appends the contents of seq to list |
 | `list.index(obj)` | Returns the lowest index in list that obj appears |
 | `list.insert(index, obj)` | Inserts object obj into list at offset index |
-| `list.pop(obj=list[-1])` | Removes and returns last object or obj from list |
+| `list.pop(index=-1)` | Removes and returns the item at an index; default is last |
 | `list.remove(obj)` | Removes object obj from list |
 | `list.reverse()` | Reverses objects of list in place |
-| `list.sort([key, reverse])` | Sorts the items of list in place |
+| `list.sort(key=None, reverse=False)` | Sorts in place; options are keyword-only |
 
 > `demo05 · listmethods`
 
@@ -326,7 +326,7 @@ Traceback (most recent call last):
 NameError: name 'tup' is not defined
 ```
 
-- Error since after `del tup` tuple is gone
+- After `del tup`, the name is no longer bound; other references may keep the tuple alive
 
 ---
 
@@ -336,7 +336,7 @@ NameError: name 'tup' is not defined
   - Coordinate pairs, records from a database
 - Any set of comma-separated objects default to tuples :
   - Even without parentheses around them
-- Tuples can be dictionary keys and set members, lists cannot
+- Tuples can be dictionary keys and set members if every item is hashable
 - Tuples can make your code safer :
   - Allows you to "write-protect" data that does not need to be changed
 - A tuple can have lists as items :
@@ -431,7 +431,7 @@ True
 # Dictionaries
 
 - Dictionaries consist of pairs of keys and values :
-  - Keys can be almost any immutable Python type but usually numbers or strings
+  - Keys must be hashable; strings and numbers are common choices
   - Values can be any arbitrary Python object
 - Dictionaries are hash tables :
   - Looking up a key is fast, however large the dictionary
@@ -460,7 +460,7 @@ print(dict1)  # {'Albert': 2341, 'Robert': 9102, 'Enrico': 3258, 'Werner': 3490,
 
 - Keys are unique within a dictionary while values may be the same :
   - Values of a dictionary can be of any type
-  - Keys must be of an immutable data type such as strings, numbers or tuples
+  - Keys must be hashable; a tuple qualifies only if all its items are hashable
 - Use square brackets along with the key to obtain its value :
 
 ```python
@@ -491,28 +491,22 @@ print(dict1["Albert"])  # KeyError
 
 # Properties of Dictionary Keys
 
-- Dictionary values have no restrictions :
-  - Can be any arbitrary Python object
-  - Either standard objects or user-defined objects
-- There are two important points about dictionary keys :
-  - No duplicate keys allowed
-  - Keys must be immutable
-- In case duplicate keys are encountered during assignment :
-  - Last assignment wins
+- Keys must be hashable :
+  - Their hash stays stable, and equal keys must have equal hashes
+  - Strings and numbers qualify; lists and dictionaries do not
+  - A tuple is hashable only when every item is hashable
+- Values can be any object; assigning an equal key replaces its value
 
 ```python
-dict1 = {"Albert": 2341, "Robert": 9102, "Albert": 3258}
-print(dict1["Albert"])  # Result : 3258
+extensions = {("Albert", "Einstein"): 2341}
+print(extensions[("Albert", "Einstein")])  # 2341
 ```
 
-- Strings, numbers, or tuples can be dictionary keys :
-  - But something like `['Name']` is not allowed since a list is mutable
+- An immutable tuple can contain an unhashable list :
 
 ```python
-dict1 = {["Albert"]: 2341, "Robert": 9102}
+hash(("Albert", []))  # TypeError: unhashable type: 'list'
 ```
-
-- Result : `TypeError: cannot use 'list' as a dict key (unhashable type: 'list')`
 
 ---
 

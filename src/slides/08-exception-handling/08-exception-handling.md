@@ -377,6 +377,35 @@ except NetworkError as e:
 
 ---
 
+# Testing an Expected Exception
+
+- `pytest.raises` checks that the indented code raises the expected exception :
+  - The test fails if no exception is raised or a different type is raised
+  - `with` limits the check to that block and handles the expected exception
+
+```python
+import pytest
+
+
+def divide(a: float, b: float) -> float:
+    return a / b
+
+
+def test_divide_by_zero() -> None:
+    with pytest.raises(ZeroDivisionError):
+        divide(10, 0)
+```
+
+- Run this demo from its folder with the test runner installed in Exercise 5 :
+
+```bash
+uv run pytest 11_pytest_raises.py
+```
+
+> `demo11 · pytest_raises`
+
+---
+
 # Summary : Exception Handling
 
 - Exceptions are events disrupting normal program flow :

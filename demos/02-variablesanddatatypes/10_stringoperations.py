@@ -3,7 +3,7 @@ str1 = "Hello World!"
 print(str1)  # Prints complete string
 print(str1[0])  # Prints first character of the string
 print(str1[-1])  # Prints last character of the string
-print(str1[2:5])  # Prints characters starting from 3rd to 6th
+print(str1[2:5])  # Prints characters starting from 3rd through 5th
 print(str1 * 2)  # Prints string two times
 print(str1 + "TEST")  # Prints concatenated string
 print(str1[::-1])  # Prints string backwards
