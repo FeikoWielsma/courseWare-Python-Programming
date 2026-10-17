@@ -80,7 +80,7 @@ game.guess("zzzzz")
 wordle.scoring.InvalidGuess: That word is not in the word list.
 ```
 
-Run `uv run pytest tests/test_game.py`. One of the three tests passes, the one that checks that a rejected guess leaves the history alone. The other two need the next steps.
+Run `uv run pytest tests/test_game.py`. One of the four tests passes, the one that checks that a rejected guess leaves the history alone. The other three need the next steps.
 
 :::hint
 The method has three lines of real work : `check_guess(word, self.words)`, then `marks = score_guess(self.secret, word)`, then an `append` of the pair `(word, marks)` to `self.history`. Return `marks`.
@@ -157,7 +157,7 @@ AttributeError: property 'is_won' of 'Game' object has no setter
 :::
 
 :::hint
-`guesses_left` is `self.max_guesses - len(self.history)`. `is_over` is `self.is_won` or no guesses left; one property can use another.
+`guesses_left` is `self.max_guesses - len(self.history)`. `is_over` is `self.is_won` or no guesses left; one property can use another. Test for `<= 0` rather than `== 0`, so that a game that somehow has more guesses than its limit counts as over too.
 :::
 
 :::solution
@@ -170,7 +170,7 @@ AttributeError: property 'is_won' of 'Game' object has no setter
     @property
     def is_over(self) -> bool:
         """Return whether the game was won or has no guesses left."""
-        return self.is_won or self.guesses_left == 0
+        return self.is_won or self.guesses_left <= 0
 
     @property
     def guesses_left(self) -> int:
@@ -193,10 +193,10 @@ print(game.max_guesses, game.guesses_left, game.is_over)
 
 ```text
 0 0 True
--3 -3 False
+-3 -3 True
 ```
 
-The first game is over before it starts, and the second can never end : `guesses_left` is below zero, but only `0` counts as out of guesses. The class has no way to stop either. This is the situation the slide *When a Plain Attribute Is Not Enough* is about.
+Both games are over before they start, and the second one claims to have minus three guesses left. The class has no way to stop either. This is the situation the slide *When a Plain Attribute Is Not Enough* is about.
 
 The fix is to turn `max_guesses` into a property with a setter, and to let the setter refuse values that are not between 1 and 10. Here are the signatures. Both methods are called `max_guesses`, and the second is decorated with `@max_guesses.setter` :
 
@@ -237,7 +237,7 @@ Assign to `self._max_guesses` in the setter, with the underscore. `self.max_gues
 :::output
 ```text
 .                                                                        [100%]
-1 passed, 2 deselected in 0.03s
+1 passed, 3 deselected in 0.03s
 ```
 
 That is the run of `uv run pytest tests/test_game.py -k max_guesses`.
@@ -295,7 +295,7 @@ Now let `play` do less. Change it so that it creates a `Game` and loops until th
 - after the loop, `game.is_won` decides the message : `Got it in N!` after a win, and `The word was ...` after a loss
 - return `len(game.history), game.is_won`, the same two values as in Exercise 10, so that `__main__` still has what it needs for `record_game`
 
-Run `uv run pytest`. All three tests of `tests/test_game.py` pass now, and so does the rest of the project. Then play a game with `WORDLE_SECRET=crane`; it must behave as before.
+Run `uv run pytest`. All four tests of `tests/test_game.py` pass now, and so does the rest of the project. Then play a game with `WORDLE_SECRET=crane`; it must behave as before.
 
 :::hint
 The loop body shrinks to : read the guess, handle the commands, `check_guess` and `marks = game.guess(guess)` inside `try`, update `used_letters`, print `render(guess, marks)`. The win test and the counter are gone, because the loop condition and `game.is_won` now know.

@@ -1,5 +1,7 @@
 """Run one Wordle game."""
 
+from contextlib import closing
+
 from wordle.display import render
 from wordle.scoring import InvalidGuess, check_guess, score_guess
 from wordle.solver import best_guess, candidates
@@ -47,7 +49,7 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> tuple[int, bool
 
 def print_stats() -> None:
     """Print database totals, a guess chart and the current winning streak."""
-    with connect() as connection:
+    with closing(connect()) as connection:
         totals = summary(connection)
     print(
         f"Games played: {totals['played']}; won: {totals['won']}; "

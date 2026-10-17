@@ -16,18 +16,16 @@ def connect(path: str = "wordle.db") -> sqlite3.Connection:
             won INTEGER
         )"""
     )
-    connection.commit()
     return connection
 
 
 def record_game(connection: sqlite3.Connection, secret: str, guesses: int, won: bool) -> None:
-    """Insert one game using a parameterized statement."""
+    """Insert one game using a parameterized statement; the caller commits."""
     played_at = datetime.now().isoformat(timespec="seconds")
     connection.execute(
         "INSERT INTO games (played_at, secret, guesses, won) VALUES (?, ?, ?, ?)",
         (played_at, secret, guesses, int(won)),
     )
-    connection.commit()
 
 
 def summary(connection: sqlite3.Connection) -> dict:
@@ -35,11 +33,10 @@ def summary(connection: sqlite3.Connection) -> dict:
     played, won = connection.execute(
         "SELECT COUNT(*), COALESCE(SUM(won), 0) FROM games"
     ).fetchone()
-    distribution = dict(
-        connection.execute(
-            "SELECT guesses, COUNT(*) FROM games WHERE won = 1 GROUP BY guesses ORDER BY guesses"
-        ).fetchall()
-    )
+    rows = connection.execute(
+        "SELECT guesses, COUNT(*) FROM games WHERE won = 1 GROUP BY guesses ORDER BY guesses"
+    ).fetchall()
+    distribution = dict(rows)
     streak = 0
     for (game_won,) in connection.execute("SELECT won FROM games ORDER BY id DESC"):
         if not game_won:

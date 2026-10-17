@@ -1,5 +1,7 @@
 """Run one Wordle game."""
 
+from contextlib import closing
+
 from wordle.display import render
 from wordle.scoring import InvalidGuess, check_guess, score_guess
 from wordle.solver import best_guess, candidates
@@ -37,7 +39,7 @@ class Game:
     @property
     def is_over(self) -> bool:
         """Return whether the game was won or has no guesses left."""
-        return self.is_won or self.guesses_left == 0
+        return self.is_won or self.guesses_left <= 0
 
     @property
     def guesses_left(self) -> int:
@@ -95,7 +97,7 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> tuple[int, bool
 
 def print_stats() -> None:
     """Print database totals, a guess chart and the current winning streak."""
-    with connect() as connection:
+    with closing(connect()) as connection:
         totals = summary(connection)
     print(
         f"Games played: {totals['played']}; won: {totals['won']}; "
