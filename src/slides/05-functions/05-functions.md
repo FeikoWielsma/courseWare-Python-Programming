@@ -8,45 +8,41 @@ footer: Functions
 
 # Functions
 
-- Blocks of reusable code performing some action :
-  - Python has many built-in functions like `print(),input(),len()` etc.
-  - It is also possible to create user-defined functions
-- Functions have the following benefits :
-  - Modularity of applications and code reuse
-- Rules to define a function in Python :
-  - Function blocks begin `def` followed by function name and parentheses
-  - Any input parameters or arguments should be placed within parentheses
-  - It is also possible to define parameters inside these parentheses
-- Code block within every function :
-  - Starts with a colon (:) and is indented
-- Statement `return [expression]` exits a function :
-  - Optionally passing back an expression to the caller
-  - A return statement with no arguments is the same as return `None`
+- Named blocks of reusable code :
+  - Python includes many built-in functions such as `print()`, `input()`, `len()`
+  - Programs define their own functions with `def`
+- Functions provide modularity and code reuse :
+  - A task is written and tested once, then called from multiple places
+- Defining a function :
+  - Starts with `def`, the function name, and parentheses for parameters
+  - The header line ends with a colon `:`, and the body is indented
+- Exiting a function :
+  - The `return` statement leaves the function and passes a value back
+  - A function without a `return`, or a bare `return`, returns `None`
 
 ---
 
 # Function Syntax
 
-- First statement of function can be documentation string of function :
-  - docstrings are picked up by documentation tool `pdoc`
-  - Installed by `uv add pdoc3` and used with `pdoc --html <module>`
+- The first statement can be a documentation string (docstring) :
+  - Explains what the function does and what parameters it expects
+  - Documenting tools such as `pdoc` extract docstrings into HTML
 
 ```python
-def function_name(parameter: type, ...) -> return_type:
-    """function_docstring"""
-    function_statements
+def function_name(parameter: type) -> return_type:
+    """function docstring"""
+    statement(s)
     return expression
 ```
 
-- By default :
-  - Parameters have a positional behavior
-  - Should pass them in the same order that they were defined
-- Example of a simple Python function :
-  - Takes a string as input parameter and prints it on standard screen
+- Positional parameters :
+  - By default, arguments are passed in the order they are defined
+- Example of a simple function :
+  - Accepts a string and prints it to standard output
 
 ```python
 def show_message(message: str) -> None:
-    """This prints a passed string into this function"""
+    """Print the passed string."""
     print(message)
 ```
 
@@ -83,12 +79,11 @@ def average(values: list[float]) -> float:
 
 # Calling Functions
 
-- Execute functions by calling them :
-  - From another function or directly from the Python prompt
-  - If functions specify parameters, it is required to pass them
-- Function must be defined before they can be called :
-  - Order of definition and call is important
-- Example of calling the previously defined `show_message()` function :
+- A function is invoked by its name followed by parentheses :
+  - Any required arguments are placed inside the parentheses
+- Functions must be defined before they are called :
+  - Python executes line by line, so definitions must come before use
+- Calling `show_message()` :
 
 ```python
 show_message("First call to user defined function!")
@@ -96,7 +91,7 @@ show_message("Again second call to the same function")
 show_message()  # results in error
 ```
 
-- Result :
+- Output :
 
 ```text
 First call to user defined function!
@@ -112,12 +107,14 @@ TypeError: show_message() missing 1 required positional argument: 'message'
 
 ---
 
-# Pass by Value
+# Passing Object References
 
-- Python passes function parameters by value :
-  - Parameter in function is copy of variable in caller and refers to same object
-  - Change to object via parameter in function is seen by variable in function's caller
-  - Mutable and immutable objects behave differently
+- Python passes arguments by object reference :
+  - The parameter inside the function is bound to the same object as the caller's argument
+  - Both names refer to the identical object in memory
+- Mutating an object affects the caller :
+  - Modifying a mutable object (such as a list) in place is visible outside
+  - Immutable objects (such as integers or strings) cannot be modified in place
 
 ```python
 def change_me1(mylist: list[int]) -> None:
@@ -125,7 +122,7 @@ def change_me1(mylist: list[int]) -> None:
     print("List inside the function change_me1:", mylist)
 ```
 
-- Call to `change_me1` function :
+- Calling `change_me1` :
 
 ```python
 my_list_outer = [10, 20, 30]
@@ -133,29 +130,31 @@ change_me1(my_list_outer)
 print("List outside the function:", my_list_outer)
 ```
 
-- Reference of passed object is used to append values :
+- The caller sees the item added to the list :
 
 ```text
 List inside the function change_me1: [10, 20, 30, 40]
 List outside the function: [10, 20, 30, 40]
 ```
 
-> `demo02 · passbyvalue`
+> `demo02 · objectreferences`
 
 
 ---
 
 # Overwriting References
 
-- Reference may be overwritten in the function :
+- Rebinding a parameter does not affect the caller :
+  - Assigning to the parameter name creates a new local binding
+  - The caller's variable continues to refer to the original object
 
 ```python
 def change_me2(mylist: list[int]) -> None:
-    mylist = [1, 2, 3, 4]  # This would assign new reference
+    mylist = [1, 2, 3, 4]  # rebinds the local name
     print("Values inside the function change_me2:", mylist)
 ```
 
-- Call `change_me2` function :
+- Calling `change_me2` :
 
 ```python
 my_list_outer = [10, 20, 30]
@@ -163,17 +162,12 @@ change_me2(my_list_outer)
 print("Values outside the function:", my_list_outer)
 ```
 
-- Parameter `mylist` is changed in the function `change_me2` :
-  - Changing `mylist` within the function does not affect `my_list_outer`
-  - Function does nothing to original list and finally this would produce following result :
+- The caller's list is unchanged :
 
 ```text
 Values inside the function change_me2: [1, 2, 3, 4]
 Values outside the function: [10, 20, 30]
 ```
-
-- Changing immutable references :
-  - Always results in new objects and is true for Strings and Numbers
 
 > `demo03 · overwritingreferences`
 
@@ -234,21 +228,17 @@ Values outside the function: [10, 20, 30]
 
 # Function Arguments
 
-- Functions can be called with different types of arguments
-- Required arguments :
-  - Passed to a function in correct positional order
-  - Number of arguments in call should match exactly with the definition
+- Python supports several styles of function arguments :
+- Positional arguments :
+  - Passed to a function in order matching the parameter list
 - Keyword arguments :
-  - Caller identifies arguments by name and allows parameters to be out of order
-  - Python interpreter is able to use the keywords to match the values with parameters
+  - Passed by name (`name=value`), allowing arguments to be given in any order
 - Default arguments :
-  - Assume default value if value is not provided in the function call for that argument
+  - Parameters that take a default value when omitted by the caller
 - Variable-length arguments :
-  - Sometimes more arguments must be processed than specified in function definition
-  - These are called variable-length arguments and are not named in function definition
+  - Accept an arbitrary number of positional or keyword arguments
 - Python does not support function overloading :
-  - Defining same method with different parameters
-  - Python is dynamically typed and supports optional arguments
+  - Defining the same function name multiple times with different signatures replaces the earlier definition
 
 > `demo05 · power1`
 
@@ -260,18 +250,18 @@ Values outside the function: [10, 20, 30]
 
 ```python
 def print_info(name: str, age: int) -> None:
-    """This prints name and age passed into this function"""
+    """Print the name and age passed to this function."""
     print("Name:", name)
     print("Age:", age)
 ```
 
-- Function call with keyword arguments :
+- Calling with keyword arguments :
 
 ```python
 print_info(age=55, name="Albert")
 ```
 
-- Result :
+- Output :
 
 ```text
 Name: Albert
@@ -279,7 +269,8 @@ Age: 55
 ```
 
 - Calling code specifies arguments by name :
-  - Parameters do not have to follow the order in the function definition
+  - Positional order does not need to be followed
+  - Positional arguments must appear before keyword arguments
 
 > `demo06 · keywordarguments`
 
@@ -288,30 +279,32 @@ Age: 55
 
 # Default Arguments
 
-- Function definition :
+- Default values provide a fallback when an argument is omitted :
 
 ```python
 def print_info(name: str, age: int = 35) -> None:
-    """This prints name and age passed into this function"""
+    """Print name and age, defaulting age to 35."""
     print("Name:", name)
     print("Age:", age)
 ```
 
-- Functions calls with and without default arguments :
+- Calling with and without the default argument :
 
 ```python
 print_info(age=55, name="Albert")
 print_info(name="Werner")
 ```
 
-- Results :
+- Output :
 
-```python
+```text
 Name: Albert
 Age: 55
 Name: Werner
 Age: 35
 ```
+
+- Parameters without defaults cannot follow parameters with defaults
 
 > `demo07 · defaultarguments`
 
@@ -320,24 +313,19 @@ Age: 35
 
 # Variable Length Arguments
 
-- Syntax for function with variable arguments :
+- `*args` gathers extra positional arguments into a tuple :
+  - Commonly used when a function accepts any number of items
+- `**kwargs` gathers extra keyword arguments into a dictionary :
+  - Commonly used for configuration or passing options through
 
 ```python
-def show_arg_lists(arg: int, *arg_tuple: int, **kwargs: int) -> None:
-    """Function referencing argument, argument list and keyword arguments"""
-    print("arg:", arg)
-    print("args:", arg_tuple)
+def show_arg_lists(arg: int, *args: int, **kwargs: int) -> None:
+    """Demonstrate positional and keyword variable-length arguments."""
+    print("arg   :", arg)
+    print("args  :", args)
     print("kwargs:", kwargs)
-```
 
-- `*args_tuple :`
-  - Asterisk (*) indicates variable holding values of all non-keyword variable arguments
-  - Tuple remains empty if no additional arguments are specified during function call
-- `**args_keywords :`
-  - Double asterisk (**) indicates a variable-length argument list with keywords
-  - Dictionary remains empty if no keyword arguments are passed
 
-```python
 show_arg_lists(1, 2, 3, 4, 5, x=1, y=2)
 show_arg_lists(33, x=8, y=9)
 show_arg_lists(44)
@@ -348,48 +336,32 @@ show_arg_lists(44)
 
 ---
 
-# Anonymous Functions
+# Lambda Functions
 
-- `lambda` keyword is used to create small anonymous functions :
-  - Not declared in the standard manner by using the `def` keyword
-- Lambda form can take any number of arguments :
-  - Return just one value in the form of an expression
-  - Cannot contain commands or multiple expressions
-- Characteristics of lambda functions :
-  - Have their own local namespace, and can read names from enclosing scopes
-  - The body is a single expression, so no assignments, loops or `return`
-  - Can be passed to and returned from functions, which is where they are useful
-- Lambdas are best kept short and passed straight to another function :
-  - `sorted(words, key=lambda w: w[-1])` rather than naming them with `=`
-
----
-
-# Syntax Lambda Functions
-
-- Lambda functions contain only a single statement :
-
-```text
-lambda [arg1 [,arg2,.....argn]]:expression
-```
-
-- Function definition :
+- The `lambda` keyword creates a small anonymous function inline :
+  - Has no `def` statement and no name of its own
+  - The body is a single expression evaluated and returned automatically
+  - Cannot contain statements, loops or assignments
+- Best framed as a small function passed to another function :
+  - `sorted(key=...)` is the classic use case
 
 ```python
-summation = lambda arg1, arg2: arg1 + arg2
+words = ["banana", "pie", "Washington", "book"]
+
+# Sort by last letter
+by_last = sorted(words, key=lambda w: w[-1])
+print("By last letter  :", by_last)
+
+# Sort case-insensitively
+by_case = sorted(words, key=lambda w: w.lower())
+print("Case-insensitive:", by_case)
 ```
 
-- Function call :
-
-```python
-print("Value of total :", summation(10, 20))
-print("Value of total :", summation(20, 20))
-```
-
-- Result :
+- Output :
 
 ```text
-Value of total : 30
-Value of total : 40
+By last letter  : ['banana', 'pie', 'book', 'Washington']
+Case-insensitive: ['banana', 'book', 'pie', 'Washington']
 ```
 
 > `demo09 · lambdafunctions`
@@ -399,30 +371,26 @@ Value of total : 40
 
 # return Statement
 
-- `return [expression]` exits a function :
-  - Optionally passing back an expression to the caller
-  - `return` statement with no arguments is the same as return `None`
-  - `return` statement is not required and then default return value is `None`
+- Exits a function and optionally passes a value back to the caller :
+  - A function without a `return`, or a bare `return`, returns `None`
 - Function definition :
 
 ```python
 def summation(arg1: int, arg2: int) -> int:
-    """Add both the parameters and return them"""
+    """Add both parameters and return the sum."""
     tot = arg1 + arg2
     print("Inside the function :", tot)
     return tot
 ```
 
-- Function call :
+- Calling `summation` :
 
 ```python
 total = summation(10, 20)
 print("Outside the function :", total)
 ```
 
-- Result :
-
-
+- Output :
 
 ```text
 Inside the function : 30
@@ -435,9 +403,10 @@ Outside the function : 30
 
 # Scope of Variables
 
-- Accessibility of variable depends on where it is declared :
-  - Scope determines where in program you can access a particular identifier
-- A name is looked up in four places, in this order :
+- Scope determines where an identifier can be accessed :
+  - Variables created inside a function are local to that function
+  - Variables created outside any function belong to the module's global scope
+- Python looks up names in four scopes, in LEGB order :
 
 ```mermaid
 flowchart LR
@@ -446,50 +415,36 @@ flowchart LR
   C --> D[Built-in<br/>len, print, range]
 ```
 
-- The first place that has the name wins, the rest are never consulted
-- Global versus Local variables :
-  - Variables defined inside a function body have a local scope
-  - Variables defined outside have a global scope
+- The first scope that contains the name wins; the rest are not searched
 - Local variables :
-  - Can be accessed only inside the function in which they are declared
-  - When you call a function, the variables declared inside it are brought into scope
+  - Exist only while the function is executing
+  - Cannot be read or modified from outside the function
 - Global variables :
-  - Can be accessed throughout the program body by all functions
-  - Refer to global instead of a local variable inside function with `global` keyword
+  - Can be read from anywhere within the module
+  - Modifying a global variable inside a function requires the `global` keyword
 
 ---
 
 # Example Variable Scope
 
+- Global variables are shadowed by local bindings unless declared `global` :
 
 ```python
-x = 50  # This is a global variable
-y = 50  # This is a global variable
-```
+x = 50
+y = 50
 
-- Function definitions :
-
-```python
 def func1() -> None:
     x = 2
-    print("Changed local x to", x)  # prints 2
+    print("Local x   :", x)
+
 def func2() -> None:
-    print("Access global x as", x)
-def func3() -> None:
     global y
     y = 2
-    print("Changed global y to", y)  # prints 2
-```
 
-- Function calls :
-
-```python
-func1()  # prints 2
-print("x is still", x)  # prints 50
-func2()  # prints 50
-print("x is still", x)  # prints 50
-func3()  # prints 2
-print("Value of y is", y)  # prints 2
+func1()
+print("x is still:", x)  # 50: global x unchanged
+func2()
+print("y is now  :", y)  # 2: global y modified
 ```
 
 > `demo11 · variablescope`
@@ -498,19 +453,15 @@ print("Value of y is", y)  # prints 2
 
 # Summary : Functions
 
-- Functions are blocks of reusable code performing some action :
-  - Python has built-in functions and it is possible to create user-defined functions
-- Python functions are defined with the `def` statement :
-  - They can accept parameters, have a code block and a return statement
-- Python passes function parameters by value :
-  - Parameter in function refers to same object as in caller
-- Functions can be called with different types of arguments :
-  - Required, Keyword, Default and Variable-length arguments
-- `lambda` keyword is used to create small anonymous functions :
-  - Return value as an expression, cannot contain commands or multiple expressions
-- Local variables :
-  - Variables defined inside a function body have a local scope
-- Global variables :
-  - Variables defined outside functions have a global scope
+- Functions are reusable blocks of code defined with `def` :
+  - Parameters and return types are documented with type annotations
+- Python passes arguments by object reference :
+  - Mutating an argument affects the caller; rebinding a parameter name does not
+- Flexible argument handling :
+  - Positional, keyword, default values, `*args` and `**kwargs`
+- Small anonymous functions use `lambda` :
+  - Ideal as short key functions passed to `sorted()`
+- Variables follow LEGB scope lookup :
+  - Local, Enclosing, Global and Built-in scopes
 
 > `exercise05 · Functions`

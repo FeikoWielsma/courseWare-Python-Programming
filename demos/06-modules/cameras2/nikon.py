@@ -1,2 +1,2 @@
-def nikon_info():
+def nikon_info() -> None:
     print("Nikon camera")
