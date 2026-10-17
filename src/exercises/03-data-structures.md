@@ -1,6 +1,6 @@
 # Exercise 3 : Data Structures
 
-So far the game knows one word, `crane`, and forgets every guess the moment it has printed it. A real game picks its secret from a list of words, and keeps track of what each guess has ruled out. In this exercise you load the word list and use lists, sets, tuples and dictionaries to answer questions about a guess. It takes about an hour.
+So far the game knows one word, `crane`, and forgets every guess the moment it has printed it. A real game picks its secret from a list of words, and keeps track of what each guess has ruled out. In this exercise you load the word list and use lists, sets, tuples and dictionaries to answer questions about a guess.
 
 Continue in your own `wordle` project, or start from `exercises/starters/03-data-structures/`, which is the finished Exercise 2 with the word list. This exercise starts a new script in `wordle.py`; Exercise 2's table is not needed again. Run the program after every step with :
 
@@ -62,14 +62,14 @@ print(f"Letters ruled out: {ruled_out_letters}")
 print(f"Letters not tried: {not_tried}")
 ```
 
-The slide *Set Operations* shows the operators.
+`string.ascii_lowercase` is the string `"abcdefghijklmnopqrstuvwxyz"`, the alphabet the third set starts from.
 
 :::hint
-`&` gives the items that are in both sets, and `-` gives the items of the first set that are not in the second.
+The slide *Set Operations* shows the operators : `&` gives the items that are in both sets, and `-` gives the items of the first set that are not in the second.
 :::
 
 :::hint
-`string.ascii_lowercase` is the string `"abcdefghijklmnopqrstuvwxyz"`. Make a set of it the same way as of a word. `sorted` accepts a set and returns a list, which is why the result prints in alphabetical order.
+Make a set of `string.ascii_lowercase` the same way as of a word. `sorted` accepts a set and returns a list, which is why the result prints in alphabetical order.
 :::
 
 :::output
@@ -106,6 +106,10 @@ print(f"Guess and ruled-out letters: {ruled_out}")
 ```
 
 A tuple cannot be changed once it is made. See that for yourself : add the line `ruled_out[0] = "wrong"` below the tuple, run the program, and read the last line of the error. It is a `TypeError` that says a `tuple` does not support item assignment. Then turn the line into a comment, so the program runs again and the reader can still see what you tried.
+
+:::hint
+`demo01 · lists` starts with an empty list, the slide *List Functions and Methods* has `append`, and *Tuples* shows how a tuple is written.
+:::
 
 :::hint
 `[]` is an empty list, and `append` adds one item at the end. A tuple is written as values separated by commas, usually in brackets.
@@ -148,11 +152,15 @@ print(f"Stats: {stats}; streak: {stats.get('streak', 0)}")
 `stats["streak"]` would stop the program with a `KeyError`, because the key does not exist. `get` returns the second argument instead. The slide *Dictionary Functions and Methods* lists `get`.
 
 :::hint
+The slide *Dictionaries* shows a dictionary written out with its keys and values, and *Accessing Values in Dictionary* changes the value under a key.
+:::
+
+:::hint
 `stats["played"] += 1` adds one to the value stored under `"played"`.
 :::
 
 :::hint
-There is no `if` yet, and you do not need one. `guess == secret` is `True` or `False`, and `int(True)` is 1 while `int(False)` is 0.
+There is no `if` yet, and you do not need one. `guess == secret` is `True` or `False`, and as the slide *Type Conversions* says, a Boolean behaves like 0 and 1 : `int(True)` is 1 while `int(False)` is 0.
 :::
 
 :::output

@@ -21,3 +21,14 @@ saying what it does.
   shows only `!r`. Moved into the step : the skeleton now carries `!s` and one
   sentence says what it does. The hint that taught it is gone.
 - Step 3 : new first hint (*String Operations*, *Built-in String Methods*).
+
+## Exercise 3
+
+- Intro : removed "It takes about an hour." (no timings).
+- Step 2 : *Set Operations* moved from the step text into the first hint.
+  `string.ascii_lowercase` was taught in a hint and is on no slide or demo; now given
+  in the step with one sentence. Step 1's `random.choice` / `random.seed` are given as
+  code with an explanation already.
+- Step 3 : new first hint (`demo01 · lists`, *List Functions and Methods*, *Tuples*).
+- Step 4 : new first hint (*Dictionaries*, *Accessing Values in Dictionary*); the
+  `int(True)` hint now names *Type Conversions*, which says a bool behaves as 0 and 1.
