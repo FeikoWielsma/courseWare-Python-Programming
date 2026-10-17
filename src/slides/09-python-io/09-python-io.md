@@ -56,8 +56,8 @@ file_object = open(file, mode="r", buffering=-1, encoding=None)
   - Determines mode in which the file has to be opened, read, write, append etc.
   - `t` for text mode is default and optional, `b` is for byte mode
 - `buffering` :
-  - If buffering value is set to 0, no buffering will take place
-  - If buffering value is 1, line buffering will be performed while accessing file
+  - `0` disables buffering, but is allowed only in binary mode
+  - `1` enables line buffering in text mode
   - If buffering > 1 : Buffering performed with indicated buffer size
 
 ---
