@@ -32,7 +32,7 @@ print(f"Secret: {secret.upper()}    Guess: {guess.upper()}")
 
 `input` always returns a string. `.strip()` removes the spaces a player types by accident around the word, and `.lower()` makes `Slate` and `slate` the same guess. Each method returns a new string, so they can be chained.
 
-In the banner, `:*^28` is a format specification : centre the text (`^`) in 28 characters, and fill the space on both sides with `*`. Run the program and type `  Slate ` with the spaces :
+In the banner, `:*^28` is a format specification : centre the text (`^`) in 28 characters, and fill the space on both sides with `*`. The slides *f-Strings* and *Format Specifications* show the other options. Run the program and type `  Slate ` with the spaces :
 
 ```text
 Your guess:   Slate 
