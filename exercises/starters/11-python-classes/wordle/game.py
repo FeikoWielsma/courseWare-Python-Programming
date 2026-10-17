@@ -3,12 +3,12 @@
 from wordle.display import render
 from wordle.scoring import InvalidGuess, check_guess, score_guess
 from wordle.solver import best_guess, candidates
-from wordle.stats import connect, record_game, summary
+from wordle.stats import connect, summary
 from wordle.words import load_allowed
 
 
-def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
-    """Play one game and return whether the player found the secret."""
+def play(secret: str, words: list[str], max_guesses: int = 6) -> tuple[int, bool]:
+    """Play one game and return the guesses used and whether the secret was found."""
     used_letters = set()
     history = []
     guess_count = 0
@@ -40,13 +40,9 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
         print(render(guess, marks))
         if guess == secret:
             print(f"Got it in {guess_count}!")
-            with connect() as connection:
-                record_game(connection, secret, guess_count, True)
-            return True
+            return guess_count, True
     print(f"The word was {secret.upper()}.")
-    with connect() as connection:
-        record_game(connection, secret, guess_count, False)
-    return False
+    return guess_count, False
 
 
 def print_stats() -> None:
