@@ -421,7 +421,8 @@ flowchart LR
   - Cannot be read or modified from outside the function
 - Global variables :
   - Can be read from anywhere within the module
-  - Modifying a global variable inside a function requires the `global` keyword
+  - Rebinding a global name inside a function requires `global`
+  - Mutating the object it names, such as calling `items.append(x)`, does not
 
 ---
 
