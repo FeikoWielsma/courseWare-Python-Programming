@@ -21,7 +21,7 @@ Recorded from the trainer, not up for re-litigation by an agent :
 | D3 | Steps vary in how much they give (code given / skeleton / signature and tests), because skill levels in a group of 1 to 4 vary a lot. **The ★ / ★★ / ★★★ labels were dropped on 2026-10-18 at the trainer's request** : the variation stays, unlabelled. Where this plan still says ★, read it as the kind of help, not a label. |
 | D4 | ~~Answers go in the house `<details>` block.~~ **Superseded by D12.** The prototype still uses `<details>` until WP0 lands, then converts. |
 | D5 | The calculator spine is **archived** in `archive/calculator/`, not built, linted or shipped. Done. |
-| D6 | **pytest, not unittest**, wherever tests appear. PRG400 uses pytest as a tool (run given tests, write plain `assert` tests). Fixtures, parametrize in depth, mocking and TDD stay in Advanced. |
+| D6 | **pytest, not unittest**, wherever tests appear. PRG400 uses pytest as a tool (run given tests, write plain `assert` tests). Fixtures, parametrize in depth, mocking and TDD stay in Advanced. *Note (2026-10-18) : tests are appendix-only (Exercise 13); tests for CI live in `build/solution-tests/`.* |
 | D7 | **Advanced Python owns** : inheritance in depth, generators, decorators, `dataclass`, `collections` in depth, pytest in depth. Overlap of a slide or two is fine where it serves this course. |
 | D8 | **f-strings everywhere.** `%` formatting and `str.format` are mentioned once, as things to recognise in older code. |
 | D9 | **Properties are re-taught.** No `get_x`/`set_x`, no `property(get, set)`. See section 6. |

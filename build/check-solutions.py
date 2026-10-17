@@ -27,11 +27,18 @@ STAGES = [
 ]
 
 
-def run(command: list[str], stage: Path, stdin: str = "") -> str:
+def run(
+    command: list[str],
+    stage: Path,
+    stdin: str = "",
+    env_extra: dict[str, str] | None = None,
+) -> str:
     """Run a command in a stage and return its standard output."""
     environment = os.environ.copy()
     environment.pop("VIRTUAL_ENV", None)
     environment["WORDLE_SECRET"] = "crane"
+    if env_extra:
+        environment.update(env_extra)
     result = subprocess.run(
         command,
         cwd=stage,
@@ -80,20 +87,47 @@ def main() -> int:
             print(f"missing solution: {stage.relative_to(ROOT)}")
             failures += 1
             continue
-        test_files = [
-            path for path in stage.rglob("test_*.py")
-            if ".venv" not in path.parts and "__pycache__" not in path.parts
-        ]
-        if test_files:
-            try:
-                test_output = run(["uv", "run", "pytest", "-q"], stage)
-                match = re.search(r"(\d+) passed", test_output)
-                count = match.group(1) if match else "unknown number of"
-                print(f"{name}: pytest passed ({count} tests)")
-            except RuntimeError as error:
-                print(error)
-                failures += 1
         number = int(name[:2])
+        if number == 13:
+            test_files = [
+                path
+                for path in stage.rglob("test_*.py")
+                if ".venv" not in path.parts and "__pycache__" not in path.parts
+            ]
+            if test_files:
+                try:
+                    test_output = run(["uv", "run", "pytest", "-q"], stage)
+                    match = re.search(r"(\d+) passed", test_output)
+                    count = match.group(1) if match else "unknown number of"
+                    print(f"{name}: pytest passed ({count} tests)")
+                except RuntimeError as error:
+                    print(error)
+                    failures += 1
+        else:
+            test_dir = ROOT / "build" / "solution-tests" / name
+            if test_dir.is_dir():
+                try:
+                    test_output = run(
+                        [
+                            sys.executable,
+                            "-m",
+                            "pytest",
+                            "-q",
+                            str(test_dir),
+                            "--rootdir",
+                            str(stage),
+                            "-o",
+                            f"pythonpath={stage}",
+                        ],
+                        stage,
+                        env_extra={"PYTHONPATH": str(stage)},
+                    )
+                    match = re.search(r"(\d+) passed", test_output)
+                    count = match.group(1) if match else "unknown number of"
+                    print(f"{name}: pytest passed ({count} tests)")
+                except RuntimeError as error:
+                    print(error)
+                    failures += 1
         if number >= 12:
             try:
                 run(["uv", "run", "mypy", "wordle"], stage)
