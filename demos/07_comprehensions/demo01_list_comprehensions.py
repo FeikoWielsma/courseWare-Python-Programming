@@ -1,0 +1,5 @@
+numbers: list[int] = [1, 2, 3, 4, 5]
+doubled = [number * 2 for number in numbers]
+print(doubled)  # [2, 4, 6, 8, 10]
+labels = [str(number) for number in numbers]
+print(labels)  # ['1', '2', '3', '4', '5']

@@ -36,21 +36,17 @@ graph LR
 # Python Features
 
 - Broad standard library :
-  - Bulk of the library is cross portable on UNIX, Windows, and Macintosh
+  - Files, paths, dates, JSON, CSV, regular expressions, SQLite and testing out of the box
 - Portable :
-  - Python runs on a wide variety of platforms and has same interface on all platforms
+  - The same code runs on Linux, Windows and macOS
+- Large ecosystem :
+  - Hundreds of thousands of packages on PyPI, installed with `uv add`
+- Used across many fields :
+  - Automation and scripting, web back ends, data analysis, machine learning, testing
 - Extendable :
-  - Python allows the addition of low-level modules to the Python interpreter
-- Databases :
-  - Python provides interfaces to all major commercial databases
-- GUI Programming :
-  - Python supports GUI applications that can be ported to many system calls
-- Web Applications :
-  - Django and Flask Framework allow building of Python Web Applications
-- Scalable :
-  - Python provides better structure and support for large programs than shell scripting
-- Supports automatic garbage collection :
-  - Can be easily integrated with C, C++, COM, ActiveX, CORBA, and Java
+  - Performance-critical parts can be written in C or Rust and called from Python
+- Automatic memory management :
+  - Objects are freed by reference counting and a garbage collector, not by hand
 
 ---
 
@@ -59,13 +55,13 @@ graph LR
 - Python was developed by Guido van Rossum around 1990 at :
   - National Research Institute for Mathematics and Computer Science in Netherlands
 - Python is derived from many other languages :
-  - Including Modula-3, C, C++,SmallTalk, Unix shell and other scripting languages
+  - Including Modula-3, C, C++, Smalltalk, Unix shell and other scripting languages
 - Python is usable as :
   - Scripting language or compiled to byte-code for building large applications
 - Python is copyrighted and the source is open :
   - Released under the PSF License, a permissive licence that allows commercial use
-- Python is maintained by a development team at the institute :
-  - Development is now steered by the Python Steering Council and the community
+- Python is developed in the open by a community of core developers :
+  - The Python Software Foundation holds the rights, the Steering Council decides
 - Python supports :
   - Functional and structured programming methods as well as OOP
   - Very high-level dynamic data types and dynamic type checking
@@ -195,6 +191,8 @@ uv sync          # install exactly what uv.lock says
 uv remove requests
 ```
 
+- `--dev` marks a tool used while developing, not by the running program :
+  - `ruff` is such a tool; so is the test runner `pytest`, which the libraries appendix covers
 - There is no environment to activate :
   - `uv run` puts the project's `.venv` in front for the length of one command
 
@@ -204,18 +202,17 @@ uv remove requests
 
 # Running Python
 
-- Invoke Python interpreter from any particular directory :
-  - Add the Python directory to your path
+- Inside a project, `uv run python` starts the project's own interpreter :
+  - A plain `python` works too, where a Python is on the PATH
 - Interactive Interpreter :
-  - Start the Python interactive interpreter from command line by entering `python`
+  - Start the interactive interpreter by entering `uv run python` with no file
   - The interpreter answers with its `>>>` prompt, ready for a statement
-  - Script can be parameterized with command line arguments `C:\ python -h`
+  - `python -h` lists the command line options
 - Script from Command Line :
-  - A Python script can be executed at command line by invoking the interpreter
+  - A Python script is executed by passing its file name to the interpreter
 
-```text
-$ python script.py      # Linux
-C:> python script.py    # Windows
+```bash
+uv run python script.py
 ```
 
 - Integrated Development Environment :
@@ -228,13 +225,11 @@ C:> python script.py    # Windows
 
 # Python in Interactive Mode
 
-- Python language has many similarities to Perl, C, and Java :
-  - There are some definite differences between the languages
 - Start with Hello World Python program in interactive mode :
-  - Invoke the interpreter by typing `python` in a command prompt
+  - Invoke the interpreter by typing `uv run python` in a terminal
 
 ```text
-C:\> python
+C:\course-work> uv run python
 Python 3.14.0 (main, Oct  7 2025, 10:12:33) [MSC v.1942 64 bit (AMD64)] on win32
 Type "help", "copyright", "credits" or "license" for more information.
 >>> print("Hello, Python!")
@@ -254,22 +249,16 @@ Hello, Python!
   - The script begins execution and continues until it is finished
   - When the script is finished, the interpreter is no longer active
 - All Python files will have extension `.py` :
-  - Put the following source code in a `test.py` file
+  - Put the following source code in a `hello.py` file
 
 ```python
-print ("Hello, Python!")
+print("Hello, Python!")
 ```
 
 - Run the script as follows :
 
-```text
-C:\ python test.py
-```
-
-- In a Unix environment make file executable with `:`
-
 ```bash
-$ chmod +x test.py # set execute permission
+uv run python hello.py
 ```
 
 - This will produce following result :
@@ -323,41 +312,35 @@ uv run ruff format .         # lay the code out consistently
 
 # Python Identifiers
 
-- Names used to identify things in Python :
-  - Variable, function, class, module, or other object
-- Identifier Rules :
-  - Starts with a letter A to Z or a to z or an underscore (_)
-  - Followed by zero or more letters, underscores, and digits (0 to 9)
-  - Punctuation characters such as @, $, and % not allowed within identifiers
-- Python is a case sensitive programming language :
-  - `myVar` and `Myvar` are different
-- Naming conventions for Python :
-  - Class names start with uppercase letters, all other identifiers with lowercase letters
-  - Leading underscore is a weak private indicator :
-    - `from M import *` does not import objects with name starting with an underscore
-  - Two leading underscores indicates a strongly private identifier :
-    - Name mangling is applied to such identifiers by putting class name in front
-  - If identifier also ends with two trailing underscores :
-    - identifier is a language-defined special name
+- Identifiers are the names of variables, functions, classes and modules :
+  - Start with a letter or an underscore, followed by letters, digits and underscores
+  - Punctuation such as `@`, `$` and `%` is not allowed in a name
+- Python is case sensitive :
+  - `total` and `Total` are two different names
+- The naming conventions of PEP 8, the Python style guide :
+  - `snake_case` for variables, functions and modules
+  - `CapWords` for classes, `UPPER_CASE` for values meant as constants
+- Underscores carry meaning :
+  - A leading underscore, as in `_cache`, marks a name as internal to its module
+  - Names such as `__init__` with two underscores on both sides are defined by Python
 
 ---
 
 # Python Reserved Words
 
-- May not be used as constant or variable or other identifier name
+- Keywords may not be used as a variable, function or other name :
 
 ```text
-and exec not
-assert finally or
-break for pass
-class from print
-continue global raise
-def if return
-del import try
-elif in while
-else is with
-except lambda yield
+False    None     True     and      as       assert   async
+await    break    class    continue def      del      elif
+else     except   finally  for      from     global   if
+import   in       is       lambda   nonlocal not      or
+pass     raise    return   try      while    with     yield
 ```
+
+- `match`, `case`, `type` and `_` are soft keywords :
+  - Reserved only inside the statement they belong to, and usable as names elsewhere
+- The interpreter can list them : `import keyword` and print `keyword.kwlist`
 
 ---
 
@@ -369,7 +352,7 @@ except lambda yield
 
 ```python
 # First comment
-print ("Hello, Python!") # second comment
+print("Hello, Python!")  # second comment
 ```
 
 - Will produce following result :
@@ -381,7 +364,7 @@ Hello, Python!
 - Comment may be on same line after statement or expression :
 
 ```python
-name = "Einstein" # This is again comment
+name = "Einstein"  # This is again comment
 ```
 
 - Comment multiple lines as follows :
@@ -403,20 +386,20 @@ name = "Einstein" # This is again comment
   - All statements within the block must be indented the same amount
 
 ```python
-if True: # Both blocks in first example are fine
-    print ("True")
+if True:  # Both blocks in first example are fine
+    print("True")
 else:
-  print ("False")
+  print("False")
 
-if True: # Second line in second block will generate an error
-    print ("Answer")
-    print ("True")
+if True:  # Second line in second block will generate an error
+    print("Answer")
+    print("True")
 else:
-    print ("Answer")
-  print ("False")
+    print("Answer")
+  print("False")
 ```
 
-- `print()` without new line is written as `print ('hello python', end='')`
+- `print()` without new line is written as `print("hello python", end="")`
 - Semicolon ; allows multiple statements on single line
 
 > `demo04 · lines_and_identation`
@@ -431,15 +414,16 @@ else:
 
 ```python
 total = item_one + \
-          item_two + \
+        item_two + \
+        item_three
 ```
 
 - Statements contained within the `[], {},` or `()` brackets :
   - No need to use the line continuation character
 
 ```python
-days = ['Monday', 'Tuesday', 'Wednesday',
-                'Thursday', 'Friday']
+days = ["Monday", "Tuesday", "Wednesday",
+        "Thursday", "Friday"]
 ```
 
 - On a single line :
@@ -458,18 +442,18 @@ days = ['Monday', 'Tuesday', 'Wednesday',
   - Triple quotes can be used to span the string across multiple lines
 
 ```python
-print ('hello' + " " + '''world''')
+print('hello' + " " + '''world''')
 word = 'word'
 sentence = "This is a sentence."
 paragraph = """This is a paragraph. It is made up of
-                  multiple lines and sentences."""
+               multiple lines and sentences."""
 ```
 
 - Single quote in a single quoted string :
   - Displayed with an escape character \
 
 ```python
-'What \'s your name'
+print('That\'s a brave new world')
 ```
 
 > `demo06 · quotesandescapes`
@@ -486,8 +470,8 @@ paragraph = """This is a paragraph. It is made up of
 - `ruff` reports style and correctness problems without running the code
 - Python can be started in three different ways :
   - Interactive interpreter, script from the command line, from inside an IDE
-- Python is a case sensitive programming language :
-  - `my_var` and `My_var` are different
+- Python is case sensitive, and names follow PEP 8 :
+  - `snake_case` for variables and functions, `CapWords` for classes
 - Python uses line indentation to denote blocks of code :
   - No braces for class and function definitions or for flow control
 - The line continuation character (\) denotes that a line should continue

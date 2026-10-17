@@ -6,148 +6,22 @@ paginate: true
 footer: Comprehensions
 ---
 
-# Functional Programming
-
-- Programming style that is focused on expressions :
-  - Also called expression oriented programming
-- Python has functions and features enabling functional approach :
-  - `map, filter, reduce, lambda`
-  - `list comprehension`
-- `map(function, iterable) :`
-  - Applies operation to each item and collects the result
-- `filter(function, iterable)` :
-  - Extracts each element in the sequence for which function returns True
-- `reduce(function, iterable)` :
-  - Reduces list to single value by combining elements via supplied function
-  - In functools in Python 3.0
-- `lambda` :
-  - Small anonymous function consisting of single line
-
----
-
-# Map and Filter
-
-- Higher-order functions `map` and `filter` that operate on lists :
-
-```python
-def square(x):
-    return x*x
-def even(x):
-    return x % 2 == 0
-some_list = list(map(square, range(10,20)))
-print (some_list)
-```
-
-- Output : `[100, 121, 144, 169, 196, 225, 256, 289, 324, 361]`
-
-```python
-some_list = list(filter(even, range(10,20)))
-print (some_list)
-```
-
-- Output : `[10, 12, 14, 16, 18]`
-
-```python
-some_list = list(map(square, filter(even, range(10,20))))
-print (some_list)
-```
-
-- Output : `[100, 144, 196, 256, 324]`
-- More Pythonic are list comprehensions
-
-> `demo01 · map_and_filter_functions`
-
-
----
-
-# Reduce and Lambda
-
-- `reduce` accepts iterator to process and returns single result :
-
-```python
-from functools import reduce
-var1 = reduce( (lambda x, y: x * y), [1, 2, 3, 4] )
-print (var1) # 24
-```
-
-- Above code works as follows :
-  - `reduce` passes current product along with next item from list to `lambda` function
-  - Default first item in sequence initialized starting value
-- Same functionality with `for` loop :
-
-```python
-li1 = [1, 2, 3, 4]
-result = li1[0]
-for x in li1[1:] :
-     result = result * x
-print (result)
-```
-
-> `demo02 · reduce_and_lambda`
-
-
----
-
-# Built-ins that Take a Function
-
-- `sorted` returns a new sorted list, `list.sort` rearranges in place :
-
-```python
-words = ["ticket", "to", "mars", "one", "way"]
-sorted(words)                    # ['mars', 'one', 'ticket', 'to', 'way']
-sorted(words, reverse=True)
-```
-
-- A `key` function decides the order, and `min` and `max` accept the same :
-
-```python
-sorted(words, key=len)           # ['to', 'one', 'way', 'mars', 'ticket']
-max(words, key=len)              # 'ticket'
-```
-
-- `any` and `all` reduce a sequence of conditions to a single boolean :
-
-```python
-numbers = [4, 8, 15, 16, 23, 42]
-any(n > 40 for n in numbers)     # True
-all(n % 2 == 0 for n in numbers) # False
-```
-
-- Both stop as soon as the answer is known :
-  - On an empty sequence `any` is `False` and `all` is `True`
-
-> `demo03 · sorted_any_all`
-
-
----
-
 # List Comprehensions
 
-- Construct for creating new list based on existing lists :
-  - Languages like Haskell, Erlang, Scala and Python have them
-- Comprehension term :
-  - Comes from math’s set comprehension notation to define sets in terms of other sets
-- Powerful and popular feature in Python :
-  - Generate new list by applying operation or function to every member of original list
+- A comprehension builds a new list by evaluating an expression for each item.
+- Read the `for` part first, then the expression on its left.
 
 ```python
-slist = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-print (slist)
-list_str = [str(x) for x in slist]
-print (list_str)
+numbers: list[int] = [1, 2, 3, 4, 5]
+doubled = [number * 2 for number in numbers]
+print(doubled)  # [2, 4, 6, 8, 10]
+labels = [str(number) for number in numbers]
+print(labels)  # ['1', '2', '3', '4', '5']
 ```
 
-- Output : `['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']`
 
-```python
-new_list = [x * 2 for x in slist]
-print (new_list)
-```
 
-- Output : `[2, 4, 6, 8, 10, 12, 14, 16, 18, 20]`
-
-> `demo04 · list_comprehensions`
-
+> `demo01 · list_comprehensions`
 
 ---
 
@@ -188,319 +62,296 @@ print (new_list)
 
 ```python
 li = [3, 6, 2, 7]
-li_new = [elem*2 for elem in li]   # [6, 12, 4, 14]
+li_new = [elem * 2 for elem in li]  # [6, 12, 4, 14]
 ```
 
 - `if` statement acts as a filter and is optional :
 
 ```python
-[x-10 for x in grades if x>0]
+grades = [12, 0, 18]
+print([x - 10 for x in grades if x > 0])  # [2, 8]
 ```
 
 ---
 
 # Filtered List Comprehension
 
-- Filter determines if expression is performed on list member :
-  - For each element of list, checks if it satisfies the filter condition
-- If filter condition returns False :
-  - Element is omitted from the list before the list comprehension is evaluated
-- Traditional syntax :
+- An optional `if` keeps only the items that satisfy its condition.
+- These two forms produce the same list :
 
 ```python
-slist = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-new_list = []
-for x in slist:
-    if (x % 2) == 0:
-        new_list.append(str(x))
-print (new_list) # ['2', '4', '6', '8', '10']
+numbers = [1, 2, 3, 4, 5, 6]
+labels = []
+for number in numbers:
+    if number % 2 == 0:
+        labels.append(str(number))
+print(labels)  # ['2', '4', '6']
+
+labels = [str(number) for number in numbers if number % 2 == 0]
+print(labels)  # ['2', '4', '6']
 ```
 
-- Pythonic syntax using list comprehension :
-
-```text
-new_list = [str(x) for x in slist if (x % 2) == 0]
-print (new_list) => ['2', '4', '6', '8', '10']
-```
-
-> `demo05 · comprehension_with_predicate`
 
 
----
-
-# Syntactic Sugar
-
-- List comprehensions are syntactic sugar for higher-order functions :
-
-```python
-[ expression for name in list ]
-map( lambda name: expression, list )
-```
-
-- Example using higher order functions versus a list comprehension :
-
-```python
-lm = list(map(lambda x: 2*x+1, [10, 20, 30]))
-print (lm) # [21, 41, 61]
-lc = [2*x+1 for x in [10, 20, 30]]
-print (lc) # [21, 41, 61]
-```
-
-- The same comparison combining `map` with `filter` :
-
-```python
-ls1 = list(map(lambda x: 2*x+1, filter(lambda x: x > 0, [10, 20, 30, -10])))
-print (ls1) # [21, 41, 61]
-ls2 = [2*x+1 for x in [10, 20, 30, -10] if x > 0]
-print (ls2) # [21, 41, 61]
-```
-
-> `demo06 · syntactic_sugar`
-
+> `demo02 · comprehension_with_predicate`
 
 ---
 
 # Nested List Comprehensions
 
-- List comprehensions can easily be nested :
-  - Take list as input and produce list as output
-- In following inner comprehension produces : `[4, 3, 5, 2]`
+- The inner comprehension creates one row; the outer one creates the rows.
+- Keep nesting short enough to read at a glance.
 
 ```python
-li = [3, 2, 4, 1]
-[elem*2 for elem in [item+1 for item in li] ] #[8, 6, 10, 4]
+list_a = ["A", "B"]
+list_b = ["C", "D"]
+rows = [[x + y for x in list_a] for y in list_b]
+print(rows)  # [['AC', 'BC'], ['AD', 'BD']]
 ```
 
-- Another example is :
+- A comprehension can also have two `for` clauses, and the second runs for each item of the first :
 
 ```python
-list_a = ['A', 'B']
-list_b = ['C', 'D']
-list_c = [[x+y for x in list_a] for y in list_b]
-print (list_c)
+words = ["one", "two"]
+letters = [letter for word in words for letter in word]
+print(letters)  # ['o', 'n', 'e', 't', 'w', 'o']
 ```
 
-- Produces :
 
-```text
-[['AC', 'BC'], ['AD', 'BD']]
-```
 
-> `demo07 · nested_comprehensions`
-
+> `demo03 · nested_comprehensions`
 
 ---
 
 # Comprehension Features
 
-- If list contains elements of different types :
-  - Expression must operate correctly on the types of all of list members.
-- If elements of list are other containers :
-  - Name can consist of container of names matching type and “shape” of list members
+- Unpack each tuple into names inside the `for` part.
+- The expression can call a function.
 
 ```python
-list_d = [('a' , 1), ('b', 2), ('c', 7)]
-list_e = [ n * 3 for (x, n) in list_d]
-print (list_e) # [3, 6, 21]
+def subtract(a: int, b: int) -> int:
+    return a - b
+
+
+pairs = [(6, 3), (1, 7), (5, 5)]
+differences = [subtract(y, x) for x, y in pairs]
+print(differences)  # [-3, 6, 0]
 ```
 
-- Containers are objects that contain references to other objects :
-  - Lists, types, dictionaries
-- Expression can also contain user-defined functions :
 
-```python
-def subtract(a, b):
-     return a - b
-oplist = [(6, 3), (1, 7), (5, 5)]
-list_f = [subtract(y, x) for (x, y) in oplist]
-print (list_f) # [-3, 6, 0]
-```
 
-> `demo08 · comprehension_features`
-
+> `demo04 · comprehension_features`
 
 ---
 
 # Zip Function
 
-- `zip(*iterables)` :
-  - Makes an iterator that aggregates elements from each of the iterables
-  - iterator stops when the shortest input iterable is exhausted
-- Used to combine two lists in list of pairs :
+- `zip` pairs items from its input iterables.
+- By default it stops when the shortest input runs out.
+- `strict=True` raises a `ValueError` when the inputs differ in length, instead of stopping early :
 
 ```python
-ls1 = [1,2,3]
-ls2 = [4,5,6]
-ls3 = list(zip(ls1,ls2))
-print (ls3) # [(1, 4), (2, 5), (3, 6)]
+keys = ["a", "b", "c"]
+values = [1, 2, 3]
+pairs = list(zip(keys, values))
+print(pairs)  # [('a', 1), ('b', 2), ('c', 3)]
+checked = list(zip(keys, values, strict=True))  # the lengths match, so no error
+print(checked)  # [('a', 1), ('b', 2), ('c', 3)]
 ```
 
-- Original lists can also be restored using same function :
 
-```python
-b1, b2 = zip(*ls3)
-print (b1)
-print (b2)
-```
 
-> `demo09 · zip_function`
-
+> `demo05 · zip_function`
 
 ---
 
 # Dictionary Construction with zip
 
-- `zip` can be used to generate dictionaries :
-  - When keys and values must be computed at runtime
-- Dictionaries are traditionally created with literals or key assignments :
+- Pass pairs of keys and values to `dict` to build a dictionary.
 
 ```python
-dict1 = {'a':1, 'b':2, 'c':3}
-dict2 = {}
-dict2['a'] = 1; dict2['b'] = 2; dict2['c'] = 3
+keys = ["a", "b", "c"]
+values = [1, 2, 3]
+counts = dict(zip(keys, values))
+print(counts)  # {'a': 1, 'b': 2, 'c': 3}
 ```
 
-- Sometimes keys and values are only known at runtime :
-  - Can then use `zip` to create lists and loop through them in parallel like this :
 
-```python
-dict3 = {}
-for (k,v) in zip(keys, values):
-     dict3[k] = v
-print (dict3) # {'a': 1, 'b': 2, 'c': 3}
-```
 
-- Alternative is using constructor with :
-
-```python
-dict4 = dict(zip(keys, values))
-```
-
-> `demo10 · dictionary_with_zip`
-
+> `demo06 · dictionary_with_zip`
 
 ---
 
 # Dictionary Comprehensions
 
-- Dictionary comprehension is like a list comprehension :
-  - Constructs a dictionary instead of a list
-- Dictionary comprehension makes dictionary from two lists :
+- Use `key: value` to compute each dictionary entry.
+- Add an `if` to keep only some entries.
 
 ```python
-keys = ['a', 'b', 'c']
-values = [1, 2, 3]
-dict5 = { k:v for (k,v) in zip(keys, values)}
-print (dict5) # {'a': 1, 'b': 2, 'c': 3}
+squares = {number: number**2 for number in range(1, 6)}
+print(squares)  # {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
+counts = {"a": 2, "b": 0, "c": 3}
+positive = {key.upper(): value for key, value in counts.items() if value > 0}
+print(positive)  # {'A': 2, 'C': 3}
 ```
 
-- Requires actually more code then constructor function :
 
-```python
-dict6 = dict(zip(keys, values))
-print (dict6) # {'b': 2, 'c': 3, 'a': 1}
-```
 
-- Many more occasions to use dictionary comprehension :
-
-```python
-dict7 = {x: x**2 for x in [1,2,3,4,5]}
-print (dict7) # {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
-dict8 = {x.upper(): x*3 for x in 'abcd'}
-print (dict8) #{'A': 'aaa', 'C': 'ccc', 'B': 'bbb', 'D': 'ddd'}
-```
-
-> `demo11 · dictionary_comprehension`
-
+> `demo07 · dictionary_comprehension`
 
 ---
 
 # Dictionary from Keys
 
-- We can initialize dictionary from `keys` as follows :
+- `dict.fromkeys` gives every key the same value.
+- Use a comprehension when each key needs its own mutable value.
 
 ```python
-dict9 = dict.fromkeys(['a','b','c'], 0)
-print (dict9) # {'a': 0, 'c': 0, 'b': 0}
+counts = dict.fromkeys(["a", "b", "c"], 0)
+print(counts)  # {'a': 0, 'b': 0, 'c': 0}
+groups: dict[str, list[int]] = {key: [] for key in ["a", "b", "c"]}
+groups["a"].append(1)
+print(groups)  # {'a': [1], 'b': [], 'c': []}
 ```
 
-- Can use dictionary comprehension to do the same thing :
+- Avoid `dict.fromkeys(keys, [])` : every key would share the same list.
 
-```python
-dict10 = {k: 0 for k in ['a','b','c']}
-print (dict10) # {'a': 0, 'c': 0, 'b': 0}
-```
-
-- Generate dictionary by iterating each element :
-
-```python
-dict11 = dict.fromkeys('dictionary')
-print (dict11) # {'d': None, 'o': None, 'i': None,
-# 't': None, 'a': None, 'c': None, 'y': None, 'n': None, 'r': None}
-```
-
-- Now using comprehension :
-
-```python
-dict12 = {k: None for k in 'dictionary'}
-print (dict12) # {'t': None, 'y': None, 'c': None,
-# 'd': None, 'i': None, 'r': None, 'o': None, 'n': None, 'a': None}
-```
-
-> `demo12 · dictionary_from_keys`
+> `demo08 · dictionary_from_keys`
 
 ---
 
 # Set Comprehensions
 
-- Sets have their own comprehension syntax as well :
-  - Quite similar to the syntax for dictionary comprehensions
-  - Difference is that sets just have values instead of `key:value` pairs
-- Set comprehensions can take set as input :
-  - Following set comprehension calculates squares of set of numbers from 0 to 9
+- A set comprehension uses braces around an expression.
+- Duplicate results disappear; sets have no defined display order.
 
 ```python
-my_set = set(range(10))
-print (my_set) # {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
-my_set2 = {x ** 2 for x in my_set}
-print (my_set2) # {0, 1, 4, 81, 64, 9, 16, 49, 25, 36}
+numbers = [1, 2, 2, 3, 4]
+squares = {number**2 for number in numbers}
+print(sorted(squares))  # [1, 4, 9, 16]
+even_squares = {number**2 for number in numbers if number % 2 == 0}
+print(sorted(even_squares))  # [4, 16]
 ```
 
-- Set comprehensions can contain `if` clause to filter items :
+
+
+> `demo09 · set_comprehensions`
+
+---
+
+# Generator Expressions
+
+- A generator expression supplies values as they are needed, without building a list.
+- As the only argument of a call, it needs no extra parentheses.
 
 ```python
-my_set3 = {x for x in my_set if x % 2 == 0}
-print (my_set3) #{0, 8, 2, 4, 6}
+numbers = [4, 8, 15, 16, 23, 42]
+print(sum(n * n for n in numbers))  # 2854
+print(any(n > 40 for n in numbers))  # True
+print(all(n % 2 == 0 for n in numbers))  # False
+print(any([]), all([]))  # False True
 ```
 
-- Set comprehensions do not have to take set as input :
-  - They can take any sequence
+- `any` and `all` stop as soon as the answer is known.
+- Generator functions, `yield` and generators in depth belong to Advanced Python.
+
+> `demo10 · generator_expressions`
+
+---
+
+# Built-ins that Take a Function
+
+- `sorted` returns a new list; `list.sort` changes a list in place.
+- A `key` function computes the comparison value for each item.
+- `min` and `max` accept a `key` function too.
 
 ```python
-my_set4 = {2**x for x in range(10)}
-print (my_set4) #{32, 1, 2, 4, 8, 64, 128, 256, 16, 512}
+words = ["ticket", "to", "mars", "one", "way"]
+print(sorted(words))  # ['mars', 'one', 'ticket', 'to', 'way']
+print(sorted(words, key=len))  # ['to', 'one', 'way', 'mars', 'ticket']
+print(min(words, key=len), max(words, key=len))  # to ticket
 ```
 
-> `demo13 · set_comprehensions`
 
+
+> `demo11 · sorted_by_key`
+
+---
+
+# Recognising map and filter
+
+- You will encounter these function-based forms in other people's code.
+- `map` applies a function; `filter` keeps items for which a function returns true.
+- Both return iterators; `list` collects their results.
+
+```python
+def square(x: int) -> int:
+    return x * x
+
+
+def even(x: int) -> bool:
+    return x % 2 == 0
+
+
+print(list(map(square, range(1, 6))))  # [1, 4, 9, 16, 25]
+print(list(filter(even, range(1, 6))))  # [2, 4]
+print([square(x) for x in range(1, 6) if even(x)])  # [4, 16]
+```
+
+
+
+> `demo12 · map_and_filter_functions`
+
+---
+
+# Comprehensions and map
+
+- A comprehension often reads more directly than a combination of `map` and `filter`.
+- Recognise both forms; choose the one that makes the operation clear.
+
+```python
+mapped = list(map(lambda x: 2 * x + 1, [10, 20, 30]))
+print(mapped)  # [21, 41, 61]
+comprehended = [2 * x + 1 for x in [10, 20, 30]]
+print(comprehended)  # [21, 41, 61]
+```
+
+
+
+> `demo13 · syntactic_sugar`
+
+---
+
+# Recognising reduce
+
+- `functools.reduce` combines items into one result.
+- Here each step multiplies the running result by the next number.
+
+```python
+from functools import reduce
+
+product = reduce(lambda x, y: x * y, [1, 2, 3, 4])
+print(product)  # 24
+
+result = 1
+for number in [1, 2, 3, 4]:
+    result *= number
+print(result)  # 24
+```
+
+- Prefer a named built-in such as `sum` when it expresses the operation directly.
+
+> `demo14 · reduce_and_lambda`
 
 ---
 
 # Summary : Comprehensions
 
-- List comprehension :
-  - Generate new list by applying operation or function to every member of original list
-- Syntax of a list comprehension may involve :
-  - `for` loop, an `in` operation and an `if` statement
-- If filter determines if expression is performed on list member :
-  - For each element of list, checks if it satisfies the filter condition
-- List comprehensions are syntactic sugar :
-  - For higher-order functions like `map` and `filter`
-- List comprehensions can easily be nested :
-  - Take list as input and produce list as output
-- Dictionary comprehension is like a list comprehension :
-  - Constructs a dictionary instead of a list
-- Set comprehensions have similar syntax as dictionaries :
-  - Difference is that sets have values instead of `key:value` pairs
+- Build lists, dictionaries and sets with comprehensions.
+- Use an optional `if` to filter the input.
+- Keep nested comprehensions simple.
+- Feed generator expressions into `sum`, `any` and `all`.
+- Pass a `key` function to `sorted`, `min` and `max`.
+- Recognise `map`, `filter` and `reduce` when reading other code.
 
 > `exercise07 · Comprehensions`

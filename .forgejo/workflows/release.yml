@@ -64,11 +64,12 @@ jobs:
             demos/11-python-classes \
             demos/12-appendix-type-hinting \
             demos/13-appendix-libraries \
-            demos/12-pythonlibraries-datetime \
-            demos/12-pythonlibraries-json \
-            demos/12-pythonlibraries-regexp \
-            demos/12-pythonlibraries-unittesting \
             solutions
+
+      - name: Checkout Presentation Template
+        run: |
+          git clone --depth=1 "${GITHUB_SERVER_URL}/SpiralTrain/Presentation-Template.git" \
+            "$(dirname $(pwd))/Presentation-Template"
 
       # Gating. Extracts every ```python fence from the slides and the exercise
       # guides and checks it for the defects the PDF conversion leaves behind :
@@ -76,7 +77,31 @@ jobs:
       # quote or ellipsis sitting inside code.
       - name: Check the slide code fences
         shell: bash
-        run: uv run python build/check-fences.py
+        run: uv run python ../Presentation-Template/build/tools/check-fences.py
+
+      - name: Check exercise slide references
+        shell: bash
+        run: uv run python ../Presentation-Template/build/tools/check-slide-references.py
+
+      # Gating. Each exercise starter is the previous exercise's solution plus
+      # that exercise's handouts. They are generated, never edited, and this
+      # fails when someone changed a solution without regenerating them.
+      - name: Check the exercise starters are current
+        shell: bash
+        run: uv run python ../Presentation-Template/build/tools/make-starters.py --check
+
+      # Gating. Every Wordle solution stage passes its tests (and mypy from
+      # Exercise 12), and a scripted game with a fixed secret prints exactly
+      # the stored transcript in build/transcripts/.
+      - name: Check the exercise solutions
+        shell: bash
+        run: uv run python build/check-solutions.py
+
+      # Gating. Every quiz question with code is run, so the answer marked
+      # correct is what Python 3.14 actually prints.
+      - name: Check the quiz
+        shell: bash
+        run: uv run python build/site/check-quiz.py
 
       # Gating. The repository is at zero findings inside the ruff.toml scope,
       # and every per-file-ignore there names the lesson it protects. A new
@@ -85,11 +110,6 @@ jobs:
       - name: Check the style
         shell: bash
         run: uv run ruff check .
-
-      - name: Checkout Presentation Template
-        run: |
-          git clone --depth=1 "${GITHUB_SERVER_URL}/SpiralTrain/Presentation-Template.git" \
-            "$(dirname $(pwd))/Presentation-Template"
 
       - name: Install template dependencies
         run: bun install --cwd ../Presentation-Template/build --frozen-lockfile
@@ -103,6 +123,7 @@ jobs:
           cd build
           bun run build -- --force
           bun run build -- --exercises --force
+          bun run site
 
       - name: Name the slides HTML
         shell: bash
@@ -150,17 +171,17 @@ jobs:
           # resolve. No pyproject.toml, though: the student creates that one.
           # .devcontainer/ is the GitHub Codespaces setup for online students,
           # used by the GitHub copy of the student repository (see below).
+          # The offline exercise site : one page per exercise with hints and
+          # click-to-reveal solutions, a quiz, and the slides. It opens from
+          # disk, so students double-click site/index.html.
+          cp -r build/site/dist "${BUNDLE}/site"
+
           for item in solutions exercises appendices reference README.md ruff.toml .devcontainer; do
             if [ -e "${item}" ]; then
               cp -r "${item}" "${BUNDLE}/"
             fi
           done
 
-          # A tkinter demo for building an executable, which the IO module
-          # never shows. Its 12 MB of PyInstaller output has been deleted from
-          # the repository; the source is left behind but is still not course
-          # material, so it does not travel.
-          rm -rf "${BUNDLE}/demos/09-python-io/createexecutable"
 
           # Strip build and editor droppings that travelled along with the copies.
           find "${BUNDLE}" -type d \( \

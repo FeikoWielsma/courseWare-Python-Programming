@@ -1,92 +1,362 @@
 # Exercise 11 : Python Classes
 
-In this exercise you build an Employee class and a Company script around it.
+Look at `play` in `wordle/game.py`. The state of one game is spread over a handful of loose variables : `secret`, `words`, `history`, `guess_count`, `max_guesses`. Every new feature, the hint, the statistics and the next one you add, has to pass them around or reach into them, and nothing stops a function from putting a nonsense value in one of them. In this exercise you gather them in a class, `Game`, which owns its state and the rules about it. On the way you meet properties and the one question that decides when to use them.
+
+Continue in your own `wordle` project, or start from `exercises/starters/11-python-classes/`. The starter is the finished Exercise 10.
+
+Some steps give you the code, some a skeleton to complete, and one only the signatures and a few examples of what they should do. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
 
-### Step 1 : Employee class
+### Step 1 : A Game with plain attributes
 
-Make an `Employee` class representing some employee working in a company in the Python module `employee.py`. The `Employee` class should have two attributes representing the name and the ID of an employee.
-
-Add a constructor to the `Employee` class which sets the attributes when they are passed. Make a simple program which declares an `Employee` object and displays the values of the attributes of the `Employee` object by accessing the attributes directly :
+Add the class to `wordle/game.py`, above `play`. For now it only stores what a game needs :
 
 ```python
-class Employee:
-    def __init__(self, name):
-        print ("Calling Employee constructor")
-        self.name = name
+class Game:
+    """Keep one game's state."""
+
+    def __init__(self, secret: str, words: list[str], max_guesses: int = 6) -> None:
+        self.secret = secret
+        self.words = words
+        self.history: list[tuple[str, list[str]]] = []
+        self.max_guesses = max_guesses
 ```
 
-Next make the attributes private in the `Employee` class and add public set and get member functions to be able to access these attributes. Change the values of the attributes through the accessor functions and display their changed values :
+`__init__` runs when you write `Game(...)`, and `self` is the new object. Every `self.name = ...` makes an attribute on that object. `secret` is the word to find, `words` is the list of words the game accepts as a guess, and `history` collects each guess with its marks, which is the list that `candidates` in `wordle/solver.py` already expects. See *Creating Classes* and *Class Members*.
+
+Start a Python session in the project folder and look at an object :
+
+```bash
+uv run python
+```
 
 ```python
-def set_name(self, value):
-    self.__name = value
+from wordle.game import Game
 
-def del_name(self):
-    del self.__name
+game = Game("crane", ["crane", "slate"])
+print(game.secret, game.max_guesses, game.history)
+game.max_guesses = 3
+print(game.max_guesses)
 ```
 
-Notice that private data cannot be accessed directly from outside of the class. This demonstrates the object oriented principle of encapsulation. In Python there is a workaround so you can still access private data; use this workaround also for demonstration purposes.
+```text
+crane 6 []
+3
+```
 
-Also add a destructor to the class and keep a class variable which counts how many instances of the class are present :
+An attribute is read and assigned like a variable. There is nothing else to write, and for now that is how it should be. See *Attributes Are Public*.
+
+### Step 2 : A method that plays a guess
+
+A class is the data together with the functions that work on it. The first of those is the heart of the game : take a guess, check it, score it, remember it. Add a method to `Game` :
 
 ```python
-def __del__(self):
-    class_name = self.__class__.__name__
-    print (class_name, "destroyed")
+    def guess(self, word: str) -> list[str]:
+        """Validate, score and record one guess, then return its marks."""
+        ...
 ```
 
-Write print statements when the constructor, destructor, getters and setters are called. Also print an instance variable directly. What is the result?
+The functions `check_guess` and `score_guess` already exist, and `game.py` already imports them. Use `self.words`, `self.secret` and `self.history` instead of arguments, because the object has them. An invalid word must raise `InvalidGuess` before anything is recorded.
 
-Next make a property in the class with the following code :
+Try it in the session :
 
 ```python
-name = property(get_name, set_name, del_name, "name's docstring")
+game = Game("crane", ["crane", "slate"])
+game.guess("slate")
+game.history
+game.guess("zzzzz")
 ```
 
-Access the `Employee` object through the property as follows :
+```text
+['grey', 'grey', 'green', 'grey', 'green']
+[('slate', ['grey', 'grey', 'green', 'grey', 'green'])]
+wordle.scoring.InvalidGuess: That word is not in the word list.
+```
+
+The rejected guess left the history alone : `game.history` still holds only `slate`.
+
+:::hint
+The slide *Class Members* shows a method that works on `self`, and *List Functions and Methods*, in module 03, has `append`.
+:::
+
+:::hint
+The method has three lines of real work : `check_guess(word, self.words)`, then `marks = score_guess(self.secret, word)`, then an `append` of the pair `(word, marks)` to `self.history`. Return `marks`.
+:::
+
+:::solution
+```python
+    def guess(self, word: str) -> list[str]:
+        """Validate, score and record one guess, then return its marks."""
+        check_guess(word, self.words)
+        marks = score_guess(self.secret, word)
+        self.history.append((word, marks))
+        return marks
+```
+
+`check_guess` comes first on purpose : when it raises, the exception leaves the method before the history changes.
+:::
+
+### Step 3 : Values that work themselves out
+
+Callers will keep asking three things : has the player won, is the game over, how many guesses are left. All three can be worked out from `history` and `max_guesses`, so none of them needs to be stored. As methods they would be called `game.is_won()`. With `@property` above the `def` they are read as `game.is_won`, like an attribute that is always correct. See *A Computed Attribute*.
+
+Add these three to `Game`, above `guess` :
 
 ```python
-e1.name = "Some Name"
-print (e1.name)
+    @property
+    def is_won(self) -> bool:
+        """Return whether the latest guess found the secret."""
+        ...
+
+    @property
+    def is_over(self) -> bool:
+        """Return whether the game was won or has no guesses left."""
+        ...
+
+    @property
+    def guesses_left(self) -> int:
+        """Return how many guesses remain."""
+        ...
 ```
 
-Also write statements to show the class and object data :
+If you stored `is_won` as an attribute you would have to remember to update it in `guess`, and one forgotten line leaves it wrong. A computed value cannot go stale.
+
+Now use `is_over` in `guess` as well : a finished game should refuse another guess. Put this at the top of the method :
 
 ```python
-print ("Employee.__doc__:", Employee.__doc__)
-print ("Employee.__name__:", Employee.__name__)
-print ("Employee.__module__:", Employee.__module__)
-print ("Employee.__bases__:", Employee.__bases__)
-print ("Employee.__dict__:", Employee.__dict__)
+        if self.is_over:
+            raise ValueError("The game is over.")
 ```
 
-Put the `Employee` class in a script in the `employees` package and add code to be able to export the `Employee` class from this package. Give the `Employee` class a `calc_salary()` method as follows :
+Try the three, and see that they cannot be assigned to :
 
 ```python
-def calc_salary(self):
-    return 0
+game = Game("crane", ["crane", "slate"], max_guesses=2)
+print(game.is_won, game.is_over, game.guesses_left)
+game.guess("slate")
+print(game.is_won, game.is_over, game.guesses_left)
+game.guess("crane")
+print(game.is_won, game.is_over, game.guesses_left)
+game.is_won = False
 ```
 
-Optionally you can also add a `hiringdate` attribute to the `Employee` class. Add the following code to test the `Employee` class in stand alone mode :
+```text
+False False 2
+['grey', 'grey', 'green', 'grey', 'green']
+False False 1
+['green', 'green', 'green', 'green', 'green']
+True True 0
+AttributeError: property 'is_won' of 'Game' object has no setter
+```
+
+:::hint
+The slide *A Computed Attribute* shows `@property` on a method that returns a value worked out from other attributes.
+:::
+
+:::hint
+`is_won` is true when there is at least one guess and the last one is the secret. `self.history[-1][0]` is the word of the last guess. An empty list has no last item, so check `self.history` first; `bool(self.history and ...)` returns a real `bool`.
+:::
+
+:::hint
+`guesses_left` is `self.max_guesses - len(self.history)`. `is_over` is `self.is_won` or no guesses left; one property can use another. Test for `<= 0` rather than `== 0`, so that a game that somehow has more guesses than its limit counts as over too.
+:::
+
+:::solution
+```python
+    @property
+    def is_won(self) -> bool:
+        """Return whether the latest guess found the secret."""
+        return bool(self.history and self.history[-1][0] == self.secret)
+
+    @property
+    def is_over(self) -> bool:
+        """Return whether the game was won or has no guesses left."""
+        return self.is_won or self.guesses_left <= 0
+
+    @property
+    def guesses_left(self) -> int:
+        """Return how many guesses remain."""
+        return self.max_guesses - len(self.history)
+```
+:::
+
+### Step 4 : When a plain attribute is not enough
+
+`max_guesses` is a plain attribute, so anybody can assign anything to it. Find out what that allows :
 
 ```python
-if __name__ == '__main__':
-    main()
+game = Game("crane", ["crane", "slate"])
+game.max_guesses = 0
+print(game.max_guesses, game.guesses_left, game.is_over)
+game.max_guesses = -3
+print(game.max_guesses, game.guesses_left, game.is_over)
 ```
 
-### Step 2 : Company Script
+```text
+0 0 True
+-3 -3 True
+```
 
-Make a `Company` script above the `employees` package. Add the necessary import statements to be able to find the `Employee` class in the employee script in the `employees` package. If you keep the `__init__.py` file in the package empty your code could look as follows :
+Both games are over before they start, and the second one claims to have minus three guesses left. The class has no way to stop either. This is the situation the slide *When a Plain Attribute Is Not Enough* is about.
+
+The fix is to turn `max_guesses` into a property with a setter, and to let the setter refuse values that are not between 1 and 10. Here are the signatures. Both methods are called `max_guesses`, and the second is decorated with `@max_guesses.setter` :
 
 ```python
-import employees.employee
-e1 = employees.employee.Employee("Albert Einstein")
+    @property
+    def max_guesses(self) -> int:
+        """Return the configured guess limit."""
+
+    @max_guesses.setter
+    def max_guesses(self, value: int) -> None:
+        """Keep the guess limit between one and ten."""
 ```
 
-Create a number of employees and put them in a list, called for instance `employee_list`. Next iterate through the list and print the name of the employees in the list.
+The setter raises `ValueError("max_guesses must be between 1 and 10")` for any other value, and stores a valid one in `self._max_guesses`. The leading underscore says that the attribute is the property's own storage and not for outside use; see *The Rule of Thumb*.
 
-**If time permits** : alternatively you could create a `Company` class with functions to add or to remove employees from the `employee_list`, which displays a list of employees including their name and ID. In that case make a simple script which declares a `Company` object, add several employees to the company and display a list of employees.
+In a new session, `10` is still accepted, but `0`, and a limit of `11` given to the constructor, now stop with the error :
 
-The relationship between the `Company` class and the `Employee` class is an association relation of the normal type. We can say every Company employs Employees, or every Employee works for a Company.
+```python
+game = Game("crane", ["crane", "slate"])
+game.max_guesses = 10
+print(game.max_guesses)
+game.max_guesses = 0
+Game("crane", ["crane", "slate"], max_guesses=11)
+```
+
+```text
+10
+ValueError: max_guesses must be between 1 and 10
+ValueError: max_guesses must be between 1 and 10
+```
+
+Make it work **without changing a line anywhere else**. `__init__` still says `self.max_guesses = max_guesses`, and `play` still reads `game.max_guesses`. That is the lesson : callers could not tell the plain attribute from the property, so nobody had to write `get_max_guesses` and `set_max_guesses` in advance. You start with the plain attribute, and you turn it into a property on the day it needs a rule.
+
+:::hint
+The slide *When a Plain Attribute Is Not Enough* turns `length` into a property whose setter checks the value; `demo07 · validatingsetter` runs it.
+:::
+
+:::hint
+The getter returns `self._max_guesses`. The setter checks `1 <= value <= 10`, raises `ValueError` when that is false and assigns `self._max_guesses = value` otherwise.
+:::
+
+:::hint
+Assign to `self._max_guesses` in the setter, with the underscore. `self.max_guesses = value` inside the setter calls the setter again, forever, until Python stops with a `RecursionError`.
+:::
+
+:::solution
+```python
+    @property
+    def max_guesses(self) -> int:
+        """Return the configured guess limit."""
+        return self._max_guesses
+
+    @max_guesses.setter
+    def max_guesses(self, value: int) -> None:
+        """Keep the guess limit between one and ten."""
+        if not 1 <= value <= 10:
+            raise ValueError("max_guesses must be between 1 and 10")
+        self._max_guesses = value
+```
+
+`Game("crane", words, max_guesses=11)` fails too, because `__init__` assigns through the property.
+:::
+
+### Step 5 : Draw the board and shrink play
+
+A `Game` that can draw itself helps you debug it. Python asks an object for its text with `__str__`; `print(game)` and f-strings call it. Add one to `Game` that draws every scored guess on its own row with `render`.
+
+```python
+    def __str__(self) -> str:
+        """Draw every scored guess on its own row."""
+        ...
+```
+
+```python
+game = Game("crane", ["crane", "slate"])
+game.guess("slate")
+game.guess("crane")
+print(game)
+```
+
+```text
+['grey', 'grey', 'green', 'grey', 'green']
+['green', 'green', 'green', 'green', 'green']
+ S  L [A] T [E]
+[C][R][A][N][E]
+```
+
+Now let `play` do less. Change it so that it creates a `Game` and loops until the game is over :
+
+- create the game after loading the allowed list : `game = Game(secret, allowed_words, max_guesses)`
+- loop with `while not game.is_over`, and remove the variables `history` and `guess_count`
+- show the prompt number with `len(game.history) + 1` and the limit with `game.max_guesses`
+- give `candidates(words, game.history)` the history for the hint
+- in the `try` block, keep the `check_guess(guess, allowed_words)` line, and let `marks = game.guess(guess)` replace the scoring and recording below it
+- after the loop, `game.is_won` decides the message : `Got it in N!` after a win, and `The word was ...` after a loss
+- return `len(game.history), game.is_won`, the same two values as in Exercise 10, so that `__main__` still has what it needs for `record_game`
+
+Play a game with `WORDLE_SECRET=crane`; it must behave as before.
+
+:::hint
+The slide *`__str__` and `__repr__`* shows `__str__` returning the text that `print` shows, and *Generator Expressions*, in module 07, writes an expression inside `join`.
+:::
+
+:::hint
+The loop body shrinks to : read the guess, handle the commands, `check_guess` and `marks = game.guess(guess)` inside `try`, update `used_letters`, print `render(guess, marks)`. The win test and the counter are gone, because the loop condition and `game.is_won` now know.
+:::
+
+:::hint
+A single `"\n".join(...)` over a generator expression is the whole of `__str__`. The expression is `render(word, marks)` for each `word, marks` pair in `self.history`, and `\n` is the newline that puts each row on its own line.
+:::
+
+:::solution
+```python
+    def __str__(self) -> str:
+        """Draw every scored guess on its own row."""
+        return "\n".join(render(word, marks) for word, marks in self.history)
+```
+
+```python
+def play(secret: str, words: list[str], max_guesses: int = 6) -> tuple[int, bool]:
+    """Play one game and return the guesses used and whether the secret was found."""
+    allowed_words = load_allowed()
+    game = Game(secret, allowed_words, max_guesses)
+    used_letters = set()
+    while not game.is_over:
+        guess = input(f"Guess {len(game.history) + 1}/{game.max_guesses} : ").strip().lower()
+        match guess:
+            case "quit":
+                break
+            case "letters":
+                print("Tried :", " ".join(sorted(used_letters)))
+                continue
+            case "hint":
+                possible = candidates(words, game.history)
+                print(f"{len(possible)} words left, try {best_guess(possible).upper()}")
+                continue
+            case "stats":
+                print_stats()
+                continue
+        try:
+            check_guess(guess, allowed_words)
+            marks = game.guess(guess)
+        except InvalidGuess as error:
+            print(error)
+            continue
+        used_letters.update(guess)
+        print(render(guess, marks))
+    if game.is_won:
+        print(f"Got it in {len(game.history)}!")
+    else:
+        print(f"The word was {secret.upper()}.")
+    return len(game.history), game.is_won
+```
+:::
+
+---
+
+### If time permits
+
+- Add a `board` command to `play` that prints the game with `print(game)`.
+- Write a `class Stats` that wraps the database connection of Exercise 10, with methods `record(secret, guesses, won)` and `summary()`, and let `__main__` use a `Stats` object instead of calling `connect()` and `record_game` itself. There is no reference solution for these steps.

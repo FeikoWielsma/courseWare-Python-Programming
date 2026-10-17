@@ -13,15 +13,25 @@ material, so a `git pull` always gives you the latest version.
   available as `.html` if you prefer reading in a browser.
 - **`PRG400-Python-Programming-Exercises.pdf`** : the lab guide, one exercise per
   module.
+- **`site/index.html`** : the same exercises as a small website that opens from
+  disk. Each step has hints and its solution behind a click, you can tick steps
+  off as you go, and there is a quiz for the end of the course.
 - **`demos/`** : the runnable example programs shown on the slides, one folder
   per module (for example `demos/05-functions/`). A slide that shows a demo names
   it at the bottom, for example `demo03 · overwritingreferences`, which is the
   file `demos/05-functions/03_overwritingreferences.py`.
 - Type annotations appear from module 2 onwards, and
   **`demos/12-appendix-type-hinting/`** gathers them up in the appendix.
-- **`solutions/`** : reference solutions for the exercises, in case you get stuck
-  or want to compare. Try the exercise first.
-- **`exercises/`** : supporting files for a few of the exercises.
+- **The exercises build one project, a Wordle game**, from Exercise 2 to the end.
+  Some steps give you the code, some a skeleton to complete, and some only the
+  signature and expected output, with the solution behind a click.
+- **`solutions/`** : the finished game as it stands at the end of each exercise,
+  one folder per exercise. Try the exercise first.
+- **`exercises/starters/`** : if you fell behind, start an exercise from its
+  starter folder instead of your own code. The starter for an exercise is the
+  solution of the one before, plus anything that exercise hands out.
+- **`exercises/handouts/`** : files an exercise hands out, such as the word lists
+  and data files.
 - **`appendices/`** : the appendix decks and their exercises.
 - **`reference/`** : background reading, none of it required. The official
   Python 3.14 documentation as PDFs, articles on single topics, books,
@@ -84,22 +94,27 @@ You build your own project for the code you write this week, the same way you
 would at work. The bundle deliberately ships no `pyproject.toml`, you create one :
 
 ```bash
-uv init course-work
-cd course-work
+uv init wordle
+cd wordle
 ```
 
 `uv init` writes a `pyproject.toml` and pins the project to a Python version.
-When an exercise needs a package, add it from inside that folder :
-
-```bash
-uv add requests
-```
-
-The last module uses a type checker, which you add the same way :
+Exercise 1 walks through it. When an exercise needs a tool or a package, add it
+from inside that folder, for example the type checker in the type hinting appendix :
 
 ```bash
 uv add --dev mypy
 ```
+
+and the test runner in the libraries appendix (Exercise 13) :
+
+```bash
+uv add --dev pytest
+```
+
+A starter folder is a complete project of its own : `cd` into it and
+`uv run python -m wordle` (or `uv run python wordle.py` before Exercise 6) works
+straight away.
 
 The bundle does ship a `ruff.toml`. That is the linter configuration the course
 material is written against, so the Ruff extension will not flag the demo files
@@ -119,12 +134,13 @@ its packages, so you never have to activate an environment by hand.
 
 ## Checking your own code
 
-Two commands are worth getting into the habit of. The course sets both up in
-module 1 and uses them throughout :
+Three commands are worth getting into the habit of. Ruff arrives in Exercise 1,
+mypy in the type hinting appendix and pytest in the libraries appendix :
 
 ```bash
 uv run ruff check .      # style and correctness, without running anything
-uv run mypy .            # type checking, once you have added annotations
+uv run mypy wordle       # type checking, once you have added annotations
+uv run pytest            # run the tests (Exercise 13)
 ```
 
 Enjoy the course.

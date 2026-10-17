@@ -1,5 +1,5 @@
 print('hello' + " " + '''world''')
-print('That \'s a brave new world')
+print('That\'s a brave new world')
 
 word = 'word'
 sentence = "This is a sentence."

@@ -1,0 +1,4 @@
+Guess the five-letter word. Type 'quit', 'letters', 'hint' or 'stats'.
+Guess 1/6 :  S  L [A] T [E]
+Guess 2/6 : [C][R][A][N][E]
+Got it in 2!

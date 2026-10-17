@@ -1,0 +1,7 @@
+[tool.check-fences]
+roots = ["src/slides", "src/exercises"]
+ruff-select = "UP,W6,RUF001,RUF002,RUF003"
+# UP015 keeps explicit file modes in the IO lesson.
+# UP018 preserves the str() conversion example.
+# UP031 and UP032 keep one example each of legacy formatting syntax.
+ruff-ignore = "UP015,UP018,UP031,UP032"

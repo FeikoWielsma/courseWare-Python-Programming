@@ -31,7 +31,7 @@ Set expectations: we cover the language fundamentals through classes, with hands
 - Course times
 - Drinks
 - Meals
-- Toilettes
+- Toilets
 - Smoking
 - Mobile Phones
 - Manual

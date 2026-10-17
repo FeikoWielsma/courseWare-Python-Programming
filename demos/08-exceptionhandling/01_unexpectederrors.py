@@ -1,8 +1,5 @@
-x = 1
-y = 0
-# z = x/y                   # ZeroDivisionError
+def divide(total: int, count: int) -> float:
+    return total / count
 
-tup = (1, 2, 3)
-# tup[0] = 2                 # TypeError
 
-fh = open("somefile", "r")  # IOError
+divide(10, 0)

@@ -1,145 +1,98 @@
-# AGENTS.md — Instructions for Claude working on this courseware
+# AGENTS.md : instructions for agents working on this course
 
-Course : *Python Programming* (PRG400) — fundamentals course.
-Read this in full before making any changes.
+Course : *Python Programming* (PRG400), the four-day Python fundamentals course.
+
+Read first, in this order :
+
+1. `../Presentation-Template/WRITING-STYLE.md` : how every course is written.
+2. `../Presentation-Template/docs/course-conventions.md` : frontmatter, demo pills,
+   code fences, diagrams, appendices. Not repeated here.
+3. This file : what is specific to PRG400.
+4. `build/plan.md` (the current design) and `build/tasks.md` (what is done and open).
+
+Changes to the shared build are made in `../Presentation-Template` itself, from a
+worktree, and must keep the other courses building. See its `AGENTS.md`.
 
 ---
 
-## What this is
+## What this course is
 
-13 modules of Marp Markdown slides plus per-module exercise files. Modules 01 to 11 are
-converted from the original PDF deck (`PRG400-Python-Programming_og.pdf`, kept for
-reference). The `uv` and `ruff` material inside module 01, and the two appendices,
-`12-appendix-type-hinting` and `13-appendix-libraries`, are new.
+Eleven modules plus two appendices (`12-appendix-type-hinting`,
+`13-appendix-libraries`) of Marp slides, runnable demos, and thirteen exercises that
+build one Wordle game. Modules 01 to 11 were converted from the original deck
+(`PRG400-Python-Programming_og.pdf`, kept for reference, never edited).
 
-Working notes live in `build/plan.md` (where the conversion stands, what is left) and
-`build/tasks.md` (the checklist). Read those before picking up work.
+## Course-specific rules
 
-The build system is shared with sibling courseware repos via `../../Presentation-Template/build/`.
-Never modify anything under `Presentation-Template` from here.
-
-**The toolchain lives inside module 01.** `uv`, `ruff` and the editor were briefly a
-separate `00a-python-tooling` module, but installing Python and running it is what
-an introduction is for, and having both meant module 01 and the tooling module
-contradicted each other on how to install Python. Keep them together.
-
-**Type hints are taught as the course goes.** Variables are annotated in module 02,
-collections in module 03, signatures in module 05 and constructors in module 11, so
-the demo code looks like real code rather than a stripped-down teaching dialect.
-`12-appendix-type-hinting` is the recap: it gathers what has been shown and adds
-`| None` and a checker. When you touch a demo, keep its annotations, and keep the
-matching slide fence identical to it.
-
-**Both appendices carry `appendix: true`** in their frontmatter, which puts them under
-their own Appendix divider on the schedule slide. Their exercise files start with
-`<!-- appendix -->` as the very first line, which separates them in the exercises
-table of contents.
-
-**All code in the course is PEP 8 named and Pythonic.** The material inherited a set
-of Java-isms, camelCase names and trailing bare `return` statements, and they were
-removed across the slides, demos, exercise text and solutions together. Do not
-reintroduce them. Where an unpythonic form is the lesson, such as the Java-style
-accessors that the property slide improves on, keep it and say so in a comment.
-
-## First-time setup
-
-```bash
-bun install --cwd ../Presentation-Template/build
-bunx puppeteer browsers install chrome      # required by the lint height check
-uv sync                                     # ruff and mypy for the code checks
-```
-
-## Build commands (from this course root)
-
-```bash
-bun run --cwd build build                  # compile slides to PDF
-bun run --cwd build build -- --exercises   # compile exercises to PDF
-bun run --cwd build serve                  # live Marp server
-bun run --cwd build lint                   # style and layout linter
-```
-
-Run lint after editing any slide file and fix every warning before stopping.
-
-## Python code
-
-```bash
-uv run python build/check-fences.py     # gating in CI, must be clean
-uv run ruff check .                     # gating in CI, must be at zero
-uv run python -m compileall -q demos/01-pythonintro solutions
-```
-
-`ruff` is configured in `ruff.toml`, not in `pyproject.toml`, because the student
-bundle ships `ruff.toml` and deliberately ships no `pyproject.toml`.
-
-`ruff check .` is at **zero** and gating. Do not "fix" a finding in a demo where the
-anti-pattern is the lesson; add a scoped entry to `[lint.per-file-ignores]` with a
-comment saying why. Every existing entry names the lesson it protects.
-
-## File structure
-
-```
-src/slides/00-preamble/00-preamble.md      title + logistics (carries pdfName: and language:)
-src/slides/01-python-intro/ … 11-python-classes/   one folder per module, one .md per folder
-src/slides/12-appendix-type-hinting/       appendix, the type hinting recap
-src/slides/13-appendix-libraries/          appendix, carries appendix: true
-src/exercises/01-…md … 13-…md              exercise guides
-demos/01-pythonintro/ … 13-appendix-libraries/  runnable demo files referenced from the slides
-solutions/                                  exercise solutions
-appendices/                                 appendix decks the exercises point at
-reference/                                  background reading, shipped to students
-build/check-fences.py                       the python fences on the slides, gating in CI
-build/plan.md, build/tasks.md               working notes
-```
-
-Demo files are named `NN_name.py` here, matching the `> \`demoNN · name\`` pill, rather
-than the `demoNN_name.py` form the sibling Advanced Python course uses.
-
-`src/exercises/01-environment-configuration.md` is Exercise 1, and belongs to
-module 01. It sets up `uv`, `ruff` and the editor.
-
-**A new module means two edits to `.forgejo/workflows/release.yml`** : its demo folder
-joins the `compileall` list and the bundle `for item in` list. The bundle is an
-allowlist, so a folder that is not named there does not reach the student.
-
-## Conventions
-
-- Slide frontmatter : `footer:` carries the short module name; the build generates the
-  course schedule and module overview slides from it. Do not write `# Module N : Title` slides.
-- Demo references : a slide that has a matching file in `demos/<module>/` ends with a line
-  `` > `demoNN · name` `` where `NN_name.py` (or `demoNN_name.py`) is the demo file.
-  Numbers must be gap-free ascending per module file (a drop starts a new group).
-- Write in English; businesslike full sentences; no em-dashes on bullet lines; parent bullets
-  that introduce sub-bullets end with ` :` (space before colon).
-- **The deck is background-agnostic.** Do not add comparisons to the student's other
-  languages, and do not add speaker NOTES blocks; only the preamble carries those.
-  Cross-language framing belongs in the room, not in the material.
-- Every code fence has a language tag and a blank line before it.
-  - ```` ```python ```` is for Python. Program output, transcripts, tracebacks, file
-    content and grammar skeletons that are not valid Python take ```` ```text ````;
-    shell commands take ```` ```bash ````.
-  - `build/check-fences.py` extracts every python fence and checks it. Run
-    `uv run python build/check-fences.py` before stopping; CI gates on it.
-- Diagrams are ` ```mermaid ` fences, or inline SVG where mermaid cannot express the
-  shape. The build renders mermaid to SVG and caches it in `build/.mermaid-cache/`.
-  - **Run `build` first, then `lint` separately.** The lint pass inside `build` runs
-    before mermaid is rendered, so it measures a placeholder and will call a diagram
-    slide fitting when it does not.
-  - Use plain `graph LR`, `flowchart LR`, `classDiagram` or `sequenceDiagram` with no
-    theme directives and no hardcoded colours. Prefer wide over tall.
-  - **Keep the outer edges of a diagram made of rectangles.** `trimSvgViewBox` in the
-    shared build crops to a bounding box computed from `<rect>` elements only, so a
-    circle `((…))` or a `[*]` marker at an extreme is silently cut off. The
-    Encapsulation slide shipped broken for exactly this reason. Check with
-    `grep -o 'viewBox="[^"]*"' build/.mermaid-cache/*.svg`; a healthy diagram starts at
-    `viewBox="3 3 …"`.
-  - Inline SVG takes a `viewBox` and `width="100%"`, uses `currentColor` and no
-    background fill, so it follows the theme in both light and dark.
-    - **Do not rely on leading or trailing spaces inside `<text>`.** Chrome collapses
-      them and `xml:space` on the parent `<g>` is not inherited. Position each run
-      explicitly, and right-align with `text-anchor="end"` where padding matters.
-
-## What NOT to do
-
-- Do not edit `*_og.pdf` (original deck) or regenerate it; the build writes `PRG400-Python-Programming.pdf`.
-- Do not add dependencies to `build/package.json`.
+- **The toolchain lives in module 01** : uv, ruff, the editor. Do not split it into
+  a module of its own again.
+- **Type hints are taught as the course goes** : variables in 02, collections in 03,
+  signatures in 05, constructors in 11; the appendix is the recap. Keep the
+  annotations when you touch a demo, and keep its slide fence identical to it.
+- **All code is PEP 8 named and Pythonic**, in slides, demos, exercises and
+  solutions alike. Where an unpythonic form is the lesson (the `%` formatting
+  example kept for recognition), keep it and say so in a comment or a `ruff.toml`
+  entry.
+- **f-strings everywhere**; `%` and `str.format` appear once, to be recognised.
+- **Properties are taught one way** : plain attributes first, `@property` when a value
+  is computed or needs a rule. No `get_x` / `set_x`, no `property(get, set)`.
+- **pytest, not unittest** (taught in the Exercise 13 libraries appendix).
+- Inheritance in depth, generators, decorators, `dataclass` and `collections` in
+  depth belong to the Advanced Python course.
+- Demo files are `NN_name.py` (module 07 uses `demoNN_name.py`).
 - Do not write content in Dutch.
+
+## Exercises : the Wordle spine
+
+The general pattern is `../Presentation-Template/docs/agents/exercise-spine.md`
+(also the `exercise-spine` skill). Here :
+
+- `solutions/NN-<exercise stem>/` is the game at the end of exercise NN, a complete
+  uv project. `exercises/starters/` is generated by the shared `make-starters.py` from the
+  solutions and `exercises/handouts/`; never edit a starter by hand.
+- Exercise text quotes the solution code verbatim and shows only output produced by
+  running it. `WORDLE_SECRET=crane` fixes the secret. `build/check-solutions.py` runs
+  every stage's tests (from `build/solution-tests/` for 05 to 12, and from its
+  solution folder for 13), mypy from Exercise 12, and a scripted game against
+  `build/transcripts/`.
+- Names (`score_guess`, `play`, `Game`, the module names) are a contract between the
+  text, the solutions, the tests and the starters.
+- Steps vary in how much they give : the code itself (at most about 20 lines), a
+  skeleton with hints and a solution, or only the signature and expected output (Exercise 13
+  teaches writing tests). Mix these in an exercise. **Do not label steps** with stars
+  or difficulty words.
+- **Nothing new on the required path** : a required step uses only what a slide, a
+  demo or an earlier exercise showed. The exercise may explain the *problem*; the
+  language is taught on the slides. Every step where the student writes code gets
+  a hint, and its first hint names the slide or demo (`WRITING-STYLE.md` §8).
+- **No timings** in exercises or on slides; the trainer paces the room.
+- Slides and demos never become Wordle-themed.
+- `archive/` holds retired material (the calculator exercises, old demos). Do not
+  build on it.
+
+## Checks
+
+```bash
+uv sync
+uv run python ../Presentation-Template/build/tools/check-fences.py          # gating in CI
+uv run python ../Presentation-Template/build/tools/check-slide-references.py # gating in CI
+uv run ruff check .                          # gating in CI, at zero
+uv run python ../Presentation-Template/build/tools/make-starters.py --check # gating in CI
+uv run python build/check-solutions.py       # gating in CI
+uv run python build/site/check-quiz.py       # gating in CI
+bun run --cwd build build -- --skip-lint     # slides; then lint separately :
+bun run --cwd build lint
+bun run --cwd build build -- --exercises     # exercises PDF
+bun run --cwd build site                     # offline exercise site
+```
+
+`ruff` is configured in `ruff.toml`, not `pyproject.toml`, because the student bundle
+ships `ruff.toml` and no `pyproject.toml`. Do not "fix" a finding where the
+anti-pattern is the lesson : add a scoped `[lint.per-file-ignores]` entry with a
+comment naming the lesson.
+
+## Releasing
+
+`.forgejo/workflows/release.yml` runs on every push to `master`. **A new demo folder
+means two edits there** : the `compileall` list and the bundle `for item in` list.
+The bundle is an allowlist. `MAINTAINING.md` has the rest.

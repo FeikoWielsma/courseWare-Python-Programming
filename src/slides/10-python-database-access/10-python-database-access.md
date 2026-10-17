@@ -11,18 +11,15 @@ footer: Python Database Access
 - Provides a standard interface from Python to databases :
   - Most Python database interfaces adhere to this standard
   - Each database has its own module highly consistent with others
-- Influenced by ODBC, JDBC and Perl's DBI :
-  - Modules available for most of the popular relational databases
-- Standard is easy to implement and understand and this means :
-  - More and higher quality database third party modules
-  - More supported backends
+- The standard is described in PEP 249 :
+  - Modules are available for most of the popular relational databases
+  - Code written for one database reads almost the same for another
 - Python DB API 2.0 compatible modules :
-  - Sqlite3 part of the standard library
-  - MySQLdb (MySQL)
-  - psycopg2 (PostgreSQL)
-  - cx_Oracle (Oracle)
-  - mxODBC (SQL Server, DB2, Sybase, Oracle, etc.)
-  - mxODBC Connect (same as mxODBC, but more platforms)
+  - `sqlite3` (SQLite), part of the standard library and used in this module
+  - `psycopg` (PostgreSQL)
+  - `mysqlclient` or `PyMySQL` (MySQL and MariaDB)
+  - `oracledb` (Oracle)
+  - `pyodbc` (any database with an ODBC driver, such as SQL Server and DB2)
 
 ---
 
@@ -38,16 +35,16 @@ flowchart LR
 ```
 
 - Connection objects logically wrap a database connection :
-  - Provide network access to the database and handle transactions
-  - You can't execute statements on connection objects
+  - Provide access to the database and handle transactions
+- `sqlite3.connect()` opens a database file, and creates it if it does not exist
 - Cursor objects used to manipulate and query the database :
   - Created on connections using the `conn.cursor()` method
   - Cursor objects provide ways to execute statements and access results
 
 ```python
-con = sqlite3.connect('sample.db')
+con = sqlite3.connect("sample.db")
 cur = con.cursor()
-cur.execute('CREATE TABLE testtable(id int, name varchar(254))')
+cur.execute("CREATE TABLE testtable(id int, name varchar(254))")
 ```
 
 ---
@@ -59,18 +56,18 @@ cur.execute('CREATE TABLE testtable(id int, name varchar(254))')
 import sqlite3
 import sys
 con = None
-try :
-     con = sqlite3.connect('test.db')
-     cur = con.cursor()
-     cur.execute('SELECT SQLITE_VERSION()')
-     data = cur.fetchone()
-     print(f"SQLite version: {data}")
-except sqlite3.Error as e :
-     print(f"Error {e.args[0]}:")
-     sys.exit(1)
-finally :
-     if con:
-          con.close()
+try:
+    con = sqlite3.connect("test.db")  # creates test.db if it does not exist
+    cur = con.cursor()
+    cur.execute("SELECT SQLITE_VERSION()")
+    data = cur.fetchone()
+    print(f"SQLite version: {data}")
+except sqlite3.Error as e:
+    print(f"Error: {e}")
+    sys.exit(1)
+finally:
+    if con:
+        con.close()
 ```
 
 > `demo01 · databaseversion`
@@ -80,23 +77,31 @@ finally :
 
 # Using with
 
-- By using the `with` statement the code is more compact :
-  - Using `with` the Python interpreter automatically releases the resources
-  - This also provides error handling
+- A connection used in a `with` statement manages the transaction :
+  - When the block ends normally, the changes are committed
+  - When the block ends with an exception, the changes are rolled back
 
 ```python
 import sqlite3
-con = sqlite3.connect('test.db')
+con = sqlite3.connect("test.db")
 with con:
-     cur = con.cursor()
-     cur.execute('SELECT SQLITE_VERSION()')
-     data = cur.fetchone()
-     print(f"SQLite version: {data}")
+    cur = con.cursor()
+    cur.execute("SELECT SQLITE_VERSION()")
+    data = cur.fetchone()
+    print(f"SQLite version: {data}")
+con.close()  # `with con:` commits or rolls back, it does not close
 ```
 
-- Using the `with` statement :
-  - Changes are automatically committed
-  - Otherwise, we would have to commit them manually
+- The connection stays open after the block :
+  - Close it yourself with `con.close()` when you are done
+- `closing()` from `contextlib` calls `close()` when the block ends, so one `with` line can commit and close :
+
+```python
+with closing(sqlite3.connect("test.db")) as con, con:
+    cur = con.cursor()
+    cur.execute("SELECT SQLITE_VERSION()")
+    print(f"SQLite version: {cur.fetchone()}")
+```
 
 > `demo02 · usingwith`
 
@@ -110,20 +115,23 @@ with con:
 - Method also accepts :
   - Sequence of parameters to customize the SQL statement
 
+- This demo creates the `Cars` table that the later demos read :
+
 ```python
 import sqlite3
-con = sqlite3.connect('cars.db')
-with con :
-  cur = con.cursor()
-  cur.execute("CREATE TABLE Cars(Id INT, Name TEXT, Price INT)")
-  cur.execute("INSERT INTO Cars VALUES(1,'Audi',52642)")
-  cur.execute("INSERT INTO Cars VALUES(2,'Mercedes',57127)")
-  cur.execute("INSERT INTO Cars VALUES(3,'Skoda',9000)")
-  cur.execute("INSERT INTO Cars VALUES(4,'Volvo',29000)")
-  cur.execute("INSERT INTO Cars VALUES(5,'Bentley',350000)")
-  cur.execute("INSERT INTO Cars VALUES(6,'Citroen',21000)")
-  cur.execute("INSERT INTO Cars VALUES(7,'Hummer',41400)")
-  cur.execute("INSERT INTO Cars VALUES(8,'Volkswagen',21600)")
+con = sqlite3.connect("cars.db")
+with con:
+    cur = con.cursor()
+    cur.execute("DROP TABLE IF EXISTS Cars")
+    cur.execute("CREATE TABLE Cars(Id INT, Name TEXT, Price INT)")
+    cur.execute("INSERT INTO Cars VALUES(1,'Audi',52642)")
+    cur.execute("INSERT INTO Cars VALUES(2,'Mercedes',57127)")
+    cur.execute("INSERT INTO Cars VALUES(3,'Skoda',9000)")
+    cur.execute("INSERT INTO Cars VALUES(4,'Volvo',29000)")
+    cur.execute("INSERT INTO Cars VALUES(5,'Bentley',350000)")
+    cur.execute("INSERT INTO Cars VALUES(6,'Citroen',21000)")
+    cur.execute("INSERT INTO Cars VALUES(7,'Hummer',41400)")
+    cur.execute("INSERT INTO Cars VALUES(8,'Volkswagen',21600)")
 ```
 
 > `demo03 · insertingdata`
@@ -140,10 +148,17 @@ with con :
 
 ```python
 import sqlite3
-cars = ((1, 'Audi', 52642), (2, 'Mercedes', 57127), (3, 'Skoda', 9000),
-        (4, 'Volvo', 29000), (5, 'Bentley', 350000), (6, 'Hummer', 41400),
-        (7, 'Volkswagen', 21600))
-con = sqlite3.connect('test.db')
+cars = (
+    (1, "Audi", 52642),
+    (2, "Mercedes", 57127),
+    (3, "Skoda", 9000),
+    (4, "Volvo", 29000),
+    (5, "Bentley", 350000),
+    (6, "Citroen", 21000),
+    (7, "Hummer", 41400),
+    (8, "Volkswagen", 21600),
+)
+con = sqlite3.connect("cars.db")
 with con:
     cur = con.cursor()
     cur.execute("DROP TABLE IF EXISTS Cars")
@@ -160,19 +175,20 @@ with con:
 
 - Sometimes we need to determine the id of last inserted row :
   - In Python SQLite we use the `lastrowid` attribute of the cursor object
+- The name `":memory:"` opens a database that lives only while the program runs :
 
 ```python
 import sqlite3
-con = sqlite3.connect(':memory:')
+con = sqlite3.connect(":memory:")
 with con:
-  cur = con.cursor()
-  cur.execute("CREATE TABLE Friends(Id INTEGER PRIMARY KEY, Name TEXT);")
-  cur.execute("INSERT INTO Friends(Name) VALUES ('Tom');")
-  cur.execute("INSERT INTO Friends(Name) VALUES ('Rebecca');")
-  cur.execute("INSERT INTO Friends(Name) VALUES ('Jim');")
-  cur.execute("INSERT INTO Friends(Name) VALUES ('Robert');")
-  lid = cur.lastrowid
-  print(f"The last Id of the inserted row is {lid}")
+    cur = con.cursor()
+    cur.execute("CREATE TABLE Friends(Id INTEGER PRIMARY KEY, Name TEXT)")
+    cur.execute("INSERT INTO Friends(Name) VALUES ('Tom')")
+    cur.execute("INSERT INTO Friends(Name) VALUES ('Rebecca')")
+    cur.execute("INSERT INTO Friends(Name) VALUES ('Jim')")
+    cur.execute("INSERT INTO Friends(Name) VALUES ('Robert')")
+    lid = cur.lastrowid
+    print(f"The last Id of the inserted row is {lid}")
 ```
 
 > `demo05 · lastinsertedrowid`
@@ -182,29 +198,27 @@ with con:
 
 # Retrieving Data
 
-- Data retrieval is done with fetch functions like `fetchall()` :
+- `fetchall()` returns all rows of the result as a list of tuples :
+  - The `Cars` table comes from demo03 or demo04, so run one of them first
 
 ```python
 import sqlite3
-con = sqlite3.connect('cars.db')
+con = sqlite3.connect("cars.db")
 with con:
-     cur = con.cursor()
-     cur.execute("SELECT * FROM Cars")
-     rows = cur.fetchall()
-     for row in rows:
-          print (row)
+    cur = con.cursor()
+    cur.execute("SELECT * FROM Cars")
+    rows = cur.fetchall()
+    for row in rows:
+        print(row)
 ```
 
-- `fetchall()` gets all records and returns a result set :
-  - Actually the result set is a list of tuples
-
 ```text
-(1, 'Audi', 52643)
+(1, 'Audi', 52642)
 (2, 'Mercedes', 57127)
 (3, 'Skoda', 9000)
 ```
 
-- Other `fetch*()` methods read data from result set :
+- Other fetch methods read part of the result :
 
 ```python
 first_row = cur.fetchone()
@@ -216,6 +230,64 @@ all_remaining_rows = cur.fetchall()
 
 ---
 
+# Filtering and Grouping Data
+
+- `WHERE` filters rows; `?` binds the value from the parameter tuple
+- `GROUP BY` forms groups; `COUNT(*)` counts rows and `SUM` adds non-NULL values
+- `COALESCE(value, 0)` replaces SQL `NULL` with zero, including an empty `SUM`
+- `ORDER BY` sorts results; `DESC` puts the largest total first
+
+```python
+import sqlite3
+
+# Run demo03 or demo04 first to create the Cars table.
+con = sqlite3.connect("cars.db")
+try:
+    cur = con.cursor()
+    cur.execute("""
+        SELECT Name, COUNT(*), COALESCE(SUM(Price), 0)
+        FROM Cars WHERE Price >= ?
+        GROUP BY Name ORDER BY SUM(Price) DESC
+        """, (50000,))
+    for row in cur.fetchall():
+        print(row)
+finally:
+    con.close()
+```
+
+> `demo07 · aggregatingdata`
+
+---
+
+# Rows by Column Name
+
+- A row is a tuple by default, so a column is read by its position :
+  - `row[1]` works, but the reader has to know what the second column is
+- Set `row_factory` on the connection to `sqlite3.Row` :
+  - Every row can then be read by column name as well as by position
+
+```python
+import sqlite3
+con = sqlite3.connect("cars.db")
+con.row_factory = sqlite3.Row  # rows can now be read by column name
+with con:
+    cur = con.cursor()
+    cur.execute("SELECT * FROM Cars")
+    rows = cur.fetchall()
+    for row in rows:
+        print(f"{row['Id']} {row['Name']} {row['Price']}")
+```
+
+```text
+1 Audi 52642
+2 Mercedes 57127
+```
+
+> `demo08 · rowfactory`
+
+
+---
+
 # Fetching Rows
 
 - Returning all data at a time may not be feasible :
@@ -223,44 +295,21 @@ all_remaining_rows = cur.fetchall()
 
 ```python
 import sqlite3
-con = lite.connect('test.db')
+con = sqlite3.connect("cars.db")
 with con:
-     cur = con.cursor()
-     cur.execute("SELECT * FROM Cars")
-     while True:
-          row = cur.fetchone()
-          if row is None:
-              break
-          print (row[0], row[1], row[2])
+    cur = con.cursor()
+    cur.execute("SELECT * FROM Cars")
+    while True:
+        row = cur.fetchone()
+        if row is None:
+            break
+        print(row[0], row[1], row[2])
 ```
 
 - `fetchone()` method returns next row from the table :
   - If there is no more data left, it returns `None`
 
-> `demo07 · fetchone`
-
-
----
-
-# Dictionary Cursor
-
-- Default cursor returns data in a list of tuples :
-  - When we use a dictionary cursor, the data is sent in the form of Python dictionaries
-  - This way we can refer to the data by their column names
-
-```python
-import sqlite3
-con = sqlite3.connect('cars.db')
-with con:
-     con.row_factory = sqlite3.Row
-     cur = con.cursor()
-     cur.execute("SELECT * FROM Cars")
-     rows = cur.fetchall()
-     for row in rows:
-          print(f"{row['Id']} {row['Name']} {row['Price']}")
-```
-
-> `demo08 · dictionarycursor`
+> `demo09 · fetchone`
 
 
 ---
@@ -277,15 +326,14 @@ with con:
 import sqlite3
 car_id = 1
 new_price = 62300
-con = sqlite3.connect('test.db')
+con = sqlite3.connect("cars.db")
 with con:
-     cur = con.cursor()
-     cur.execute("UPDATE Cars SET Price=? WHERE Id=?", (new_price, car_id))
-     con.commit()
-     print(f"Number of rows updated: {cur.rowcount}")
+    cur = con.cursor()
+    cur.execute("UPDATE Cars SET Price=? WHERE Id=?", (new_price, car_id))
+    print(f"Number of rows updated: {cur.rowcount}")
 ```
 
-> `demo09 · parameterizedqueries`
+> `demo10 · parameterizedqueries`
 
 
 ---
@@ -297,13 +345,13 @@ with con:
 
 ```python
 import sqlite3
-con = sqlite3.connect('cars.db')
+con = sqlite3.connect("cars.db")
 with con:
-     cur = con.cursor()
-     cur.execute('PRAGMA table_info(Cars)')
-     data = cur.fetchall()
-     for d in data:
-          print (d[0], d[1], d[2])
+    cur = con.cursor()
+    cur.execute("PRAGMA table_info(Cars)")
+    data = cur.fetchall()
+    for d in data:
+        print(d[0], d[1], d[2])
 ```
 
 ```text
@@ -316,7 +364,7 @@ with con:
   - SQLite objects may have attributes, which are metadata
   - Obtain specific metadata from querying the SQLite system `sqlite_master` table
 
-> `demo10 · metadata`
+> `demo11 · metadata`
 
 
 ---
@@ -335,13 +383,13 @@ with con:
 - Write all changes of the last transaction block to the database :
 
 ```python
-conn.commit()
+con.commit()
 ```
 
 - Undo all changes applied to the database on the connection :
 
 ```python
-conn.rollback()
+con.rollback()
 ```
 
 ---
@@ -352,27 +400,28 @@ conn.rollback()
 ```python
 import sqlite3
 import sys
-try:# con = sqlite3.connect('friends.db', isolation_level=None) => autocommit
-     con = sqlite3.connect('friends.db')
-     cur = con.cursor()
-     cur.execute("DROP TABLE IF EXISTS Friends")
-     cur.execute("CREATE TABLE Friends(Id INTEGER PRIMARY KEY, Name TEXT)")
-     cur.execute("INSERT INTO Friends(Name) VALUES ('Tom')")
-     cur.execute("INSERT INTO Friends(Name) VALUES ('Rebecca')")
-     cur.execute("INSERT INTO Friends(Name) VALUES ('Jim')")
-     cur.execute("INSERT INTO Friends(Name) VALUES ('Robert')")
-     #con.commit() // data not written until commit is executed
+con = None
+try:
+    con = sqlite3.connect("friends.db")
+    cur = con.cursor()
+    cur.execute("DROP TABLE IF EXISTS Friends")
+    cur.execute("CREATE TABLE Friends(Id INTEGER PRIMARY KEY, Name TEXT)")
+    cur.execute("INSERT INTO Friends(Name) VALUES ('Tom')")
+    cur.execute("INSERT INTO Friends(Name) VALUES ('Rebecca')")
+    cur.execute("INSERT INTO Friends(Name) VALUES ('Jim')")
+    cur.execute("INSERT INTO Friends(Name) VALUES ('Robert')")
+    con.commit()  # without this line, close() discards the inserts
 except sqlite3.Error as e:
-     if con:
-          con.rollback()
-     print(f"Error {e.args[0]}:")
-     sys.exit(1)
+    if con:
+        con.rollback()
+    print(f"Error: {e}")
+    sys.exit(1)
 finally:
-     if con:
-          con.close()
+    if con:
+        con.close()
 ```
 
-> `demo11 · transactions`
+> `demo12 · transactions`
 
 ---
 
@@ -388,8 +437,8 @@ finally:
   - Created on connections using the `conn.cursor()` method
 - If same query must be repeated multiple times :
   - Can use parameterized queries with question marks or named parameters
-- Using `with` Python automatically releases the resources :
-  - Changes are automatically committed
+- A connection in a `with` statement commits or rolls back the transaction :
+  - It does not close the connection; `con.close()` does that
 - DB API supports transactions if database supports them :
   - Via methods on the connection object
 

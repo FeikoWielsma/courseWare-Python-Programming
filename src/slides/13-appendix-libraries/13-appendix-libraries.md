@@ -16,12 +16,14 @@ appendix: true
   - `datetime` , dates, times and the arithmetic between them
   - `json` , reading and writing the interchange format of the web
   - `re` , regular expressions for searching and rewriting text
-  - `unittest` , the testing framework built into the language
+  - `sys.argv` , inspecting command-line arguments passed to a script
+- `pytest` is third-party software for testing with plain assertions :
+  - Exercise 13 installs it with `uv add --dev pytest`
 - Others worth knowing about :
   - `pathlib` for filesystem paths, `csv` for tabular files
   - `collections` for counters, deques and default dictionaries
   - `itertools` for combinations, grouping and infinite sequences
-  - `os` and `sys` for the environment the program runs in
+  - `argparse` for flags, options and generated help messages
 - Full reference at `https://docs.python.org/3/library/`
 
 ---
@@ -41,7 +43,7 @@ midday = time(12, 30, 0)
 launch = datetime(2026, 8, 15, 12, 30, 0)
 
 print(launch.year, launch.month, launch.day)
-print(launch.weekday())     # Monday is 0, so this prints 5
+print(launch.weekday())  # Monday is 0, so this prints 5
 ```
 
 - The current moment comes from the class itself :
@@ -57,8 +59,8 @@ print(launch.weekday())     # Monday is 0, so this prints 5
   - The `f` is for format, the `p` is for parse
 
 ```python
-launch.strftime("%d-%m-%Y %H:%M")        # 15-08-2026 12:30
-launch.strftime("%A %d %B %Y")           # Saturday 15 August 2026
+launch.strftime("%d-%m-%Y %H:%M")  # 15-08-2026 12:30
+launch.strftime("%A %d %B %Y")     # Saturday 15 August 2026
 
 datetime.strptime("24-12-2026 18:00", "%d-%m-%Y %H:%M")
 ```
@@ -70,7 +72,7 @@ datetime.strptime("24-12-2026 18:00", "%d-%m-%Y %H:%M")
 - ISO 8601 needs no format string in either direction :
 
 ```python
-launch.isoformat()                       # 2026-08-15T12:30:00
+launch.isoformat()  # 2026-08-15T12:30:00
 datetime.fromisoformat("2026-12-24T18:00:00")
 ```
 
@@ -88,15 +90,15 @@ from datetime import date, timedelta
 start = date(2026, 8, 15)
 end = date(2026, 12, 24)
 span = end - start
-print(span.days)              # 131
+print(span.days)  # 131
 ```
 
 - Adding a `timedelta` to a date gives another date :
 
 ```python
-start + timedelta(weeks=1)    # 2026-08-22
-start + timedelta(days=100)   # 2026-11-23
-start - timedelta(days=1)     # 2026-08-14
+start + timedelta(weeks=1)   # 2026-08-22
+start + timedelta(days=100)  # 2026-11-23
+start - timedelta(days=1)    # 2026-08-14
 ```
 
 - A `timedelta` is built from any combination of units :
@@ -198,28 +200,30 @@ with path.open(encoding="utf-8") as f:
   - `^` start of the string, `$` end of the string, `\b` word boundary
 
 ```python
-r"\d{4}-\d{2}-\d{2}"       # a date like 2026-08-15
-r"^\w+@\w+\.\w{2,4}$"      # a very rough email address
+r"\d{4}-\d{2}-\d{2}"   # a date like 2026-08-15
+r"^\w+@\w+\.\w{2,4}$"  # a very rough email address
 ```
 
 ---
 
 # Matching and Searching
 
-- Three functions cover most use, and they differ in where they look :
+- Four functions cover most use, and they differ in where they look :
 
 ```python
 import re
 
 text = "Order 1234 shipped, order 5678 pending"
 
-re.match(r"Order", text)      # only tries position zero
-re.match(r"shipped", text)    # None, even though the word is present
-re.search(r"shipped", text)   # scans the whole string, finds it
-re.findall(r"\d+", text)      # ['1234', '5678']
+re.match(r"Order", text)     # only tries position zero
+re.match(r"shipped", text)   # None, even though the word is present
+re.search(r"shipped", text)  # scans the whole string, finds it
+re.findall(r"\d+", text)     # ['1234', '5678']
+print(re.fullmatch(r"[a-z]+", "hello") is not None)  # True; whole string
+print(re.fullmatch(r"[a-z]+", "hello!") is not None)  # False
 ```
 
-- `match` and `search` return a match object, or `None` :
+- `match`, `fullmatch` and `search` return a match object, or `None` :
   - So the result is tested before it is used
 - Flags change how the pattern is applied :
   - `re.IGNORECASE` , `re.MULTILINE` , `re.DOTALL`
@@ -236,17 +240,17 @@ re.findall(r"\d+", text)      # ['1234', '5678']
 line = "2026-08-15 12:30 ERROR disk full"
 m = re.search(r"(\d{4})-(\d{2})-(\d{2}) (\d{2}:\d{2}) (\w+) (.*)", line)
 
-m.group(0)      # the whole match
-m.group(1)      # 2026, the first group
-m.groups()      # ('2026', '08', '15', '12:30', 'ERROR', 'disk full')
+m.group(0)  # the whole match
+m.group(1)  # 2026, the first group
+m.groups()  # ('2026', '08', '15', '12:30', 'ERROR', 'disk full')
 ```
 
 - Named groups read better once there are more than two :
 
 ```python
 named = re.search(r"(?P<level>ERROR|WARN|INFO) (?P<message>.*)", line)
-named.group("level")      # ERROR
-named.group("message")    # disk full
+named.group("level")    # ERROR
+named.group("message")  # disk full
 ```
 
 > `demo07 · regex_groups`
@@ -260,7 +264,7 @@ named.group("message")    # disk full
 ```python
 text = "Call 020-1234567 or 010-7654321 today"
 
-re.sub(r"\d", "x", text)                  # Call xxx-xxxxxxx or xxx-xxxxxxx today
+re.sub(r"\d", "x", text)  # Call xxx-xxxxxxx or xxx-xxxxxxx today
 re.sub(r"\d{3}-\d{7}", "[redacted]", text)
 ```
 
@@ -282,90 +286,113 @@ re.split(r"\s+or\s+", text)
 
 ---
 
-# Unit Testing with unittest
+# Command-Line Arguments with sys.argv
 
-- A unit test checks one unit of behaviour in isolation :
-  - Tests are run automatically, so a regression is noticed immediately
-- A test case is a class deriving from `unittest.TestCase` :
-  - Every method whose name starts with `test` is collected and run
+- `sys.argv` holds the arguments passed to a Python script as a list of strings :
+  - `sys.argv[0]` is the name or path of the script itself
+  - `sys.argv[1:]` contains any arguments passed after the script name
 
 ```python
-import unittest
+import sys
 
+print(f"Script name : {sys.argv[0]}")
+print(f"Arguments   : {sys.argv[1:]}")
+```
 
-def add(a, b):
+- Every argument arrives as a string :
+  - Convert numbers explicitly with `int()` or `float()`
+  - Inspect `len(sys.argv)` to check how many arguments were supplied
+- For option flags, defaults and help messages, `argparse` is the next step :
+  - `argparse` handles `--flag` options, generates `--help` and parses types
+  - `sys.argv` is the underlying list `argparse` reads from
+
+> `demo09 · sys_argv`
+
+---
+
+# Testing with pytest
+
+- In `pytest`, a test is a function whose name starts with `test_` :
+  - No test case class to subclass and no special assertion methods
+  - Plain `assert` statements check the expected conditions
+- `pytest` is installed in the project with `uv add --dev pytest` :
+
+```python
+def add(a: int, b: int) -> int:
     return a + b
 
 
-class TestAdd(unittest.TestCase):
-    def test_two_positives(self):
-        self.assertEqual(add(2, 3), 5)
+def test_positive_numbers() -> None:
+    assert add(2, 3) == 5
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_with_zero() -> None:
+    assert add(0, 7) == 7
 ```
 
-> `demo09 · unittest_basic`
-
----
-
-# Assertions
-
-- The assertion methods say what is expected, and report clearly when it is not :
-
-| Method | Checks |
-|---|---|
-| `assertEqual(a, b)` | `a == b` |
-| `assertNotEqual(a, b)` | `a != b` |
-| `assertTrue(x)` / `assertFalse(x)` | truth of `x` |
-| `assertIs(a, b)` / `assertIsNone(x)` | identity |
-| `assertIn(a, b)` | `a in b` |
-| `assertRaises(Error)` | the block raises that exception |
-| `assertAlmostEqual(a, b)` | equal to seven decimal places |
-
-- `assertAlmostEqual` exists because floating point equality is unreliable
-- `assertRaises` is used as a context manager :
-
-```python
-with self.assertRaises(AttributeError):
-    self.basket.remove("apple")
-```
-
----
-
-# Fixtures and Running Tests
-
-- `setUp` runs before every test method, `tearDown` after every one :
-  - So no test can be affected by what another test did
-
-```python
-class TestBasket(unittest.TestCase):
-    def setUp(self):
-        self.basket = Basket()
-
-    def test_starts_empty(self):
-        self.assertEqual(self.basket.total(), 0)
-```
-
-- Tests are run from the command line :
+- Run all discovered tests with `uv run pytest` (verbose with `-v`) :
 
 ```bash
-python -m unittest test_basket.py
-python -m unittest discover        # find every test in the tree
-python -m unittest -v              # name each test as it runs
+uv run pytest -v
 ```
 
-- Output reports a dot per passing test :
+> `demo10 · pytest_basic`
+
+---
+
+# Reading a Test Failure
+
+- When an `assert` fails, `pytest` explains exactly what went wrong :
+  - It reconstructs intermediate expressions and shows where the values diverged
+- Running `uv run pytest 11_pytest_failure.py` on a deliberately failing test :
 
 ```text
-...
-Ran 3 tests in 0.000s
+_______________________________ test_wrong_sum ________________________________
 
-OK
+    def test_wrong_sum() -> None:
+>       assert add(2, 3) == 6
+E       assert 5 == 6
+E        +  where 5 = add(2, 3)
+
+11_pytest_failure.py:15: AssertionError
+=========================== short test summary info ===========================
+FAILED 11_pytest_failure.py::test_wrong_sum - assert 5 == 6
 ```
 
-> `demo10 · unittest_fixtures`
+- The report shows the source line, the evaluated values, and the summary line :
+  - No custom assertion methods like `assertEqual` are needed for clear output
+
+> `demo11 · pytest_failure`
+
+---
+
+# Exceptions and Parametrized Tests
+
+- `pytest.raises` checks that a block of code raises an expected exception :
+  - Used as a context manager; the test passes only if the exception occurs
+
+```python
+with pytest.raises(ValueError):
+    divide(10, 0)
+```
+
+- `@pytest.mark.parametrize` runs one test function across multiple inputs :
+  - Each tuple in the list runs as an independent test case
+
+```python
+@pytest.mark.parametrize(
+    ("a", "b", "expected"),
+    [
+        (10, 2, 5.0),
+        (9, 3, 3.0),
+        (5, 2, 2.5),
+    ],
+)
+def test_divide(a: int, b: int, expected: float) -> None:
+    assert divide(a, b) == expected
+```
+
+> `demo12 · pytest_features`
 
 ---
 
@@ -373,15 +400,18 @@ OK
 
 - `datetime` covers dates, times and durations :
   - `date` , `time` , `datetime` and `timedelta`
-  - `strftime` formats, `strptime` parses, `isoformat` does both without a pattern
+  - `strftime` formats and `strptime` parses using a pattern
+  - `isoformat()` formats; `fromisoformat()` parses, without a format pattern
 - `json` converts between Python objects and JSON text :
   - `dumps` and `loads` for strings, `dump` and `load` for files
   - A tuple returns as a list, and keys return as strings
 - `re` searches and rewrites text with patterns :
   - `match` at the start, `search` anywhere, `findall` for every hit
   - Parentheses capture, and `sub` replaces using what was captured
-- `unittest` runs checks over the code automatically :
-  - A `TestCase` class, methods named `test...` , and the `assert...` family
-  - `setUp` gives every test a clean starting point
+- `sys.argv` exposes command-line arguments as a list of strings :
+  - `argparse` is the next step for options, flags and automatic help
+- `pytest` runs checks over the code automatically :
+  - Test functions named `test_` and plain `assert` statements
+  - `pytest.raises` for exceptions and `@pytest.mark.parametrize` for tables
 
 > `exercise13 · Python Libraries`

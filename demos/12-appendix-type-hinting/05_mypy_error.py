@@ -2,7 +2,7 @@
 
 The file runs without complaint. Only the checker objects :
 
-    uv run mypy demos/00a-modern-python/07_mypy_error.py
+    uv run mypy demos/12-appendix-type-hinting/05_mypy_error.py
 
     error: Argument 1 to "double" has incompatible type "str"; expected "int"
 """

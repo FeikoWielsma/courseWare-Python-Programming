@@ -1,5 +1,4 @@
-var = 1
-while var == 1:  # This constructs an infinite loop
-    num = input("Enter a number  :")
-    print("You entered: ", num)
-print("Good bye!")
+while True:  # the condition never becomes false
+    num = input("Enter a number: ")
+    print("You entered:", num)
+print("Good bye!")  # never reached

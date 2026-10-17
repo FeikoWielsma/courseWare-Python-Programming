@@ -1,0 +1,9 @@
+[project]
+name = "wordle"
+version = "0.1.0"
+description = "The PRG400 course project after Exercise 3"
+requires-python = ">=3.14"
+dependencies = []
+
+[dependency-groups]
+dev = ["ruff>=0.14"]

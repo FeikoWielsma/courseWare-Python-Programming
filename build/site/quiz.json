@@ -1,0 +1,418 @@
+[
+  {
+    "q": "What does `uv sync` do in the course setup?",
+    "options": [
+      "Creates the project environment and installs its declared dependencies.",
+      "Runs every Python file in the project.",
+      "Publishes the exercise site."
+    ],
+    "why": "The setup exercise uses uv to create and sync the project environment.",
+    "module": "01"
+  },
+  {
+    "q": "What does Ruff provide in the course setup?",
+    "options": [
+      "A fast Python linter and formatter.",
+      "A Python interpreter.",
+      "A database driver."
+    ],
+    "why": "The toolchain slide introduces Ruff for linting and formatting Python code.",
+    "module": "01"
+  },
+  {
+    "q": "What does this print?",
+    "code": "name = \"Ada\"\nprint(f\"Hello, {name}!\")",
+    "options": [
+      "Hello, Ada!",
+      "Hello, {name}!",
+      "Ada, Hello!"
+    ],
+    "why": "An f-string evaluates the expression inside braces.",
+    "module": "02"
+  },
+  {
+    "q": "What does this print?",
+    "code": "values: list[int] = [1, 2]\nalias = values\nalias.append(3)\nprint(values)",
+    "options": [
+      "[1, 2, 3]",
+      "[1, 2]",
+      "[3]"
+    ],
+    "why": "Both names refer to the same mutable list.",
+    "module": "02"
+  },
+  {
+    "q": "What does this print?",
+    "code": "a = [1, 2]\nb = [1, 2]\nprint(a == b, a is b)",
+    "options": [
+      "True False",
+      "True True",
+      "False False"
+    ],
+    "why": "`==` compares values; `is` compares object identity.",
+    "module": "02"
+  },
+  {
+    "q": "What does this print?",
+    "code": "rows = [[0] * 3] * 2\nrows[0][1] = 7\nprint(rows)",
+    "options": [
+      "[[0, 7, 0], [0, 7, 0]]",
+      "[[0, 7, 0], [0, 0, 0]]",
+      "[[0, 0, 0], [0, 0, 0]]"
+    ],
+    "why": "The outer multiplication repeats references to one inner list.",
+    "module": "03"
+  },
+  {
+    "q": "What does this print?",
+    "code": "numbers = [2, 4]\nprint(numbers[-1])",
+    "options": [
+      "4",
+      "2",
+      "IndexError"
+    ],
+    "why": "Index -1 selects the final item.",
+    "module": "03"
+  },
+  {
+    "q": "What does this print?",
+    "code": "items = [\"a\", \"b\"]\nprint(items[1:])",
+    "options": [
+      "['b']",
+      "[\"a\"]",
+      "[\"a\", \"b\"]"
+    ],
+    "why": "A slice starting at index 1 includes the second item through the end.",
+    "module": "03"
+  },
+  {
+    "q": "What does this print?",
+    "code": "print(3 in [1, 2, 3])",
+    "options": [
+      "True",
+      "False",
+      "3"
+    ],
+    "why": "`in` tests membership and returns a boolean.",
+    "module": "04"
+  },
+  {
+    "q": "What does this print?",
+    "code": "total = 0\nfor number in range(1, 4):\n    total += number\nprint(total)",
+    "options": [
+      "6",
+      "10",
+      "5"
+    ],
+    "why": "`range(1, 4)` yields 1, 2 and 3.",
+    "module": "04"
+  },
+  {
+    "q": "What does this print?",
+    "code": "value = 0\nif value:\n    print(\"yes\")\nelse:\n    print(\"no\")",
+    "options": [
+      "no",
+      "yes",
+      "0"
+    ],
+    "why": "Zero is false in a condition.",
+    "module": "04"
+  },
+  {
+    "q": "Which line raises an exception?",
+    "code": "numbers = [1, 2]\nprint(numbers[0])\nprint(numbers[2])",
+    "options": [
+      "print(numbers[2])",
+      "print(numbers[0])",
+      "Neither line"
+    ],
+    "raises": "IndexError",
+    "why": "Valid list indices are 0 and 1.",
+    "module": "04"
+  },
+  {
+    "q": "What does this print?",
+    "code": "def greet(name: str) -> str:\n    return f\"Hi, {name}\"\nprint(greet(\"Lin\"))",
+    "options": [
+      "Hi, Lin",
+      "Hi, name",
+      "None"
+    ],
+    "why": "The function returns the f-string built from its argument.",
+    "module": "05"
+  },
+  {
+    "q": "What does this print?",
+    "code": "def add_item(items: list[str]) -> None:\n    items.append(\"pear\")\nfruit = [\"apple\"]\nadd_item(fruit)\nprint(fruit)",
+    "options": [
+      "['apple', 'pear']",
+      "[\"apple\"]",
+      "[\"pear\"]"
+    ],
+    "why": "Appending mutates the list shared with the caller.",
+    "module": "05"
+  },
+  {
+    "q": "What does this print?",
+    "code": "def keep(items: list[int]) -> None:\n    items = [9]\nvalues = [1, 2]\nkeep(values)\nprint(values)",
+    "options": [
+      "[1, 2]",
+      "[9]",
+      "[1, 2, 9]"
+    ],
+    "why": "Rebinding the parameter does not rebind the caller name.",
+    "module": "05"
+  },
+  {
+    "q": "What does this print?",
+    "code": "def label(name: str, count: int = 2) -> str:\n    return f\"{name}: {count}\"\nprint(label(\"pear\"))",
+    "options": [
+      "pear: 2",
+      "pear: 0",
+      "TypeError"
+    ],
+    "why": "The omitted argument uses the default value.",
+    "module": "05"
+  },
+  {
+    "q": "What does this print?",
+    "code": "from pathlib import Path\nprint(Path(\"wordle.py\").suffix)",
+    "options": [
+      ".py",
+      "wordle.py",
+      "py"
+    ],
+    "why": "The suffix includes the leading dot.",
+    "module": "06"
+  },
+  {
+    "q": "What does this print?",
+    "code": "import math\nprint(math.floor(2.9))",
+    "options": [
+      "2",
+      "3",
+      "2.9"
+    ],
+    "why": "`floor` returns the greatest integer not greater than its input.",
+    "module": "06"
+  },
+  {
+    "q": "What does this print?",
+    "code": "squares = [number * number for number in range(4)]\nprint(squares)",
+    "options": [
+      "[0, 1, 4, 9]",
+      "[1, 4, 9, 16]",
+      "[0, 1, 2, 3]"
+    ],
+    "why": "The comprehension squares each value from 0 through 3.",
+    "module": "07"
+  },
+  {
+    "q": "What does this print?",
+    "code": "evens = [number for number in range(6) if number % 2 == 0]\nprint(evens)",
+    "options": [
+      "[0, 2, 4]",
+      "[2, 4, 6]",
+      "[1, 3, 5]"
+    ],
+    "why": "The filter keeps values with remainder zero when divided by two.",
+    "module": "07"
+  },
+  {
+    "q": "What does this print?",
+    "code": "pairs = [(x, y) for x in [1, 2] for y in [\"a\", \"b\"]]\nprint(len(pairs))",
+    "options": [
+      "4",
+      "2",
+      "6"
+    ],
+    "why": "Each of two x values pairs with each of two y values.",
+    "module": "07"
+  },
+  {
+    "q": "What does this print?",
+    "code": "try:\n    number = int(\"pear\")\nexcept ValueError:\n    print(\"invalid\")",
+    "options": [
+      "invalid",
+      "ValueError",
+      "pear"
+    ],
+    "why": "`int` raises `ValueError`, which the handler catches.",
+    "module": "08"
+  },
+  {
+    "q": "What does this print?",
+    "code": "try:\n    print(\"work\")\nfinally:\n    print(\"cleanup\")",
+    "options": [
+      "work\ncleanup",
+      "work only",
+      "cleanup then work"
+    ],
+    "why": "`finally` runs after the try suite completes.",
+    "module": "08"
+  },
+  {
+    "q": "What does this print?",
+    "code": "with open(\"notes.txt\", \"w\", encoding=\"utf-8\") as file:\n    file.write(\"ready\")\nprint(file.closed)",
+    "options": [
+      "True",
+      "False",
+      "AttributeError"
+    ],
+    "why": "Leaving the `with` block closes the file.",
+    "module": "09"
+  },
+  {
+    "q": "What is the main benefit of a `with` block for a file?",
+    "options": [
+      "It closes the file when the block exits, including after an exception.",
+      "It keeps the file open until the program exits.",
+      "It converts every line to a number."
+    ],
+    "why": "The context manager handles cleanup when control leaves the block.",
+    "module": "09"
+  },
+  {
+    "q": "Which value is read by `row[\"name\"]` when `row = {\"name\": \"Ada\"}`?",
+    "options": [
+      "Ada",
+      "name",
+      "KeyError"
+    ],
+    "why": "The dictionary key `name` maps to the string `Ada`.",
+    "module": "10"
+  },
+  {
+    "q": "Why use a SQL placeholder for a value?",
+    "options": [
+      "The database binds the value separately from the SQL statement.",
+      "Python inserts the value directly into SQL text.",
+      "The placeholder automatically creates a table."
+    ],
+    "why": "Placeholders keep values separate from query syntax and avoid unsafe string construction.",
+    "module": "10"
+  },
+  {
+    "q": "Which query safely binds `name` with sqlite3?",
+    "options": [
+      "con.execute(\"SELECT * FROM users WHERE name = ?\", (name,))",
+      "con.execute(f\"SELECT * FROM users WHERE name = {name}\")",
+      "con.execute(\"SELECT * FROM users WHERE name = \" + name)"
+    ],
+    "why": "The question-mark placeholder is paired with a values tuple.",
+    "module": "10"
+  },
+  {
+    "q": "What does this print?",
+    "code": "class Box:\n    def __init__(self, value: int) -> None:\n        self.value = value\nbox = Box(4)\nprint(box.value)",
+    "options": [
+      "4",
+      "Box",
+      "None"
+    ],
+    "why": "`__init__` stores the passed value on the instance.",
+    "module": "11"
+  },
+  {
+    "q": "What does this property setter make possible?",
+    "options": [
+      "Keep `box.size = 4` syntax while validating the assigned value.",
+      "Make every attribute private to the class.",
+      "Call the setter automatically when reading the property."
+    ],
+    "why": "A setter adds a rule to assignment while keeping attribute-style use.",
+    "module": "11"
+  },
+  {
+    "q": "What does this print?",
+    "code": "class Square:\n    def __init__(self, side: int) -> None:\n        self.side = side\n    @property\n    def area(self) -> int:\n        return self.side ** 2\nprint(Square(3).area)",
+    "options": [
+      "9",
+      "6",
+      "AttributeError"
+    ],
+    "why": "A property is read like an attribute and computes the square of the side.",
+    "module": "11"
+  },
+  {
+    "q": "What does `__str__` control?",
+    "options": [
+      "The readable text returned by `str()` and shown by `print()`.",
+      "The arguments accepted by the constructor.",
+      "Whether two instances are identical."
+    ],
+    "why": "Python uses `__str__` for readable string conversion.",
+    "module": "11"
+  },
+  {
+    "q": "What does `name: str | None = None` allow?",
+    "options": [
+      "Either a string or `None`.",
+      "Only a string, with `None` converted to an empty string.",
+      "Any value at runtime is rejected unless checked."
+    ],
+    "why": "The union annotation describes either type; Python does not enforce it at runtime.",
+    "module": "12"
+  },
+  {
+    "q": "What does `Literal[\"red\", \"green\"]` express to a type checker?",
+    "options": [
+      "Only the exact values \"red\" or \"green\" are intended.",
+      "Any string is valid, but only two colours are displayed.",
+      "The variable is converted to a colour object."
+    ],
+    "why": "`Literal` narrows an annotation to a closed set of exact values.",
+    "module": "12"
+  },
+  {
+    "q": "What happens when this runs?",
+    "code": "def double(value: int) -> int:\n    return value * 2\nprint(double(\"ab\"))",
+    "options": [
+      "abab",
+      "TypeError before the function runs",
+      "2"
+    ],
+    "why": "Annotations are not runtime checks; string multiplication repeats the string.",
+    "module": "12"
+  },
+  {
+    "q": "What does mypy add when it checks annotated code?",
+    "options": [
+      "It reports places where code and type annotations disagree.",
+      "It changes Python values to the annotated types.",
+      "It checks types every time the program runs."
+    ],
+    "why": "Mypy is a static checker that reads annotations before execution.",
+    "module": "12"
+  },
+  {
+    "q": "What does `date.today()` return from the standard library?",
+    "options": [
+      "The current local date.",
+      "The current time as a string.",
+      "A date chosen at random."
+    ],
+    "why": "The `date` class provides today’s local calendar date.",
+    "module": "13"
+  },
+  {
+    "q": "What does `json.loads(\"{\\\"ok\\\": true}\")` return?",
+    "options": [
+      "A dictionary with `ok` mapped to `True`.",
+      "The original JSON text.",
+      "A Python set containing `ok`."
+    ],
+    "why": "`json.loads` parses JSON text into Python values.",
+    "module": "13"
+  },
+  {
+    "q": "What does `Path(\"data.txt\").exists()` answer?",
+    "options": [
+      "Whether that path currently exists.",
+      "Whether the file contains text.",
+      "Whether Python can import it as a module."
+    ],
+    "why": "`exists()` checks for a filesystem entry at the path.",
+    "module": "13"
+  }
+]

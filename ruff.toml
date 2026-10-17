@@ -24,45 +24,19 @@ line-length = 100
 force-exclude = true
 
 exclude = [
-    # Vendored third-party sample code. Not ours to restyle, and none of it is
-    # referenced from a slide.
-    "demos/Qt-Python-Binding-Examples-master",
-    # Scratch and archive directories that accumulated alongside the course.
-    # 2387 files, none referenced from a slide.
-    "demos/extrademos",
-    "demos/feiko",
-    "demos/casestudy",
     # Written badly on purpose : it is the file the linting slide runs ruff over,
     # and every finding in it is the lesson.
     "demos/01-pythonintro/03_ruff_findings.py",
+    # archive/ holds what the course no longer uses : the calculator exercise
+    # spine, demo folders no slide referenced (earlier versions of the course
+    # and adjacent courses), and old exercise documents. Kept for trainers,
+    # not built, not shipped, and held to no standard.
+    "archive",
     # reference/ is background material for the student to browse: vendored
     # book source, GUI toolkit examples, notebooks. It is not course code and
     # is not held to the course's style.
     "reference",
 
-    # Demo folders that no slide references and that the student bundle does
-    # not ship. They are kept as reference material from earlier versions of
-    # the course and from adjacent courses, and are held to no standard. The
-    # bundle allowlist in .forgejo/workflows/release.yml is the authority on
-    # what does ship; keep these two lists in step.
-    "demos/09-python-io/createexecutable",
-    "demos/12-pythonlibraries-datetime",
-    "demos/12-pythonlibraries-extra",
-    "demos/12-pythonlibraries-json",
-    "demos/12-pythonlibraries-networking",
-    "demos/12-pythonlibraries-numpy",
-    "demos/12-pythonlibraries-regexp",
-    "demos/12-pythonlibraries-selenium",
-    "demos/12-pythonlibraries-threads",
-    "demos/12-pythonlibraries-tkgui",
-    "demos/12-pythonlibraries-unittesting",
-    "demos/12-pythonlibraries-unittesting-pytest",
-    "demos/12-pythonlibraries-xml",
-    "demos/13-appendix-decorators",
-    "demos/13-appendix-generators",
-    "demos/14-appendix-gui-toolkits",
-    "demos/14-gui-toolkits",
-    "demos/15-mocking",
 ]
 
 [lint]
@@ -98,8 +72,7 @@ ignore = [
 "**/__init__.py" = ["F401"]
 
 # The modules chapter is *about* the import system: it manipulates sys.path
-# before importing, reloads modules mid-file, and demonstrates
-# `from x import *`.
+# before importing and demonstrates `from x import *`.
 "demos/06-modules/**" = ["E402", "F403", "F405"]
 
 # The comprehensions chapter shows the explicit for-loop first and the
@@ -107,26 +80,13 @@ ignore = [
 # which is the half being taught. `strict=` on zip() is likewise a distraction
 # ahead of the concept it qualifies.
 "demos/07_comprehensions/**" = ["B905", "B912", "PERF401", "PERF402", "PERF403"]
-"solutions/solution07-comprehensions/**" = ["B905", "B912", "PERF401", "PERF402", "PERF403"]
 
-# The exception chapter deliberately shows a bare `except:` before explaining
-# why it is wrong, and raises inside handlers to demonstrate chaining.
-"solutions/solution08-exception-handling/**" = ["B904", "E722"]
 
 # Where the anti-pattern is the lesson, it stays and the rule is turned off for
 # that file with the reason written down. Do not "fix" any of these.
 
 # The conversion-functions slide calls str('abc') to show what str() does.
 "demos/02-variablesanddatatypes/06_conversionfunctions.py" = ["UP018"]
-
-# These two slides teach str.format itself: the positional field numbers and the
-# method call are the subject, so an f-string would delete the example.
-"demos/02-variablesanddatatypes/10_stringformatting.py" = ["UP030", "UP031", "UP032"]
-"demos/02-variablesanddatatypes/11_formatmethod.py" = ["UP030", "UP031", "UP032"]
-
-# The sets demo writes duplicates on purpose, because dropping them is what a
-# set does, and builds a set from a list literal to show the constructor.
-"demos/03-datastructures/10_setsandfrozensets.py" = ["B033", "C405"]
 
 # The tuple demo calls tuple() to show the constructor beside the literal.
 "demos/03-datastructures/06_tuples.py" = ["C408"]
@@ -136,67 +96,30 @@ ignore = [
 "demos/04-controlflow/11_passstatement.py" = ["PIE790"]
 "demos/11-python-classes/01_simplestclass.py" = ["PIE790"]
 
-# The boolean operators demo shows raw precedence, including the short circuit
-# that ruff would rather see written out or simplified away.
-"demos/04-controlflow/14_booleanoperators.py" = ["RUF021", "SIM222", "SIM223"]
 
-# Assigning a lambda to a name is exactly what the anonymous functions slide
-# demonstrates.
-"demos/05-functions/09_lambdafunctions.py" = ["E731"]
-
-# The comprehensions chapter shows map and filter first and the comprehension
-# second, so the first half of every pair is the half being taught.
-"demos/07_comprehensions/demo06_syntactic_sugar.py" = ["C417"]
-"demos/07_comprehensions/demo11_dictionary_comprehension.py" = ["C416"]
-
-# The dictionary-from-keys slide shows dict.fromkeys and the equivalent
-# comprehension side by side; collapsing one into the other deletes the
-# comparison that is the point of the slide.
-"demos/07_comprehensions/demo12_dictionary_from_keys.py" = ["C420"]
-
-# The triple-quotes slide prints a deliberately long string with a trailing
-# space in it, to show that a triple-quoted string keeps its whitespace.
-"demos/02-variablesanddatatypes/13_triplequotes.py" = ["E501", "W291"]
-
-# The dictionaries demo ends by deleting the dictionary and using it again, to
-# show the NameError that follows.
-"demos/03-datastructures/11_dictionaries.py" = ["F821"]
-
-# The dictionary-methods demo repeats a key on purpose: the slide's comment is
-# about which of the two values survives.
-"demos/03-datastructures/12_dictionarymethods.py" = ["F601"]
+# The syntactic-sugar slide sets map with a lambda beside the comprehension it
+# becomes; the map half is the form being recognised.
+"demos/07_comprehensions/demo13_syntactic_sugar.py" = ["C417"]
 
 # The IO chapter opens files without a context manager on purpose, so that the
 # slide that introduces `with` has something to improve on, and it spells out
 # the mode on every call because file modes are what the chapter is about.
 "demos/09-python-io/**" = ["SIM115", "UP015"]
 
-# The reference solutions keep every earlier step of the exercise as a
-# commented-out block, so a student can follow the progression. Those comments
-# are what is long; the live code is within the limit.
-#
-# F403 / F405 : Exercise 6 ends by building a `calcu` package whose __init__
-# re-exports, so every later solution starts `from calcu import *`. That is the
-# shape the exercise arrives at.
-"solutions/**" = ["E501", "F403", "F405"]
 
-# Modules 5 and 6 come before comprehensions are taught in module 7, so their
-# solutions build lists with an explicit loop on purpose.
-"solutions/solution05-functions/**" = ["PERF401"]
-"solutions/solution06-modules/**" = ["PERF401"]
+# The exceptions chapter shows a bare except before explaining why it is wrong,
+# and closes files by hand before context managers; modes are spelled out
+# because the IO chapter that follows is about them.
+"demos/08-exceptionhandling/**" = ["B904", "E722", "SIM115", "UP015"]
 
-# The exceptions chapter uses the classic IOError name, which its table of
-# standard exceptions also lists, and opens files without a context manager
-# before `with` has been taught. Renaming IOError to OSError here would put the
-# demos out of step with the slides; doing it in both is a content decision,
-# tracked in build/tasks.md.
-"demos/08-exceptionhandling/**" = ["B904", "E722", "SIM115", "UP015", "UP024"]
+# The format-specification slide ends by showing the % operator and str.format
+# once, so they can be recognised in older code.
+"demos/02-variablesanddatatypes/13_formatspecs.py" = ["UP031", "UP032"]
 
-# SAX and minidom handler methods must carry the names the parser calls.
-"demos/12-pythonlibraries-xml/**" = ["N802"]
+# The sets demo writes a duplicate on purpose, because dropping it is what a
+# set does.
+"demos/03-datastructures/09_setsandfrozensets.py" = ["B033"]
 
-# Appendix demo directories are reference material, held to correctness rather
-# than to house naming style.
-"demos/13-appendix-generators/**" = ["N801", "N802", "N803", "N806", "N816", "N999"]
-"demos/14-gui-toolkits/**" = ["N801", "N802", "N803", "N806", "N816", "N999"]
-"demos/12-pythonlibraries-extra/**" = ["N801", "N802", "N803", "N806", "N816", "N999"]
+# The dictionary-methods demo repeats a key on purpose: the slide's comment is
+# about which of the two values survives.
+"demos/03-datastructures/11_dictionarymethods.py" = ["F601"]

@@ -1,8 +1,11 @@
-summation = lambda arg1, arg2: arg1 + arg2
-subtraction = lambda x, y: x - y
+"""Lambda expressions: small anonymous functions passed to another function."""
 
-print(summation(3, 7))
-print(summation(33, 67))
+words = ["banana", "pie", "Washington", "book"]
 
-print(subtraction(3, 7))
-print(subtraction(33, 67))
+# Sort by last letter
+by_last = sorted(words, key=lambda w: w[-1])
+print("By last letter  :", by_last)
+
+# Sort case-insensitively
+by_case = sorted(words, key=lambda w: w.lower())
+print("Case-insensitive:", by_case)

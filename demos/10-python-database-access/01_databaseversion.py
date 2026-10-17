@@ -4,7 +4,7 @@ import sys
 con = None
 
 try:
-    con = sqlite3.connect("test.db")
+    con = sqlite3.connect("test.db")  # creates test.db if it does not exist
 
     cur = con.cursor()
     cur.execute("SELECT SQLITE_VERSION()")
@@ -13,7 +13,7 @@ try:
     print(f"SQLite version: {data}")
 
 except sqlite3.Error as e:
-    print(f"Error {e.args[0]}:")
+    print(f"Error: {e}")
     sys.exit(1)
 
 finally:

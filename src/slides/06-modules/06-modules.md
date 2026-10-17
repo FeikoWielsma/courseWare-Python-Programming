@@ -8,56 +8,49 @@ footer: Modules
 
 # Modules
 
-- Used to organize number of Python definitions in single file :
-  - Used to logically organize your Python code
-  - Can be bind and referenced
-- Module is a file consisting of Python code :
-  - Defines functions, classes, and variables
-  - May also include runnable code
-  - Grouping related code into a module makes code easier to understand and use
-- Python code for module `test` resides in a file named `test.py :`
-  - Name of the module is the name of the file without extension
-- `test.py` :
+- Modules organize Python definitions across separate files :
+  - Grouping related functions and classes makes code easier to read and maintain
+  - Code defined in a module can be imported and reused across multiple programs
+- A module is simply a file containing Python code :
+  - Definitions include functions, classes, variables and runnable statements
+  - The module name is the file name without the `.py` extension
+- For example, `test.py` defines `print_func` :
 
 ```python
-def print_func(par):
-    print("Hello : ", par)
+def print_func(par: str) -> None:
+    print("Hello :", par)
 ```
 
-- Modules allows code reuse :
-  - Code in module can be reused in other python file
+- Any Python file can import `test.py` and call its functions
 
 ---
 
 # import Statement
 
-- `import` statement followed by module name :
-  - Makes functions and classes from module available for use in file issuing `import` statement
-- `import` has the following syntax :
+- The `import` statement makes a module available to the calling file :
+  - Python searches for the module in the directories listed on `sys.path`
+  - The module's top-level code runs once when imported for the first time
+- Syntax of the `import` statement :
 
 ```text
-import module1[, module2[,... moduleN]
+import module1[, module2[, ... moduleN]]
 ```
 
-- On encountering an `import` statement :
-  - Module is imported if the module is present in the search path
-  - Search path is list of directories that interpreter searches for modules to import
-  - Module is loaded only once, regardless of the number of times it is imported
-- Import module `test.py` with `import test` at top of the script :
-  - Use name of the module as prefix when accessing functions, classes or variables
+- Accessing definitions through the module prefix :
+  - Functions, classes and variables are prefixed with the module name
 
 ```python
-import test # Now you can call defined function
-test.print_func('pipo') # Hello : pipo
+import test  # Now you can call defined function
+
+test.print_func("pipo")  # Hello : pipo
 ```
 
-- Name to reference module can be changed with :
-
-
+- Modules can be renamed upon import using `as` :
 
 ```python
 import test as t
-t.print_func('pipo') # Hello : pipo
+
+t.print_func("pipo")  # Hello : pipo
 ```
 
 > `demo01 · importmodule`
@@ -67,34 +60,34 @@ t.print_func('pipo') # Hello : pipo
 
 # from...import Statement
 
-- `from...import` makes specific names from module accessible:
+- `from...import` makes specific names accessible directly without prefix :
 
 ```text
 from modname import name1[, name2[, ... nameN]]
 ```
 
-- Function `sqrt` from module `math` is imported with :
+- For example, importing `sqrt` from module `math` :
 
 ```python
 from math import sqrt
 ```
 
-- Statement does not import entire module `math` :
-  - Only item `sqrt` from module `math` ends up in global symbol table of importing module
-- Now the function `sqrt` can be used without prefix :
+- The statement imports only the named items into the current namespace :
+  - The module object itself is not bound, only `sqrt`
+  - The function is called directly without a module prefix :
 
 ```python
-print(sqrt(9)) # 3.0
+print(sqrt(9))  # 3.0
 ```
 
-- Also possible is to import all names from a module with :
+- Importing all names with `*` is also possible :
 
 ```python
-from modname import *
+from math import *
 ```
 
-- Statement should be used sparingly :
-  - More names are then visible which can give rise to name conflicts
+- Wildcard imports should be used sparingly :
+  - They clutter the namespace and risk name collisions
 
 > `demo02 · usingfromimport`
 
@@ -103,33 +96,32 @@ from modname import *
 
 # Locating Modules
 
-- On import the interpreter searches these places in order, first hit wins :
+- For modules found through `sys.path`, the normal search order is :
 
 ```mermaid
 flowchart LR
-  A[import mymod] --> B[current directory]
+  A[import mymod] --> B[script directory<br/>or current directory]
   B --> C[each directory in<br/>PYTHONPATH]
   C --> D[the default path,<br/>OS dependent]
   D --> E[ModuleNotFoundError]
 ```
 
-- Search path is stored in system module `sys` as `sys.path` variable :
-  - Should import `sys` to be able to access path
-  - `sys` module give also access to command line arguments or parameters to script
-- `PYTHONPATH` variable :
-  - Environment variable, consisting of a list of directories
-  - Syntax of `PYTHONPATH` is same as that of the shell variable `PATH`
-- Typical `PYTHONPATH` from Windows system :
+- The first directory depends on how Python starts :
+  - Running a script uses its directory; the REPL and `python -m` use the current directory
+- Inspect the search path with `sys.path` after `import sys`
+- `PYTHONPATH` environment variable :
+  - Extra directories inserted after that first directory on startup
+  - Follows standard operating system path list conventions
+- Setting `PYTHONPATH` in Windows Command Prompt (CMD) :
 
 ```bash
-set PYTHONPATH=c:\python314\lib;
+set PYTHONPATH=C:\course\modules
 ```
 
-- Typical `PYTHONPATH` from UNIX system :
-
+- Setting `PYTHONPATH` on UNIX :
 
 ```bash
-set PYTHONPATH=/usr/local/lib/python
+export PYTHONPATH=/usr/local/lib/python
 ```
 
 > `demo03 · pythonpath`
@@ -139,34 +131,30 @@ set PYTHONPATH=/usr/local/lib/python
 
 # Using Modules
 
-- Every Python program is already a module :
-  - Modules must have `.py` extension
+- Any Python file can be imported by other files on `sys.path` :
+  - `import mod` imports the module; `from mod import ...` imports specific names
 
 ```python
 # Filename: testmodules.py
-def sayhi():
-     print('Hi, this is testmodules speaking.')
-version = '0.1'
+def sayhi() -> None:
+    print("Hi, this is testmodules speaking.")
+
+
+version = "0.1"
 ```
 
-- Module can be imported by other module if on `sys.path :`
+- Importing `testmodules` and calling its functions :
 
 ```python
 import testmodules
+
 testmodules.sayhi()
 print(testmodules.version)
-```
 
-- Alternatively `from .. import` can be used :
-
-```python
 from testmodules import sayhi, version
-sayhi()
-print(version)
-```
 
-- Modules contain :
-  - Variables, functions, classes and potentially executable code
+sayhi()
+```
 
 > `demo04 · usingmodules`
 
@@ -175,30 +163,24 @@ print(version)
 
 # dir Function
 
-- Returns sorted list of strings with names accessible by a module :
-  - List contains the names defined in a module and names that are imported
-  - Modules, Variables, Functions
-- Example `import` built-in module `math` :
+- Returns a sorted list of attribute names accessible on an object or module :
+  - Lists module variables, functions, classes and imported names
+  - Useful in the interactive REPL to explore an unfamiliar library
+- Inspecting a module :
 
 ```python
 import math
-content = dir(math)
-print(content)
+
+print(dir(math)[:6])
 ```
 
 - Result :
 
 ```text
-['__doc__', '__name__', '__package__', 'acos', 'acosh', 'asin', 'asinh', 'atan',
-'atan2', 'atanh', 'ceil', 'copysign', 'cos', 'cosh', 'degrees', 'e', 'erf',
-'erfc', 'exp', 'expm1', 'fabs', 'factorial', 'floor', 'fmod', 'frexp', 'fsum',
-'gamma', 'hypot', 'isfinite', 'isinf', 'isnan', 'ldexp', 'lgamma', 'log',
-'log10', 'log1p', 'modf', 'pi', 'pow', 'radians', 'sin', 'sinh', 'sqrt', 'tan',
-'tanh', 'trunc']
+['__doc__', '__loader__', '__name__', '__package__', '__spec__', 'acos']
 ```
 
-- `__name__` is module's name
-- `__package__` is package name of module
+- Special attributes start and end with double underscores, such as `__name__` and `__doc__`
 
 > `demo05 · usingdir`
 
@@ -207,36 +189,34 @@ print(content)
 
 # Packages in Python
 
-- Package is way to organize number of modules together as unit :
-  - Package is simply a directory and has a hierarchical file directory structure
-  - Consists of modules and subpackages and sub-subpackages and so on
-- A package provides a namespace and so prevents name clashes
-- Typically modules of a package are placed in a directory :
+- A package organizes multiple modules together under a shared directory :
+  - Provides a hierarchical namespace using dotted module names
+  - Prevents naming collisions between modules in different packages
+- A directory is recognised as a package by having an `__init__.py` file :
 
 ```text
 cameras/
-├─ __init__.py     marks the directory as a package
-├─ canon.py        defines canon_info()
-├─ leika.py        defines leika_info()
-└─ nikon.py        defines nikon_info()
+├── __init__.py     marks the directory as a package
+├── canon.py        defines canon_info()
+├── leika.py        defines leika_info()
+└── nikon.py        defines nikon_info()
 ```
 
-- `canon.py` could define a simple function like :
+- For example, `canon.py` defines a function :
 
 ```python
-def canon_info():
-     print ("Canon camera")
+def canon_info() -> None:
+    print("Canon camera")
 ```
 
-- Package is required to have `__init__.py` in its directory :
-  - Indicates directory contains package and makes functions available when package is imported
+- `__init__.py` runs when the package is imported :
+  - It can be empty or used to expose package-level exports
 
 ---
 
 # Explicit Import of Package Modules
 
-- `__init__.py` should be present but can be empty
-- If `__init.py__` empty modules of package must be imported explicitly :
+- When `__init__.py` is empty, modules inside the package are imported explicitly :
 
 ```python
 import cameras.canon
@@ -244,7 +224,7 @@ import cameras.leika
 import cameras.nikon
 ```
 
-- Functions in package are called with full name :
+- Functions inside the modules are called using the full dotted path :
 
 ```python
 cameras.nikon.nikon_info()
@@ -252,8 +232,9 @@ cameras.canon.canon_info()
 cameras.leika.leika_info()
 ```
 
-- Full name consists of :
-  - Package name (directory), module name, function name
+- Dotted names follow the file structure :
+  - `package.module.function()`
+  - Explicit imports keep it clear which module each function originates from
 
 > `demo06 · explicitimport`
 
@@ -262,7 +243,7 @@ cameras.leika.leika_info()
 
 # Implicit Import of Package Modules
 
-- Following lines can be added to `__init__.py` :
+- `__init__.py` can import names from its internal modules to re-export them :
 
 ```python
 from cameras.canon import canon_info
@@ -270,24 +251,21 @@ from cameras.leika import leika_info
 from cameras.nikon import nikon_info
 ```
 
-- Now modules can be imported by importing the package :
+- Callers can then import the package directly without naming submodules :
 
 ```python
 import cameras
-```
 
-- Import `cameras` package and call methods as follows :
-
-```python
 cameras.nikon_info()
 cameras.canon_info()
 cameras.leika_info()
 ```
 
-- Also `from .. import` can be used :
+- Callers can also import the re-exported functions directly :
 
 ```python
-from cameras import nikon_info, canon_info, leika_info
+from cameras import canon_info, leika_info, nikon_info
+
 nikon_info()
 canon_info()
 leika_info()
@@ -298,156 +276,127 @@ leika_info()
 
 ---
 
-# reload Function
+# Test Harness
 
-- Reloads a previously imported module :
-  - When module is imported, code in the top-level portion is executed
-  - When using multiple imports of the same module top-level code will not execute again
-- To reexecute top-level code in a module :
-  - Use the `reload()` function from `importlib` module
-- Syntax :
+- Python sets `__name__` to `"__main__"` when run directly, or the module name when imported :
+  - The `if __name__ == "__main__":` guard separates library code from execution
+  - Functions and classes can be imported without unwanted side effects
+  - Exercise 5 uses this guard so `wordle.py` can be imported in the interpreter without starting a game
 
 ```python
-reload(module_name)
+def sayhi() -> None:
+    print("Hi, this is testmodules speaking.")
+
+
+def main() -> None:
+    sayhi()
+
+
+if __name__ == "__main__":
+    main()
 ```
 
-- `module_name` :
-  - Name of the module you want to reload
-  - Not the string containing the module name
-- To reload hello module :
+- Direct execution runs `main()`; importing `testharness` defines `sayhi()` without running `main()`
 
-```python
-reload(hello)
-```
-
-> `demo08 · reload`
+> `demo08 · testharness`
 
 
 ---
 
-# globals and locals Functions
+# Running Packages with python -m
 
-- Namespace is a dictionary containing :
-  - Variable names (keys) and their corresponding objects (values)
-- Variables can be in local namespace or global namespace :
-  - Variables declared outside functions are in the global namespace
-  - Variables declared in function are in the local namespace of that function
-- `locals()` and `globals()` methods called from within a function :
-  - `locals()` returns all the names that can be accessed locally from that function
-  - `globals()` returns all the names that can be accessed globally from that function
-- Return type of both these functions is dictionary :
-  - Names can be extracted using the `keys()` function
+- Packages can be executed as a script using `python -m package_name` :
+  - Python executes `__main__.py` inside the package directory
+  - Serves as the package entry point, like `if __name__ == "__main__":` in a single file
+- Package layout with `__main__.py` :
+  - `cameras3/` contains `__init__.py`, `__main__.py`, `canon.py`, `nikon.py`
 
 ```python
-x = 1
-def f() :
-     y = 1
-     print("Globals from f")
-     print(globals().keys()) # dict_keys(['__name__', '__doc__', ..., 'x', 'f'])
-     print("Locals from f")
-print(locals().keys()) # dict_keys(['y'])
+# cameras3/__main__.py
+from cameras3 import canon_info, nikon_info
+
+
+def main() -> None:
+    print("Cameras package entry point:")
+    canon_info()
+    nikon_info()
+
+
+if __name__ == "__main__":
+    main()
 ```
 
-> `demo09 · localsandglobals`
+- Run from the terminal with `uv run python -m cameras3`
 
-
----
-
-# Test Harnass
-
-- Used to run code only when script is run, not when imported
-
-```python
-if __name__ == '__main__' :
-```
-
-  - Only true only when the file is run
-  - Not when the module is imported
-  - Good practice to test how module is used
-- Top level code in module only evaluated first time it is imported :
-  - Python maintains an internal list of all modules that have been imported
-- When you import a module for the first time :
-  - Module script is executed in its own namespace until the end
-  - Internal list is updated, and execution of continues after the import statement
-- Can use reload to force new import e.g. when module changed
-
-> `demo10 · testharnass`
+> `demo09 · package_main`
 
 
 ---
 
 # Installing Packages
 
-- From PyPI or from VCS, other indexes, local archives
-- We use `uv` as our package manager (fast, modern, replaces pip) :
-  - `uv add package` : install and add to pyproject.toml
-  - `uv remove package` : uninstall
-  - `uv sync` : install everything from pyproject.toml
-- Common usage of `uv` :
+- Third-party packages are hosted on PyPI and installed with `uv add` :
+  - `uv add package` installs a package and records it in `pyproject.toml`
+  - `uv add --dev package` adds a development tool, such as `pytest`
+  - `uv remove package` uninstalls a dependency
+- Two files track dependencies and belong in version control :
+  - `pyproject.toml` declares the project's direct requirements
+  - `uv.lock` records the exact resolved versions for reproducibility
+- Anyone with the project can reproduce the exact environment :
 
 ```bash
 uv add requests
 uv add "requests>=2.28,<3"
 uv add --dev pytest
-uv run python script.py
-```
-
-- The `pyproject.toml` file tracks your dependencies :
-  - Replaces `requirements.txt` and `setup.py`
-  - Commit it to version control
-
-```bash
-uv lock          # generate/update uv.lock
-uv export > requirements.txt   # for legacy tools
+uv sync          # install exactly what uv.lock says
+uv remove requests
 ```
 
 ---
 
 # Virtual Environments
 
-- Install packages in separate location, not shared globally :
-  - Each environment has its own Python binary
-  - Handles different apps requiring different versions of package
-- Applications won't break by subsequent library updates :
-  - Makes it easier to create distributions
-- With `uv`, virtual environments are automatic :
-
-```bash
-uv init myproject     # creates pyproject.toml + .venv
-uv add requests       # installs into .venv automatically
-uv run python app.py  # runs with the venv activated
-```
-
-- The environment is a directory beside the project files :
+- Virtual environments isolate dependencies per project :
+  - Each project has its own libraries and Python executable
+  - Different projects can require different versions without conflict
+- `uv` manages virtual environments automatically :
+  - `.venv/` is created on the first `uv run` or `uv add`
+  - Packages are installed into `.venv/` without touching system Python
+- There is no environment to activate manually :
+  - `uv run` puts the project's `.venv` in front for the command
 
 ```text
 myproject/
-├─ pyproject.toml   dependencies this project declares
-└─ .venv/
-   ├─ Scripts/      the interpreter and installed commands
-   └─ Lib/          the installed packages
+├── pyproject.toml   dependencies declared for this project
+├── uv.lock          pinned versions of all installed packages
+└── .venv/           created on the first uv run or uv add
 ```
 
-- Without `uv` the same directory is made by `python -m venv .venv`
+- Run code through `uv run`, which uses the project's interpreter :
+
+```bash
+uv run python app.py
+```
+
+- Without `uv`, environments are made by `python -m venv .venv` and activated by hand
 
 ---
 
 # Summary : Modules
 
-- Module is a file consisting of Python code :
-  - Defines functions, classes, and variables, but may also contain runnable code
-  - Used to logically organize Python code
-- import statement in some other Python source file :
-  - Leads to import if the module is present in the search path
-  - Current directory, directories in `PYTHONPATH,` default OS path
-- Namespace is a dictionary containing :
-  - Variable names (keys) and their corresponding objects (values)
-  - Variables can be in local namespace or global namespace
-- Functions show names defined in module or namespaces :
-  - `dir` , `locals` and `globals` functions
-- Package defines a single Python application environment :
-  - Has a hierarchical file directory structure
-- Virtual environments allow to install packages in separate location :
-  - Not shared globally and each environment has its own Python binary
+- Modules organize code into reusable files :
+  - A module is a `.py` file defining functions, classes and variables
+  - `import` and `from ... import` bring names into the calling file
+- Python locates modules using `sys.path` :
+  - Script directory (current directory for REPL or `-m`), then `PYTHONPATH` and defaults
+  - `dir()` lists the names defined or imported in a module
+- Packages group modules into directories with `__init__.py` :
+  - Modules inside packages use dotted import paths
+  - `python -m package` runs a package via its `__main__.py`
+- Executing versus importing :
+  - `if __name__ == "__main__":` guards code that only runs when executed directly
+- Dependency and environment management :
+  - `uv add` installs packages into an automatic `.venv`
+  - `uv run` executes commands with the project's environment active
 
 > `exercise06 · Modules`

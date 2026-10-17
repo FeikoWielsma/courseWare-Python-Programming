@@ -5,14 +5,14 @@ total = 0  # This is a global variable
 def summation(arg1, arg2):
     # Add both the parameters and return them."
     total = arg1 + arg2  # Here total is local variable.
-    print("Inside the function local total : ", total)
+    print("Inside the function local total :", total)
     return total
 
 
 # Function call :
 
 summation(10, 20)
-print("Outside the function global total : ", total)
+print("Outside the function global total :", total)
 
 # Result :
 
