@@ -31,14 +31,14 @@ solutions/NN-<exercise stem>/              the Wordle game at the end of each ex
 exercises/handouts/NN-<exercise stem>/     what an exercise hands out (tests, data)
 exercises/starters/NN-<exercise stem>/     GENERATED : previous solution + handouts
 archive/                                   retired material, not built, linted or shipped
-build/make-starters.py                     regenerates the starters; --check in CI
+../Presentation-Template/build/tools/make-starters.py regenerates the starters; --check in CI
 build/check-solutions.py                   tests, mypy and a scripted game per stage
 build/transcripts/                         the expected output of those scripted games
 build/site.config.ts                       the offline exercise site (shared builder)
 appendices/                                appendix decks the exercises point at
 reference/                                 background reading, shipped to students
 build/package.json                         thin wrapper over the shared template build
-build/check-fences.py                      the python fences on the slides, gating in CI
+../Presentation-Template/build/tools/check-fences.py shared fence check, gating in CI
 build/plan.md, build/tasks.md              working notes
 build/orchestration.md                     the multi-agent rework log, October 2026
 ```
@@ -48,7 +48,7 @@ Exercise 13. `build/plan.md` sections 2 and 4 are the design. Three rules keep i
 coherent :
 
 - A solution stage is a complete uv project and is the next exercise's starter.
-  Change a solution, then run `uv run python build/make-starters.py` and commit
+  Change a solution, then run `uv run python ../Presentation-Template/build/tools/make-starters.py` and commit
   the regenerated starters; never edit a starter by hand.
 - Exercise text quotes the solutions verbatim and shows only output produced by
   running them. `WORDLE_SECRET=crane` fixes the secret for a reproducible game.
@@ -99,9 +99,10 @@ slide as fitting when it does not. Run `build` first to populate
 ## Checking the code
 
 ```bash
-uv run python build/check-fences.py    # gating in CI
+uv run python ../Presentation-Template/build/tools/check-fences.py    # gating in CI
+uv run python ../Presentation-Template/build/tools/check-slide-references.py # gating in CI
 uv run ruff check .                    # gating in CI, see below
-uv run python build/make-starters.py --check   # gating in CI
+uv run python ../Presentation-Template/build/tools/make-starters.py --check   # gating in CI
 uv run python build/check-solutions.py         # gating in CI
 uv run python -m compileall -q demos/01-pythonintro ... solutions
 ```
