@@ -28,7 +28,7 @@ See *Zip Function*. `strict=True` rejects sequences of different lengths. The ro
 
 :::hint
 
-The slide *Generator Expressions* shows an expression written straight inside a call, and *Lambda Functions*, in module 05, shows what each value of `symbols` is.
+The slide *Generator Expressions* shows an expression written straight inside a call, and *Functions in Dictionaries*, in module 05, shows a dictionary of functions like `symbols` and how to call one.
 
 :::
 

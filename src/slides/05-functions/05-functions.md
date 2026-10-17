@@ -369,6 +369,39 @@ Case-insensitive: ['banana', 'book', 'pie', 'Washington']
 
 ---
 
+# Functions in Dictionaries
+
+- A function is a value : it can be stored in a dictionary and called from there
+- A dictionary from keys to functions is a dispatch table :
+  - Look the function up by its key, then call it : `converters[unit](value)`
+  - Replaces a long `if` / `elif` chain; the values can be named functions or lambdas
+
+```python
+converters = {
+    "C": to_celsius,
+    "F": to_fahrenheit,
+    "K": lambda value: value + 273.15,
+}
+
+unit = "C"
+print(converters[unit](212))  # look up the function, then call it
+
+for unit, convert in converters.items():
+    print(unit, convert(100))
+```
+
+```text
+100.0
+C 37.77777777777778
+F 212.0
+K 373.15
+```
+
+> `demo10 · functionsindictionaries`
+
+
+---
+
 # return Statement
 
 - Exits a function and optionally passes a value back to the caller :
@@ -397,7 +430,7 @@ Inside the function : 30
 Outside the function : 30
 ```
 
-> `demo10 · returnstatement`
+> `demo11 · returnstatement`
 
 ---
 
@@ -448,7 +481,7 @@ func2()
 print("y is now  :", y)  # 2: global y modified
 ```
 
-> `demo11 · variablescope`
+> `demo12 · variablescope`
 
 ---
 
@@ -462,6 +495,8 @@ print("y is now  :", y)  # 2: global y modified
   - Positional, keyword, default values, `*args` and `**kwargs`
 - Small anonymous functions use `lambda` :
   - Ideal as short key functions passed to `sorted()`
+- Functions are values :
+  - A dictionary of functions is a dispatch table, `table[key](argument)`
 - Variables follow LEGB scope lookup :
   - Local, Enclosing, Global and Built-in scopes
 
