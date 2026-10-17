@@ -440,6 +440,10 @@ sample.parent    # the containing directory, as a Path
 sample.exists()  # True or False
 ```
 
+---
+
+# Paths Relative to a Module
+
 - `Path(__file__)` is the path of the running module, so `parent` is its folder :
   - `resolve()` makes the path absolute, and follows any symbolic links
 - `path.open()` works like `open()`, and takes the same arguments :
