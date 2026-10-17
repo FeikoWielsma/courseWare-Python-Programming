@@ -1,0 +1,29 @@
+/* Explicit layout for the list diagram and its three examples, on one page. */
+.course-frame[data-source-id="03-data-structures-3"] .course-body {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  grid-template-rows: auto auto 145px auto auto auto auto;
+  column-gap: 24px;
+  row-gap: 4px;
+  align-content: start;
+}
+.course-frame[data-source-id="03-data-structures-3"] .course-body > h1,
+.course-frame[data-source-id="03-data-structures-3"] .course-step:nth-of-type(1),
+.course-frame[data-source-id="03-data-structures-3"] .course-step:nth-of-type(2) {
+  grid-column: 1 / -1;
+}
+.course-frame[data-source-id="03-data-structures-3"] .course-step:nth-of-type(3) {
+  grid-column: 1;
+  grid-row: 4 / 8;
+}
+.course-frame[data-source-id="03-data-structures-3"] .course-step:nth-of-type(n+4) {
+  grid-column: 2;
+}
+.course-frame[data-source-id="03-data-structures-3"] .course-step {
+  margin-top: 0;
+  min-width: 0;
+}
+.course-frame[data-source-id="03-data-structures-3"] .slidev-code-wrapper {
+  margin-left: 0;
+  max-width: 100%;
+}

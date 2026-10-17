@@ -7,6 +7,38 @@ documentation goes in `README.md`; do not put behind-the-scenes material there.
 See also `AGENTS.md` for the writing and coding conventions, and `build/plan.md`
 and `build/tasks.md` for where the conversion stands and what is left.
 
+## Parallel Slidev build
+
+The existing Marp build remains the default. `bun run --cwd build slidev:compare`
+builds the complete fundamentals course in both engines and serves the comparison
+at `http://localhost:4188`. The 239 original pages keep their boundaries; two
+native Magic Move slides are added, for 241 Slidev pages.
+
+Shared implementation currently lives in the dedicated template worktree
+`../_worktrees/presentation-template-slidev` on `feature/slidev-foundation`.
+`build/slidev.ts` uses that checkout until the foundation exists in the main
+`../Presentation-Template` checkout, then prefers main. `PRESENTATION_TEMPLATE_DIR`
+overrides both. Install the chosen checkout's `build/` and `build/slidev/`
+dependencies once.
+
+```bash
+bun run --cwd build slidev --pdf --check
+bun run --cwd build slidev --with-clicks --range 53
+bun run --cwd build slidev:check
+bun run --cwd build slidev --serve-only
+uv run python build/check-slidev-examples.py
+```
+
+The canonical slides stay in `src/slides/`. Native additions live in `src/slidev/`
+and are placed by `build/slidev.config.ts`. That file lists explicit compact
+layouts; no automatic pagination or font fitting runs. All outputs and the review
+copy `build/slidev/converted.md` are ignored. The generated bundle can be moved to
+another machine and opened with its included `python serve.py` launcher.
+
+See the shared `docs/slidev.md` for source IDs, components, export choices and
+limitations. The exercise site and release allowlists continue using Marp; this
+comparison does not replace the published student material.
+
 ## What this repository is
 
 PRG400 Python Programming, a SpiralTrain classroom course, laid out as

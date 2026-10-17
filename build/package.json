@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "slidev": "bun run slidev.ts",
+    "slidev:compare": "bun run slidev.ts --compare --serve",
+    "slidev:pdf": "bun run slidev.ts --pdf",
+    "slidev:check": "bun run slidev.ts --check-only",
     "build": "bun run ../../Presentation-Template/build/build.ts",
     "serve": "bun run ../../Presentation-Template/build/build.ts --serve",
     "lint": "bun run ../../Presentation-Template/build/lint-slides.ts",

@@ -84,3 +84,5 @@ libraries/build/
 libraries/PRG400-Python-Libraries-and-Tools*.pdf
 libraries/PRG400-Python-Libraries-and-Tools*.html
 libraries/data/*.db
+build/slidev/
+build/prototypes/presentation-framework/

@@ -519,3 +519,18 @@ checks passed, with command-line entry points checked via `--help`. Six tkinter
 window demos were compiled but not launched. Import fixes include an offline HTTP
 client, an offline robots.txt parser in place of an unrelated live API call, and
 a CSV reader that no longer skips its header. Rendered PDF pages were inspected.
+
+## Parallel Slidev foundation (2026-10-18)
+
+- [x] Add an isolated shared Slidev toolchain, theme, converter and export path in
+      a Presentation-Template worktree; keep Marp as the default build.
+- [x] Convert all 13 fundamentals modules alongside Marp from the same source.
+- [x] Preserve the original 239 page boundaries, with two additional Magic Move
+      examples; retain the 299 original code/output fences.
+- [x] Match the requested header/footer positions and linked module overviews.
+- [x] Check all 241 browser frames, progressive reveals, diagrams and local assets.
+- [x] Export and render-review both course PDFs; verify all five code click states.
+- [x] Verify the included Python launcher and document commands and limitations.
+
+Details and executed evidence: `build/notes/slidev-foundation.md`. This opt-in
+comparison does not change the existing exercise site or release allowlists.
