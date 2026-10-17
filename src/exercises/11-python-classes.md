@@ -287,13 +287,13 @@ Now let `play` do less. Change it so that it creates a `Game` and loops until th
 - loop with `while not game.is_over`, and remove the variables `history` and `guess_count`
 - show the prompt number with `len(game.history) + 1` and the limit with `game.max_guesses`
 - give `candidates(words, game.history)` the history for the hint
-- in the `try` block, `marks = game.guess(guess)` replaces the checking, scoring and recording, and `check_guess` is no longer called here
+- in the `try` block, keep the `check_guess(guess, allowed_words)` line, and let `marks = game.guess(guess)` replace the scoring and recording below it
 - after the loop, `won = game.is_won` decides the message and the value that goes to `record_game`
 
 Run `uv run pytest`. All three tests of `tests/test_game.py` pass now, and so does the rest of the project. Then play a game with `WORDLE_SECRET=crane`; it must behave exactly as before.
 
 :::hint
-The loop body shrinks to : read the guess, handle the commands, `marks = game.guess(guess)` inside `try`, update `used_letters`, print `render(guess, marks)`. The win test and the counter are gone, because the loop condition and `game.is_won` now know.
+The loop body shrinks to : read the guess, handle the commands, `check_guess` and `marks = game.guess(guess)` inside `try`, update `used_letters`, print `render(guess, marks)`. The win test and the counter are gone, because the loop condition and `game.is_won` now know.
 :::
 
 :::hint
@@ -329,6 +329,7 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
                 print_stats()
                 continue
         try:
+            check_guess(guess, allowed_words)
             marks = game.guess(guess)
         except InvalidGuess as error:
             print(error)
