@@ -64,7 +64,7 @@ uv init wordle
 cd wordle
 ```
 
-`uv init` writes a `pyproject.toml`, a `.python-version` and a placeholder `main.py`; the slide *Creating a Project* explains each of them. Run the placeholder :
+`uv init` writes a `pyproject.toml`, a `.python-version`, a `README.md` and a placeholder `main.py`, and makes the folder a git repository; the slide *Creating a Project* explains each of them. Run the placeholder :
 
 ```bash
 uv run python main.py
@@ -86,7 +86,7 @@ A linter reads code without running it and reports what looks wrong. Add `ruff` 
 uv add --dev ruff
 ```
 
-Run it over the project :
+`uv` records it in `pyproject.toml` under `[dependency-groups]`, so anybody who works on the project gets the same tool. The test runner `pytest` arrives the same way in Exercise 5. Run `ruff` over the project :
 
 ```bash
 uv run ruff check .
@@ -119,9 +119,17 @@ F401 [*] `json` imported but unused
   |
 1 | import json
   |        ^^^^
+help: Remove unused import: `json`
+  |
+  - import json
+1 |
+  |
+
+Found 1 error.
+[*] 1 fixable with `--fix`.
 ```
 
-VS Code underlines the same line, because the Ruff extension runs the same checks as you type. The `[*]` means the fix is safe to make automatically, so let `ruff` make it :
+`F401` is the rule, and the arrow points at the file, line and column. VS Code underlines the same line, because the Ruff extension runs the same checks as you type. The `[*]` means the fix is safe to make automatically, so let `ruff` make it :
 
 ```bash
 uv run ruff check . --fix
