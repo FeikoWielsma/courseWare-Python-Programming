@@ -66,20 +66,29 @@ jobs:
             demos/13-appendix-libraries \
             solutions
 
+      - name: Checkout Presentation Template
+        run: |
+          git clone --depth=1 "${GITHUB_SERVER_URL}/SpiralTrain/Presentation-Template.git" \
+            "$(dirname $(pwd))/Presentation-Template"
+
       # Gating. Extracts every ```python fence from the slides and the exercise
       # guides and checks it for the defects the PDF conversion leaves behind :
       # a footer glued onto a line of code, a Python 2 print statement, a smart
       # quote or ellipsis sitting inside code.
       - name: Check the slide code fences
         shell: bash
-        run: uv run python build/check-fences.py
+        run: uv run python ../Presentation-Template/build/tools/check-fences.py
+
+      - name: Check exercise slide references
+        shell: bash
+        run: uv run python ../Presentation-Template/build/tools/check-slide-references.py
 
       # Gating. Each exercise starter is the previous exercise's solution plus
       # that exercise's handouts. They are generated, never edited, and this
       # fails when someone changed a solution without regenerating them.
       - name: Check the exercise starters are current
         shell: bash
-        run: uv run python build/make-starters.py --check
+        run: uv run python ../Presentation-Template/build/tools/make-starters.py --check
 
       # Gating. Every Wordle solution stage passes its tests (and mypy from
       # Exercise 12), and a scripted game with a fixed secret prints exactly
@@ -101,11 +110,6 @@ jobs:
       - name: Check the style
         shell: bash
         run: uv run ruff check .
-
-      - name: Checkout Presentation Template
-        run: |
-          git clone --depth=1 "${GITHUB_SERVER_URL}/SpiralTrain/Presentation-Template.git" \
-            "$(dirname $(pwd))/Presentation-Template"
 
       - name: Install template dependencies
         run: bun install --cwd ../Presentation-Template/build --frozen-lockfile
