@@ -1,126 +1,197 @@
 # Exercise 3 : Data Structures
 
-In this exercise you extend the calculator with lists, multidimensional lists, tuples and dictionaries.
+So far the game knows one word, `crane`, and forgets every guess the moment it has printed it. A real game picks its secret from a list of words, and keeps track of what each guess has ruled out. In this exercise you load the word list and use lists, sets, tuples and dictionaries to answer questions about a guess. It takes about an hour.
+
+Continue in your own `wordle` project, or start from `exercises/starters/03-data-structures/`, which is the finished Exercise 2 with the word list. This exercise starts a new script in `wordle.py`; Exercise 2's table is not needed again. Run the program after every step with :
+
+```bash
+uv run python wordle.py
+```
+
+Every step is marked with how much help it gives :
+
+- ★ the code is given; type it in and read it
+- ★★ a skeleton is given; you fill in the body
+- ★★★ only the signature and the tests are given
+
+Steps marked ★★ have a reference solution. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
 
-### Step 1
+### Step 1 : The word list {★}
 
-Create a project or directory named `exercise3` and a Python module `calculator3.py`. Next create an empty list variable and ask the user for the input of two float numbers. Add these numbers, store the result in a variable and append the numbers and the result of their addition to the list. Repeat this operation until the user quits the program by pressing the red button in the IDE. Your code could look like the following :
-
-```python
-reslist = []
-while True:
-    f1 = float(input("Give me number 1 : "))
-    f2 = float(input("Give me number 2 : "))
-    addresult = f1 + f2
-    reslist.append(f1)
-    reslist.append(f2)
-    reslist.append(addresult)
-```
-
-Also print the content of the list, print the length of the list and print a subset of the list as follows :
+Replace the contents of `wordle.py` with :
 
 ```python
-print(f"Content of list : {reslist}")
-print(f"Length of list : {len(reslist)}")
-print(f"Part of list : {reslist[0:3]}")
+import random
+from pathlib import Path
+
+words = Path("words.txt").read_text(encoding="utf-8").split()
+guess = input("Your guess: ").strip().lower()
+random.seed(0)
+secret = random.choice(words)
+
+print(f"There are {len(words)} words. The first ten are {words[:10]}.")
+print(f"Crane is in the word list: {'crane' in words}.")
+print(f"Example secret: {secret.upper()}.")
 ```
 
-Finally remove the first element of the list and print the list again :
+The line that reads the file is an incantation for now : it reads `words.txt` into one string, and `.split()` cuts that string into a list wherever there is white space, which in this file means at every line break. Exercise 9 takes it apart.
 
-```python
-print(reslist[0])
-del reslist[0]
-print(f"Content of list after deletion : {reslist}")
-```
+`words` is a list of strings, so `len`, slicing and `in` work on it just as they did on a single string. `random.choice` picks one item of a list at random. `random.seed(0)` makes the random choices the same on every run, which is why everybody gets the same example secret below. Remove that line and run the program twice to see the secret change, then put it back so your output matches the rest of this exercise.
 
-### Step 2
-
-Now create a multidimensional list in which each row contains a calculation with as elements the type of operation, the two float numbers and the result. Also calculate the results of the subtraction, multiplication and division and store these as rows in the multidimensional list. Start by allocating memory for the multidimensional list as follows :
-
-```python
-multireslist = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
-```
-
-Then store the results of the operations in separate lists and add these lists at appropriate places in the multidimensional list. For the add operation your code could look as follows :
-
-```python
-addresult = f1 + f2
-addlist = ["Add", f1, f2, addresult]
-multireslist[0] = addlist
-```
-
-Write similar code for the subtract, multiply and divide operations. Print the multidimensional list after storing the results. Your result should look as follows :
+Run it and type `crane` :
 
 ```text
-Content of list : [['Add', 2.0, 2.0, 4.0], ['Subtract', 2.0, 2.0, 0.0],
-['Multiply', 2.0, 2.0, 4.0], ['Divide', 2.0, 2.0, 1.0]]
+Your guess: crane
+There are 935 words. The first ten are ['abbey', 'abide', 'abled', 'abort', 'about', 'above', 'abuse', 'acorn', 'actor', 'acute'].
+Crane is in the word list: True.
+Example secret: TRUST.
 ```
 
-Finally try to change some element in one of the sublists and notice that you are able to make the change. Then change one of the sublists to a tuple :
+### Step 2 : What a guess rules out {★★}
+
+`set("crane")` is the set of letters in a word : each letter once, in no particular order. Two sets can be combined with operators, which is exactly what the game needs to describe a guess. Work out three sets of letters, each sorted into a list for printing :
+
+- the letters the guess and the secret have in common
+- the letters of the guess that are not in the secret, which the guess has ruled out
+- the letters of the alphabet that the guess has not tried
 
 ```python
-addlist = ("Add", f1, f2, addresult)
+import string  # at the top of the file, with the other imports
+
+common = sorted(...)
+ruled_out_letters = sorted(...)
+not_tried = sorted(...)
+print(f"Letters in common: {common}")
+print(f"Letters ruled out: {ruled_out_letters}")
+print(f"Letters not tried: {not_tried}")
 ```
 
-Notice that when you try to change elements of this tuple you get the following error :
+The slide *Sets* shows the operators.
 
+:::hint
+`&` gives the items that are in both sets, and `-` gives the items of the first set that are not in the second.
+:::
+
+:::hint
+`string.ascii_lowercase` is the string `"abcdefghijklmnopqrstuvwxyz"`. Make a set of it the same way as of a word. `sorted` accepts a set and returns a list, which is why the result prints in alphabetical order.
+:::
+
+:::output
 ```text
-TypeError: 'tuple' object does not support item assignment
+Letters in common: ['r']
+Letters ruled out: ['a', 'c', 'e', 'n']
+Letters not tried: ['b', 'd', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'o', 'p', 'q', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 ```
+:::
 
-### Step 3
+:::solution
+```python
+common = sorted(set(guess) & set(secret))
+ruled_out_letters = sorted(set(guess) - set(secret))
+not_tried = sorted(set(string.ascii_lowercase) - set(guess))
+print(f"Letters in common: {common}")
+print(f"Letters ruled out: {ruled_out_letters}")
+print(f"Letters not tried: {not_tried}")
+```
+:::
 
-Now create an empty dictionary. Ask the user for the input of two numbers like before. Perform add, subtract, multiply and divide operations on the numbers. Store the numbers and the results of the calculation in a small list for each calculation type :
+### Step 3 : A history of guesses {★★}
+
+A game has more than one guess, and they come in order. Keep them in a list called `history` : start it empty, then append a first guess, `"slate"`, and the guess the player typed.
+
+Then record a guess together with what it ruled out as a pair, the tuple `(guess, ruled_out_letters)`, in a variable called `ruled_out`. Print both :
 
 ```python
-resdict = {}
-while True:
-    f1 = float(input("Give me number 1 : "))
-    f2 = float(input("Give me number 2 : "))
-    addresult = f1 + f2
-    addlist = [f1, f2, addresult]
+history = ...
+...
+ruled_out = ...
+print(f"History: {history}")
+print(f"Guess and ruled-out letters: {ruled_out}")
 ```
 
-Now store the list in the dictionary under the key `"Add"` as follows :
+A tuple cannot be changed once it is made. See that for yourself : add the line `ruled_out[0] = "wrong"` below the tuple, run the program, and read the last line of the error. It is a `TypeError` that says a `tuple` does not support item assignment. Then turn the line into a comment, so the program runs again and the reader can still see what you tried.
+
+:::hint
+`[]` is an empty list, and `append` adds one item at the end. A tuple is written as values separated by commas, usually in brackets.
+:::
+
+:::output
+```text
+History: ['slate', 'crane']
+Guess and ruled-out letters: ('crane', ['a', 'c', 'e', 'n'])
+```
+:::
+
+:::solution
+```python
+history = []
+history.append("slate")
+history.append(guess)
+ruled_out = (guess, ruled_out_letters)
+# Uncomment this line to see why tuple items cannot be reassigned.
+# ruled_out[0] = "wrong"
+print(f"History: {history}")
+print(f"Guess and ruled-out letters: {ruled_out}")
+```
+
+The tuple itself cannot change, but the list inside it still can : `ruled_out[1].append("z")` is allowed. A tuple fixes which objects it holds, not what happens inside them.
+:::
+
+### Step 4 : Statistics {★★}
+
+A game keeps statistics : how many games were played and how many were won. A dictionary holds them by name. Create `stats` with the keys `"played"` and `"won"`, both starting at 0. Then record this game : one more played, and one more won if the guess was the secret.
+
+Print the dictionary, and also the current streak, which `stats` does not have yet :
 
 ```python
-resdict["Add"] = addlist
+stats = ...
+...
+print(f"Stats: {stats}; streak: {stats.get('streak', 0)}")
 ```
 
-Use similar code for the other calculation operations and print the dictionary after the input of two numbers.
+`stats["streak"]` would stop the program with a `KeyError`, because the key does not exist. `get` returns the second argument instead. The slide *Accessing Values in Dictionary* shows both.
 
-Try to read and extend the value at a dictionary key. The reading will succeed if the dictionary key was created before, but you will get an error if the key did not exist. Next make sure that the keys exist before starting to ask input from the user, by initializing the dictionary as follows :
+:::hint
+`stats["played"] += 1` adds one to the value stored under `"played"`.
+:::
 
+:::hint
+There is no `if` yet, and you do not need one. `guess == secret` is `True` or `False`, and `int(True)` is 1 while `int(False)` is 0.
+:::
+
+:::output
+```text
+Your guess: crane
+There are 935 words. The first ten are ['abbey', 'abide', 'abled', 'abort', 'about', 'above', 'abuse', 'acorn', 'actor', 'acute'].
+Crane is in the word list: True.
+Example secret: TRUST.
+Letters in common: ['r']
+Letters ruled out: ['a', 'c', 'e', 'n']
+Letters not tried: ['b', 'd', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'o', 'p', 'q', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+History: ['slate', 'crane']
+Guess and ruled-out letters: ('crane', ['a', 'c', 'e', 'n'])
+Stats: {'played': 1, 'won': 0}; streak: 0
+```
+:::
+
+:::solution
 ```python
-resdict = {"Add": [], "Subtract": [], "Multiply": [], "Divide": []}
+stats = {"played": 0, "won": 0}
+stats["played"] += 1
+stats["won"] += int(guess == secret)
+print(f"Stats: {stats}; streak: {stats.get('streak', 0)}")
 ```
 
-Now store multiple results of add calculations under the `"Add"` key as follows :
+The complete file is in `solutions/03-data-structures/wordle.py`.
+:::
 
-```python
-resdict["Add"] = resdict["Add"] + addlist
-```
+### If time permits {★★★}
 
-### Step 4
+Two more questions about the word list :
 
-Ask the user to input a list of integers and split the input string into a list :
+- Print the first ten words of the list sorted in reverse order, and then the first ten sorted by their last letter. `sorted` takes a `key`, a small function that says what to sort by : `sorted(words, key=lambda word: word[-1])`. Module 05 explains `lambda`.
+- How many words start with each vowel? Without a loop this takes a trick : join the words into one long string with a space in front of every word, then `count` how often `" a"`, `" e"` and so on occur in it. Check one of your answers by looking at the word list.
 
-```python
-s = input("Give me a set of numbers separated by space characters : ")
-slist = s.split(" ")
-print(slist)
-```
-
-Also sort and reverse the list with the `sort` and `reverse` functions. Finally convert the list of strings to a list of integers with :
-
-```python
-intlist = []
-for x in slist:
-    x = int(x)
-    intlist.append(x)
-print(intlist)
-```
-
-Feel free to experiment with other string, list and dictionary functions. Use the documentation.
+There is no reference solution for this step.
