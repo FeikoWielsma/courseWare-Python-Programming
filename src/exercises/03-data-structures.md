@@ -68,7 +68,7 @@ print(f"Letters ruled out: {ruled_out_letters}")
 print(f"Letters not tried: {not_tried}")
 ```
 
-The slide *Sets* shows the operators.
+The slide *Set Operations* shows the operators.
 
 :::hint
 `&` gives the items that are in both sets, and `-` gives the items of the first set that are not in the second.
@@ -151,7 +151,7 @@ stats = ...
 print(f"Stats: {stats}; streak: {stats.get('streak', 0)}")
 ```
 
-`stats["streak"]` would stop the program with a `KeyError`, because the key does not exist. `get` returns the second argument instead. The slide *Accessing Values in Dictionary* shows both.
+`stats["streak"]` would stop the program with a `KeyError`, because the key does not exist. `get` returns the second argument instead. The slide *Dictionary Functions and Methods* lists `get`.
 
 :::hint
 `stats["played"] += 1` adds one to the value stored under `"played"`.

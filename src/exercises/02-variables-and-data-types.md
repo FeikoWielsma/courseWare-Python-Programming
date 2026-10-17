@@ -115,7 +115,7 @@ print(f"First two: {guess[:2]}, last two: {guess[-2:]}")
 print(f"The secret contains {secret.count('e')} letter e characters.")
 ```
 
-Inside an f-string that is written with double quotes, a string literal takes single quotes : `'e'`.
+Inside this double-quoted f-string, single quotes make the inner string literal easy to distinguish : `'e'`. Python 3.14 also allows double quotes inside the expression.
 :::
 
 ### Step 4 : Tabs and raw strings {★}

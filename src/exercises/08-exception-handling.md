@@ -125,7 +125,7 @@ def main() -> None:
         ...  # print a newline followed by a friendly stopping message
 ```
 
-Use the messages in the solution below. Try Ctrl+C while the game waits for a guess. End-of-input is Ctrl+D on Unix terminals, or Ctrl+Z followed by Enter on Windows. To test the missing-file case, temporarily rename `words.txt`, run the game, and restore the filename immediately afterwards.
+For a missing file, print `The word list is missing. Restore words.txt and try again.` For interrupted input, print `\nGame stopped.` Try Ctrl+C while the game waits for a guess. End-of-input is Ctrl+D on Unix terminals, or Ctrl+Z followed by Enter on Windows. To test the missing-file case, temporarily rename `words.txt`, run the game, and restore the filename immediately afterwards.
 
 :::hint
 

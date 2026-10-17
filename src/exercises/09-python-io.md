@@ -1,6 +1,6 @@
 # Exercise 9 : Python IO
 
-Your game plays well, but it lives on borrowed data and it has no memory. The word list is a file you typed by hand, it is only found when you start the game from the right folder, and the moment a game ends the result is gone. In this exercise you clean a real word list, make the game find its data wherever it is started from, and keep a history of every game on disk.
+Your game plays well, but it lives on borrowed data and it has no memory. The word list is a file you copied in Exercise 1, it is only found when you start the game from the right folder, and the moment a game ends the result is gone. In this exercise you clean a real word list, make the game find its data wherever it is started from, and keep a history of every game on disk.
 
 Continue in your own `wordle` project, or start from `exercises/starters/09-python-io/`. The starter is the finished Exercise 8 plus this exercise's handouts : `raw-words.txt`, `allowed.txt`, `SOURCES.md` and `tests/test_words.py`. If you continue in your own project, copy those four files in from `exercises/handouts/09-python-io/`.
 
@@ -108,7 +108,7 @@ load_words()
 FileNotFoundError: [Errno 2] No such file or directory: 'words.txt'
 ```
 
-A relative path is resolved against the working directory, and the working directory belongs to whoever starts the program, not to the program. The same holds for a game started from a shortcut, from a test runner or from an editor in another folder.
+A relative path is resolved against the working directory, and the working directory belongs to whoever starts the program, not to the program. The same holds for a game started from a shortcut, from a test runner or from an editor in another folder. Leave this Python session with `exit()` before editing the loader.
 
 The fix is to ask the module where it lives. Every module knows its own file name in `__file__`, and `pathlib` turns that into a folder you can build a path from. Replace `load_words` in `wordle/words.py`:
 
@@ -119,13 +119,13 @@ def load_words() -> list[str]:
     return data_path.read_text(encoding="utf-8").split()
 ```
 
-`Path(__file__).parent` is the `wordle/` folder, and the `/` operator joins path parts. See *Paths with pathlib*. The `path` parameter is gone, because the function no longer needs to be told where the file is. Repeat the experiment in the new session; it now returns the list from any working directory :
+`Path(__file__).parent` is `wordle/`; `/` joins path parts (see *Paths with pathlib*). The loader now finds its own data, so the `path` parameter is gone. Start a fresh `uv run python` session from the project folder, repeat the import and `os.chdir("tests")`, then evaluate `len(load_words())` :
 
 ```text
 935
 ```
 
-Run `uv run python -m wordle` and check that the game still starts. A game started now no longer depends on a `words.txt` in the project folder.
+Leave Python with `exit()`, then run `uv run python -m wordle` in the terminal. The game now finds its package data without a `words.txt` in the project folder.
 
 ### Step 4 : Two lists, answers and allowed guesses {★★}
 
