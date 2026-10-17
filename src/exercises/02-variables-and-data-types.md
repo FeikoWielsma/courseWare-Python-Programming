@@ -8,17 +8,11 @@ Continue in your own `wordle` project, or start from `exercises/starters/02-vari
 uv run python wordle.py
 ```
 
-Every step is marked with how much help it gives :
-
-- ★ the code is given; type it in and read it
-- ★★ a skeleton is given; you fill in the body
-- ★★★ only the signature and the tests are given
-
-Steps marked ★★ have a reference solution. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
+Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
 
-### Step 1 : A secret and a guess {★}
+### Step 1 : A secret and a guess
 
 Replace the contents of `wordle.py` with a fixed secret word and a guess typed by the player :
 
@@ -40,7 +34,7 @@ Your guess:   Slate
 Secret: CRANE    Guess: SLATE
 ```
 
-### Step 2 : Letter by letter {★★}
+### Step 2 : Letter by letter
 
 Until Exercise 4 adds the `if` statement, the program cannot check the length of the guess, so type a guess of exactly five letters. A shorter guess stops this step with an `IndexError`, because `guess[4]` does not exist.
 
@@ -90,7 +84,7 @@ print(f"{4:^10}{guess[4] == secret[4]!s:^14}{guess[4] in secret!s:^12}")
 Five lines that differ only in a number are a loop waiting to be written. Exercise 4 writes it.
 :::
 
-### Step 3 : Length, slices and counts {★★}
+### Step 3 : Length, slices and counts
 
 Three more questions about the guess and the secret, each answered in one line :
 
@@ -120,7 +114,7 @@ print(f"The secret contains {secret.count('e')} letter e characters.")
 Inside this double-quoted f-string, single quotes make the inner string literal easy to distinguish : `'e'`. Python 3.14 also allows double quotes inside the expression.
 :::
 
-### Step 4 : Tabs and raw strings {★}
+### Step 4 : Tabs and raw strings
 
 A backslash in a string starts an escape sequence : `\t` is a tab and `\n` a line break. Add a second header for the table, laid out with tabs instead of widths, and a line that shows a backslash as it is written :
 
@@ -154,6 +148,6 @@ The escape sequence \t inserts a tab.
 
 The complete file is in `solutions/02-variables-and-data-types/wordle.py`.
 
-### If time permits {★★★}
+### If time permits
 
 A game has a number of guesses. Ask the player how many they want, convert the answer with `int()`, and print it back in a sentence. Then run the program again and answer `six`. Read the last line of the error that Python prints : which exception is it, and what does its message tell you about what `int()` accepts? The slide *Type Conversions* shows the conversion functions. There is no reference solution for this step.

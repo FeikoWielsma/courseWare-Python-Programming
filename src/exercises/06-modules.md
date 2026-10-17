@@ -4,7 +4,7 @@ The scoring can now be tested on its own, but loading words, drawing rows and ru
 
 Continue in your own `wordle` project, or use `exercises/starters/06-modules/`, the finished Exercise 5 plus this exercise's handouts. Allow about 45 minutes. Run commands from the project root, beside `pyproject.toml` and `words.txt`, not from inside the new package directory.
 
-### Step 1 : Start a package {★}
+### Step 1 : Start a package
 
 Create a directory named `wordle` inside your project and an empty `wordle/__init__.py`. That file marks the directory as a package; see *Packages in Python*. Copy `load_words` into `wordle/words.py` with its import :
 
@@ -19,7 +19,7 @@ def load_words(path: str = "words.txt") -> list[str]:
 
 Keep the original `wordle.py` intact for this step so `uv run python wordle.py` still plays a game. In the next step you will finish the package and remove that old file. Leave `words.txt` beside `pyproject.toml`; moving the loader does not change the working directory.
 
-### Step 2 : Give each module one job {★★}
+### Step 2 : Give each module one job
 
 Move the existing functions into the following files. Keep their signatures and bodies; this is a change of organisation, not of scoring rules.
 
@@ -98,7 +98,7 @@ if __name__ == "__main__":
 
 :::
 
-### Step 3 : Run the package {★}
+### Step 3 : Run the package
 
 Run from the project root :
 
@@ -128,7 +128,7 @@ Got it in 2!
 
 :::
 
-### Step 4 : Test the new boundaries {★★}
+### Step 4 : Test the new boundaries
 
 The old `test_wordle.py` imports from the single-file version. Remove that test file and use `tests/test_scoring.py` and `tests/test_display.py` from `exercises/handouts/06-modules/`. They are already present in the starter. Until this step, the mixed old and new test imports cannot all collect; finish the package before running the complete test suite. The handouts regroup the earlier checks into four tests; the smaller count is intentional.
 

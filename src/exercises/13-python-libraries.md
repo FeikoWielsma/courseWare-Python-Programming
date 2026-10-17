@@ -7,17 +7,11 @@ Continue in your own `wordle` project, or start from `exercises/starters/13-pyth
 
 The steps are small and separate, one library each. Do Steps 1 to 3 in order, because they build up `main` and the options of the game. Step 4 (`json`) and Step 5 (`re`) can then be done in either order. Step 6 and Step 7 (`pytest`) come last, because they test what the earlier steps wrote.
 
-Every step is marked with how much help it gives :
-
-- ★ the code is given; type it in and read it
-- ★★ a skeleton is given; you fill in the body
-- ★★★ only the signature and the tests are given
-
-Steps marked ★★ and ★★★ have a solution that is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards. This exercise is an appendix : allow about 75 minutes, or pick the libraries you want.
+Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards. This exercise is an appendix : allow about 75 minutes, or pick the libraries you want.
 
 ---
 
-### Step 1 : The daily word {★}
+### Step 1 : The daily word
 
 Everybody who plays today should get the same word, and tomorrow a different one. No server is needed for that : count the days since a fixed starting date, and use the count to pick from the word list. See *The datetime Module* and *Date Arithmetic with timedelta*.
 
@@ -61,7 +55,7 @@ Now give the game an option. In `wordle/__main__.py` add `import sys` and `from 
 
 The lines that record the game stay as they are. `sys.argv` is the list of words typed on the command line; Step 2 looks at it properly. Start the game twice with `uv run python -m wordle --daily`, type `quit` each time and compare the word it reveals. It is the same word both times.
 
-### Step 2 : Options from the command line {★★}
+### Step 2 : Options from the command line
 
 `sys.argv` holds what was typed after the program name. Look at it :
 
@@ -120,7 +114,7 @@ A conditional expression fits on one line : `10 if "--easy" in options else 6`. 
 ```
 :::
 
-### Step 3 : Hard mode {★★★}
+### Step 3 : Hard mode
 
 In hard mode, every guess must use what the earlier guesses revealed. Write the rule as a function in `wordle/game.py`, above `play` :
 
@@ -195,7 +189,7 @@ In `play`, inside the `try` block, after `check_guess`:
 ```
 :::
 
-### Step 4 : Save and resume {★★}
+### Step 4 : Save and resume
 
 A game should survive being interrupted. `json` turns lists, dictionaries, strings and numbers into text and back again; see *The json Module*. Save the secret, the guesses and the game's settings (the guess limit and hard mode) after every guess, and load them when the game starts. The settings matter : a game that was started with `--easy` must still have ten guesses when it is resumed without the flag. Create `wordle/storage.py`. The path of the save file is given, built from the module's own location as in Exercise 9 :
 
@@ -339,7 +333,7 @@ def clear_saved_game() -> None:
 ```
 :::
 
-### Step 5 : Check input with a pattern {★★}
+### Step 5 : Check input with a pattern
 
 `check_guess` uses `guess.isalpha()` to see that a guess is made of letters. It accepts more than the game can use, such as letters with an accent. Try it :
 
@@ -382,7 +376,7 @@ import re
 ```
 :::
 
-### Step 6 : Write your own tests {★★}
+### Step 6 : Write your own tests
 
 In Exercise 8 you wrote tests for a function that already existed. Tests of this kind are small : a function whose name starts with `test_`, and a plain `assert`. See *Testing with pytest*. You wrote this exercise's functions yourself, so write the tests too. Add two to `tests/test_ex13.py`, which Step 3 created. Their imports go at the top of the file, next to the ones that are there, and the tests go at the bottom :
 
@@ -426,7 +420,7 @@ def test_check_guess_rejects_capital_letters() -> None:
 ```
 :::
 
-### Step 7 : One test, several cases {★}
+### Step 7 : One test, several cases
 
 Testing `clean_words` from Exercise 9 on several inputs means repeating a test function, or looping inside it, where the first failure hides the rest. `pytest.mark.parametrize` runs one test function once per value and reports each separately. Add this to `tests/test_ex13.py`, with `from wordle.words import clean_words` at the top :
 

@@ -4,7 +4,7 @@ Your game can judge a guess, but it cannot yet use the feedback to choose its ne
 
 Continue in your own `wordle` project, or use `exercises/starters/07-comprehensions/`, the finished Exercise 6 with `tests/test_solver.py` added. If using your own project, copy that test file from `exercises/handouts/07-comprehensions/tests/`. Allow about 75 minutes. Keep running commands beside `pyproject.toml`.
 
-### Step 1 : Build a row from expressions {★★}
+### Step 1 : Build a row from expressions
 
 In `wordle/display.py`, replace the loop with a joined sequence. Complete the call for each letter and mark :
 
@@ -47,7 +47,7 @@ def render(guess: str, marks: list[str]) -> str:
 
 The expression inside `join` is a generator expression: it produces values as they are consumed, without building a separate list. You will use the same form inside `all` and `sum`; writing generators is covered further in Advanced Python.
 
-### Step 2 : Turn the scorer around {★}
+### Step 2 : Turn the scorer around
 
 Imagine that a candidate word really is the secret. Would it give exactly the feedback you saw? If it would, the word is still possible. This reuses the duplicate-letter rules you already tested, rather than inventing another set of rules for the solver.
 
@@ -64,7 +64,7 @@ def consistent(word: str, guess: str, marks: list[str]) -> bool:
 
 Read `test_consistent_reuses_scoring_rules` in the handout. It scores `slate` against `crane`, then accepts that word-and-guess combination and rejects the same marks for the guess `raise`. The test file also imports the functions you will add in Steps 3 and 4, so it will not collect successfully yet. The game remains playable while you build its solver.
 
-### Step 3 : Keep every answer that fits {★★★}
+### Step 3 : Keep every answer that fits
 
 Add this function to `solver.py` :
 
@@ -115,7 +115,7 @@ def candidates(words: list[str], history: list[tuple[str, list[str]]]) -> list[s
 
 :::
 
-### Step 4 : Choose a useful next guess {★★}
+### Step 4 : Choose a useful next guess
 
 Prefer an answer whose distinct letters occur in many remaining words. This heuristic favours useful information; it does not guarantee the fewest guesses.
 
@@ -160,7 +160,7 @@ def best_guess(words: list[str]) -> str:
 
 Run `uv run pytest tests/test_solver.py`, then `uv run pytest`. The four new solver tests and all four earlier tests should pass. In particular, the `cacao` case checks that repeated letters are not counted as extra information.
 
-### Step 5 : Ask the game for help {★★}
+### Step 5 : Ask the game for help
 
 Add `from wordle.solver import best_guess, candidates` to `wordle/game.py`. Initialise `history` as an empty list beside `used_letters` inside `play`. After scoring each valid guess, save `(guess, marks)` before rendering the row. Commands and rejected guesses must not enter the history.
 

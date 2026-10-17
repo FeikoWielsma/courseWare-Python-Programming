@@ -116,9 +116,13 @@ the exercises apply the module's idea to the game, so they never repeat a demo.
   `build/transcripts/`.
 - Names (`score_guess`, `play`, `Game`, the module names) are a contract between the
   text, the solutions, the handed-out tests and the starters.
-- Markup : `{★}` / `{★★}` / `{★★★}` at the end of a step heading, `:::hint`,
-  `:::output`, `:::solution`, a closing `### If time permits` with no solution.
-  Documented in `../Presentation-Template/docs/exercise-site.md`.
+- Steps vary in how much they give : the code itself (at most about 20 lines), a
+  skeleton with one or two hints and a solution, or only the signature and the
+  tests with a hint, an expected output and a solution. Mix all three in an
+  exercise, because skill levels in a group vary a lot. **Do not label steps** with
+  stars or difficulty words; the template's `{★}` heading marker is not used here.
+- Markup : `:::hint`, `:::output`, `:::solution`, a closing `### If time permits`
+  with no solution. Documented in `../Presentation-Template/docs/exercise-site.md`.
 - Properties are taught one way only : plain attributes first, `@property` when a
   value is computed or needs a rule. No `get_x` / `set_x`, no `property(get, set)`.
 - `archive/` holds the retired calculator exercises and old demos. Do not build on it.

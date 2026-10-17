@@ -8,17 +8,11 @@ Continue in your own `wordle` project, or start from `exercises/starters/03-data
 uv run python wordle.py
 ```
 
-Every step is marked with how much help it gives :
-
-- ★ the code is given; type it in and read it
-- ★★ a skeleton is given; you fill in the body
-- ★★★ only the signature and the tests are given
-
-Steps marked ★★ have a reference solution. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
+Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
 
-### Step 1 : The word list {★}
+### Step 1 : The word list
 
 Replace the contents of `wordle.py` with :
 
@@ -49,7 +43,7 @@ Crane is in the word list: True.
 Example secret: TRUST.
 ```
 
-### Step 2 : What a guess rules out {★★}
+### Step 2 : What a guess rules out
 
 `set("crane")` is the set of letters in a word : each letter once, in no particular order. Two sets can be combined with operators, which is exactly what the game needs to describe a guess. Work out three sets of letters, each sorted into a list for printing :
 
@@ -97,7 +91,7 @@ print(f"Letters not tried: {not_tried}")
 ```
 :::
 
-### Step 3 : A history of guesses {★★}
+### Step 3 : A history of guesses
 
 A game has more than one guess, and they come in order. Keep them in a list called `history` : start it empty, then append a first guess, `"slate"`, and the guess the player typed.
 
@@ -139,7 +133,7 @@ print(f"Guess and ruled-out letters: {ruled_out}")
 The tuple itself cannot change, but the list inside it still can : `ruled_out[1].append("z")` is allowed. A tuple fixes which objects it holds, not what happens inside them.
 :::
 
-### Step 4 : Statistics {★★}
+### Step 4 : Statistics
 
 A game keeps statistics : how many games were played and how many were won. A dictionary holds them by name. Create `stats` with the keys `"played"` and `"won"`, both starting at 0. Then record this game : one more played, and one more won if the guess was the secret.
 
@@ -187,7 +181,7 @@ print(f"Stats: {stats}; streak: {stats.get('streak', 0)}")
 The complete file is in `solutions/03-data-structures/wordle.py`.
 :::
 
-### If time permits {★★★}
+### If time permits
 
 Two more questions about the word list :
 

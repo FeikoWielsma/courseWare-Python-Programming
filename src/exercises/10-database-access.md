@@ -4,17 +4,11 @@ The history file of Exercise 9 can tell you how many games you played, but not m
 
 Continue in your own `wordle` project, or start from `exercises/starters/10-database-access/`. The starter is the finished Exercise 9; this exercise hands out nothing, you write the tests yourself.
 
-Every step is marked with how much help it gives :
-
-- ★ the code is given; type it in and read it
-- ★★ a skeleton is given; you fill in the body
-- ★★★ only the signature and the tests are given
-
-Steps marked ★★ and ★★★ have a solution that is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards. Allow about 60 minutes.
+Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards. Allow about 60 minutes.
 
 ---
 
-### Step 1 : Open the database {★}
+### Step 1 : Open the database
 
 Create `wordle/stats.py`, the module that owns everything to do with the database :
 
@@ -64,7 +58,7 @@ A connection holds the file open until you close it. Closing it explicitly is th
 
 There is now a file `wordle.db` in the project folder. Like the `words.txt` of Exercise 9 used to be, it is created in the working directory, so start the game from the project folder. Finding a fixed location for it is left to the last step, If time permits.
 
-### Step 2 : Record a finished game {★★}
+### Step 2 : Record a finished game
 
 Add a function that stores one game. The time is given, in the ISO text format SQLite sorts correctly :
 
@@ -110,7 +104,7 @@ def record_game(connection: sqlite3.Connection, secret: str, guesses: int, won: 
 ```
 :::
 
-### Step 3 : Totals {★★}
+### Step 3 : Totals
 
 Now ask the database a question. Write `summary`, which returns a dictionary with how many games were played, how many were won and the win percentage :
 
@@ -191,7 +185,7 @@ def summary(connection: sqlite3.Connection) -> dict:
 ```
 :::
 
-### Step 4 : The guess distribution {★★}
+### Step 4 : The guess distribution
 
 How quickly do you win? Add a key `"distribution"` to the dictionary `summary` returns : a dictionary from the number of guesses to the number of games **won** in that many, in order of guesses. Losses are left out. Four games won in 2, 4, 4 and lost, for example, give `{2: 1, 4: 2}`.
 
@@ -242,7 +236,7 @@ Read it from the inside out. `WHERE won = 1` keeps only the won games. `GROUP BY
 Add `"distribution": distribution` to the dictionary that `summary` returns.
 :::
 
-### Step 5 : The current streak {★★★}
+### Step 5 : The current streak
 
 The last statistic is the one players care about : how many games in a row have you won, up to now? Add the key `"streak"` to the dictionary : the number of wins since the most recent loss, `0` if the last game was lost or there are no games.
 
@@ -286,7 +280,7 @@ SQL can do this too, but the clearest solution reads the games newest first and 
 Add `"streak": streak` to the dictionary. The finished function is in `solutions/10-database-access/wordle/stats.py`.
 :::
 
-### Step 6 : Use the database in the game {★★}
+### Step 6 : Use the database in the game
 
 Everything is ready to replace the history file. In `wordle/game.py`:
 

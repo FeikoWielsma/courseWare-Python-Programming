@@ -8,17 +8,11 @@ Continue in your own `wordle` project, or start from `exercises/starters/04-cont
 uv run python wordle.py
 ```
 
-Every step is marked with how much help it gives :
-
-- ★ the code is given; type it in and read it
-- ★★ a skeleton is given; you fill in the body
-- ★★★ only the signature and the tests are given
-
-Steps marked ★★ and ★★★ have a reference solution. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
+Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
 
-### Step 1 : Six guesses {★}
+### Step 1 : Six guesses
 
 Exercise 3's script explored the data; this exercise turns it into a game. Replace the contents of `wordle.py` with :
 
@@ -67,7 +61,7 @@ Guess 2/6 : hello
 HELLO
 ```
 
-### Step 2 : Rejecting a guess {★★}
+### Step 2 : Rejecting a guess
 
 A guess of the wrong length, or one that is not in the word list, should not cost the player a turn. Before `guess_count` goes up, check the guess, and when it is not acceptable print a message and go straight back to the top of the loop for another one :
 
@@ -109,7 +103,7 @@ SLATE
 The check comes before `guess_count += 1`. Put it after, and a rejected guess still uses up a turn.
 :::
 
-### Step 3 : A row of marks {★★}
+### Step 3 : A row of marks
 
 Now the game should say something about each letter. Replace `print(guess.upper())` with a row that marks every letter :
 
@@ -172,7 +166,7 @@ Guess 4/6 :
 
 The game still asks for a fourth guess after `crane`, because nothing tells the loop that the word has been found. Step 5 does that.
 
-### Step 4 : Commands {★★}
+### Step 4 : Commands
 
 Two words are not guesses but commands : `quit` gives up, and `letters` shows the letters tried so far, in alphabetical order. A set is the natural place to keep the letters tried, because each letter only needs to be in it once.
 
@@ -237,7 +231,7 @@ The word was CRANE.
 `set()` is an empty set; `{}` would be an empty dictionary. `update` adds every item of what it is given, so `used_letters.update("slate")` adds five letters.
 :::
 
-### Step 5 : Winning and losing {★★★}
+### Step 5 : Winning and losing
 
 The game has to end properly. These are the rules :
 
@@ -355,6 +349,6 @@ The file is also in `solutions/04-control-flow/wordle.py`.
 
 You have a game. Play a few rounds with a random secret : remove the environment variable, or start a new terminal.
 
-### If time permits {★★★}
+### If time permits
 
 Add a third command, `hint`, which reveals one letter of the secret that the player has not found yet, in its place : for example `Letter 4 is N.` A player may use it once per game; a second `hint` says so instead. Think about what counts as found : a letter the player has already had marked `[A]` in that position is not worth revealing. There is no reference solution for this step.

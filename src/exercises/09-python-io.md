@@ -4,17 +4,11 @@ Your game plays well, but it lives on borrowed data and it has no memory. The wo
 
 Continue in your own `wordle` project, or start from `exercises/starters/09-python-io/`. The starter is the finished Exercise 8 plus this exercise's handouts : `raw-words.txt`, `allowed.txt`, `SOURCES.md` and `tests/test_words.py`. If you continue in your own project, copy those four files in from `exercises/handouts/09-python-io/`.
 
-Every step is marked with how much help it gives :
-
-- ★ the code is given; type it in and read it
-- ★★ a skeleton is given; you fill in the body
-- ★★★ only the signature and the tests are given
-
-Steps marked ★★ have a solution that is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards. Allow about 45 minutes.
+Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards. Allow about 45 minutes.
 
 ---
 
-### Step 1 : Clean a messy word list {★★}
+### Step 1 : Clean a messy word list
 
 `raw-words.txt` is what a word list looks like when it comes from the outside world : almost a thousand lines with some words in capitals, some duplicates, a few lines of the wrong length, a number, a word with an accent, and an empty line. Open it in the editor and scroll to the bottom to see for yourself.
 
@@ -66,7 +60,7 @@ def clean_words(lines: list[str]) -> list[str]:
 The condition strips each line three times, which is easy to read and fast enough for a thousand lines.
 :::
 
-### Step 2 : Write the clean list {★}
+### Step 2 : Write the clean list
 
 Cleaning is done once, not every time the game starts, so use a throwaway session instead of a script. Start Python in the project folder and type this, line by line :
 
@@ -97,7 +91,7 @@ The folder `wordle/data/` is inside the package, next to the code that reads it.
 
 Also copy the handed-out `allowed.txt` and `SOURCES.md` into `wordle/data/`. You use `allowed.txt` in Step 4; `SOURCES.md` records where the word lists come from.
 
-### Step 3 : Find the file from the package {★}
+### Step 3 : Find the file from the package
 
 Your `load_words` still opens `words.txt` as a path relative to wherever the program was started. Try what that means. Start Python in the project folder again and import the function first, because after the change of folder Python can no longer find the `wordle` package. Then change the working directory :
 
@@ -142,7 +136,7 @@ One more thing still points at the old file. The `except FileNotFoundError` in `
         )
 ```
 
-### Step 4 : Two lists, answers and allowed guesses {★★}
+### Step 4 : Two lists, answers and allowed guesses
 
 You have been using one list for two jobs : the words the game can pick as a secret, and the words it accepts as a guess. A player should not be told that a perfectly good word is not a word, but the secret should be a word they have a fair chance of knowing. The real game uses two lists for this, and now your project does too :
 
@@ -200,7 +194,7 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
 ```
 :::
 
-### Step 5 : Keep a history file {★★}
+### Step 5 : Keep a history file
 
 A finished game should leave a line behind. One line per game, such as `crane,2,1`, holds the secret, the number of guesses used and `1` for a win or `0` for a loss. That is a CSV file, and the `csv` module knows how to write one. Read *The csv Module* first.
 
@@ -259,7 +253,7 @@ The calls in `play`:
 ```
 :::
 
-### Step 6 : A stats command {★}
+### Step 6 : A stats command
 
 Reading the file back is the other half. Add a new command to `play`, next to `quit`, `letters` and `hint`, so that typing `stats` prints how many games were played and how many were won :
 

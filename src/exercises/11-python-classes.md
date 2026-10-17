@@ -4,17 +4,11 @@ Look at `play` in `wordle/game.py`. The state of one game is spread over a handf
 
 Continue in your own `wordle` project, or start from `exercises/starters/11-python-classes/`. The starter is the finished Exercise 10 plus the test file this exercise hands out, `tests/test_game.py`. If you continue in your own project, copy that file in from `exercises/handouts/11-python-classes/`.
 
-Every step is marked with how much help it gives :
-
-- ★ the code is given; type it in and read it
-- ★★ a skeleton is given; you fill in the body
-- ★★★ only the signature and the tests are given
-
-Steps marked ★★ and ★★★ have a solution that is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards. Allow about 90 minutes.
+Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards. Allow about 90 minutes.
 
 ---
 
-### Step 1 : A Game with plain attributes {★}
+### Step 1 : A Game with plain attributes
 
 Add the class to `wordle/game.py`, above `play`. For now it only stores what a game needs :
 
@@ -53,7 +47,7 @@ crane 6 []
 
 An attribute is read and assigned like a variable. There is nothing else to write, and for now that is how it should be. See *Attributes Are Public*.
 
-### Step 2 : A method that plays a guess {★★}
+### Step 2 : A method that plays a guess
 
 A class is the data together with the functions that work on it. The first of those is the heart of the game : take a guess, check it, score it, remember it. Add a method to `Game` :
 
@@ -99,7 +93,7 @@ The method has three lines of real work : `check_guess(word, self.words)`, then 
 `check_guess` comes first on purpose : when it raises, the exception leaves the method before the history changes.
 :::
 
-### Step 3 : Values that work themselves out {★★}
+### Step 3 : Values that work themselves out
 
 Callers will keep asking three things : has the player won, is the game over, how many guesses are left. All three can be worked out from `history` and `max_guesses`, so none of them needs to be stored. As methods they would be called `game.is_won()`. With `@property` above the `def` they are read as `game.is_won`, like an attribute that is always correct. See *A Computed Attribute*.
 
@@ -179,7 +173,7 @@ AttributeError: property 'is_won' of 'Game' object has no setter
 ```
 :::
 
-### Step 4 : When a plain attribute is not enough {★★★}
+### Step 4 : When a plain attribute is not enough
 
 `max_guesses` is a plain attribute, so anybody can assign anything to it. Find out what that allows :
 
@@ -261,7 +255,7 @@ That is the run of `uv run pytest tests/test_game.py -k max_guesses`.
 `Game("crane", words, max_guesses=11)` fails too, because `__init__` assigns through the property.
 :::
 
-### Step 5 : Draw the board and shrink play {★★}
+### Step 5 : Draw the board and shrink play
 
 A `Game` that can draw itself helps you debug it. Python asks an object for its text with `__str__`; `print(game)` and f-strings call it. Add one to `Game` that draws every scored guess on its own row with `render`. The slide *Class Attributes and Instance Attributes* leads into the one on `__str__` and `__repr__` in module 11.
 

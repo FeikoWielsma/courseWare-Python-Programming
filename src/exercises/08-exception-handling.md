@@ -4,7 +4,7 @@ The game gives the same rejection for every bad guess, and a missing word list o
 
 Continue in your own `wordle` project, or use `exercises/starters/08-exception-handling/`, the finished Exercise 7 plus this exercise's handouts. If continuing your own project, copy `tests/test_scoring.py` from `exercises/handouts/08-exception-handling/`, replacing the earlier version and retaining your other tests. Read the handout's `README.txt`: the exception tests are deliberately not provided. You write them in Step 5. Allow about 60 minutes.
 
-### Step 1 : Name an invalid guess {★}
+### Step 1 : Name an invalid guess
 
 Add this class below `WORD_LENGTH` in `wordle/scoring.py` :
 
@@ -17,7 +17,7 @@ This creates a specific `ValueError` the game can catch. See *User Defined Excep
 
 Next, make the validator raise this exception with a reason.
 
-### Step 2 : Explain why a guess is invalid {★★}
+### Step 2 : Explain why a guess is invalid
 
 Add `check_guess` to `scoring.py`. Check length, letters, then membership. Valid guesses return normally; invalid ones raise `InvalidGuess`. See *Raising Exceptions*.
 
@@ -75,7 +75,7 @@ def is_valid(guess: str, words: list[str]) -> bool:
 
 :::
 
-### Step 3 : Recover without spending a turn {★★}
+### Step 3 : Recover without spending a turn
 
 In `wordle/game.py`, replace the scoring import with :
 
@@ -111,7 +111,7 @@ except InvalidGuess as error:
 
 :::
 
-### Step 4 : Stop cleanly when play cannot continue {★★}
+### Step 4 : Stop cleanly when play cannot continue
 
 In `wordle/__main__.py`, wrap loading the words and playing the game in handlers for a missing file and interrupted input. Keep `os`, `random`, `play` and `load_words` imported, and keep the existing guard below `main`.
 
@@ -153,7 +153,7 @@ def main() -> None:
 
 :::
 
-### Step 5 : Write your first exception tests {★★★}
+### Step 5 : Write your first exception tests
 
 Create `tests/test_exceptions.py`. So far you have run tests written for you. Now you will specify the three ways a guess can be rejected.
 

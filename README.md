@@ -23,8 +23,8 @@ material, so a `git pull` always gives you the latest version.
 - Type annotations appear from module 2 onwards, and
   **`demos/12-appendix-type-hinting/`** gathers them up in the appendix.
 - **The exercises build one project, a Wordle game**, from Exercise 2 to the end.
-  Each step says how much help it gives : ★ the code is given, ★★ a skeleton to
-  fill in, ★★★ only the signature and the tests.
+  Some steps give you the code, some a skeleton to complete, and some only the
+  tests to pass, with the solution behind a click.
 - **`solutions/`** : the finished game as it stands at the end of each exercise,
   one folder per exercise. Try the exercise first.
 - **`exercises/starters/`** : if you fell behind, start an exercise from its

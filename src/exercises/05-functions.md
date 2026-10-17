@@ -4,17 +4,11 @@ Your Wordle works, but it is one long script from top to bottom. In this exercis
 
 Continue in your own `wordle` project, or start from `exercises/starters/05-functions/`. The starter is the finished Exercise 4 plus the test file this exercise hands out.
 
-Every step is marked with how much help it gives :
-
-- ★ the code is given; type it in and read it
-- ★★ a skeleton is given; you fill in the body
-- ★★★ only the signature and the tests are given
-
-Steps marked ★★ and ★★★ have a solution to reveal on the site, or on the next page in the PDF. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
+Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
 
-### Step 1 : Find the bug {★}
+### Step 1 : Find the bug
 
 Play one round where you know the answer. The starter supports `WORDLE_SECRET`, an environment variable that overrides the random choice. In PowerShell, run :
 
@@ -40,7 +34,7 @@ Got it in 2!
 
 CRANE has one R, and the green R in second place already uses it. The other two R's should be grey. Asking whether a letter occurs anywhere in the secret cannot tell one R from three. Keep the fixed secret until the end of the exercise.
 
-### Step 2 : A main function {★}
+### Step 2 : A main function
 
 Before the scoring can be fixed it needs to be something you can call on its own, and before anything can be called on its own the script must stop running a whole game the moment it is loaded.
 
@@ -71,7 +65,7 @@ Run the game again with `uv run python wordle.py` and confirm it plays exactly a
 
 The `if __name__ == "__main__":` line means : only start a game when this file is run, not when another file imports it. The test file you use in Step 4 imports `wordle`, and without the guard every test run would sit waiting for a guess. Module 6 explains how this works.
 
-### Step 3 : Checking a guess {★★}
+### Step 3 : Checking a guess
 
 The game loop rejects a guess that is the wrong length or not in the word list. Give that check a name. Add `WORD_LENGTH = 5` beside the imports, then fill in the body. See *Annotating a Function* for the signature :
 
@@ -110,7 +104,7 @@ def is_valid(guess: str, words: list[str]) -> bool:
 
 :::
 
-### Step 4 : Scoring a guess {★★★}
+### Step 4 : Scoring a guess
 
 This is the function the bug lives in. Here is its signature :
 
@@ -200,7 +194,7 @@ def score_guess(secret: str, guess: str) -> list[str]:
 
 :::
 
-### Step 5 : Drawing a row {★★}
+### Step 5 : Drawing a row
 
 The code that builds `[A]`, `(A)` and ` A ` now has the marks to work from instead of working them out itself. Move it into a function :
 
@@ -246,7 +240,7 @@ def render(guess: str, marks: list[str]) -> str:
 
 :::
 
-### Step 6 : One game, as a function {★★}
+### Step 6 : One game, as a function
 
 What is left in `main` is the game itself. Move it into a function that plays one game and reports whether it was won :
 

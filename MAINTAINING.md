@@ -56,8 +56,9 @@ coherent :
   solutions, the handed-out tests and the starters. Rename in all four or not at all.
 
 Exercise guides use the shared markup documented in
-`../Presentation-Template/docs/exercise-site.md` : step tiers `{★}` to `{★★★}`,
-`:::hint`, `:::output`, `:::solution`, italic slide references. The same source
+`../Presentation-Template/docs/exercise-site.md` : `:::hint`, `:::output`,
+`:::solution`, italic slide references. The template's `{★}` step markers are
+deliberately not used in this course. The same source
 builds the exercises PDF and the offline site (`bun run --cwd build site`).
 
 The toolchain material, `uv` and `ruff` and the editor, sits inside module 01. It

@@ -4,17 +4,11 @@ Before you can write a game you need somewhere to write it. This exercise instal
 
 There is no starter for this exercise : it is where your own `wordle` project begins. From Exercise 2 on, every exercise also has a starter folder for when you fall behind.
 
-Every step is marked with how much help it gives :
-
-- ★ the code is given; type it in and read it
-- ★★ a skeleton is given; you fill in the body
-- ★★★ only the signature and the tests are given
-
-Every step in this exercise is a ★ step : the commands are given, and the point is to see each tool work once.
+Every step in this exercise gives you the commands : the point is to see each tool work once.
 
 ---
 
-### Step 1 : Install uv {★}
+### Step 1 : Install uv
 
 `uv` is the project manager the course uses. It can install Python itself, so it is the only thing you install by hand. On Windows, run this in PowerShell :
 
@@ -36,7 +30,7 @@ uv --version
 
 The documentation is at `https://docs.astral.sh/uv/`.
 
-### Step 2 : Install Python {★}
+### Step 2 : Install Python
 
 Let `uv` fetch the interpreter the course uses :
 
@@ -46,7 +40,7 @@ uv python install 3.14
 
 This needs no administrator rights and leaves any Python already on the machine alone. Confirm it with `uv python list`, which shows every interpreter `uv` can see.
 
-### Step 3 : Install an editor {★}
+### Step 3 : Install an editor
 
 Install Visual Studio Code from `https://code.visualstudio.com`, then add two extensions from the Extensions panel, the square icon on the left :
 
@@ -55,7 +49,7 @@ Install Visual Studio Code from `https://code.visualstudio.com`, then add two ex
 
 Any editor works, but the course demonstrates VS Code and the slides assume it. The slide *Editor Setup* lists what the two extensions do for you.
 
-### Step 4 : Create the wordle project {★}
+### Step 4 : Create the wordle project
 
 You write your own code this week in a project of your own, the same way you would at work. From the folder where you keep your work, run :
 
@@ -78,7 +72,7 @@ Hello from wordle!
 
 Open the `wordle` folder in VS Code. Then open the Command Palette, run `Python: Select Interpreter`, and choose the interpreter in `.venv`. The editor now uses the same Python as `uv run`.
 
-### Step 5 : See the linter work {★}
+### Step 5 : See the linter work
 
 A linter reads code without running it and reports what looks wrong. Add `ruff` to the project as a development tool, one the project needs while you write it but not when it runs :
 
@@ -137,7 +131,7 @@ uv run ruff check . --fix
 
 It reports `Found 1 error (1 fixed, 0 remaining).`, and the import has gone from `hello.py`. The slide *Linting with ruff* has the other commands. You can delete `hello.py` now; the game does not need it.
 
-### Step 6 : The word list {★}
+### Step 6 : The word list
 
 A word game needs words. Copy `words.txt` from `exercises/handouts/01-environment-configuration/` into the `wordle` folder, next to `pyproject.toml`.
 

@@ -5,17 +5,11 @@ Your code has carried type hints since Exercise 2, and nobody has ever checked t
 
 Continue in your own `wordle` project, or start from `exercises/starters/12-type-hinting/`. The starter is the finished Exercise 11; this exercise hands out nothing. Keep running commands beside `pyproject.toml`.
 
-Every step is marked with how much help it gives :
-
-- ★ the code is given; type it in and read it
-- ★★ a skeleton is given; you fill in the body
-- ★★★ only the signature and the tests are given
-
-Steps marked ★★ and ★★★ have a solution that is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards. This exercise is an appendix : allow about 40 minutes, and do the steps in order.
+Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards. This exercise is an appendix : allow about 40 minutes, and do the steps in order.
 
 ---
 
-### Step 1 : Run mypy {★}
+### Step 1 : Run mypy
 
 `mypy` is a development tool, not something the game needs when it runs, so add it to the development dependencies, the way you added `pytest`, and run it on the package :
 
@@ -43,7 +37,7 @@ Success: no issues found in 8 source files
 
 See *Checking with mypy* for the same run on a smaller program.
 
-### Step 2 : Say exactly what a mark is {★★}
+### Step 2 : Say exactly what a mark is
 
 The marks that `score_guess` returns are declared as `list[str]`. That is true, but it is also true of `["gray", "blue", "yes"]`. The game only has three marks : `"green"`, `"yellow"` and `"grey"`. A type that lists exactly those can be checked.
 
@@ -120,7 +114,7 @@ def render(guess: str, marks: list[Mark]) -> str:
 ```
 :::
 
-### Step 3 : A hint that may not exist {★★★}
+### Step 3 : A hint that may not exist
 
 `best_guess` returns a word, and it returns it for any list you give it. Ask for a hint when no word is left and see what happens. This can only happen when the secret is a word the game accepts as a guess but never picks, so start the game with the environment variable `WORDLE_SECRET` set to `crone`, guess `crane`, and type `hint` :
 
