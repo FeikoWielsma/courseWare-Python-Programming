@@ -4,7 +4,7 @@ Your game plays well, but it lives on borrowed data and it has no memory. The wo
 
 Continue in your own `wordle` project, or start from `exercises/starters/09-python-io/`. The starter is the finished Exercise 8 plus this exercise's handouts : `raw-words.txt`, `allowed.txt`, `SOURCES.md` and `tests/test_words.py`. If you continue in your own project, copy those four files in from `exercises/handouts/09-python-io/`.
 
-Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards. Allow about 45 minutes.
+Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
 

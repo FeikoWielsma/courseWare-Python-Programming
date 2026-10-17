@@ -4,7 +4,7 @@ Look at `play` in `wordle/game.py`. The state of one game is spread over a handf
 
 Continue in your own `wordle` project, or start from `exercises/starters/11-python-classes/`. The starter is the finished Exercise 10 plus the test file this exercise hands out, `tests/test_game.py`. If you continue in your own project, copy that file in from `exercises/handouts/11-python-classes/`.
 
-Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards. Allow about 90 minutes.
+Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
 

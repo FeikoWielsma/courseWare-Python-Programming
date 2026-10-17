@@ -1,6 +1,6 @@
 # Exercise 1 : Python Intro
 
-Before you can write a game you need somewhere to write it. This exercise installs Python, the `uv` project manager, the `ruff` linter and an editor that understands Python, and creates the project you build a Wordle game in for the rest of the course. It takes about thirty minutes.
+Before you can write a game you need somewhere to write it. This exercise installs Python, the `uv` project manager, the `ruff` linter and an editor that understands Python, and creates the project you build a Wordle game in for the rest of the course.
 
 There is no starter for this exercise : it is where your own `wordle` project begins. From Exercise 2 on, every exercise also has a starter folder for when you fall behind.
 

@@ -1,6 +1,6 @@
 # Exercise 4 : Control Flow
 
-Everything so far answers questions about a single guess, and then the program ends. With loops and conditions you can finally write the game itself : six guesses, a row of marks after each one, and a win or a loss at the end. It takes about 75 minutes, and at the end you have a game you can play.
+Everything so far answers questions about a single guess, and then the program ends. With loops and conditions you can finally write the game itself : six guesses, a row of marks after each one, and a win or a loss at the end. At the end you have a game you can play.
 
 Continue in your own `wordle` project, or start from `exercises/starters/04-control-flow/`, which is the finished Exercise 3. Run the game after every step with :
 

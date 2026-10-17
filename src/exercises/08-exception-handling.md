@@ -2,7 +2,7 @@
 
 The game gives the same rejection for every bad guess, and a missing word list or an interrupted input ends in a traceback. Give each failure a useful response, then write your first tests to check those responses at the validation boundary.
 
-Continue in your own `wordle` project, or use `exercises/starters/08-exception-handling/`, the finished Exercise 7 plus this exercise's handouts. If continuing your own project, copy `tests/test_scoring.py` from `exercises/handouts/08-exception-handling/`, replacing the earlier version and retaining your other tests. Read the handout's `README.txt`: the exception tests are deliberately not provided. You write them in Step 5. Allow about 60 minutes.
+Continue in your own `wordle` project, or use `exercises/starters/08-exception-handling/`, the finished Exercise 7 plus this exercise's handouts. If continuing your own project, copy `tests/test_scoring.py` from `exercises/handouts/08-exception-handling/`, replacing the earlier version and retaining your other tests. Read the handout's `README.txt`: the exception tests are deliberately not provided. You write them in Step 5.
 
 ### Step 1 : Name an invalid guess
 

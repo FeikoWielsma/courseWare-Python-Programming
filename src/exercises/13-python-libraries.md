@@ -7,7 +7,7 @@ Continue in your own `wordle` project, or start from `exercises/starters/13-pyth
 
 The steps are small and separate, one library each. Do Steps 1 to 3 in order, because they build up `main` and the options of the game. Step 4 (`json`) and Step 5 (`re`) can then be done in either order. Step 6 and Step 7 (`pytest`) come last, because they test what the earlier steps wrote.
 
-Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards. This exercise is an appendix : allow about 75 minutes, or pick the libraries you want.
+Some steps give you the code, some a skeleton to complete, and some only the tests to pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards. This exercise is an appendix : pick the libraries you want.
 
 ---
 

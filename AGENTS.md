@@ -59,6 +59,11 @@ The general pattern is `../Presentation-Template/docs/agents/exercise-spine.md`
 - Steps vary in how much they give : the code itself (at most about 20 lines), a
   skeleton with hints and a solution, or only the signature and the tests. Mix all
   three in an exercise. **Do not label steps** with stars or difficulty words.
+- **Nothing new on the required path** : a required step uses only what a slide, a
+  demo or an earlier exercise showed. The exercise may explain the *problem*; the
+  language is taught on the slides. Every step where the student writes code gets
+  a hint, and its first hint names the slide or demo (`WRITING-STYLE.md` §8).
+- **No timings** in exercises or on slides; the trainer paces the room.
 - Slides and demos never become Wordle-themed.
 - `archive/` holds retired material (the calculator exercises, old demos). Do not
   build on it.

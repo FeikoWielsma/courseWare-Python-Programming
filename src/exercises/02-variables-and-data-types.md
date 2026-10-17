@@ -1,6 +1,6 @@
 # Exercise 2 : Variables and Data Types
 
-A Wordle game has to compare a guess with the secret word, letter by letter, before it can tell you anything. In this exercise you do that for one guess against one known word, using nothing but strings and f-strings. It takes about 45 minutes.
+A Wordle game has to compare a guess with the secret word, letter by letter, before it can tell you anything. In this exercise you do that for one guess against one known word, using nothing but strings and f-strings.
 
 Continue in your own `wordle` project, or start from `exercises/starters/02-variables-and-data-types/`, which is the finished Exercise 1. Run the program after every step with :
 

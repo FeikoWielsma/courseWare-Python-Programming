@@ -2,7 +2,7 @@
 
 Your game can judge a guess, but it cannot yet use the feedback to choose its next move. In this exercise you turn the same scoring function into a solver: it will rule out impossible answers and recommend a guess from the words that remain.
 
-Continue in your own `wordle` project, or use `exercises/starters/07-comprehensions/`, the finished Exercise 6 with `tests/test_solver.py` added. If using your own project, copy that test file from `exercises/handouts/07-comprehensions/tests/`. Allow about 75 minutes. Keep running commands beside `pyproject.toml`.
+Continue in your own `wordle` project, or use `exercises/starters/07-comprehensions/`, the finished Exercise 6 with `tests/test_solver.py` added. If using your own project, copy that test file from `exercises/handouts/07-comprehensions/tests/`. Keep running commands beside `pyproject.toml`.
 
 ### Step 1 : Build a row from expressions
 

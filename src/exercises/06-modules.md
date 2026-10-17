@@ -2,7 +2,7 @@
 
 The scoring can now be tested on its own, but loading words, drawing rows and running the game still share one file. Split those responsibilities into a package so the solver in the next exercise has a clear place to live.
 
-Continue in your own `wordle` project, or use `exercises/starters/06-modules/`, the finished Exercise 5 plus this exercise's handouts. Allow about 45 minutes. Run commands from the project root, beside `pyproject.toml` and `words.txt`, not from inside the new package directory.
+Continue in your own `wordle` project, or use `exercises/starters/06-modules/`, the finished Exercise 5 plus this exercise's handouts. Run commands from the project root, beside `pyproject.toml` and `words.txt`, not from inside the new package directory.
 
 ### Step 1 : Start a package
 
