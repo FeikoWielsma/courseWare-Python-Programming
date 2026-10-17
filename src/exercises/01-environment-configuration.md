@@ -80,7 +80,7 @@ A linter reads code without running it and reports what looks wrong. Add `ruff` 
 uv add --dev ruff
 ```
 
-`uv` records it in `pyproject.toml` under `[dependency-groups]`, so anybody who works on the project gets the same tool. The test runner `pytest` arrives the same way in Exercise 5. Run `ruff` over the project :
+`uv` records it in `pyproject.toml` under `[dependency-groups]`, so anybody who works on the project gets the same tool. The test runner `pytest` arrives the same way in the libraries appendix, in Exercise 13. Run `ruff` over the project :
 
 ```bash
 uv run ruff check .

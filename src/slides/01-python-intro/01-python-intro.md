@@ -192,7 +192,7 @@ uv remove requests
 ```
 
 - `--dev` marks a tool used while developing, not by the running program :
-  - `pytest` is the test runner this course uses, started with `uv run pytest`
+  - `ruff` is such a tool; so is the test runner `pytest`, which the libraries appendix covers
 - There is no environment to activate :
   - `uv run` puts the project's `.venv` in front for the length of one command
 
