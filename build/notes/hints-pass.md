@@ -64,3 +64,17 @@ saying what it does.
   (*from...import Statement*, *Running Packages with python -m*).
 - Step 1 gives its code; Step 4 is a test step, left as it is.
 - Nothing missing.
+
+## Exercise 7
+
+- Step 1 : new first hint (*Generator Expressions*, *Lambda Functions*).
+- Step 3 : the step's *Filtered List Comprehension* pointer moved into a new first
+  hint, which also names *Generator Expressions* for `all`.
+- Step 4 : the step's three slide pointers moved into a new first hint, with
+  *Generator Expressions* for `sum`.
+- Step 5 : new first hint (*match Statement*, *List Functions and Methods*).
+- Missing : `zip(..., strict=True)` is not on *Zip Function* (the step already says
+  what it does, so it stays as given code). Calling a function looked up in a
+  dictionary, `symbols[mark](letter)`, is on no slide or demo; the second hint says
+  it. The double `for` in one comprehension (`for word in words for letter in word`)
+  is not on *Nested List Comprehensions* but the skeleton gives it.

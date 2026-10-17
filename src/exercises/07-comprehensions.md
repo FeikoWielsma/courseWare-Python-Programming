@@ -26,6 +26,12 @@ uv run pytest tests/test_display.py
 
 :::hint
 
+The slide *Generator Expressions* shows an expression written straight inside a call, and *Lambda Functions*, in module 05, shows what each value of `symbols` is.
+
+:::
+
+:::hint
+
 Call `symbols[mark]` with `letter`; `join` concatenates the results.
 
 :::
@@ -73,7 +79,7 @@ def candidates(words: list[str], history: list[tuple[str, list[str]]]) -> list[s
     """Return words consistent with every guess and its marks."""
 ```
 
-`history` contains pairs of a guess and its marks. Keep a word only if it agrees with every pair, preserving the order of `words`. An empty history rules out nothing. See *Filtered List Comprehension*.
+`history` contains pairs of a guess and its marks. Keep a word only if it agrees with every pair, preserving the order of `words`. An empty history rules out nothing.
 
 Run the given solver tests after implementing the remaining imported functions in Step 4 :
 
@@ -82,6 +88,12 @@ uv run pytest tests/test_solver.py
 ```
 
 `test_candidates_match_all_history` is the test for this function. Read its concrete history and expected list before implementing it. For a quick check before Step 4, you can also import `candidates` directly in `uv run python` and evaluate the assertion from that test.
+
+:::hint
+
+The slide *Filtered List Comprehension* shows a comprehension that keeps only some items, and *Generator Expressions* shows `all`.
+
+:::
 
 :::hint
 
@@ -132,7 +144,13 @@ def best_guess(words: list[str]) -> str:
     return max(words, key=lambda word: ...)
 ```
 
-See *Dictionary Comprehensions*, *Set Comprehensions* and *Built-ins that Take a Function*. `best_guess` needs a non-empty list; during normal play the secret remains a candidate. On a tie, `max` chooses the first word with that score.
+`best_guess` needs a non-empty list; during normal play the secret remains a candidate. On a tie, `max` chooses the first word with that score.
+
+:::hint
+
+The slides *Set Comprehensions* and *Dictionary Comprehensions* show the two comprehensions, *Generator Expressions* shows `sum` over a generator, and *Built-ins that Take a Function* shows `max` with a `key`.
+
+:::
 
 :::hint
 
@@ -182,6 +200,12 @@ uv run python -m wordle
 ```
 
 In Bash, use `WORDLE_SECRET=crane uv run python -m wordle`. Enter `slate`, `hint`, then `crane`.
+
+:::hint
+
+This is Exercise 5's `play` with one more `case`; the slide *match Statement* shows the form, and *List Functions and Methods* has `append`.
+
+:::
 
 :::hint
 
