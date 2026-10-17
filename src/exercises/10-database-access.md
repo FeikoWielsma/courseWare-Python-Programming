@@ -60,7 +60,7 @@ connection.execute("SELECT name FROM sqlite_master").fetchall()
 [('games',)]
 ```
 
-There is now a file `wordle.db` in the project folder. Like the `words.txt` of Exercise 9 used to be, it is created in the working directory, so start the game from the project folder. Deriving a safe location is left to *If time permits*.
+There is now a file `wordle.db` in the project folder. Like the `words.txt` of Exercise 9 used to be, it is created in the working directory, so start the game from the project folder. Finding a fixed location for it is left to the last step, If time permits.
 
 ### Step 2 : Record a finished game {★★}
 
