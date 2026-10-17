@@ -351,6 +351,13 @@ print(v)  # 'Albert'
 print(s)  # 'Einstein'
 ```
 
+> `demo08 · destructurewithtuples`
+
+
+---
+
+# Unpacking in for Loops
+
 - A `for` loop unpacks each item the same way, and the unpacking can nest :
 
 ```python
@@ -362,9 +369,6 @@ records = [(1, ("Albert", "Einstein"))]
 for number, (first, last) in records:
     print(number, first, last)  # 1 Albert Einstein
 ```
-
-> `demo08 · destructurewithtuples`
-
 
 ---
 
