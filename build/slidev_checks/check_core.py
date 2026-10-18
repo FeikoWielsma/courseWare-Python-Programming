@@ -547,7 +547,10 @@ await withBrowser({ origin }, async ({ page }) => {
       const url = `${origin}/slidev/?r=${Date.now()}#/${route}?clicks=${k}`;
       await page.goto(url, { waitUntil: 'networkidle0', timeout: browserTimeoutMs });
     }
-    await page.waitForSelector(`[data-source-id="${route}"] .ds-run`, { timeout: browserTimeoutMs });
+    await page.waitForSelector(
+      `[data-source-id="${route}"] .ds-run`,
+      { timeout: browserTimeoutMs },
+    );
     await page.evaluate(() => document.fonts.ready);
     const data = await page.evaluate((route) => {
       const frame = document.querySelector(`[data-source-id="${route}"]`);

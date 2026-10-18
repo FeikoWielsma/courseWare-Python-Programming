@@ -331,7 +331,10 @@ await withBrowser({ origin }, async ({ page }) => {
     for (let k = 0; k < states; k++) {
       const url = `${origin}/slidev/?r=${Date.now()}#/${route}?clicks=${k}`;
       await page.goto(url, { waitUntil: 'networkidle0', timeout: browserTimeoutMs });
-      await page.waitForSelector(`[data-source-id="${route}"] .ds-run`, { timeout: browserTimeoutMs });
+      await page.waitForSelector(
+        `[data-source-id="${route}"] .ds-run`,
+        { timeout: browserTimeoutMs },
+      );
       await page.evaluate(() => document.fonts.ready);
       await new Promise(resolve => setTimeout(resolve, 900));
       results[route].push(await page.evaluate((route, kind) => {
