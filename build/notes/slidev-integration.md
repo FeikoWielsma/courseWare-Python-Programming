@@ -173,3 +173,16 @@ copy the public `student/` allowlist as `slides/`, and publish the animated zip,
 default PDF and explicit fallback. They depend on the final ordinary-build switch
 and on merging the shared feature into template main first; the workflow reports
 that prerequisite explicitly. No remote workflow or publishing step was run.
+
+## Middle package integration
+
+Merged Opus `986c3db` and six insertion points in `2d7cdef`. The fresh full build,
+PDF export and layout check passed: 263 pages, 226 original topics, 299 original
+fences, zero failures and the known upstream warning. The PDF has 918 link
+annotations. Coordinator inspected rendered final pages 136, 146 and 174
+(package imports, filtered comprehension and finally propagation); text and
+state diagrams are readable. The public preview/package was restaged with this
+fresh app and PDF. All 34 detailed states still need independent Luna checks.
+
+The sole Opus task `slidev-20261018-opus-stateful-animations-r1` now authors
+09/10/11. Appendices 12/13 remain queued; Luna's core verification is still active.
