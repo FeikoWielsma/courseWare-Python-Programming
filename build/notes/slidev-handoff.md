@@ -3,6 +3,12 @@
 Updated 2026-10-18. Start here when continuing the presentation migration,
 Marp parity work, comparison, theme, navigation or exports.
 
+Continuation: this document records the original foundation handoff. Read
+[the accepted migration plan](slidev-migration-plan.md) and
+[integration evidence](slidev-integration.md) for subsequent decisions and the
+current state. Those include the approved animation rollout, Slidev default
+after verification, practical Functions rewrite and stop on further Luna rounds.
+
 ## Objective and current stopping point
 
 The user wants a fair, full-course comparison of Marp and Slidev, with at least

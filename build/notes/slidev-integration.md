@@ -186,3 +186,32 @@ fresh app and PDF. All 34 detailed states still need independent Luna checks.
 
 The sole Opus task `slidev-20261018-opus-stateful-animations-r1` now authors
 09/10/11. Appendices 12/13 remain queued; Luna's core verification is still active.
+
+## Practical Functions examples and focused acceptance
+
+Trainer feedback superseded the unchanged-source requirement for module 05.
+Committed `a747bf6` replaces the abstract syntax and toy examples with delivery
+pricing, receipts, CSV export columns, dispatch details and order sorting.
+Annotations and docstrings follow concrete calls and return values. Fifteen
+main demos are numbered in teaching order; the four native animations retain
+the approved design and now use these examples. Wordle contracts are unchanged.
+
+The new source baseline is 228 topics, 297 code/output fences and 241 Marp pages.
+The full comparison build, PDF export and layout check pass with 265 Slidev
+pages, zero failures and the previously known FloatingVue warning. The PDF
+contains 924 internal links. The public student folder and zip were restaged.
+
+All 15 Functions demos run, all 16 Python fences match their demo excerpts, and
+the existing core trace checker passes all 67 states. Ruff, fence/reference
+checks and Functions Marp layout lint pass. The focused browser checker for the
+four changed animations passes 60 forward/reverse frames, reduced motion and
+containment against the packaged launcher on port 4188. Its first pass exposed
+a caption overflow; an explicit 16px code layout fixes it. Wider name boxes
+preserve complete function names. Label encoding was repaired before rebuilding.
+
+Coordinator inspected newly rendered PDF pages 105, 109, 116 and 118: first
+function syntax, receipt, mutation and returned-list examples. No clipping,
+overlap or corrupted labels remain. These focused checks replace further Luna
+rounds at the trainer's request. Stateful authoring remains saved, unintegrated
+WIP awaiting the scheduled Claude quota reset; appendices and final cutover
+remain open.

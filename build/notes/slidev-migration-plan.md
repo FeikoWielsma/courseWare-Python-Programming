@@ -10,8 +10,9 @@ Recorded 2026-10-18. Entry context: [handoff](slidev-handoff.md).
 - Make Slidev the default build, release and student presentation delivery after
   verification. Retain explicit Marp build and delivery commands as a fallback.
 - The separate `libraries/` companion course remains outside this conversion.
-- Claude Opus 5.5 authors animations; GPT-6 Luna independently investigates and
-  verifies them. The coordinator owns integration and the cutover.
+- Claude Opus 5.5 authors animations. Luna completed the initial audits; the
+  trainer has stopped further Luna rounds. The coordinator owns focused
+  verification, integration and the cutover.
 
 ## Sequence and completion criteria
 
@@ -49,9 +50,10 @@ Recorded 2026-10-18. Entry context: [handoff](slidev-handoff.md).
    in its feature worktree; integration into production requires PDF page-count
    and per-page-text comparisons for two unrelated courses. Completion: a
    reviewable, locally verified release configuration and working fallback.
-6. **Independent acceptance.** A fresh Luna round checks integrated output and
-   all prior findings. The coordinator inspects browser motion and rendered PDF
-   pages, runs course gates, updates the handoff and records remaining limits.
+6. **Acceptance.** The coordinator checks integrated output and unresolved prior
+   findings using existing checks and targeted visual review, without new Luna
+   rounds. Inspect browser motion and rendered PDF pages, run course gates,
+   update the handoff and record remaining limits.
    Completion: full and click PDFs, offline presentation folder, source coverage,
    animation/diagram checks and a reproducible verification report.
 
@@ -86,8 +88,8 @@ Primary references: [Mermaid fences](https://sli.dev/features/mermaid),
 ## Ownership and orchestration
 
 - Initial work: one Opus pilot author and one Luna research/verification agent.
-- Later work: one Opus author at a time and one Luna verification agent, following
-  the trainer's quota-saving decision. Remaining author packages run sequentially.
+- Remaining work: one Opus author at a time, with focused coordinator checks and
+  no further Luna agents, following the trainer's quota-saving decisions.
 - Each author has an isolated worktree, a module/file boundary, a notes file and
   a commit. The coordinator reads each diff and integrates it.
 - Coordinator-only: config, shared tooling, existing check scripts, CI,
