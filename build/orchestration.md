@@ -101,3 +101,22 @@ Notes :
 6. WP4 remainder : docs (`AGENTS.md`, `MAINTAINING.md`, `README.md`) on the spine,
    starters and the site; devcontainer check.
 7. WP5 student review on a different provider from the authors, then a fix round.
+
+---
+
+# Toolchain simplification run (started 2026-10-18)
+
+Design: `build/notes/courseware-toolchain-simplification.md`. Brief: `build/agent-brief.md`.
+Integration: course `toolchain/integration` (`_worktrees/prg-toolchain-int`), template
+`feature/courseware-cli` (`_worktrees/presentation-template-cli`).
+Providers: Claude (Sonnet coordinator, Opus 5.5 for hard work, Haiku 5.5 menial),
+Antigravity Gemini 3.8 Flash and Cursor Grok 4.7 (menial), Codex Luna/Sol after its
+quota resets. Expect quota cut-offs: every package commits often and keeps its notes
+file; resume from branch + notes.
+
+| Package | Agent | Branch | Status |
+|---|---|---|---|
+| T0 baselines (Python decks, two unrelated courses) | Haiku 5.5 | `tc/baseline` | launching |
+| T1 inventory of commands, consumers, deliverables | Gemini 3.8 Flash | `tc/inventory` | launching |
+| T2 browser/serving duplication survey | Grok 4.7 | `tc/browser-survey` | launching |
+| T3 shared orchestration entry + migrate both decks (stage 1-2) | Opus 5.5 | template `feature/courseware-cli`, course `tc/stage1` | launching |
