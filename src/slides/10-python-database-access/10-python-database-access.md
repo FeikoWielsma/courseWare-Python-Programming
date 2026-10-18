@@ -142,10 +142,8 @@ with con:
 
 # Prepared Statements
 
-- If same query must be repeated multiple times :
-  - Can use parameterized queries with question marks or named parameters
-  - Good for both performance and for security
-- Can use `executemany()` method for prepared statements :
+- `executemany()` repeats one parameterized statement for each tuple
+- Each `?` placeholder receives a value from that tuple, in order :
 
 ```python
 import sqlite3

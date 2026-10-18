@@ -91,6 +91,9 @@ ignore = [
 # The tuple demo calls tuple() to show the constructor beside the literal.
 "demos/03-datastructures/06_tuples.py" = ["C408"]
 
+# Tuple slicing and concatenation are taught before call-site star unpacking.
+"demos/03-datastructures/07_tupleaccess.py" = ["RUF005"]
+
 # Overwriting References teaches list concatenation followed by rebinding before
 # call-site star unpacking is introduced; keep the visible assignment in this demo.
 "demos/05-functions/10_overwritingreferences.py" = ["RUF005"]

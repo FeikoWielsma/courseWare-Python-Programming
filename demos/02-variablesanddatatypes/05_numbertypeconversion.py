@@ -1,21 +1,11 @@
-i = 10
-print(i)
+seconds_text = "222"
+seconds = int(seconds_text)
+print(seconds + 30)  # 252
+print(float("8.5"))  # 8.5
+print(int(8.9))  # 8, the fractional part is discarded
 
-j = float(i)
-print(j)
-
-j = 3.33
-i = int(j)
-print(i)
-
-i = int("255", 10)
-print(i)  # 255
-
-i = int("255", 8)
-print(i)  # 173
-
-i = bool(3)
-print(i)
-
-i = bool(0)
-print(i)
+print(bool("Orbit"))  # True
+print(bool(""))  # False
+print(bool(222))  # True
+print(bool(0))  # False
+print(int("ff", 16))  # 255, read a hexadecimal value

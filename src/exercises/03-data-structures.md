@@ -108,7 +108,7 @@ print(f"Guess and ruled-out letters: {ruled_out}")
 A tuple cannot be changed once it is made. See that for yourself : add the line `ruled_out[0] = "wrong"` below the tuple, run the program, and read the last line of the error. It is a `TypeError` that says a `tuple` does not support item assignment. Then turn the line into a comment, so the program runs again and the reader can still see what you tried.
 
 :::hint
-`demo01 · lists` starts with an empty list, the slide *List Functions and Methods* has `append`, and *Tuples* shows how a tuple is written.
+`demo01 · lists` also creates an empty list, the slide *List Functions and Methods* has `append`, and *Tuples* shows how a tuple is written.
 :::
 
 :::hint

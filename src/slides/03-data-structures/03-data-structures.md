@@ -247,59 +247,47 @@ print(history)  # ['Library', 'Album', 'Track', 'Queue']
 
 # Tuples
 
-- Tuple is an immutable sequence of Python objects :
-  - Consist of a number of values separated by commas
-  - Tuples are sequences, just like lists, but cannot be changed once created
-- Main differences between lists and tuples :
-  - Lists are enclosed in brackets `[ ]` and their contents and size can be changed
-  - Tuples are enclosed in parentheses `( )` and cannot be updated
-- Create tuple by assigning comma-separated values to variable :
-  - Best practice is to put these comma-separated values between parentheses
-  - An empty tuple is written as two parentheses containing nothing
-  - For a tuple containing a single value include a comma, otherwise it is a single value
+- A tuple stores a fixed sequence of values :
+  - Each position can have a particular role, such as title and duration
+  - Photo dimensions similarly pair width and height
 
 ```python
-tup1 = ("Intro", "Orbit", "Echo", "Outro")
-tup2 = (1, 2, 3, 4, 5)
-tup3 = "a", "b", "c", "d"  # not recommended
-tup4 = ()                  # empty tuple
-tup5 = (50,)               # single element tuple
+track = ("Orbit", 222)
+dimensions = (1920, 1080)
+titles = "Orbit", "Echo"  # The comma creates a tuple.
+empty = ()
+single = ("Orbit",)  # A one-item tuple needs the comma.
 ```
 
-> `demo06 · tuples`
+- Items cannot be replaced, inserted or removed from an existing tuple
+- Commas create the tuple; parentheses usually make its boundaries clearer
+- A tuple may contain mutable objects, whose own contents can still change
 
+> `demo06 · tuples`
 
 ---
 
 # Accessing Tuples
 
-- All of the general sequence operations can be applied on tuples :
-  - Use square brackets for slicing along with index to obtain value, indices start at 0
-  - Use the + and * operators for concatenation and repetition
+- Positions in this track record hold the title, artist and duration :
 
 ```python
-tup = (1, 2, 3, 4, 5, 6, 7)
-print(tup[0])  # 1
-print(tup[1:5])  # (2, 3, 4, 5)
-print(len(tup))  # 7
+track = ("Orbit", "Nova", 222)
+print(track[0])  # Orbit
+print(track[1:])  # ('Nova', 222)
+print(len(track))  # 3
+# track[2] = 240  # TypeError: tuple items cannot be assigned.
 ```
 
-- Tuples are immutable and can be thought of as read-only lists :
-  - Cannot update them or change values of tuple elements
+- Slicing and concatenation can create a different record :
 
 ```python
-tup[2] = 1000  # TypeError: 'tuple' object does not support item assignment
+long_mix = track[:2] + (240,)
+print(long_mix)  # ('Orbit', 'Nova', 240)
+print(track)  # ('Orbit', 'Nova', 222)
 ```
 
-- Portions of existing tuples can be used to create new tuples :
-
-```python
-tup1 = (12, 34.56)
-tup2 = ("abc", "xyz")
-tup3 = tup1 + tup2
-print(tup3)  # (12, 34.56, 'abc', 'xyz')
-```
-- Tuples can have other tuples or lists as elements
+- The original tuple remains unchanged
 
 > `demo07 · tupleaccess`
 
@@ -307,29 +295,23 @@ print(tup3)  # (12, 34.56, 'abc', 'xyz')
 
 # Delete Tuple Elements
 
-- Removing individual tuple elements is not possible :
-  - Another tuple with undesired elements discarded must be created
-- Entire tuple can be removed with `del` statement :
+- Individual items cannot be removed from an existing tuple
+- A slice can create a shorter tuple :
 
 ```python
-tup = ("Intro", "Orbit", "Echo", "Outro")
-print(tup)  # ('Intro', 'Orbit', 'Echo', 'Outro')
-del tup
-print("After deleting tup : ")
-print(tup)
+titles = ("Orbit", "Echo", "Pulse")
+shorter = titles[:-1]
+print(shorter)  # ('Orbit', 'Echo')
 ```
 
-- Result after deleting tup :
+- `del` removes a name binding, not items from a tuple :
 
-```text
-Traceback (most recent call last):
-  File "C:\course-work\tuples.py", line 5, in <module>
-    print(tup)
-          ^^^
-NameError: name 'tup' is not defined
+```python
+del titles
+print(shorter)  # ('Orbit', 'Echo')
 ```
 
-- After `del tup`, the name is no longer bound; other references may keep the tuple alive
+- Other names keep their objects available after a binding is removed
 
 ---
 
@@ -392,28 +374,22 @@ for number, (title, artist) in records:
 
 # Sets
 
-- A set is an unordered collection with no duplicates :
-  - Created with curly braces `{ }` or with the `set()` constructor
-  - `set()` takes one iterable, such as a list, and keeps each value once
+- A set keeps each distinct value once :
+  - Repeated artist names or track requests become single members
 
 ```python
-s1 = {1, 1, 2, 2}
-print(s1)  # {1, 2}
-numbers = [3, 3, 4, 4]
-s2 = set(numbers)
-print(s2)  # {3, 4}
-s2.add(5)
-print(s2)  # {3, 4, 5}
-print(4 in s2)  # True, a fast membership test
+artists = {"Nova", "Nova", "Echo"}  # Duplicate names become one member.
+print(sorted(artists))  # ['Echo', 'Nova']
+requests = ["Echo", "Echo", "Pulse", "Pulse"]
+unique = set(requests)
+unique.add("Orbit")
+print(sorted(unique))  # ['Echo', 'Orbit', 'Pulse']
+print("Pulse" in unique)  # True
 ```
 
-- An empty set is written `set()`, because `{}` is an empty dictionary
-- A `frozenset` is a set that cannot be changed after it is created :
-
-```python
-frozen = frozenset(numbers)
-print(frozen)  # frozenset({3, 4})
-```
+- Sets have no sequence order; `sorted` gives predictable printed output
+- An empty set is `set()`; `{}` creates an empty dictionary
+- `frozenset(requests)` creates a set whose members cannot be changed
 
 > `demo09 · setsandfrozensets`
 

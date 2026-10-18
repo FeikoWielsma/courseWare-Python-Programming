@@ -102,12 +102,12 @@ a = b = c = 1
 - Assignment of multiple objects to multiple variables :
 
 ```python
-a, b, c = 1, 2, "john"
+a, b, c = 1, 2, "Orbit"
 ```
 
 - Two integer objects with values 1 and 2 :
   - Assigned to variables a and b
-- One string object with the value "john" :
+- One string object with the value "Orbit" :
   - Assigned to the variable c
 
 > `demo03 · multipleassignment`
@@ -117,26 +117,20 @@ a, b, c = 1, 2, "john"
 
 # Strong Typing
 
-- Data stored in memory can be of many types :
-  - Persons age is stored as a numeric value
-  - Persons address is stored as alphanumeric characters
-- A type (or class) of a variable determines :
-  - Operations possible on the variable
-  - Storage method for the variable
-- Python is a strongly typed language :
-  - An operation the type does not allow raises rather than coercing silently
+- An object's type determines which operations it supports :
+  - A duration stored as a number can be added to another duration
+  - A duration read as text must be converted before doing arithmetic
 
 ```text
-1 + 1      ->  2             int plus int
-"1" + "1"  ->  '11'          str plus str, concatenation
-"1" + 1    ->  TypeError     no implicit conversion between the two
+222 + 30       -> 252         integer addition
+"222" + "30"   -> '22230'     string concatenation
+"222" + 30     -> TypeError   string and integer do not add
 ```
 
-- Important Python data types :
-  - Numbers, String, List, Tuple, Set and Dictionary
+- Python reports an unsupported combination instead of silently converting it
+- Common types include numbers, strings, lists, tuples, sets and dictionaries
 
 > `demo04 · strongtyping`
-
 
 ---
 
@@ -162,52 +156,51 @@ is_favourite: bool = True
 
 # Python Numbers
 
-- Assignment binds names to number objects :
+- Number objects are immutable; assignment changes a name's binding :
+  - `previous` keeps the original duration when `duration` is rebound
 
 ```python
-var1 = 1
-var2 = 10
+duration = 222
+previous = duration
+
+duration = 185
+print(previous, duration)  # 222 185
+
+del previous
+print(duration)  # 185
 ```
 
-- Numbers are immutable data types :
-  - Reassignment binds a name to another number; it does not modify the old one
-
-```python
-var1 = 11
-var1 = 2
-var2 = 1
-```
-
-- Remove one or more name bindings with `del`; other references keep the objects alive :
-
-```python
-del var
-del var_a, var_b
-```
+- `del` removes a name; it does not change the number
+- Other references keep their objects available
 
 ---
 
 # Type Conversions
 
-- Sometimes number must be explicitly converted :
-  - Coerced from one type to another to satisfy requirements of function parameter
-- Built-in functions perform conversion between data types :
-  - `int(x [,base]) :`
-    - Converts x to a plain integer, base specifies the base if x is a string
-  - `float(x) :`
-    - Converts x to a floating-point number
-  - `bool([x])` :
-    - Convert value to Boolean using standard truth testing procedure
-- All integers, positive and negative behave as `True` :
-  - Only 0 behaves as `False`
-- All non empty strings behave as `True` :
-  - Only empty string `""` behave as `False` and `None` as well
-- Boolean type is a subtype of the integer type :
-  - Boolean values behave like values 0 and 1
-  - When converted to a string in string context `"False"` or `"True"` are returned
+- Convert text explicitly when it needs to represent a number :
+
+```python
+seconds_text = "222"
+seconds = int(seconds_text)
+print(seconds + 30)  # 252
+print(float("8.5"))  # 8.5
+print(int(8.9))  # 8, the fractional part is discarded
+```
+
+- `bool` converts a value using its truth value :
+
+```python
+print(bool("Orbit"))  # True
+print(bool(""))  # False
+print(bool(222))  # True
+print(bool(0))  # False
+```
+
+- Nonzero numbers and nonempty strings are truthy
+- Zero, empty strings, empty collections and `None` are falsy
+- `int("ff", 16)` reads a number written in hexadecimal
 
 > `demo05 · numbertypeconversion`
-
 
 ---
 
@@ -596,12 +589,6 @@ Bring headphones.
 - String methods are called with dot notation : `"Orbit".upper()`
   - A string never changes, so each method returns a new string or a value
 
-```python
-filename = "  IMG_0421.JPG  "
-clean = filename.strip().lower()
-print(repr(clean))  # 'img_0421.jpg'
-```
-
 | Method | Description |
 |---|---|
 | `strip()` | Removes whitespace from both ends, `lstrip()` and `rstrip()` from one |
@@ -618,6 +605,25 @@ print(repr(clean))  # 'img_0421.jpg'
 
 - `len(s)` is a function rather than a method, and gives the number of characters
 - All the others : `https://docs.python.org/3/library/stdtypes.html#string-methods`
+
+---
+
+# Cleaning Photo Filenames
+
+- A pasted filename can contain spaces and inconsistent capitalisation :
+  - `strip` removes surrounding whitespace
+  - `lower` produces a consistent name for comparisons
+
+```python
+filename = "  IMG_0421.JPG  "
+clean = filename.strip().lower()
+print(repr(clean))  # 'img_0421.jpg'
+print(clean.endswith(".jpg"))  # True
+print(clean.replace(".jpg", "_edit.jpg"))  # img_0421_edit.jpg
+```
+
+- Each string method returns a result; `filename` still holds the original text
+- Chained calls apply left to right, passing each result to the next method
 
 > `demo15 · stringfunctions`
 
