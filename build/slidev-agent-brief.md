@@ -24,6 +24,10 @@ when a delegated worktree starts from an earlier commit.
   use that updated canonical content when it is present. Quote
   their code verbatim, including annotations. Additional labels follow house
   style and explain only already-taught concepts.
+- For newly assigned example design, the trainer prefers engaging, realistic
+  music, photo, film or small-game scenarios over stock items and order status.
+  This preference does not authorize changes outside your package or replacement
+  of canonical examples unless that replacement is explicitly assigned.
 - Put native slides under your assigned `src/slidev/<package>/` folder, one
   Slidev page with frontmatter per file. Use unique Vue component names under
   `src/slidev/components/`; keep styling scoped. Existing examples are references,

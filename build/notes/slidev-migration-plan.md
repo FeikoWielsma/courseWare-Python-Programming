@@ -10,6 +10,11 @@ Recorded 2026-10-18. Entry context: [handoff](slidev-handoff.md).
 - Make Slidev the default build, release and student presentation delivery after
   verification. Retain explicit Marp build and delivery commands as a fallback.
 - The separate `libraries/` companion course remains outside this conversion.
+- Example selection should favour engaging, realistic tasks involving music,
+  photos, films or small games. Avoid defaulting to stock items and order status.
+  Keep examples small and introduce one language mechanism at a time. Broader
+  replacements are still at the proposal stage; this preference does not expand
+  the remaining authors' canonical-source editing boundary.
 - Claude Opus 5.5 authors animations. Luna completed the initial audits; the
   trainer has stopped further Luna rounds. The coordinator owns focused
   verification, integration and the cutover.
