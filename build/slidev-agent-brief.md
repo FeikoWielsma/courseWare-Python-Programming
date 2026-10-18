@@ -19,7 +19,9 @@ when a delegated worktree starts from an earlier commit.
 
 ## Implement within the assigned file boundary
 
-- Keep canonical course slides, demos, exercises and solutions intact. Quote
+- Keep canonical course slides, demos, exercises and solutions intact. The
+  coordinator is explicitly reworking module 05 examples at the trainer's request;
+  use that updated canonical content when it is present. Quote
   their code verbatim, including annotations. Additional labels follow house
   style and explain only already-taught concepts.
 - Put native slides under your assigned `src/slidev/<package>/` folder, one
@@ -41,17 +43,16 @@ when a delegated worktree starts from an earlier commit.
   displayed Python to establish its output and perform basic syntax/build sanity.
   Focus Opus time on implementing the animations. Do not write exhaustive check
   scripts, run full-course browser audits or export/review PDFs in author tasks.
-- Keep the state data in the native slide or component readily inspectable, and
-  record its demo provenance and expected states. Luna and the coordinator own
-  detailed Python/browser/reverse/reduced-motion/export verification and fixes.
-  Their package checks use `build/slidev_checks/check_<package>.py`, with static
-  mode and `--browser <origin>`, following the Data Structures reference.
+- Keep state data readily inspectable and record its demo provenance and expected
+  states. The trainer has stopped further token-heavy Luna verification rounds.
+  The coordinator owns focused existing checks and necessary visual review.
+  Do not create exhaustive new checker scripts or launch additional reviewers.
 
 ## Verify and hand back
 
 1. Perform the small author checks above. A temporary config may be used for
    syntax/build sanity; restore coordinator-owned files before committing.
-   Record exact commands and leave comprehensive verification to Luna.
+   Record exact commands and leave integration checks to the coordinator.
 2. Keep `build/notes/slidev-<package>.md` current. Include an insertion list with
    exact module slug, existing title and native file, click counts, demo paths,
    state-check command, design rationale and remaining findings.

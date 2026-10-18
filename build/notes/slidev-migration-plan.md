@@ -153,3 +153,16 @@ Primary references: [Mermaid fences](https://sli.dev/features/mermaid),
   containment pass, and the 10 final / 65 click PDF pages were reviewed. The
   coordinator clarified the final return caption to account for the function
   binding remaining in global scope; no animation state changed.
+- Trainer stopped further Luna verification rounds to conserve tokens. Middle
+  round r5 was interrupted during mapping, before a checker or report was
+  completed. No further Luna agents are to be launched automatically. Existing
+  checks remain available; the coordinator runs focused checks where edits need
+  them rather than commissioning exhaustive per-state checking infrastructure.
+- Trainer explicitly authorizes a module 05 content rework: replace abstract
+  syntax, show_message, change_me and summation with useful concrete examples;
+  introduce annotations after calls/results are understood. Keep the accepted
+  animations and retarget their data/code. Use delivery pricing for function
+  fundamentals and CSV export columns for mutation versus rebinding. Update
+  slides, demos, native additions, existing checks and exercise references as
+  needed; preserve the Wordle solution contracts. This is an explicit exception
+  to the migration's earlier unchanged-source baseline, which must be recounted.
