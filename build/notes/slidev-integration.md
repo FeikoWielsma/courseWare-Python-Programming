@@ -46,3 +46,22 @@ under ignored `build/slidev/`; the PDF is `dist/course-slidev.pdf`.
 These checks establish the fixes above. The complete course animation rollout,
 default build/release cutover, authoring integration and final acceptance remain
 open. Shared production checkout remains unchanged.
+
+## Live authoring
+
+Added opt-in `bun run --cwd build slidev:dev` over shared `--dev`. It starts
+native Slidev on port 3030 and watches canonical/native sources, source assets,
+course config and the shared template. Generated source synchronization changes
+only differing files and removes stale managed component/layout/setup files.
+Authoring manifests are separate from the static delivery manifest; trainer
+notes are available locally and the static student build retains its existing
+note stripping.
+
+A copied tiny fixture was served in the T3 browser. Editing a canonical title
+updated the visible title without a manual reload. Adding a native slide and
+setting an accent in course config added its route and changed the computed
+accent. Editing its Vue component updated the visible 1280 by 800 slide live.
+The first probe exposed a restart caused by removing unchanged setup files;
+changed-only synchronization fixed it and the probes above then passed.
+The fixture/server were isolated from course sources and the server was stopped.
+TypeScript and seven converter/PDF regression tests pass after this change.

@@ -7,6 +7,7 @@
     "slidev:compare": "bun run slidev.ts --compare --serve",
     "slidev:pdf": "bun run slidev.ts --pdf",
     "slidev:check": "bun run slidev.ts --check-only",
+    "slidev:dev": "bun run slidev.ts --dev",
     "build": "bun run ../../Presentation-Template/build/build.ts",
     "serve": "bun run ../../Presentation-Template/build/build.ts --serve",
     "lint": "bun run ../../Presentation-Template/build/lint-slides.ts",
