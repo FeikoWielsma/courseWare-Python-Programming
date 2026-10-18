@@ -28,6 +28,7 @@ let browser: Browser | undefined;
 const pause = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 let page: Awaited<ReturnType<Browser['newPage']>>;
 const current = () => new URL(page.url()).hash;
+const clickCount = () => Number(new URLSearchParams(current().split('?')[1] || '').get('clicks') || 0);
 const state = (id: string) => page.evaluate((sourceId: string) =>
   [...document.querySelectorAll<HTMLElement>(`.course-frame[data-source-id="${sourceId}"] .course-step`)]
     .map(element => getComputedStyle(element).opacity), id);
@@ -64,6 +65,21 @@ try {
   const reverse = await state(topic.id);
   require(forward[0] === '1' && reverse[0] === '0', 'Ordinary forward/reverse reveal failed.');
   console.log(`PASS ordinary reveal forward/reverse: ${topic.id}`);
+
+  // Distinct short gestures used to disappear inside a 700ms lockout. Check
+  // actual navigation state before the visual transition has finished.
+  await wheel(90); await pause(60);
+  require(clickCount() === 1, `First wheel response was delayed: ${current()}.`);
+  await pause(120);
+  await wheel(90); await pause(60);
+  require(clickCount() === 2, `Fresh wheel gesture within 700ms was dropped: ${current()}.`);
+  await wheel(-90); await pause(60);
+  require(clickCount() === 1, `Immediate wheel reversal was dropped: ${current()}.`);
+  await pause(120);
+  await wheel(-90); await pause(60);
+  require(clickCount() === 0, `Second reverse gesture was dropped: ${current()}.`);
+  await pause(180);
+  console.log('PASS quick separate wheel gestures and immediate reversal');
 
   await wheel(90); await pause(900);
   const wheelForward = await state(topic.id);

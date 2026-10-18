@@ -129,3 +129,22 @@ course sources were not edited by this work (unrelated existing changes were
 left alone). Regression PDFs are retained under ignored `build/slidev/regression/`.
 This satisfies the documented shared
 before/after PDF comparison gate; no production merge or push was performed.
+
+## Wheel responsiveness
+
+The trainer requested snappier wheel navigation. The original handler required
+24px movement, 180ms quiet and a 700ms fixed lockout; a new gesture inside the
+lockout was consumed without navigation. Shared `f4f9ca1` replaces that lockout
+with one movement per gesture, an 18px threshold and 120ms gesture separation.
+Reversing by 18px responds immediately. Small opposite recoil does not rearm
+momentum. Scrollable content, editable controls, horizontal scrolling and
+Ctrl/Command-wheel retain their exclusions.
+
+Executed 13 shared converter/PDF/wheel tests and TypeScript checking; all pass.
+Rebuilt and restaged the public app, then ran the physical CDP delivery probe
+against its packaged launcher on 4188. Quick consecutive gestures under 700ms,
+immediate reversal, ordinary navigation, momentum grouping, zoom/control/scroll
+exclusions and forward/reverse slide boundaries all pass. The check reads actual
+navigation after 60ms, before visual transitions finish. The public preview was
+reloaded to use the rebuilt JavaScript. PDF content was unchanged; no new export
+was necessary for this interaction-only change.
