@@ -121,4 +121,4 @@ file; resume from branch + notes.
 | T2 browser/serving duplication survey | Grok 4.7 | `tc/browser-survey` | merged; feeds stage 6 |
 | T3 shared orchestration entry + migrate both decks (stage 1-2) | Opus 5.5 | template `feature/courseware-cli` (aa78ed9 + docs), course `tc/stage1` | merged into integration; template branch NOT yet merged to Presentation-Template main (additive; merge after all stages + 2-course regression) |
 | T4 outputs separation + artifact manifest (stage 3) | Opus 5.5 | template `feature/courseware-cli`, course `tc/stage3` | launching |
-| T5 shared browser/serve module in the template (stage 6a) | Grok 4.7 | template `feature/courseware-browser` | launching |
+| T5 shared browser/serve module in the template (stage 6a) | Grok 4.7 | template `feature/courseware-browser` (139b7d5, 4a9b1ce) | done; to merge into feature/courseware-cli after T4; course checks (stage 6b) wait for T4 to avoid path conflicts |
