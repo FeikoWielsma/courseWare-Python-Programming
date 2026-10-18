@@ -4,6 +4,8 @@ import contextlib
 import io
 import json
 import re
+import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -43,6 +45,8 @@ def main() -> None:
         f"Slidev examples: {len(displayed)} list states and {len(states)} tuple states "
         "match their demos."
     )
+    for check in sorted((ROOT / "build" / "slidev_checks").glob("check_*.py")):
+        subprocess.run([sys.executable, str(check)], check=True)
 
 
 if __name__ == "__main__":

@@ -21,7 +21,13 @@ export default {
     '13-appendix-libraries-1',
   ],
   enrichments: [
+    { module: '03-data-structures', after: 'Lists', file: 'src/slidev/data-structures/indexing-and-slicing.md' },
     { module: '03-data-structures', after: 'Accessing Lists', file: 'src/slidev/list-mutation.md' },
+    { module: '03-data-structures', after: 'Delete List Elements', file: 'src/slidev/data-structures/replacing-and-deleting.md' },
+    { module: '03-data-structures', after: 'Multidimensional Lists', file: 'src/slidev/data-structures/shared-and-separate-rows.md' },
+    { module: '03-data-structures', after: 'List Operations', file: 'src/slidev/data-structures/lists-as-stacks.md' },
     { module: '03-data-structures', after: 'Usage of Tuples', file: 'src/slidev/tuple-unpacking.md' },
+    { module: '03-data-structures', after: 'Set Operations', file: 'src/slidev/data-structures/set-operations.md' },
+    { module: '03-data-structures', after: 'Accessing Values in Dictionary', file: 'src/slidev/data-structures/updating-a-dictionary.md' },
   ],
 };

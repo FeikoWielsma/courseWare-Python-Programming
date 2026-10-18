@@ -65,3 +65,26 @@ The first probe exposed a restart caused by removing unchanged setup files;
 changed-only synchronization fixed it and the probes above then passed.
 The fixture/server were isolated from course sources and the server was stopped.
 TypeScript and seven converter/PDF regression tests pass after this change.
+
+## Data Structures pilot integration
+
+Merged Opus `e5c5f9d` from `t3/data-structures-slidev-pilot` and applied its six
+insertion specs. The integrated deck has 247 pages, 226 source topics and the
+same 299 original fences. The main Python snapshot command now discovers the
+package checks. Reference-arrow marker IDs use Vue instance IDs so simultaneously
+printed click states cannot share marker IDs.
+
+Executed: `uv run python build/check-slidev-examples.py`, Ruff, course fence and
+reference checks, `slidev --pdf --check`, and the package's `--browser` check
+against the served integrated app. All pass; all 33 package states match Python
+in the actual browser. Full PDF has 247 pages and 886 internal links. Exported a
+six-page final-state pilot PDF and a 33-page click-state pilot PDF and checked
+their page counts. Poppler-rendered pilot pages were inspected. A real T3 browser
+recording exercises list replacement/deletion, shared/separate rows and stack
+operations, including reverse clicks; each recorded forward step was read back
+from the component's click state.
+
+The rendered gallery, recording and PDFs were prepared for the trainer's style
+review before any remaining-module authors were started. The review is the
+prototype checkpoint in the shared orchestration guide. Release packaging work
+can proceed independently while that preference is pending.

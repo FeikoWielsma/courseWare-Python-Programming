@@ -2,9 +2,10 @@
 // Lists that hold lists. Each name refers to an outer list; each outer slot
 // holds a reference, drawn as an arrow, to an inner list object. Inner lists
 // are drawn once per object, so two slots referring to one list share it.
-import { computed } from 'vue'
+import { computed, useId } from 'vue'
 
 const props = defineProps({ run: { type: Object, required: true }, step: { type: Number, required: true } })
+const markerPrefix = `ds-${useId()}`
 const width = 380
 const gap = 44
 const cell = 56
@@ -46,10 +47,10 @@ const panels = computed(() => props.run.names.map((name, p) => {
       <span class="name">{{ panel.name }}</span>
       <svg class="arrows" :width="width" height="200" aria-hidden="true">
         <defs>
-          <marker :id="`ds-head-${panel.name}`" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" class="head" /></marker>
-          <marker :id="`ds-head-on-${panel.name}`" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" class="head on" /></marker>
+          <marker :id="`${markerPrefix}-head-${panel.name}`" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" class="head" /></marker>
+          <marker :id="`${markerPrefix}-head-on-${panel.name}`" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" class="head on" /></marker>
         </defs>
-        <path v-for="slot in panel.slots" :key="slot.i" :d="slot.path" class="ref" :class="{ on: slot.active }" :marker-end="`url(#ds-head-${slot.active ? 'on-' : ''}${panel.name})`" />
+        <path v-for="slot in panel.slots" :key="slot.i" :d="slot.path" class="ref" :class="{ on: slot.active }" :marker-end="`url(#${markerPrefix}-head-${slot.active ? 'on-' : ''}${panel.name})`" />
       </svg>
       <template v-for="slot in panel.slots" :key="`s${slot.i}`">
         <span class="index" :style="{ top: `${slot.top}px` }">{{ slot.i }}</span>
