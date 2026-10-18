@@ -39,5 +39,11 @@ export default {
     { module: '05-functions', after: 'Overwriting References', file: 'src/slidev/core/rebinding-a-parameter.md' },
     { module: '05-functions', after: 'return Statement', file: 'src/slidev/core/handing-back-a-result.md' },
     { module: '05-functions', after: 'Example Variable Scope', file: 'src/slidev/core/local-and-global-names.md' },
+    { module: '06-modules', after: 'import Statement', file: 'src/slidev/middle/importing-a-module.md' },
+    { module: '06-modules', after: 'Importing Names from a Package', file: 'src/slidev/middle/importing-a-package.md' },
+    { module: '07-comprehensions', after: 'Filtered List Comprehension', file: 'src/slidev/middle/filtering-into-a-new-list.md' },
+    { module: '07-comprehensions', after: 'Flattening a List of Lists', file: 'src/slidev/middle/two-for-clauses.md' },
+    { module: '08-exception-handling', after: 'Typed Exception Handling', file: 'src/slidev/middle/first-matching-handler.md' },
+    { module: '08-exception-handling', after: 'Example try-finally', file: 'src/slidev/middle/finally-while-propagating.md' },
   ],
 };

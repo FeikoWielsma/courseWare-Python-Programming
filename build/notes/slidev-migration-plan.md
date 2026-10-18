@@ -134,3 +134,6 @@ Primary references: [Mermaid fences](https://sli.dev/features/mermaid),
   257 pages, with its 226 original topics and 299 fences unchanged. Detailed
   verification follows in a fresh Luna round. The core notes record grouped
   loop/call line execution; these states need tracing rather than prefix runs.
+- Integrated middle author `986c3db`: six additions across 06/07/08, 34 states
+  and 28 clicks. Full-course verification follows; the stateful author package
+  (09/10/11) is next, still one Opus task at a time.
