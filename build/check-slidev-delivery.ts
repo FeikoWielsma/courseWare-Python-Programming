@@ -48,18 +48,20 @@ try {
     .map(name => path.join(checksDir, name));
   if (animationChecks.length === 0) throw new Error(`No animation checks found in ${checksDir}.`);
 
-  const checks = animationChecks.map(script => run(
-    path.basename(script),
-    ['uv', 'run', 'python', script, '--browser', origin],
-  ));
-  checks.push(run('physical wheel delivery probe', [
-    'bun', 'run', path.join(checksDir, 'check_delivery.ts'),
-    '--origin', origin, '--output', output,
-  ]));
-  const results = await Promise.allSettled(checks);
-  const failures = results.flatMap((result, index) => result.status === 'rejected'
-    ? [`${index < animationChecks.length ? path.basename(animationChecks[index]) : 'physical wheel delivery probe'}: ${String(result.reason)}`]
-    : []);
+  // Await asynchronous children one at a time: the HTTP server remains
+  // responsive without launching a Chrome instance for every module at once.
+  const failures: string[] = [];
+  for (const script of animationChecks) {
+    try {
+      await run(path.basename(script), ['uv', 'run', 'python', script, '--browser', origin]);
+    } catch (error) { failures.push(`${path.basename(script)}: ${String(error)}`); }
+  }
+  try {
+    await run('physical wheel delivery probe', [
+      process.execPath, 'run', path.join(checksDir, 'check_delivery.ts'),
+      '--origin', origin, '--output', output,
+    ]);
+  } catch (error) { failures.push(`physical wheel delivery probe: ${String(error)}`); }
   if (failures.length) throw new Error(`Slidev delivery checks failed:\n${failures.join('\n')}`);
   console.log(`Slidev delivery checks passed: ${animationChecks.length} animation checks and the physical wheel probe.`);
 } finally {

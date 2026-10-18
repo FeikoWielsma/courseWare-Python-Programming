@@ -4,6 +4,7 @@
 from `build/slidev/dist/student`, finds every `build/slidev_checks/check_*.py`,
 and runs each as `uv run python ... --browser <origin>`. The checks run as
 asynchronous child processes while Bun's HTTP server remains active. The gate
+awaits each check sequentially to keep only one checking browser active. It
 also runs `check_delivery.ts` against the same origin for physical wheel,
 momentum, editable-control and slide-boundary navigation. It closes the browser
 and server in `finally` and exits nonzero when a child check fails.
