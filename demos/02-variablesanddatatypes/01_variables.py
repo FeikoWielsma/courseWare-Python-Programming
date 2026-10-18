@@ -1,21 +1,21 @@
-counter = 100  # An integer assignment
-print(counter)
-print(type(counter))
-miles = 1000.0  # A floating point
-print(miles)
-print(type(miles))
-name = "John"  # A string
-print(name)
-print(type(name))
+duration = 222  # Track length in seconds
+print(duration)
+print(type(duration))
+size_mb = 8.5  # Photo file size
+print(size_mb)
+print(type(size_mb))
+title = "Orbit"  # Track title
+print(title)
+print(type(title))
 
-var1 = 10
-var2 = 20
-print(var1, var2)
-var3 = var1 + var2
-print(var3)
+first = 10
+second = 20
+print(first, second)
+combined = first + second
+print(combined)
 
-var1 = "somestring"
-var2 = "otherstring"
-print(var1, var2)
-var3 = var1 + var2
-print(var3)
+first = "Orbit "
+second = "Echo"
+print(first, second)
+combined = first + second
+print(combined)

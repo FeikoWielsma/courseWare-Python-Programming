@@ -1,11 +1,13 @@
-def square(x: int) -> int:
-    return x * x
+def clean_filename(name: str) -> str:
+    return name.strip().lower()
 
 
-def even(x: int) -> bool:
-    return x % 2 == 0
+def is_photo(name: str) -> bool:
+    return name.endswith(".jpg")
 
 
-print(list(map(square, range(1, 6))))  # [1, 4, 9, 16, 25]
-print(list(filter(even, range(1, 6))))  # [2, 4]
-print([square(x) for x in range(1, 6) if even(x)])  # [4, 16]
+files = ["  COVER.JPG ", "STAGE.JPG", "NOTES.TXT"]
+cleaned = list(map(clean_filename, files))
+photos = list(filter(is_photo, cleaned))
+print(photos)  # ['cover.jpg', 'stage.jpg']
+print([name for name in cleaned if is_photo(name)])

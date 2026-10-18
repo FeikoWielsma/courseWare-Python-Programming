@@ -1,11 +1,9 @@
-name = input("What is your name? ")
-
-if name.endswith("Gumby"):
-    if name.startswith("Mr."):
-        print("Hello, Mr. Gumby")
-    elif name.startswith("Mrs."):
-        print("Hello, Mrs. Gumby")
+battery = 80
+photos_left = 3
+if battery >= 20:
+    if photos_left > 0:
+        print("Camera ready")
     else:
-        print("Hello, Gumby")
+        print("Storage full")
 else:
-    print("Hello, stranger")
+    print("Charge the battery")

@@ -1,19 +1,18 @@
-var1 = 11
-print(id(var1))
-print(type(var1))
+duration = 222
+previous = duration
 
-var1 = "somestring"
-print(id(var1))
-print(type(var1))
+duration = 185
+print(previous, duration)  # 222 185
 
-var1 = 1.12
-print(id(var1))
-print(type(var1))
+del previous
+print(duration)  # 185
 
-var1 = True
-print(id(var1))
-print(type(var1))
-
-var2 = var1
-print(id(var2))
-print(type(var2))
+selection = "Orbit"
+print(type(selection))
+print(id(selection))
+selection = 8.5
+print(type(selection))
+print(id(selection))
+selection = True
+print(type(selection))
+print(id(selection))

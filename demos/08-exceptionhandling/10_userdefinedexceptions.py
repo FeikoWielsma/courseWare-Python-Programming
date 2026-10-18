@@ -1,14 +1,17 @@
-class NetworkError(RuntimeError):
-    def __init__(self, hostname: str) -> None:
-        super().__init__(f"Bad hostname: {hostname}")
-        self.hostname = hostname
+class InvalidDurationError(ValueError):
+    pass
+
+
+def parse_duration(text: str) -> int:
+    minutes_text, seconds_text = text.split(":")
+    minutes = int(minutes_text)
+    seconds = int(seconds_text)
+    if minutes < 0 or not 0 <= seconds < 60:
+        raise InvalidDurationError(f"Invalid duration: {text!r}")
+    return minutes * 60 + seconds
 
 
 try:
-    raise NetworkError("example.invalid")
-except NetworkError as e:
-    print(e)  # Bad hostname: example.invalid
-    print(e.hostname)  # example.invalid
-
-# Uncaught, it ends the program with a traceback naming the class and message.
-raise NetworkError("oops.invalid")
+    parse_duration("3:99")
+except InvalidDurationError as error:
+    print(f"Playlist entry rejected: {error}")

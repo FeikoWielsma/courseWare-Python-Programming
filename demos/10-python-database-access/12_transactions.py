@@ -1,29 +1,28 @@
 import sqlite3
-import sys
 
-con = None
-try:
-    con = sqlite3.connect("friends.db")
-    cur = con.cursor()
-    cur.execute("DROP TABLE IF EXISTS Friends")
-    cur.execute("CREATE TABLE Friends(Id INTEGER PRIMARY KEY, Name TEXT)")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Tom')")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Rebecca')")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Jim')")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Robert')")
-    con.commit()  # without this line, close() discards the inserts
+# Changes the films table; run 03_insertingdata.py or 04_preparedstatements.py first.
 
-except sqlite3.Error as e:
-    if con:
-        con.rollback()
 
-    print(f"Error: {e}")
-    sys.exit(1)
-
-finally:
-    if con:
+def save_ratings(ratings: list[tuple[int, int]]) -> None:
+    con = sqlite3.connect("watchlist.db")
+    try:
+        cur = con.cursor()
+        for film_id, stars in ratings:
+            if not 1 <= stars <= 5:
+                raise ValueError(f"rating must be 1 to 5, got {stars}")
+            cur.execute("UPDATE films SET watched = 1, rating = ? WHERE id = ?", (stars, film_id))
+        con.commit()  # without this line, close() discards the updates
+    except (sqlite3.Error, ValueError) as e:
+        con.rollback()  # undoes every update of this batch
+        print(f"Error: {e}")
+    finally:
         con.close()
 
-con = sqlite3.connect("friends.db")
-print(con.execute("SELECT COUNT(*) FROM Friends").fetchone()[0], "friends saved")
+
+save_ratings([(2, 3), (6, 9)])  # 9 is refused, so the rating of film 2 is undone too
+save_ratings([(1, 4), (6, 5)])
+
+con = sqlite3.connect("watchlist.db")
+for row in con.execute("SELECT title, watched, rating FROM films WHERE id IN (1, 2, 6)"):
+    print(row)
 con.close()

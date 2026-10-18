@@ -1,17 +1,6 @@
-print("Separate except clauses")
-for value in (None, "Hi!"):
+lengths = [222, None, "live"]
+for length in lengths:
     try:
-        print("Attempting to convert", value, "-->", end=" ")
-        print(float(value))
-    except TypeError:
-        print("TypeError : Only a string or a number can be converted!")
-    except ValueError:
-        print("ValueError : Only a string of digits can be converted!")
-
-print("Combined except clauses")
-for value in (None, "Hi!"):
-    try:
-        print("Attempting to convert", value, "-->", end=" ")
-        print(float(value))
+        print(f"Length: {int(length)} seconds")
     except (TypeError, ValueError):
-        print("Something went wrong!")
+        print(f"Missing or invalid duration: {length!r}")

@@ -91,6 +91,13 @@ ignore = [
 # The tuple demo calls tuple() to show the constructor beside the literal.
 "demos/03-datastructures/06_tuples.py" = ["C408"]
 
+# Tuple slicing and concatenation are taught before call-site star unpacking.
+"demos/03-datastructures/07_tupleaccess.py" = ["RUF005"]
+
+# Overwriting References teaches list concatenation followed by rebinding before
+# call-site star unpacking is introduced; keep the visible assignment in this demo.
+"demos/05-functions/10_overwritingreferences.py" = ["RUF005"]
+
 # The pass statement is the subject of its own slide, and an empty class body
 # needs one.
 "demos/04-controlflow/11_passstatement.py" = ["PIE790"]
@@ -101,9 +108,8 @@ ignore = [
 # becomes; the map half is the form being recognised.
 "demos/07_comprehensions/demo13_syntactic_sugar.py" = ["C417"]
 
-# The IO chapter opens files without a context manager on purpose, so that the
-# slide that introduces `with` has something to improve on, and it spells out
-# the mode on every call because file modes are what the chapter is about.
+# The IO chapter teaches with first, then manual close so older code can be
+# recognised. Modes remain explicit because file modes are part of the lesson.
 "demos/09-python-io/**" = ["SIM115", "UP015"]
 
 

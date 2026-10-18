@@ -28,8 +28,8 @@ flowchart LR
 - Catching a class catches everything below it in that tree
 - When a Python script raises an exception :
   - Python looks for a matching handler in the callers; if none exists, the script stops
-- Another feature to handle unexpected errors are assertions :
-  - Assertions are tests which must be true to continue
+- Assertions check internal programmer assumptions :
+  - A false assertion raises `AssertionError`
 
 
 
@@ -38,137 +38,128 @@ flowchart LR
 
 # Reading a Traceback
 
-- Run `01_unexpectederrors.py`; it deliberately ends with an uncaught exception.
+- A playlist contains a duration that cannot be converted to an integer :
 
 ```python
-def divide(total: int, count: int) -> float:
-    return total / count
+def parse_seconds(text: str) -> int:
+    return int(text)
 
 
-divide(10, 0)
+parse_seconds("three")
 ```
 
 ```text
 Traceback (most recent call last):
   File "01_unexpectederrors.py", line 5, in <module>
-    divide(10, 0)
-    ~~~~~~^^^^^^^
-  File "01_unexpectederrors.py", line 2, in divide
-    return total / count
-           ~~~~~~^~~~~~~
-ZeroDivisionError: division by zero
+    parse_seconds("three")
+    ~~~~~~~~~~~~~^^^^^^^^^
+  File "01_unexpectederrors.py", line 2, in parse_seconds
+    return int(text)
+ValueError: invalid literal for int() with base 10: 'three'
 ```
 
-- Read bottom-up : the type and message, the failing line, then its caller.
-- File paths are shortened here; line numbers point into the demo.
+- Read the type and message, then the failing line and its caller
+- File paths are shortened; line numbers refer to the demo
 
 > `demo01 · unexpectederrors`
-
 
 ---
 
 # Exception Handling
 
-- A `try` block contains code that may fail.
-- A bare `except` catches everything, including keyboard interrupts.
-- Recognise this form, but prefer specific exception types.
+- A `try` block contains an operation that may fail
+- A matching `except` block handles the failure :
 
 ```python
-# A bare except is shown here so the next demo can improve it.
+text = "three"
 try:
-    x = 1
-    y = 0
-    z = x / y
-except:
-    print("Cannot divide by zero")
-
-try:
-    fh = open("somefile", "r")
-except:
-    print("Cannot open file")
-else:
-    fh.close()
+    seconds = int(text)
+except ValueError:
+    print(f"Invalid track length: {text!r}")
 ```
 
-> `demo02 · exceptionhandling`
+```text
+Invalid track length: 'three'
+```
 
+- Catch a specific error that the program can handle
+- A bare `except:` also catches keyboard interrupts; avoid it for ordinary input errors
+
+> `demo02 · exceptionhandling`
 
 ---
 
 # Typed Exception Handling
 
-- Catch the errors you can handle.
-- `FileNotFoundError` is a subclass of `OSError`.
-- Put the specific handler first; Python uses the first matching handler.
+- Handlers are tested in order; only the first matching handler runs :
+  - A specific error belongs before a broader class
 
 ```python
 try:
-    fh = open("somefile", "r")
-except FileNotFoundError:
-    print("The file does not exist")
-except OSError as error:
-    print(f"Cannot open the file: {error}")
+    seconds = int("three")
+except ValueError:
+    print("Track length must be a whole number")
+except Exception as error:
+    print(f"Other problem: {error}")
 else:
-    fh.close()
+    print(f"Track length: {seconds}")
 ```
 
-- Other exception types propagate to the caller.
+- `ValueError` also belongs to `Exception`, so the second handler is not reached
+- A broad handler is useful only when the program has a meaningful recovery
+- Unmatched errors propagate to the caller
 
 > `demo03 · typedexceptionhandling`
-
 
 ---
 
 # Exception Handling with Else
 
-- `else` runs only when the `try` block finishes without an exception.
-- Keep code that does not need the handler in `else`.
+- `else` runs only when `try` finishes without an exception :
+  - Keep the conversion in `try` and the successful result in `else`
 
 ```python
+text = "222"
 try:
-    x = int(input("Please enter a number: "))
+    seconds = int(text)
 except ValueError:
-    print("Oops! That was not a valid number")
+    print(f"Invalid track length: {text!r}")
 else:
-    print(f"Yeah! {x} was a really good number")
+    print(f"Track length: {seconds} seconds")
+```
+
+```text
+Track length: 222 seconds
 ```
 
 > `demo04 · exceptionhandlingwithelse`
-
 
 ---
 
 # except Clause Multiple Exceptions
 
-- Same `except` clause may also handle multiple exceptions :
-
-```text
-try:
-    Do your operations here;
-except(Exception1[, Exception2[,...ExceptionN]]]):
-    If there is any exception from the given exception list,
-    then execute this block
-else:
-    If there is no exception then execute this block
-```
-
-- Example :
+- A playlist duration may be missing or contain a nonnumeric label
+- One handler can give both cases the same recovery :
 
 ```python
-for value in (None, "Hi!"):
+lengths = [222, None, "live"]
+for length in lengths:
     try:
-        print("Attempting to convert", value, "-->", end=" ")
-        print(float(value))
+        print(f"Length: {int(length)} seconds")
     except (TypeError, ValueError):
-        print("Something went wrong!")
+        print(f"Missing or invalid duration: {length!r}")
 ```
 
+```text
+Length: 222 seconds
+Missing or invalid duration: None
+Missing or invalid duration: 'live'
+```
 
-
-- Disadvantage is error messages are less distinctive
+- Catch a tuple of exception types when the same action handles each one
+- Use separate handlers when the recovery differs
 
 > `demo05 · multipleexceptions`
-
 
 ---
 
@@ -193,18 +184,22 @@ for value in (None, "Hi!"):
 
 # Assertions Check Programmer Assumptions
 
-- Use `assert` for an internal assumption, not for validating user input.
-- Python can disable assertions with `-O`; raise an exception for required checks.
+- An assertion checks an internal assumption about the program's own logic :
+  - Reversing a playlist must preserve its number of tracks
 
 ```python
-def kelvin_to_fahrenheit(temperature: float) -> float:
-    assert temperature >= 0, "Colder than absolute zero!"
-    return (temperature - 273.15) * 1.8 + 32
+def reverse_playlist(tracks: list[str]) -> list[str]:
+    reversed_tracks = tracks[::-1]
+    assert len(reversed_tracks) == len(tracks), "Reversing must preserve every track"
+    return reversed_tracks
 
 
-print(f"{kelvin_to_fahrenheit(273.15):.1f}")  # 32.0
-print(kelvin_to_fahrenheit(-5))  # Deliberate AssertionError.
+print(reverse_playlist(["Orbit", "Echo", "Pulse"]))
 ```
+
+- An incorrect slice such as `tracks[:-1]` makes this assertion fail
+- Assertions can be disabled with `-O`
+- Required checks on incoming data use `raise`, so they remain active
 
 > `demo06 · assertionerror`
 
@@ -212,21 +207,9 @@ print(kelvin_to_fahrenheit(-5))  # Deliberate AssertionError.
 
 # try-finally Clause
 
-- `finally` block may be used along with a `try` block :
-  - `finally` block is always executed
-  - Whether or not the try-block raised an exception
-- Syntax of the `try-finally` :
-
-```text
-try:
-    Do your operations here;
-    Due to any exception, this may be skipped
-finally:
-    This would always be executed
-```
-
-- Combining `finally` and `except` is allowed :
-  - `try` block can be followed by multiple `except` clauses and one `finally` clause
+- `finally` runs when execution leaves a `try` block :
+  - It runs on success, on `return` and while an exception propagates
+  - It performs cleanup; it does not handle the exception
 
 ```mermaid
 flowchart LR
@@ -238,37 +221,37 @@ flowchart LR
   E --> F[statement after]
 ```
 
-- `else` and `finally` can be combined :
-  - `else` runs when no exception was raised, `finally` runs in every case
+- An unmatched exception also passes through `finally` before reaching a caller
+- `except`, `else` and `finally` can be combined in one statement
 
 ---
 
 # Example try-finally
 
-- `finally` runs while an exception propagates to a handler.
-- It does not handle the exception itself.
+- An invalid track length leaves the function through its `finally` block :
 
 ```python
-def divide(total: int, count: int) -> float:
+def parse_seconds(text: str) -> int:
     try:
-        return total / count
+        return int(text)
     finally:
-        print("This always runs")
+        print("Duration check finished")
 
 
 try:
-    divide(10, 0)
-except ZeroDivisionError:
-    print("Cannot divide by zero")
+    parse_seconds("live")
+except ValueError:
+    print("Duration unavailable")
 ```
 
 ```text
-This always runs
-Cannot divide by zero
+Duration check finished
+Duration unavailable
 ```
 
-> `demo07 · tryfinally`
+- The caller handles the error after the final message appears
 
+> `demo07 · tryfinally`
 
 ---
 
@@ -284,65 +267,71 @@ Cannot divide by zero
 
 # Example Argument of an Exception
 
+- The exception retains the detail needed to report the faulty value :
+
 ```python
-def temp_convert(value: str) -> None:
-    try:
-        print(int(value))
-    except ValueError as error:
-        print("Argument does not contain numbers:", error)
-
-
-temp_convert("xyz")
+text = "live"
+try:
+    int(text)
+except ValueError as error:
+    print(f"Cannot read track length {text!r}: {error}")
+    print(error.args)
 ```
 
 ```text
-Argument does not contain numbers: invalid literal for int() with base 10: 'xyz'
+Cannot read track length 'live': invalid literal for int() with base 10: 'live'
+("invalid literal for int() with base 10: 'live'",)
 ```
 
 > `demo08 · exceptionarguments`
-
 
 ---
 
 # Raising Exceptions
 
-- Exceptions can be raised with the `raise` statement :
+- `raise` reports a value that converts successfully but breaks a required rule :
+  - A duration's seconds field must be between `0` and `59`
 
-```text
-raise ExceptionType(args)
-raise ExceptionType(args) from cause
-raise
+```python
+def parse_duration(text: str) -> int:
+    minutes_text, seconds_text = text.split(":")
+    minutes = int(minutes_text)
+    seconds = int(seconds_text)
+    if minutes < 0 or not 0 <= seconds < 60:
+        raise ValueError(f"Invalid duration: {text!r}")
+    return minutes * 60 + seconds
 ```
 
-- Explanation :
-  - `ExceptionType` is the class of the exception, for example `NameError`
-  - `args` are passed to its constructor and kept in the exception's `args` attribute
-  - `from cause` chains the new exception to the one that caused it
-  - A bare `raise` inside an `except` block re-raises the exception being handled
-- Every exception is an instance of a class :
-  - Built-in exceptions derive from `BaseException`, nearly all of them from `Exception`
-  - Your own exceptions should derive from `Exception` or one of its subclasses
+- The error message identifies the rejected duration
+- `raise` inside an `except` block re-raises the current exception
+- `raise NewError(...) from error` records another error as its cause
 
 ---
 
 # Example Raising an Exception
 
-```python
-try:
-    raise NameError("HiThere")
-```
-
-- In order to catch an exception :
-  - `except` should refer to same exception thrown as class object
-- To capture above exception, write except clause as follows :
+- The parser returns seconds for valid text and raises for an invalid duration :
 
 ```python
+def parse_duration(text: str) -> int:
+    minutes_text, seconds_text = text.split(":")
+    minutes = int(minutes_text)
+    seconds = int(seconds_text)
+    if minutes < 0 or not 0 <= seconds < 60:
+        raise ValueError(f"Invalid duration: {text!r}")
+    return minutes * 60 + seconds
+
+
+print(parse_duration("3:42"))
 try:
-    raise NameError("HiThere")
-except NameError:
-    print("An exception flew by!")
-    raise  # re-raise it for a caller to handle
+    parse_duration("3:99")
+except ValueError as error:
+    print(error)
+    raise  # Let the caller decide how to recover.
 ```
+
+- The first call prints `222`; the second reports `Invalid duration: '3:99'`
+- The final `raise` propagates the error after it has been reported
 
 > `demo09 · raisingexceptions`
 
@@ -350,32 +339,32 @@ except NameError:
 
 # User Defined Exceptions
 
-- Created by deriving classes from standard built-in exceptions :
-  - Exception class may be created that is subclassed from `RuntimeError`
-  - Useful when more specific information is needed when an exception is caught
-- In `try:` block :
-  - User-defined exception is raised and caught in the `except` block
-  - The name `e` is bound to the `NetworkError` instance that was raised
+- A specific exception type lets a caller distinguish a playlist rule failure :
 
 ```python
-class NetworkError(RuntimeError):
-    def __init__(self, hostname: str) -> None:
-        super().__init__(f"Bad hostname: {hostname}")
-        self.hostname = hostname
-```
+class InvalidDurationError(ValueError):
+    pass
 
-- With above class exception is raised as follows :
 
-```python
+def parse_duration(text: str) -> int:
+    minutes_text, seconds_text = text.split(":")
+    minutes = int(minutes_text)
+    seconds = int(seconds_text)
+    if minutes < 0 or not 0 <= seconds < 60:
+        raise InvalidDurationError(f"Invalid duration: {text!r}")
+    return minutes * 60 + seconds
+
+
 try:
-    raise NetworkError("example.invalid")
-except NetworkError as e:
-    print(e)  # Bad hostname: example.invalid
-    print(e.hostname)  # example.invalid
+    parse_duration("3:99")
+except InvalidDurationError as error:
+    print(f"Playlist entry rejected: {error}")
 ```
+
+- `InvalidDurationError` is also a `ValueError`; the existing broader handler still matches
+- This small class needs no methods; Classes covers class definitions in detail
 
 > `demo10 · userdefinedexceptions`
-
 
 ---
 

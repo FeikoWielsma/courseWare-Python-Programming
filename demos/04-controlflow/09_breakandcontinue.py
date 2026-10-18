@@ -1,11 +1,10 @@
-for letter in "Python":
-    if letter == "h":
+for filename in ["cover.jpg", "notes.txt", "stage.jpg"]:
+    if not filename.endswith(".jpg"):
         continue
-    print("Current Letter :", letter)
-print("After first loop!")
+    print(f"Photo: {filename}")
 
-for letter in "Programming":
-    if letter == "i":
+for track in ["Intro", "Orbit", "Echo", "Pulse", "Outro"]:
+    if track == "Pulse":
         break
-    print("Current Letter :", letter)
-print("After second loop!")
+    print(f"Checked {track}")
+print("Search complete")

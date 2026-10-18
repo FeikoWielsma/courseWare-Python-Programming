@@ -519,3 +519,51 @@ checks passed, with command-line entry points checked via `--help`. Six tkinter
 window demos were compiled but not launched. Import fixes include an offline HTTP
 client, an offline robots.txt parser in place of an unrelated live API call, and
 a CSV reader that no longer skips its header. Rendered PDF pages were inspected.
+
+## Parallel Slidev foundation (2026-10-18)
+
+- [x] Add an isolated shared Slidev toolchain, theme, converter and export path in
+      a Presentation-Template worktree; keep Marp as the default build.
+- [x] Convert all 13 fundamentals modules alongside Marp from the same source.
+- [x] Preserve the original 239 page boundaries, with two additional Magic Move
+      examples; retain the 299 original code/output fences.
+- [x] Match the requested header/footer positions and linked module overviews.
+- [x] Check all 241 browser frames, progressive reveals, diagrams and local assets.
+- [x] Export and render-review both course PDFs; verify all five code click states.
+- [x] Verify the included Python launcher and document commands and limitations.
+
+Details and executed evidence: `build/notes/slidev-foundation.md`. This opt-in
+comparison does not change the existing exercise site or release allowlists.
+
+## Slidev parity follow-up (2026-10-18)
+
+Entry point: `build/notes/slidev-handoff.md`. The original stopping points above
+are historical; the current rollout is recorded below.
+
+- [x] Add wheel/trackpad navigation, preserving reveal steps and scrollable content.
+- [x] Match Marp's Shiki `min-light` theme and green comments, including Magic Move.
+- [x] Save the cross-repository handoff, implementation map and verification limits.
+- [x] Audit current Marp behaviour and publish an evidence-based parity matrix.
+- [x] Close comparison blockers found by the audit; preserve existing Marp builds.
+- [x] Enrich a complete module with verified native Slidev teaching features.
+- [x] Regenerate full/click exports, inspect the latest output and document parity.
+
+## Slidev adoption and engaging examples (2026-10-18)
+
+- [x] Rewrite canonical examples around music/photos, film watchlists and game
+      characters; teach concrete Functions calls/results before annotations.
+- [x] Integrate 33 native additions across all 13 modules, with 207 authored states.
+- [x] Check demos, source fences/references, Ruff, Wordle stages/starters and quiz.
+- [x] Verify all 275 Slidev frames, nine Pele diagrams, full/click PDFs and selected
+      rendered pages; retain explicit layouts and source page boundaries.
+- [x] Verify forward/reverse animation state, reduced motion, stationary code,
+      packaged launcher and physical wheel behavior; fix discovered clipping.
+- [x] Make Slidev the default local build and student package; retain named Marp
+      PDF/HTML fallback, portable exercise previews and existing exercise builds.
+- [x] Wire release assets, student bundle and Codespaces; record shared-template
+      prerequisites and the successful two-course PDF regression comparison.
+
+Executed evidence, artifact paths and limits: `build/notes/slidev-rollout.md`.
+No remote push/release or shared-production merge was performed. Merge the shared
+`feature/slidev-foundation` into Presentation-Template main before releasing this
+course; the workflow checks for that toolchain and stops if it is missing.

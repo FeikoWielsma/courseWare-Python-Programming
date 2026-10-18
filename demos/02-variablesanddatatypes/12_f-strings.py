@@ -1,7 +1,7 @@
-name = "Albert"
-age = 55
-print(f"My name is {name} and my age is {age}")
-print(f"{name.upper()} will be {age + 1} next year")
+title = "Orbit"
+seconds = 222
+print(f"Now playing: {title.upper()}")
+print(f"With a 30-second intro: {seconds + 30} seconds")
 
-print(f"{name!r}")  # 'Albert', the repr() with its quotes
-print(f"{age = }")  # age = 55, the expression and its value
+print(f"{title!r}")  # 'Orbit', quotes remain visible
+print(f"{seconds = }")  # seconds = 222, useful during debugging

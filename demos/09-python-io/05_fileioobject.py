@@ -1,0 +1,8 @@
+playlist = open("playlist.txt", encoding="utf-8")
+print("Name of the file :", playlist.name)
+print("Opening mode     :", playlist.mode)
+print("Encoding         :", playlist.encoding)
+print("First line       :", playlist.readline(), end="")
+print("Closed or not    :", playlist.closed)
+playlist.close()
+print("Closed or not    :", playlist.closed)

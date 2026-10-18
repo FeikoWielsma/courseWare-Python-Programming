@@ -1,39 +1,29 @@
-"""Testing expected exceptions and parametrized tests with pytest.
-
-Run with pytest :
-
-    uv run pytest demos/13-appendix-libraries/12_pytest_features.py
-    uv run pytest -v demos/13-appendix-libraries/12_pytest_features.py
-"""
-
 import pytest
 
 
-def divide(a: int, b: int) -> float:
-    """Divide a by b, raising ValueError when b is zero."""
-    if b == 0:
-        raise ValueError("Cannot divide by zero")
-    return a / b
+def format_duration(seconds: int) -> str:
+    minutes = seconds // 60
+    remainder = seconds % 60
+    return f"{minutes}:{remainder:02d}"
 
 
-def test_divide_by_zero() -> None:
+def parse_duration(text: str) -> int:
+    minutes_text, seconds_text = text.split(":")
+    minutes = int(minutes_text)
+    seconds = int(seconds_text)
+    if minutes < 0 or not 0 <= seconds < 60:
+        raise ValueError(f"Invalid duration: {text!r}")
+    return minutes * 60 + seconds
+
+
+def test_invalid_duration() -> None:
     with pytest.raises(ValueError):
-        divide(10, 0)
+        parse_duration("3:99")
 
 
 @pytest.mark.parametrize(
-    ("a", "b", "expected"),
-    [
-        (10, 2, 5.0),
-        (9, 3, 3.0),
-        (5, 2, 2.5),
-    ],
+    ("seconds", "expected"),
+    [(0, "0:00"), (59, "0:59"), (60, "1:00"), (3600, "60:00")],
 )
-def test_divide(a: int, b: int, expected: float) -> None:
-    assert divide(a, b) == expected
-
-
-if __name__ == "__main__":
-    import pytest
-
-    pytest.main([__file__])
+def test_duration_display(seconds: int, expected: str) -> None:
+    assert format_duration(seconds) == expected

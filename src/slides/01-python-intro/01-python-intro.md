@@ -346,61 +346,50 @@ pass     raise    return   try      while    with     yield
 
 # Comments in Python
 
-- Comments starts with :
-  - A hash sign (#) that is not inside a string literal
-  - All characters after the # and up to the physical line end are part of the comment
+- `#` starts a comment outside a string :
+  - Python ignores the rest of that line
+  - A comment explains a reason or a constraint
 
 ```python
-# First comment
-print("Hello, Python!")  # second comment
+# Keep the original filename so the photo can be found again.
+filename = "IMG_0421.jpg"
+print(filename)  # Show the selected file.
 ```
 
-- Will produce following result :
-
-```text
-Hello, Python!
-```
-
-- Comment may be on same line after statement or expression :
+- Several comment lines each start with `#` :
 
 ```python
-name = "Einstein"  # This is again comment
+# Titles are supplied by the playlist file.
+# The music files themselves are kept in a separate folder.
 ```
 
-- Comment multiple lines as follows :
-
-```python
-# This is a comment.
-# This is a comment, too.
-# This is a comment, too.
-# I said that already.
-```
+- Text inside quotes is part of the string : `"Track #1"` contains a hash sign
 
 ---
 
 # Lines and Indentation
 
-- Blocks of code are denoted by line indentation :
-  - No braces for blocks of code for class and function definitions or flow control
-- Number of spaces in the indentation is variable :
-  - All statements within the block must be indented the same amount
+- Indentation groups statements into a block :
+  - Use four spaces for each level
+  - Statements in the same block have the same indentation
 
 ```python
-if True:  # Both blocks in first example are fine
-    print("True")
+if True:  # The indented block runs.
+    print("Photo ready")
 else:
-  print("False")
-
-if True:  # Second line in second block will generate an error
-    print("Answer")
-    print("True")
-else:
-    print("Answer")
-  print("False")
+    print("Photo missing")
 ```
 
-- `print()` without new line is written as `print("hello python", end="")`
-- Semicolon ; allows multiple statements on single line
+- An unindented statement runs after the block :
+
+```python
+photos = 5
+# This comment does not change the photo count.
+print("Photos selected:", photos)
+```
+
+- Inconsistent indentation raises an error before the script runs
+- `end=" "` makes the next output continue on the same line
 
 > `demo04 · lines_and_identation`
 
@@ -408,27 +397,31 @@ else:
 
 # Multi Line Statements
 
-- Statements in Python typically end with a newline
-- Python allows the use of the line continuation character `(\)` :
-  - Denotes that the line should continue
+- Parentheses allow a calculation to continue across lines :
 
 ```python
-total = item_one + \
-        item_two + \
-        item_three
+intro = 30
+orbit = 222
+echo = 185
+
+total = (
+    intro + orbit + echo
+)
+print(total)  # 437
 ```
 
-- Statements contained within the `[], {},` or `()` brackets :
-  - No need to use the line continuation character
+- Lists, dictionaries and calls can also span lines inside their brackets :
 
 ```python
-days = ["Monday", "Tuesday", "Wednesday",
-        "Thursday", "Friday"]
+playlist = [
+    "Intro", "Orbit", "Echo",
+]
+print(playlist)
 ```
 
-- On a single line :
-  - Semicolon ( ; ) allows multiple statements on single line
-  - Neither statement should start a new code block
+- A backslash also continues a line :
+  - Prefer brackets when they fit the statement
+  - A semicolon separates statements on one line; separate lines are clearer
 
 > `demo05 · multilinestatements`
 
@@ -436,24 +429,22 @@ days = ["Monday", "Tuesday", "Wednesday",
 
 # Quotes in Python
 
-- Python uses quotes to denote string literals :
-  - single ('), double (") and triple (''' or """)
-  - Same type of quote should start and end the string
-  - Triple quotes can be used to span the string across multiple lines
+- Matching quotes mark the start and end of a string :
+  - Single and double quotes produce the same string type
+  - Triple quotes allow the text to span lines
 
 ```python
-print('hello' + " " + '''world''')
-word = 'word'
-sentence = "This is a sentence."
-paragraph = """This is a paragraph. It is made up of
-               multiple lines and sentences."""
+title = "Orbit"
+filename = 'cover.jpg'
+caption = """Friday night
+Live at the observatory"""
 ```
 
-- Single quote in a single quoted string :
-  - Displayed with an escape character \
+- Choose double quotes when the text contains an apostrophe :
 
 ```python
-print('That\'s a brave new world')
+print("Tonight's playlist")
+print('Tonight\'s playlist')
 ```
 
 > `demo06 · quotesandescapes`

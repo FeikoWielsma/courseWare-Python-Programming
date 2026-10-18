@@ -1,6 +1,6 @@
-from shipping import delivery_cost
+from timing import format_duration
 
-order_totals = [35.0, 75.0]
-for total in order_totals:
-    fee = delivery_cost(total)
-    print(f"Order {total:.2f}: delivery {fee:.2f}")
+tracks = {"Orbit": 222, "Echo": 185}
+for title, seconds in tracks.items():
+    label = format_duration(seconds)
+    print(f"{title}: {label}")

@@ -1,9 +1,6 @@
 from functools import reduce
 
-product = reduce(lambda x, y: x * y, [1, 2, 3, 4])
-print(product)  # 24
-
-result = 1
-for number in [1, 2, 3, 4]:
-    result *= number
-print(result)  # 24
+lengths = [222, 185, 204]
+total = reduce(lambda running, seconds: running + seconds, lengths)
+print(total)  # 611
+print(sum(lengths))  # 611

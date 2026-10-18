@@ -1,8 +1,7 @@
-num = input("Enter a number: ")
-
-if int(num) > 0:
-    print("The number is positive")
-elif int(num) < 0:
-    print("The number is negative")
+filename = "cover.png"
+if filename.endswith(".jpg"):
+    print("JPEG photo")
+elif filename.endswith(".png"):
+    print("PNG image")
 else:
-    print("The number is zero")
+    print("Unsupported image format")

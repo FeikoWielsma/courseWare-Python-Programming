@@ -42,33 +42,34 @@ flowchart LR
   - Cursor objects provide ways to execute statements and access results
 
 ```python
-con = sqlite3.connect("sample.db")
+con = sqlite3.connect("watchlist.db")
 cur = con.cursor()
-cur.execute("CREATE TABLE testtable(id int, name varchar(254))")
+cur.execute("CREATE TABLE IF NOT EXISTS films(id INTEGER PRIMARY KEY, title TEXT)")
 ```
 
 ---
 
 # Check Database Version
 
+- A first query asks SQLite for its version :
+  - `fetchone()` returns the result row as a tuple, here with one value
+  - `close()` releases the database file
 
 ```python
 import sqlite3
-import sys
-con = None
-try:
-    con = sqlite3.connect("test.db")  # creates test.db if it does not exist
-    cur = con.cursor()
-    cur.execute("SELECT SQLITE_VERSION()")
-    data = cur.fetchone()
-    print(f"SQLite version: {data}")
-except sqlite3.Error as e:
-    print(f"Error: {e}")
-    sys.exit(1)
-finally:
-    if con:
-        con.close()
+
+con = sqlite3.connect("watchlist.db")  # creates watchlist.db if it does not exist
+cur = con.cursor()
+cur.execute("SELECT sqlite_version()")
+print(f"SQLite version: {cur.fetchone()[0]}")
+con.close()
 ```
+
+```text
+SQLite version: 3.50.4
+```
+
+- The version depends on the Python installation.
 
 > `demo01 · databaseversion`
 
@@ -83,12 +84,12 @@ finally:
 
 ```python
 import sqlite3
-con = sqlite3.connect("test.db")
+con = sqlite3.connect("watchlist.db")
 with con:
     cur = con.cursor()
-    cur.execute("SELECT SQLITE_VERSION()")
-    data = cur.fetchone()
-    print(f"SQLite version: {data}")
+    cur.execute("CREATE TABLE IF NOT EXISTS films(id INTEGER PRIMARY KEY, title TEXT)")
+    cur.execute("SELECT COUNT(*) FROM films")
+    print(f"Films on the watchlist: {cur.fetchone()[0]}")
 con.close()  # `with con:` commits or rolls back, it does not close
 ```
 
@@ -97,10 +98,10 @@ con.close()  # `with con:` commits or rolls back, it does not close
 - `closing()` from `contextlib` calls `close()` when the block ends, so one `with` line can commit and close :
 
 ```python
-with closing(sqlite3.connect("test.db")) as con, con:
+with closing(sqlite3.connect("watchlist.db")) as con, con:
     cur = con.cursor()
-    cur.execute("SELECT SQLITE_VERSION()")
-    print(f"SQLite version: {cur.fetchone()}")
+    cur.execute("SELECT COUNT(*) FROM films")
+    print(f"Films on the watchlist: {cur.fetchone()[0]}")
 ```
 
 > `demo02 · usingwith`
@@ -112,26 +113,26 @@ with closing(sqlite3.connect("test.db")) as con, con:
 
 - Cursor objects provides a `cursor.execute()` method :
   - Execute SQL statements on a connection
-- Method also accepts :
-  - Sequence of parameters to customize the SQL statement
-
-- This demo creates the `Cars` table that the later demos read :
+- `INTEGER PRIMARY KEY` makes SQLite number the rows :
+  - An `INSERT` that leaves out `id` gets the next number
+- This demo creates the `films` table that the later demos read :
 
 ```python
 import sqlite3
-con = sqlite3.connect("cars.db")
+con = sqlite3.connect("watchlist.db")
 with con:
     cur = con.cursor()
-    cur.execute("DROP TABLE IF EXISTS Cars")
-    cur.execute("CREATE TABLE Cars(Id INT, Name TEXT, Price INT)")
-    cur.execute("INSERT INTO Cars VALUES(1,'Audi',52642)")
-    cur.execute("INSERT INTO Cars VALUES(2,'Mercedes',57127)")
-    cur.execute("INSERT INTO Cars VALUES(3,'Skoda',9000)")
-    cur.execute("INSERT INTO Cars VALUES(4,'Volvo',29000)")
-    cur.execute("INSERT INTO Cars VALUES(5,'Bentley',350000)")
-    cur.execute("INSERT INTO Cars VALUES(6,'Citroen',21000)")
-    cur.execute("INSERT INTO Cars VALUES(7,'Hummer',41400)")
-    cur.execute("INSERT INTO Cars VALUES(8,'Volkswagen',21600)")
+    cur.execute("DROP TABLE IF EXISTS films")
+    cur.execute("""
+        CREATE TABLE films(id INTEGER PRIMARY KEY, title TEXT, year INT,
+                           minutes INT, watched INT DEFAULT 0, rating INT)
+        """)
+    cur.execute("INSERT INTO films(title, year, minutes) VALUES('Spirited Away', 2001, 125)")
+    cur.execute("INSERT INTO films(title, year, minutes) VALUES('Amélie', 2001, 122)")
+    cur.execute("INSERT INTO films(title, year, minutes) VALUES('Arrival', 2016, 116)")
+    cur.execute("INSERT INTO films(title, year, minutes) VALUES('Paddington 2', 2017, 104)")
+    cur.execute("INSERT INTO films(title, year, minutes) VALUES('Coco', 2017, 105)")
+    cur.execute("INSERT INTO films(title, year, minutes) VALUES('Parasite', 2019, 132)")
 ```
 
 > `demo03 · insertingdata`
@@ -141,29 +142,28 @@ with con:
 
 # Prepared Statements
 
-- If same query must be repeated multiple times :
-  - Can use parameterized queries with question marks or named parameters
-  - Good for both performance and for security
-- Can use `executemany()` method for prepared statements :
+- `executemany()` repeats one parameterized statement for each tuple
+- Each `?` placeholder receives a value from that tuple, in order :
 
 ```python
 import sqlite3
-cars = (
-    (1, "Audi", 52642),
-    (2, "Mercedes", 57127),
-    (3, "Skoda", 9000),
-    (4, "Volvo", 29000),
-    (5, "Bentley", 350000),
-    (6, "Citroen", 21000),
-    (7, "Hummer", 41400),
-    (8, "Volkswagen", 21600),
+films = (
+    ("Spirited Away", 2001, 125),
+    ("Amélie", 2001, 122),
+    ("Arrival", 2016, 116),
+    ("Paddington 2", 2017, 104),
+    ("Coco", 2017, 105),
+    ("Parasite", 2019, 132),
 )
-con = sqlite3.connect("cars.db")
+con = sqlite3.connect("watchlist.db")
 with con:
     cur = con.cursor()
-    cur.execute("DROP TABLE IF EXISTS Cars")
-    cur.execute("CREATE TABLE Cars(Id INT, Name TEXT, Price INT)")
-    cur.executemany("INSERT INTO Cars VALUES(?, ?, ?)", cars)
+    cur.execute("DROP TABLE IF EXISTS films")
+    cur.execute("""
+        CREATE TABLE films(id INTEGER PRIMARY KEY, title TEXT, year INT,
+                           minutes INT, watched INT DEFAULT 0, rating INT)
+        """)
+    cur.executemany("INSERT INTO films(title, year, minutes) VALUES(?, ?, ?)", films)
 ```
 
 > `demo04 · preparedstatements`
@@ -182,13 +182,16 @@ import sqlite3
 con = sqlite3.connect(":memory:")
 with con:
     cur = con.cursor()
-    cur.execute("CREATE TABLE Friends(Id INTEGER PRIMARY KEY, Name TEXT)")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Tom')")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Rebecca')")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Jim')")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Robert')")
-    lid = cur.lastrowid
-    print(f"The last Id of the inserted row is {lid}")
+    cur.execute("CREATE TABLE films(id INTEGER PRIMARY KEY, title TEXT)")
+    cur.execute("INSERT INTO films(title) VALUES('Spirited Away')")
+    cur.execute("INSERT INTO films(title) VALUES('Arrival')")
+    cur.execute("INSERT INTO films(title) VALUES('Paddington 2')")
+    film_id = cur.lastrowid
+    print(f"Paddington 2 was added with id {film_id}")
+```
+
+```text
+Paddington 2 was added with id 3
 ```
 
 > `demo05 · lastinsertedrowid`
@@ -199,23 +202,23 @@ with con:
 # Retrieving Data
 
 - `fetchall()` returns all rows of the result as a list of tuples :
-  - The `Cars` table comes from demo03 or demo04, so run one of them first
+  - The `films` table comes from demo03 or demo04, so run one of them first
 
 ```python
 import sqlite3
-con = sqlite3.connect("cars.db")
+con = sqlite3.connect("watchlist.db")
 with con:
     cur = con.cursor()
-    cur.execute("SELECT * FROM Cars")
+    cur.execute("SELECT id, title, year FROM films")
     rows = cur.fetchall()
     for row in rows:
         print(row)
 ```
 
 ```text
-(1, 'Audi', 52642)
-(2, 'Mercedes', 57127)
-(3, 'Skoda', 9000)
+(1, 'Spirited Away', 2001)
+(2, 'Amélie', 2001)
+(3, 'Arrival', 2016)
 ```
 
 - Other fetch methods read part of the result :
@@ -240,15 +243,15 @@ all_remaining_rows = cur.fetchall()
 ```python
 import sqlite3
 
-# Run demo03 or demo04 first to create the Cars table.
-con = sqlite3.connect("cars.db")
+# Run demo03 or demo04 first to create the films table.
+con = sqlite3.connect("watchlist.db")
 try:
     cur = con.cursor()
     cur.execute("""
-        SELECT Name, COUNT(*), COALESCE(SUM(Price), 0)
-        FROM Cars WHERE Price >= ?
-        GROUP BY Name ORDER BY SUM(Price) DESC
-        """, (50000,))
+        SELECT year, COUNT(*), COALESCE(SUM(minutes), 0)
+        FROM films WHERE year >= ?
+        GROUP BY year ORDER BY SUM(minutes) DESC
+        """, (2010,))
     for row in cur.fetchall():
         print(row)
 finally:
@@ -268,19 +271,19 @@ finally:
 
 ```python
 import sqlite3
-con = sqlite3.connect("cars.db")
+con = sqlite3.connect("watchlist.db")
 con.row_factory = sqlite3.Row  # rows can now be read by column name
 with con:
     cur = con.cursor()
-    cur.execute("SELECT * FROM Cars")
+    cur.execute("SELECT * FROM films")
     rows = cur.fetchall()
     for row in rows:
-        print(f"{row['Id']} {row['Name']} {row['Price']}")
+        print(f"{row['title']} ({row['year']}), {row['minutes']} min")
 ```
 
 ```text
-1 Audi 52642
-2 Mercedes 57127
+Spirited Away (2001), 125 min
+Amélie (2001), 122 min
 ```
 
 > `demo08 · rowfactory`
@@ -295,10 +298,10 @@ with con:
 
 ```python
 import sqlite3
-con = sqlite3.connect("cars.db")
+con = sqlite3.connect("watchlist.db")
 with con:
     cur = con.cursor()
-    cur.execute("SELECT * FROM Cars")
+    cur.execute("SELECT id, title, minutes FROM films")
     while True:
         row = cur.fetchone()
         if row is None:
@@ -319,18 +322,25 @@ with con:
 - Passing data from Python to the database :
   - First discouraged option is quoting values and sending plain SQL to the database
   - Second option preferred using binding parameters in the SQL with place holders
+- A bound value needs no quoting, so a title such as `Howl's Moving Castle` is safe
 - Python sqlite3 module supports two types of placeholders :
   - Question marks and named placeholders
 
 ```python
 import sqlite3
-car_id = 1
-new_price = 62300
-con = sqlite3.connect("cars.db")
+film_id = 3
+rating = 5
+con = sqlite3.connect("watchlist.db")
 with con:
     cur = con.cursor()
-    cur.execute("UPDATE Cars SET Price=? WHERE Id=?", (new_price, car_id))
+    cur.execute("UPDATE films SET watched = 1, rating = ? WHERE id = ?", (rating, film_id))
     print(f"Number of rows updated: {cur.rowcount}")
+```
+
+- Named placeholders take a dictionary :
+
+```python
+cur.execute("SELECT id, title FROM films WHERE title = :title", {"title": title})
 ```
 
 > `demo10 · parameterizedqueries`
@@ -345,24 +355,26 @@ with con:
 
 ```python
 import sqlite3
-con = sqlite3.connect("cars.db")
+con = sqlite3.connect("watchlist.db")
 with con:
     cur = con.cursor()
-    cur.execute("PRAGMA table_info(Cars)")
+    cur.execute("PRAGMA table_info(films)")
     data = cur.fetchall()
     for d in data:
         print(d[0], d[1], d[2])
 ```
 
 ```text
-0 Id INT
-1 Name TEXT
-2 Price INT
+0 id INTEGER
+1 title TEXT
+2 year INT
+3 minutes INT
+4 watched INT
+5 rating INT
 ```
 
 - Metadata in SQLite can be obtained using `PRAGMA` command :
-  - SQLite objects may have attributes, which are metadata
-  - Obtain specific metadata from querying the SQLite system `sqlite_master` table
+  - Or by querying the SQLite system table `sqlite_master`
 
 > `demo11 · metadata`
 
@@ -396,30 +408,33 @@ con.rollback()
 
 # Committing Data
 
+- `save_ratings` stores a batch of ratings, all of them or none :
 
 ```python
-import sqlite3
-import sys
-con = None
-try:
-    con = sqlite3.connect("friends.db")
-    cur = con.cursor()
-    cur.execute("DROP TABLE IF EXISTS Friends")
-    cur.execute("CREATE TABLE Friends(Id INTEGER PRIMARY KEY, Name TEXT)")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Tom')")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Rebecca')")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Jim')")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Robert')")
-    con.commit()  # without this line, close() discards the inserts
-except sqlite3.Error as e:
-    if con:
-        con.rollback()
-    print(f"Error: {e}")
-    sys.exit(1)
-finally:
-    if con:
+def save_ratings(ratings: list[tuple[int, int]]) -> None:
+    con = sqlite3.connect("watchlist.db")
+    try:
+        cur = con.cursor()
+        for film_id, stars in ratings:
+            if not 1 <= stars <= 5:
+                raise ValueError(f"rating must be 1 to 5, got {stars}")
+            cur.execute("UPDATE films SET watched = 1, rating = ? WHERE id = ?", (stars, film_id))
+        con.commit()  # without this line, close() discards the updates
+    except (sqlite3.Error, ValueError) as e:
+        con.rollback()  # undoes every update of this batch
+        print(f"Error: {e}")
+    finally:
         con.close()
+
+save_ratings([(2, 3), (6, 9)])  # 9 is refused, so the rating of film 2 is undone too
+save_ratings([(1, 4), (6, 5)])
 ```
+
+```text
+Error: rating must be 1 to 5, got 9
+```
+
+- Afterwards films 1 and 6 are watched and rated; film 2 is not
 
 > `demo12 · transactions`
 
@@ -440,6 +455,6 @@ finally:
 - A connection in a `with` statement commits or rolls back the transaction :
   - It does not close the connection; `con.close()` does that
 - DB API supports transactions if database supports them :
-  - Via methods on the connection object
+  - `commit()` keeps a batch of changes, `rollback()` undoes it
 
 > `exercise10 · Python Database Access`

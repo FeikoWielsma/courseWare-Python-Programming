@@ -1,7 +1,7 @@
-def kelvin_to_fahrenheit(temperature: float) -> float:
-    assert temperature >= 0, "Colder than absolute zero!"
-    return (temperature - 273.15) * 1.8 + 32
+def reverse_playlist(tracks: list[str]) -> list[str]:
+    reversed_tracks = tracks[::-1]
+    assert len(reversed_tracks) == len(tracks), "Reversing must preserve every track"
+    return reversed_tracks
 
 
-print(f"{kelvin_to_fahrenheit(273.15):.1f}")  # 32.0
-print(kelvin_to_fahrenheit(-5))  # Deliberate AssertionError.
+print(reverse_playlist(["Orbit", "Echo", "Pulse"]))

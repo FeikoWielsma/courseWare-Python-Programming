@@ -1,17 +1,5 @@
-"""A deliberate type error, for mypy to find.
-
-The file runs without complaint. Only the checker objects :
-
-    uv run mypy demos/12-appendix-type-hinting/05_mypy_error.py
-
-    error: Argument 1 to "double" has incompatible type "str"; expected "int"
-"""
+def repeat_track(title: str, count: int) -> list[str]:
+    return [title] * count
 
 
-def double(n: int) -> int:
-    """Double a number."""
-    return n * 2
-
-
-result: int = double("ab")
-print(result)
+queue: list[str] = repeat_track(222, 2)

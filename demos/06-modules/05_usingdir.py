@@ -1,4 +1,4 @@
-import shipping
+import timing
 
-print("delivery_cost" in dir(shipping))  # True
-print("FREE_SHIPPING" in dir(shipping))  # True
+print("format_duration" in dir(timing))  # True
+print("SECONDS_PER_MINUTE" in dir(timing))  # True

@@ -1,23 +1,13 @@
-"""Restricting values to a closed set with typing.Literal.
-
-The file runs without complaint under Python :
-
-    uv run python demos/12-appendix-type-hinting/06_literal.py
-
-A value outside the set is flagged when checked with mypy :
-
-    uv run mypy demos/12-appendix-type-hinting/06_literal.py
-"""
-
 from typing import Literal
 
-type TrafficLight = Literal["red", "amber", "green"]
+type PlaybackMode = Literal["normal", "repeat"]
 
 
-def change_light(color: TrafficLight) -> None:
-    """Change the traffic light to a new color."""
-    print(f"Traffic light is now {color}")
+def next_index(index: int, mode: PlaybackMode) -> int:
+    if mode == "repeat":
+        return index
+    return index + 1
 
 
-change_light("green")
-change_light("blue")
+print(next_index(0, "repeat"))
+print(next_index(0, "shuffle"))  # Deliberate checker error.

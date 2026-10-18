@@ -1,4 +1,4 @@
-name: Build and Release PDFs and HTML
+name: Build and Release Course Materials
 
 on:
   push:
@@ -12,7 +12,8 @@ concurrency:
 
 env:
   SLIDES_PDF: PRG400-Python-Programming.pdf
-  SLIDES_HTML: PRG400-Python-Programming.html
+  MARP_PDF: PRG400-Python-Programming-Marp.pdf
+  MARP_HTML: PRG400-Python-Programming-Marp.html
   EXERCISES_PDF: PRG400-Python-Programming-Exercises.pdf
   EXERCISES_HTML: PRG400-Python-Programming-Exercises.html
 
@@ -116,29 +117,33 @@ jobs:
         run: uv run ruff check .
 
       - name: Install template dependencies
-        run: bun install --cwd ../Presentation-Template/build --frozen-lockfile
+        shell: bash
+        run: |
+          # Merge the shared Slidev feature before this course's cutover.
+          test -f ../Presentation-Template/build/slidev/delivery.ts || {
+            echo "Presentation-Template must include the Slidev delivery toolchain."
+            exit 1
+          }
+          bun install --cwd ../Presentation-Template/build --frozen-lockfile
+          bun install --cwd ../Presentation-Template/build/slidev --frozen-lockfile
 
       - name: Build slides and exercises
         shell: bash
         env:
+          PRESENTATION_TEMPLATE_DIR: ${{ github.workspace }}/../Presentation-Template
           CHROME_PATH: /usr/bin/google-chrome-stable
           MARP_EXTRA_ARGS: --chrome-arg=--no-sandbox --chrome-arg=--disable-dev-shm-usage
         run: |
           cd build
+          bun run check:animations
           bun run build -- --force
+          bun run check:delivery
+          bun run build:marp -- --force
           bun run build -- --exercises --force
           bun run site
           bun run libraries -- --skip-lint --force
           bun run lint:libraries
           bun run libraries -- --exercises --force
-
-      - name: Name the slides HTML
-        shell: bash
-        run: |
-          # The template writes the slides HTML to build/dist/combined.html; the
-          # exercises pass already writes its HTML to the repo root under the
-          # course name. Give the slides HTML the matching name.
-          cp build/dist/combined.html "${SLIDES_HTML}"
 
       - name: Assemble student bundle
         shell: bash
@@ -151,7 +156,9 @@ jobs:
           rm -rf "${BUNDLE}"
           mkdir -p "${BUNDLE}/demos"
 
-          cp "${SLIDES_PDF}" "${SLIDES_HTML}" "${EXERCISES_PDF}" "${EXERCISES_HTML}" "${BUNDLE}/"
+          cp "${SLIDES_PDF}" "${MARP_PDF}" "${MARP_HTML}" "${EXERCISES_PDF}" "${EXERCISES_HTML}" "${BUNDLE}/"
+          # Only the public allowlisted presentation enters student delivery.
+          cp -r build/slidev/dist/student "${BUNDLE}/slides"
 
           # One demo folder per module, exactly the folders the slides reference.
           for item in \
@@ -240,7 +247,7 @@ jobs:
 
           RELEASE_ID=$(echo "${RELEASE}" | bun -e "const fs = require('fs'); console.log(JSON.parse(fs.readFileSync(0, 'utf-8')).id);")
 
-          for asset in "${SLIDES_PDF}" "${SLIDES_HTML}" "${EXERCISES_PDF}" "${EXERCISES_HTML}" libraries/PRG400-Python-Libraries-and-Tools*.pdf libraries/PRG400-Python-Libraries-and-Tools*.html; do
+          for asset in "${SLIDES_PDF}" "${MARP_PDF}" "${MARP_HTML}" "${EXERCISES_PDF}" "${EXERCISES_HTML}" libraries/PRG400-Python-Libraries-and-Tools*.pdf libraries/PRG400-Python-Libraries-and-Tools*.html; do
             echo "Uploading ${asset}..."
             curl -sf -X POST \
               -H "Authorization: token ${GITHUB_TOKEN}" \

@@ -1,6 +1,5 @@
-stock = {"tea": 12, "coffee": 0, "cocoa": 5}
-available = {name: count for name, count in stock.items() if count > 0}
-print(available)  # {'tea': 12, 'cocoa': 5}
-prices = {"tea": 2.0, "coffee": 4.0}
-with_tax = {name: round(price * 1.21, 2) for name, price in prices.items()}
-print(with_tax)  # {'tea': 2.42, 'coffee': 4.84}
+durations = {"Orbit": 222, "Echo": 185, "Pulse": 204}
+short_tracks = {title: seconds for title, seconds in durations.items() if seconds < 200}
+print(short_tracks)  # {'Echo': 185}
+minutes = {title: round(seconds / 60, 1) for title, seconds in durations.items()}
+print(minutes)  # {'Orbit': 3.7, 'Echo': 3.1, 'Pulse': 3.4}

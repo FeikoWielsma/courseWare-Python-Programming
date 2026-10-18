@@ -8,429 +8,390 @@ footer: Functions
 
 # Functions
 
-- Named blocks of reusable code :
-  - Python includes many built-in functions such as `print()`, `input()`, `len()`
+- A function gives a name to a task that a program repeats :
+  - A music player stores track lengths in seconds
+  - Its display needs a duration such as `3:42`
+- Python provides functions such as `print()`, `input()` and `len()` :
   - Programs define their own functions with `def`
-- Functions provide modularity and code reuse :
-  - A task is written and tested once, then called from multiple places
-- Defining a function :
-  - Starts with `def`, the function name, and parentheses for parameters
-  - The header line ends with a colon `:`, and the body is indented
-- Exiting a function :
-  - The `return` statement leaves the function and passes a value back
-  - A function without a `return`, or a bare `return`, returns `None`
+- A function can take a value and return a result :
+  - The caller supplies the number of seconds
+  - The function returns the display text
 
 ---
 
 # Function Syntax
 
-- The first statement can be a documentation string (docstring) :
-  - Explains what the function does and what parameters it expects
-  - Documenting tools such as `pdoc` extract docstrings into HTML
+- `format_duration` turns a track length into display text :
+  - `// 60` gives complete minutes; `% 60` gives remaining seconds
+  - `:02d` displays the seconds with two digits, including a leading zero
 
 ```python
-def function_name(parameter: type) -> return_type:
-    """function docstring"""
-    statement(s)
-    return expression
+def format_duration(seconds):
+    minutes = seconds // 60
+    remainder = seconds % 60
+    return f"{minutes}:{remainder:02d}"
 ```
 
-- Positional parameters :
-  - By default, arguments are passed in the order they are defined
-- Example of a simple function :
-  - Accepts a string and prints it to standard output
-
-```python
-def show_message(message: str) -> None:
-    """Print the passed string."""
-    print(message)
-```
-
----
-
-# Annotating a Function
-
-- Each parameter takes a colon and the type it expects :
-  - The result takes an arrow and the type it returns
-  - A function that returns nothing is annotated `-> None`
-
-```python
-def area(width: float, height: float) -> float:
-    return width * height
-
-
-def show_message(message: str) -> None:
-    print(message)
-```
-
-- The annotation is documentation the interpreter carries with the function :
-  - Nothing is converted and nothing is checked while the program runs
-  - Passing the wrong type still works, right up until an operation fails
-- What it buys is everything that reads the signature :
-  - The editor, a checker, and the next person to read the code
-- A collection parameter is annotated like any other collection :
-
-```python
-def average(values: list[float]) -> float:
-    return sum(values) / len(values)
-```
+- A definition starts with `def`, the name and parentheses :
+  - `seconds` is a parameter that receives a track length
+  - The colon starts the indented body
+- `return` passes the display text back to the caller
 
 ---
 
 # Calling Functions
 
-- A function is invoked by its name followed by parentheses :
-  - Any required arguments are placed inside the parentheses
-- Functions must be defined before they are called :
-  - Python executes line by line, so definitions must come before use
-- Calling `show_message()` :
+- Define a function before calling it :
+  - Parentheses contain the argument supplied for `seconds`
+  - Each call runs the same body with a different track length
 
 ```python
-show_message("First call to user defined function!")
-show_message("Again second call to the same function")
-show_message()  # results in error
-```
-
-- Output :
-
-```text
-First call to user defined function!
-Again second call to the same function
-Traceback (most recent call last):
-  File "01_showmessage.py", line 10, in <module>
-    show_message()
-TypeError: show_message() missing 1 required positional argument: 'message'
-```
-
-> `demo01 · showmessage`
-
-
----
-
-# Passing Object References
-
-- Python passes arguments by object reference :
-  - The parameter inside the function is bound to the same object as the caller's argument
-  - Both names refer to the identical object in memory
-- Mutating an object affects the caller :
-  - Modifying a mutable object (such as a list) in place is visible outside
-  - Immutable objects (such as integers or strings) cannot be modified in place
-
-```python
-def change_me1(mylist: list[int]) -> None:
-    mylist.append(40)
-    print("List inside the function change_me1:", mylist)
-```
-
-- Calling `change_me1` :
-
-```python
-my_list_outer = [10, 20, 30]
-change_me1(my_list_outer)
-print("List outside the function:", my_list_outer)
-```
-
-- The caller sees the item added to the list :
-
-```text
-List inside the function change_me1: [10, 20, 30, 40]
-List outside the function: [10, 20, 30, 40]
-```
-
-> `demo02 · objectreferences`
-
-
----
-
-# Overwriting References
-
-- Rebinding a parameter does not affect the caller :
-  - Assigning to the parameter name creates a new local binding
-  - The caller's variable continues to refer to the original object
-
-```python
-def change_me2(mylist: list[int]) -> None:
-    mylist = [1, 2, 3, 4]  # rebinds the local name
-    print("Values inside the function change_me2:", mylist)
-```
-
-- Calling `change_me2` :
-
-```python
-my_list_outer = [10, 20, 30]
-change_me2(my_list_outer)
-print("Values outside the function:", my_list_outer)
-```
-
-- The caller's list is unchanged :
-
-```text
-Values inside the function change_me2: [1, 2, 3, 4]
-Values outside the function: [10, 20, 30]
-```
-
-> `demo03 · overwritingreferences`
-
-> `demo04 · swap`
-
-
----
-
-# Mutating Versus Rebinding
-
-- The two previous slides differ in one character, and that changes everything :
-
-<svg viewBox="0 0 960 250" width="100%" style="width:100%;height:auto;display:block;margin:8px 0 4px" role="img" aria-label="Mutating the list through the parameter is visible to the caller, rebinding the parameter is not">
-<defs>
-<marker id="mr-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-<path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
-</marker>
-</defs>
-<g fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4">
-<rect x="10" y="10" width="460" height="230" rx="5"/>
-<rect x="490" y="10" width="460" height="230" rx="5"/>
-</g>
-<g fill="currentColor" font-size="20" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
-<text x="30" y="42">mylist.append(40)</text>
-<text x="510" y="42">mylist = [1, 2, 3, 4]</text>
-</g>
-<g fill="none" stroke="currentColor" stroke-width="2">
-<rect x="30" y="70" width="160" height="38" rx="3"/>
-<rect x="30" y="140" width="160" height="38" rx="3"/>
-<rect x="270" y="95" width="180" height="58" rx="3"/>
-<rect x="510" y="70" width="160" height="38" rx="3"/>
-<rect x="510" y="140" width="160" height="38" rx="3"/>
-<rect x="750" y="62" width="180" height="54" rx="3"/>
-<rect x="750" y="132" width="180" height="54" rx="3"/>
-</g>
-<g fill="currentColor" font-size="18" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle">
-<text x="110" y="95">my_list_outer</text>
-<text x="110" y="165">mylist</text>
-<text x="360" y="130">[10,20,30,40]</text>
-<text x="590" y="95">my_list_outer</text>
-<text x="590" y="165">mylist</text>
-<text x="840" y="95">[10, 20, 30]</text>
-<text x="840" y="165">[1, 2, 3, 4]</text>
-</g>
-<g fill="none" stroke="currentColor" stroke-width="1.8" marker-end="url(#mr-arrow)">
-<path d="M 190 89 L 230 89 L 230 124 L 264 124"/>
-<path d="M 190 159 L 230 159 L 230 124 L 264 124"/>
-<path d="M 670 89 L 744 89"/>
-<path d="M 670 159 L 744 159"/>
-</g>
-<g fill="currentColor" font-size="17" opacity="0.75" text-anchor="middle">
-<text x="240" y="222">one object, two names, the caller sees the change</text>
-<text x="720" y="222">the name is rebound, the caller sees nothing</text>
-</g>
-</svg>
-
----
-
-# Function Arguments
-
-- Python supports several styles of function arguments :
-- Positional arguments :
-  - Passed to a function in order matching the parameter list
-- Keyword arguments :
-  - Passed by name (`name=value`), allowing arguments to be given in any order
-- Default arguments :
-  - Parameters that take a default value when omitted by the caller
-- Variable-length arguments :
-  - Accept an arbitrary number of positional or keyword arguments
-- Python does not support function overloading :
-  - Defining the same function name multiple times with different signatures replaces the earlier definition
-
-> `demo05 · power1`
-
----
-
-# Keyword Arguments
-
-- Function definition :
-
-```python
-def print_info(name: str, age: int) -> None:
-    """Print the name and age passed to this function."""
-    print("Name:", name)
-    print("Age:", age)
-```
-
-- Calling with keyword arguments :
-
-```python
-print_info(age=55, name="Albert")
-```
-
-- Output :
-
-```text
-Name: Albert
-Age: 55
-```
-
-- Calling code specifies arguments by name :
-  - Positional order does not need to be followed
-  - Positional arguments must appear before keyword arguments
-
-> `demo06 · keywordarguments`
-
-
----
-
-# Default Arguments
-
-- Default values provide a fallback when an argument is omitted :
-
-```python
-def print_info(name: str, age: int = 35) -> None:
-    """Print name and age, defaulting age to 35."""
-    print("Name:", name)
-    print("Age:", age)
-```
-
-- Calling with and without the default argument :
-
-```python
-print_info(age=55, name="Albert")
-print_info(name="Werner")
-```
-
-- Output :
-
-```text
-Name: Albert
-Age: 55
-Name: Werner
-Age: 35
-```
-
-- Parameters without defaults cannot follow parameters with defaults
-
-> `demo07 · defaultarguments`
-
-
----
-
-# Variable Length Arguments
-
-- `*args` gathers extra positional arguments into a tuple :
-  - Commonly used when a function accepts any number of items
-- `**kwargs` gathers extra keyword arguments into a dictionary :
-  - Commonly used for configuration or passing options through
-
-```python
-def show_arg_lists(arg: int, *args: int, **kwargs: int) -> None:
-    """Demonstrate positional and keyword variable-length arguments."""
-    print("arg   :", arg)
-    print("args  :", args)
-    print("kwargs:", kwargs)
-
-
-show_arg_lists(1, 2, 3, 4, 5, x=1, y=2)
-show_arg_lists(33, x=8, y=9)
-show_arg_lists(44)
-```
-
-> `demo08 · variableargumentlist`
-
-
----
-
-# Lambda Functions
-
-- The `lambda` keyword creates a small anonymous function inline :
-  - Has no `def` statement and no name of its own
-  - The body is a single expression evaluated and returned automatically
-  - Cannot contain statements, loops or assignments
-- Best framed as a small function passed to another function :
-  - `sorted(key=...)` is the classic use case
-
-```python
-words = ["banana", "pie", "Washington", "book"]
-
-# Sort by last letter
-by_last = sorted(words, key=lambda w: w[-1])
-print("By last letter  :", by_last)
-
-# Sort case-insensitively
-by_case = sorted(words, key=lambda w: w.lower())
-print("Case-insensitive:", by_case)
-```
-
-- Output :
-
-```text
-By last letter  : ['banana', 'pie', 'book', 'Washington']
-Case-insensitive: ['banana', 'book', 'pie', 'Washington']
-```
-
-> `demo09 · lambdafunctions`
-
-
----
-
-# Functions in Dictionaries
-
-- A function is a value : it can be stored in a dictionary and called from there
-- A dictionary from keys to functions is a dispatch table :
-  - Look the function up by its key, then call it : `converters[unit](value)`
-  - Replaces a long `if` / `elif` chain; the values can be named functions or lambdas
-
-```python
-converters = {
-    "C": to_celsius,
-    "F": to_fahrenheit,
-    "K": lambda value: value + 273.15,
-}
-
-unit = "C"
-print(converters[unit](212))  # look up the function, then call it
-
-for unit, convert in converters.items():
-    print(unit, convert(100))
+print(format_duration(222))
+print(format_duration(65))
 ```
 
 ```text
-100.0
-C 37.77777777777778
-F 212.0
-K 373.15
+3:42
+1:05
 ```
 
-> `demo10 · functionsindictionaries`
+- Defining the function does not run its body
+- Omitting a required argument raises `TypeError`
 
+> `demo01 · format_duration`
 
 ---
 
 # return Statement
 
-- Exits a function and optionally passes a value back to the caller :
-  - A function without a `return`, or a bare `return`, returns `None`
-- Function definition :
+- A returned value can be stored and used by the caller :
+  - `label` receives the duration text
+  - The caller includes it in a track description
 
 ```python
-def summation(arg1: int, arg2: int) -> int:
-    """Add both parameters and return the sum."""
-    tot = arg1 + arg2
-    print("Inside the function :", tot)
-    return tot
+def format_duration(seconds):
+    minutes = seconds // 60
+    remainder = seconds % 60
+    return f"{minutes}:{remainder:02d}"
+
+label = format_duration(222)
+message = f"Orbit [{label}]"
+print(message)
 ```
-
-- Calling `summation` :
-
-```python
-total = summation(10, 20)
-print("Outside the function :", total)
-```
-
-- Output :
 
 ```text
-Inside the function : 30
-Outside the function : 30
+Orbit [3:42]
 ```
 
-> `demo11 · returnstatement`
+- `return` ends the current call and passes its value back
+
+> `demo02 · returnstatement`
+
+---
+
+# Functions Without a Result
+
+- Some functions perform a task without returning a useful value :
+  - `print_playlist` prints a heading and numbered tracks
+  - The caller does not need to store a result
+
+```python
+def print_playlist(name, tracks):
+    print(f"Playlist: {name}")
+    for number, title in enumerate(tracks, start=1):
+        print(f"{number}. {title}")
+
+
+print_playlist("Night drive", ["Orbit", "Echo"])
+```
+
+```text
+Playlist: Night drive
+1. Orbit
+2. Echo
+```
+
+- Reaching the end of a function returns `None`
+- A bare `return` also returns `None`
+
+> `demo03 · playlist`
+
+---
+
+# Annotating a Function
+
+- Annotations describe the values a function expects and returns :
+  - `seconds: int` describes the argument; `-> str` describes the result
+
+```python
+def format_duration(seconds: int) -> str:
+    minutes = seconds // 60
+    remainder = seconds % 60
+    return f"{minutes}:{remainder:02d}"
+```
+
+- `-> None` describes a function that does not return a useful value :
+
+```python
+def print_playlist(name: str, tracks: list[str]) -> None:
+    print(f"Playlist: {name}")
+    for number, title in enumerate(tracks, start=1):
+        print(f"{number}. {title}")
+```
+
+- Annotations help editors and checkers; Python does not enforce them
+
+> `demo04 · annotated_duration`
+
+---
+
+# Documenting a Function
+
+- A docstring describes the task and rules callers need to know :
+  - It is the first string inside the function body
+
+```python
+def format_duration(seconds: int) -> str:
+    """Format a non-negative track length as minutes and two-digit seconds."""
+    minutes = seconds // 60
+    remainder = seconds % 60
+    return f"{minutes}:{remainder:02d}"
+```
+
+- `help(format_duration)` displays the docstring
+- Triple quotes allow a description to span lines
+- Documentation tools can include docstrings in generated reference pages
+
+> `demo05 · docstring`
+
+---
+
+# Function Arguments
+
+- Positional arguments follow the parameter order :
+  - `seconds` receives the first value; `separator` receives the second
+
+```python
+def format_duration(seconds: int, separator: str) -> str:
+    minutes = seconds // 60
+    remainder = seconds % 60
+    return f"{minutes}{separator}{remainder:02d}"
+
+
+print(format_duration(222, ":"))
+```
+
+- Keyword arguments specify parameter names
+- Default values allow arguments to be omitted
+- `*args` and `**kwargs` collect extra positional and keyword arguments
+- Defining a name again replaces its earlier definition
+
+> `demo06 · positionalarguments`
+
+---
+
+# Keyword Arguments
+
+- Keyword arguments identify parameters by name :
+  - Their order can differ from the definition
+
+```python
+def format_duration(seconds: int, separator: str) -> str:
+    minutes = seconds // 60
+    remainder = seconds % 60
+    return f"{minutes}{separator}{remainder:02d}"
+
+
+print(format_duration(separator=".", seconds=222))
+```
+
+```text
+3.42
+```
+
+- Positional arguments must come before keyword arguments
+- Names make the purpose of each argument visible
+
+> `demo07 · keywordarguments`
+
+---
+
+# Default Arguments
+
+- A default supplies a value when an argument is omitted :
+  - Track durations usually separate minutes and seconds with `:`
+  - A caller can request another separator
+
+```python
+def format_duration(seconds: int, separator: str = ":") -> str:
+    minutes = seconds // 60
+    remainder = seconds % 60
+    return f"{minutes}{separator}{remainder:02d}"
+
+
+print(format_duration(222))
+print(format_duration(222, separator="m "))
+```
+
+```text
+3:42
+3m 42
+```
+
+- Parameters without defaults cannot follow parameters with defaults
+
+> `demo08 · defaultarguments`
+
+---
+
+# Passing Object References
+
+- A parameter refers to the same object as the caller's argument :
+  - `add_encore` adds a final track to the shared queue
+
+```python
+def add_encore(tracks: list[str]) -> None:
+    tracks.append("Encore")
+    print(f"Inside: {tracks}")
+
+queue = ["Orbit", "Echo"]
+add_encore(queue)
+print(f"After call: {queue}")
+```
+
+```text
+Inside: ['Orbit', 'Echo', 'Encore']
+After call: ['Orbit', 'Echo', 'Encore']
+```
+
+- `append` changes the existing list, so the caller sees the encore
+
+> `demo09 · objectreferences`
+
+---
+
+# Overwriting References
+
+- A function can create an encore mix while keeping the original queue :
+  - `tracks + ["Encore"]` creates a new list
+  - Assigning to `tracks` changes only the local name
+
+```python
+def with_encore(tracks: list[str]) -> list[str]:
+    tracks = tracks + ["Encore"]
+    return tracks
+
+queue = ["Orbit", "Echo"]
+extended = with_encore(queue)
+print(f"Original: {queue}")
+print(f"Encore mix: {extended}")
+```
+
+```text
+Original: ['Orbit', 'Echo']
+Encore mix: ['Orbit', 'Echo', 'Encore']
+```
+
+- The caller stores the returned list in `extended`; `queue` keeps its original list
+
+> `demo10 · overwritingreferences`
+
+---
+
+# Mutating Versus Rebinding
+
+- Both functions add an encore, with different effects on the original queue :
+
+| Operation inside the function | Effect |
+| --- | --- |
+| `tracks.append("Encore")` | Adds to the list the caller already holds |
+| `tracks = tracks + ["Encore"]` | Binds the local name to a new list |
+| `return tracks` | Passes that new list back to the caller |
+
+- Mutate a shared queue when every caller should see the change
+- Return a new mix when the original should stay available
+- Integers and strings cannot be changed in place; a different value needs a new binding
+
+---
+
+# Variable Length Arguments
+
+- `*tracks` collects extra positional arguments into a tuple
+- `**details` collects extra keyword arguments into a dictionary
+
+```python
+def show_playlist(name: str, *tracks: str, **details: str) -> None:
+    print(f"Playlist: {name}")
+    for track in tracks:
+        print(f"- {track}")
+    for key, value in details.items():
+        print(f"{key}: {value}")
+
+
+show_playlist("Night drive", "Orbit", "Echo", mood="calm", owner="Nova")
+```
+
+- At a call, `*values` unpacks a sequence and `**options` unpacks a dictionary
+- `args` and `kwargs` are common names; task-specific names describe their contents
+
+> `demo11 · variableargumentlist`
+
+> `demo12 · callingwithstar`
+
+---
+
+# Lambda Functions
+
+- A lambda is a small function passed directly to another function :
+  - `sorted` calls the key function for each track
+  - `track[1]` selects its duration in seconds
+
+```python
+tracks = [("Orbit", 222), ("Echo", 185), ("Pulse", 204)]
+by_length = sorted(tracks, key=lambda track: track[1])
+print(by_length)
+```
+
+```text
+[('Echo', 185), ('Pulse', 204), ('Orbit', 222)]
+```
+
+- The value after the colon is returned automatically
+- Use a named function when the calculation needs several lines
+
+> `demo13 · lambdafunctions`
+
+---
+
+# Functions in Dictionaries
+
+- Functions are values that can be stored and called from a dictionary :
+  - The key selects which title formatter runs
+
+```python
+def clean_title(title: str) -> str:
+    return title.strip()
+
+
+def shout_title(title: str) -> str:
+    return title.upper()
+
+
+formatters = {"clean": clean_title, "shout": shout_title}
+print(formatters["clean"]("  Orbit  "))
+for name, format_title in formatters.items():
+    print(name, format_title("Echo"))
+```
+
+```text
+Orbit
+clean Echo
+shout ECHO
+```
+
+- A dictionary mapping keys to functions is a dispatch table
+
+> `demo14 · functionsindictionaries`
 
 ---
 
@@ -461,27 +422,31 @@ flowchart LR
 
 # Example Variable Scope
 
-- Global variables are shadowed by local bindings unless declared `global` :
+- A local assignment affects only the current call :
+  - `preview_volume` shows a local volume without changing the configured value
+- `global` makes an assignment update the module's name :
+  - `set_limit` changes the shared queue limit
 
 ```python
-x = 50
-y = 50
+volume = 50
+queue_limit = 20
 
-def func1() -> None:
-    x = 2
-    print("Local x   :", x)
+def preview_volume() -> None:
+    volume = 10
+    print(f"Preview volume: {volume}")
 
-def func2() -> None:
-    global y
-    y = 2
 
-func1()
-print("x is still:", x)  # 50: global x unchanged
-func2()
-print("y is now  :", y)  # 2: global y modified
+def set_limit() -> None:
+    global queue_limit
+    queue_limit = 30
+
+preview_volume()
+print(f"Current volume: {volume}")
+set_limit()
+print(f"Queue limit: {queue_limit}")
 ```
 
-> `demo12 · variablescope`
+> `demo15 · variablescope`
 
 ---
 

@@ -1,8 +1,10 @@
-command = "help"
+command = "play"
 match command:
-    case "help":
-        print("Available commands: help, quit")
+    case "play":
+        print("Playing the current track")
+    case "skip":
+        print("Moving to the next track")
     case "quit":
-        print("Goodbye")
+        print("Player stopped")
     case _:
-        print("Unknown command")
+        print("Unknown player command")

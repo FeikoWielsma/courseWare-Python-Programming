@@ -1,3 +1,3 @@
-import reports.shipping
+import player.timing
 
-print(reports.shipping.delivery_cost(35.0))  # 4.95
+print(player.timing.format_duration(222))  # 3:42

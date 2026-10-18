@@ -1,6 +1,4 @@
-for letter in "Python":
-    if letter == "h":
-        pass
-        print("This is pass block")
-    print("Current Letter :", letter)
-print("Good bye!")
+command = "skip"
+if command == "skip":
+    pass  # The next-track action is not implemented yet.
+print(f"Command received: {command}")

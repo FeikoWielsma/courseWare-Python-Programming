@@ -233,7 +233,7 @@ ValueError: max_guesses must be between 1 and 10
 Make it work **without changing a line anywhere else**. `__init__` still says `self.max_guesses = max_guesses`, and `play` still reads `game.max_guesses`. That is the lesson : callers could not tell the plain attribute from the property, so nobody had to write `get_max_guesses` and `set_max_guesses` in advance. You start with the plain attribute, and you turn it into a property on the day it needs a rule.
 
 :::hint
-The slide *When a Plain Attribute Is Not Enough* turns `length` into a property whose setter checks the value; `demo07 · validatingsetter` runs it.
+The slide *When a Plain Attribute Is Not Enough* turns `health` into a property whose setter checks the value; `demo07 · validatingsetter` runs it.
 :::
 
 :::hint

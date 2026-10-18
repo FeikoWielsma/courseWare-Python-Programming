@@ -1,5 +1,5 @@
-def divide(total: int, count: int) -> float:
-    return total / count
+def parse_seconds(text: str) -> int:
+    return int(text)
 
 
-divide(10, 0)
+parse_seconds("three")

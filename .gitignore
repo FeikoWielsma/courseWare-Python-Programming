@@ -73,6 +73,8 @@ __pycache__/
 # assets; the *_og.pdf originals stay tracked)
 /PRG400-Python-Programming.pdf
 /PRG400-Python-Programming.html
+/PRG400-Python-Programming-Marp.pdf
+/PRG400-Python-Programming-Marp.html
 /PRG400-Python-Programming-Exercises.pdf
 /PRG400-Python-Programming-Exercises.html
 demos/10-python-database-access/*.db
@@ -84,3 +86,5 @@ libraries/build/
 libraries/PRG400-Python-Libraries-and-Tools*.pdf
 libraries/PRG400-Python-Libraries-and-Tools*.html
 libraries/data/*.db
+build/slidev/
+build/prototypes/presentation-framework/

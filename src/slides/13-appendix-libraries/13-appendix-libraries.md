@@ -38,12 +38,12 @@ appendix: true
 ```python
 from datetime import date, datetime, time
 
-today = date(2026, 8, 15)
+photo_day = date(2026, 8, 15)
 midday = time(12, 30, 0)
-launch = datetime(2026, 8, 15, 12, 30, 0)
+taken_at = datetime(2026, 8, 15, 12, 30, 0)
 
-print(launch.year, launch.month, launch.day)
-print(launch.weekday())  # Monday is 0, so this prints 5
+print(taken_at.year, taken_at.month, taken_at.day)
+print(taken_at.weekday())  # Monday is 0, so this prints 5
 ```
 
 - The current moment comes from the class itself :
@@ -59,8 +59,8 @@ print(launch.weekday())  # Monday is 0, so this prints 5
   - The `f` is for format, the `p` is for parse
 
 ```python
-launch.strftime("%d-%m-%Y %H:%M")  # 15-08-2026 12:30
-launch.strftime("%A %d %B %Y")     # Saturday 15 August 2026
+taken_at.strftime("%d-%m-%Y %H:%M")  # 15-08-2026 12:30
+taken_at.strftime("%A %d %B %Y")     # Saturday 15 August 2026
 
 datetime.strptime("24-12-2026 18:00", "%d-%m-%Y %H:%M")
 ```
@@ -72,7 +72,7 @@ datetime.strptime("24-12-2026 18:00", "%d-%m-%Y %H:%M")
 - ISO 8601 needs no format string in either direction :
 
 ```python
-launch.isoformat()  # 2026-08-15T12:30:00
+taken_at.isoformat()  # 2026-08-15T12:30:00
 datetime.fromisoformat("2026-12-24T18:00:00")
 ```
 
@@ -111,28 +111,29 @@ start - timedelta(days=1)    # 2026-08-14
 
 # The json Module
 
-- JSON is the interchange format most web services speak :
-  - Text, language independent, and mapped closely onto Python types
-- `dumps` writes a string, `loads` reads one :
+- JSON stores structured text exchanged by programs :
+  - `dumps` converts a Python value to JSON text; `loads` reads it back
 
 ```python
 import json
 
-book = {"title": "Fluent Python", "pages": 1012, "sequel": None}
-text = json.dumps(book, indent=2, sort_keys=True)
+playlist = {"name": "Night drive", "tracks": ["Orbit", "Echo"], "cover": None}
+text = json.dumps(playlist, indent=2, sort_keys=True)
 restored = json.loads(text)
 ```
 
-- `indent` and `sort_keys` are for people reading the output :
-  - Leave them out and the result is compact, which is what you send
-
 ```text
 {
-  "pages": 1012,
-  "sequel": null,
-  "title": "Fluent Python"
+  "cover": null,
+  "name": "Night drive",
+  "tracks": [
+    "Orbit",
+    "Echo"
+  ]
 }
 ```
+
+- `indent` makes the output easier to read; `sort_keys` orders dictionary keys
 
 > `demo04 · json_strings`
 
@@ -140,26 +141,25 @@ restored = json.loads(text)
 
 # Reading and Writing JSON Files
 
-- `dump` and `load` take a file object rather than a string :
-  - The names are the same without the trailing `s`
+- `dump` and `load` work with file objects :
+  - The names are the string versions without the trailing `s`
 
 ```python
 import json
 from pathlib import Path
 
-path = Path("book.json")
+playlist = {"name": "Night drive", "tracks": ["Orbit", "Echo"], "cover": None}
+path = Path("playlist.json")
 
-with path.open("w", encoding="utf-8") as f:
-    json.dump(book, f, indent=2)
+with path.open("w", encoding="utf-8") as file:
+    json.dump(playlist, file, indent=2)
 
-with path.open(encoding="utf-8") as f:
-    restored = json.load(f)
+with path.open(encoding="utf-8") as file:
+    restored = json.load(file)
+print(restored["tracks"])
 ```
 
-- Always give an encoding :
-  - JSON is defined as UTF-8, and the platform default may not be
-- The four names are worth memorising :
-  - `dumps` and `loads` for strings, `dump` and `load` for files
+- Explicit UTF-8 keeps playlist files consistent across machines
 
 > `demo05 · json_files`
 
@@ -201,32 +201,31 @@ with path.open(encoding="utf-8") as f:
 
 ```python
 r"\d{4}-\d{2}-\d{2}"   # a date like 2026-08-15
-r"^\w+@\w+\.\w{2,4}$"  # a very rough email address
+r"^IMG_\d{4}\.jpg$"   # a photo filename like IMG_0421.jpg
 ```
 
 ---
 
 # Matching and Searching
 
-- Four functions cover most use, and they differ in where they look :
+- Regex functions differ in where and how much they match :
+  - `match` starts at position zero; `search` scans the whole string
+  - `findall` returns all matches; `fullmatch` requires the whole string
 
 ```python
 import re
 
-text = "Order 1234 shipped, order 5678 pending"
-
-re.match(r"Order", text)     # only tries position zero
-re.match(r"shipped", text)   # None, even though the word is present
-re.search(r"shipped", text)  # scans the whole string, finds it
-re.findall(r"\d+", text)     # ['1234', '5678']
-print(re.fullmatch(r"[a-z]+", "hello") is not None)  # True; whole string
-print(re.fullmatch(r"[a-z]+", "hello!") is not None)  # False
+text = "Playing Orbit (222s), Echo (185s)"
+print(re.match(r"Playing", text) is not None)  # True
+print(re.match(r"Echo", text) is not None)  # False
+print(re.search(r"Echo", text) is not None)  # True
+print(re.findall(r"\d+", text))  # ['222', '185']
+print(re.fullmatch(r"IMG_\d{4}\.jpg", "IMG_0421.jpg") is not None)  # True
+print(re.fullmatch(r"IMG_\d{4}\.jpg", "notes.txt") is not None)  # False
 ```
 
-- `match`, `fullmatch` and `search` return a match object, or `None` :
-  - So the result is tested before it is used
-- Flags change how the pattern is applied :
-  - `re.IGNORECASE` , `re.MULTILINE` , `re.DOTALL`
+- `match`, `search` and `fullmatch` return a match object or `None`
+- Flags include `re.IGNORECASE`, `re.MULTILINE` and `re.DOTALL`
 
 > `demo06 · regex_search`
 
@@ -234,23 +233,25 @@ print(re.fullmatch(r"[a-z]+", "hello!") is not None)  # False
 
 # Groups and Capturing
 
-- Parentheses capture the part of the match you actually want :
+- Parentheses capture useful parts of a player log entry :
 
 ```python
-line = "2026-08-15 12:30 ERROR disk full"
-m = re.search(r"(\d{4})-(\d{2})-(\d{2}) (\d{2}:\d{2}) (\w+) (.*)", line)
+import re
 
-m.group(0)  # the whole match
-m.group(1)  # 2026, the first group
-m.groups()  # ('2026', '08', '15', '12:30', 'ERROR', 'disk full')
+line = "12:30 PLAY Orbit"
+match = re.search(r"(\d{2}):(\d{2}) (\w+) (.*)", line)
+if match is not None:
+    print(match.group(0))  # 12:30 PLAY Orbit
+    print(match.groups())  # ('12', '30', 'PLAY', 'Orbit')
 ```
 
-- Named groups read better once there are more than two :
+- Named groups identify captured values without counting positions :
 
 ```python
-named = re.search(r"(?P<level>ERROR|WARN|INFO) (?P<message>.*)", line)
-named.group("level")    # ERROR
-named.group("message")  # disk full
+named = re.search(r"(?P<action>PLAY|SKIP) (?P<title>.*)", line)
+if named is not None:
+    print(named.group("action"))  # PLAY
+    print(named.group("title"))  # Orbit
 ```
 
 > `demo07 · regex_groups`
@@ -259,28 +260,26 @@ named.group("message")  # disk full
 
 # Substitution and Splitting
 
-- `sub` replaces every match in the string :
+- `sub` replaces matching text :
+  - A backreference such as `\1` reuses a captured group
+- `re.split` uses a pattern to separate items :
 
 ```python
-text = "Call 020-1234567 or 010-7654321 today"
+import re
 
-re.sub(r"\d", "x", text)  # Call xxx-xxxxxxx or xxx-xxxxxxx today
-re.sub(r"\d{3}-\d{7}", "[redacted]", text)
+text = "IMG_0421.JPG; IMG_0422.JPG"
+print(re.sub(r"IMG_\d{4}\.JPG", "[photo]", text))
+print(re.sub(r"IMG_(\d{4})\.JPG", r"photo_\1.jpg", text))
+print(re.split(r";\s*", text))
 ```
 
-- A backreference in the replacement reuses a captured group :
-
-```python
-re.sub(r"(\d{3})-(\d{7})", r"\2-\1", text)
-# Call 1234567-020 or 7654321-010 today
+```text
+[photo]; [photo]
+photo_0421.jpg; photo_0422.jpg
+['IMG_0421.JPG', 'IMG_0422.JPG']
 ```
 
-- `re.split` accepts a pattern where `str.split` accepts only a literal :
-
-```python
-re.split(r"\s+or\s+", text)
-# ['Call 020-1234567', '010-7654321 today']
-```
+- The identifier stays available when a photo filename is reformatted
 
 > `demo08 · regex_sub`
 
@@ -288,23 +287,23 @@ re.split(r"\s+or\s+", text)
 
 # Command-Line Arguments with sys.argv
 
-- `sys.argv` holds the arguments passed to a Python script as a list of strings :
-  - `sys.argv[0]` is the name or path of the script itself
-  - `sys.argv[1:]` contains any arguments passed after the script name
+- `sys.argv` contains the arguments passed to a script :
+  - Position `0` is the script path; later positions contain its arguments
 
 ```python
 import sys
 
-print(f"Script name : {sys.argv[0]}")
-print(f"Arguments   : {sys.argv[1:]}")
+print(f"Script: {sys.argv[0]}")
+playlist_file = sys.argv[1] if len(sys.argv) > 1 else "night-drive.json"
+print(f"Playlist file: {playlist_file}")
 ```
 
-- Every argument arrives as a string :
-  - Convert numbers explicitly with `int()` or `float()`
-  - Inspect `len(sys.argv)` to check how many arguments were supplied
-- For option flags, defaults and help messages, `argparse` is the next step :
-  - `argparse` handles `--flag` options, generates `--help` and parses types
-  - `sys.argv` is the underlying list `argparse` reads from
+```bash
+uv run python 09_sys_argv.py warm-up.json
+```
+
+- Arguments arrive as strings; convert numeric values explicitly
+- `argparse` adds option flags, defaults and generated help
 
 > `demo09 · sys_argv`
 
@@ -312,28 +311,28 @@ print(f"Arguments   : {sys.argv[1:]}")
 
 # Testing with pytest
 
-- In `pytest`, a test is a function whose name starts with `test_` :
-  - No test case class to subclass and no special assertion methods
-  - Plain `assert` statements check the expected conditions
-- `pytest` is installed in the project with `uv add --dev pytest` :
+- Tests can check the duration formatter already used by the player :
+  - Each test function starts with `test_`
+  - A plain `assert` states the expected result
 
 ```python
-def add(a: int, b: int) -> int:
-    return a + b
+def format_duration(seconds: int) -> str:
+    minutes = seconds // 60
+    remainder = seconds % 60
+    return f"{minutes}:{remainder:02d}"
 
 
-def test_positive_numbers() -> None:
-    assert add(2, 3) == 5
+def test_minutes_and_seconds() -> None:
+    assert format_duration(222) == "3:42"
 
 
-def test_with_zero() -> None:
-    assert add(0, 7) == 7
+def test_exact_minute() -> None:
+    assert format_duration(60) == "1:00"
 ```
 
-- Run all discovered tests with `uv run pytest` (verbose with `-v`) :
-
 ```bash
-uv run pytest -v
+uv add --dev pytest
+uv run pytest 10_pytest_basic.py
 ```
 
 > `demo10 · pytest_basic`
@@ -342,25 +341,26 @@ uv run pytest -v
 
 # Reading a Test Failure
 
-- When an `assert` fails, `pytest` explains exactly what went wrong :
-  - It reconstructs intermediate expressions and shows where the values diverged
-- Running `uv run pytest 11_pytest_failure.py` on a deliberately failing test :
+- A missing zero-padding rule is a plausible display bug :
 
-```text
-_______________________________ test_wrong_sum ________________________________
+```python
+def format_duration(seconds: int) -> str:
+    minutes = seconds // 60
+    remainder = seconds % 60
+    return f"{minutes}:{remainder}"
 
-    def test_wrong_sum() -> None:
->       assert add(2, 3) == 6
-E       assert 5 == 6
-E        +  where 5 = add(2, 3)
 
-11_pytest_failure.py:15: AssertionError
-=========================== short test summary info ===========================
-FAILED 11_pytest_failure.py::test_wrong_sum - assert 5 == 6
+def test_exact_minute() -> None:
+    assert format_duration(60) == "1:00"
 ```
 
-- The report shows the source line, the evaluated values, and the summary line :
-  - No custom assertion methods like `assertEqual` are needed for clear output
+- Running `uv run pytest 11_pytest_failure.py` exposes the difference :
+
+```text
+E       AssertionError: assert '1:0' == '1:00'
+```
+
+- Restore `:02d` in the f-string to satisfy the test
 
 > `demo11 · pytest_failure`
 
@@ -368,29 +368,25 @@ FAILED 11_pytest_failure.py::test_wrong_sum - assert 5 == 6
 
 # Exceptions and Parametrized Tests
 
-- `pytest.raises` checks that a block of code raises an expected exception :
-  - Used as a context manager; the test passes only if the exception occurs
+- `pytest.raises` checks a failure that the parser must report
+- `parametrize` repeats one test with several inputs :
 
 ```python
-with pytest.raises(ValueError):
-    divide(10, 0)
-```
+def test_invalid_duration() -> None:
+    with pytest.raises(ValueError):
+        parse_duration("3:99")
 
-- `@pytest.mark.parametrize` runs one test function across multiple inputs :
-  - Each tuple in the list runs as an independent test case
 
-```python
 @pytest.mark.parametrize(
-    ("a", "b", "expected"),
-    [
-        (10, 2, 5.0),
-        (9, 3, 3.0),
-        (5, 2, 2.5),
-    ],
+    ("seconds", "expected"),
+    [(0, "0:00"), (59, "0:59"), (60, "1:00"), (3600, "60:00")],
 )
-def test_divide(a: int, b: int, expected: float) -> None:
-    assert divide(a, b) == expected
+def test_duration_display(seconds: int, expected: str) -> None:
+    assert format_duration(seconds) == expected
 ```
+
+- The demo includes the familiar formatter and duration parser
+- Fixtures, mocking and testing in depth belong to Advanced Python
 
 > `demo12 · pytest_features`
 

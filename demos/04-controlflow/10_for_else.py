@@ -1,11 +1,8 @@
-from math import sqrt
-
-for n in range(99, 80, -1):
-    root = sqrt(n)
-    print(root)
-    print(int(root))
-    if root == int(root):
-        print(f"Perfect square is {n}")
+requested = "Comet"
+playlist = ["Orbit", "Echo", "Pulse"]
+for track in playlist:
+    if track == requested:
+        print(f"Found {requested}")
         break
 else:
-    print("Didn't find it!")
+    print(f"{requested} is not in the playlist")

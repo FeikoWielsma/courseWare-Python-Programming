@@ -8,35 +8,24 @@ footer: Python IO
 
 # Input and Output
 
-- `print` writes its arguments to standard output.
+- `print` writes its arguments to standard output, separated by spaces.
 - `input` reads one line from standard input and removes the trailing newline.
 - It returns a string; convert it before doing arithmetic.
 
 ```python
-print("Python is really a great language,", "isn't it?")
-text = input("Enter some input : ")
-print(text)
+print("Now playing:", "So What", "by", "Miles Davis")
+volume = int(input("Volume (0-100) : "))
+print(f"Volume set to {volume}%")
+```
+
+```text
+Now playing: So What by Miles Davis
+Volume (0-100) : 65
+Volume set to 65%
 ```
 
 > `demo01 · readinput`
 
-
----
-
-# IO Module
-
-- Core of the I/O system is implemented in io library module
-- Consists of a collection of different I/O classes :
-  - `FileIO`
-  - `BufferedReader`
-  - `BufferedWriter`
-  - `BufferedRWPair`
-  - `BufferedRandom`
-  - `TextIOWrapper`
-  - `BytesIO`
-  - `StringIO`
-- Each class implements a different kind of I/O
-- Classes get layered to add features
 
 ---
 
@@ -55,6 +44,7 @@ file_object = open(file, mode="r", buffering=-1, encoding=None)
 - `mode` :
   - Determines mode in which the file has to be opened, read, write, append etc.
   - `t` for text mode is default and optional, `b` is for byte mode
+- `encoding` names the encoding of a text file, such as `"utf-8"`
 - `buffering` :
   - `0` disables buffering, but is allowed only in binary mode
   - `1` enables line buffering in text mode
@@ -79,17 +69,161 @@ file_object = open(file, mode="r", buffering=-1, encoding=None)
 
 ---
 
+# Using with
+
+- `with` closes the file when the block ends, even after an exception or `return`.
+- Closing writes any buffered text to the file.
+- Prefer this form whenever you open a file.
+
+```python
+with open("last_played.txt", mode="w", encoding="utf-8") as fw:
+    fw.write("So What\n")
+# The file is closed here, even if write() raised.
+print(fw.closed)  # True
+
+with open("last_played.txt", encoding="utf-8") as fr:
+    print(fr.read(), end="")  # So What
+```
+
+> `demo02 · usingwith`
+
+
+---
+
+# Reading Text Files
+
+- `readline()` reads one line, including its `\n`.
+- `read()` reads from the current position to the end of the file :
+  - `read(count)` reads at most `count` characters in text mode
+- A text file is also an iterable of its lines :
+
+```python
+with open("playlist.txt", encoding="utf-8") as playlist:
+    for number, line in enumerate(playlist, start=1):
+        print(f"{number}. {line.rstrip()}")
+```
+
+```text
+1. So What
+2. Blue in Green
+3. Take Five
+4. Jóga
+```
+
+- `rstrip()` removes the newline that ends each line.
+
+> `demo03 · readtextfile`
+
+
+---
+
+# Writing Text Files
+
+- `write` writes a string to a file opened for writing :
+  - It does not add a newline character (`\n`) to the end of the string
+- Mode `w` creates the file or empties an existing one; mode `a` appends.
+- `encoding="utf-8"` stores titles such as `Jóga` the same way on every platform.
+
+```python
+with open("road_trip.txt", mode="w", encoding="utf-8") as fw:
+    fw.write("Jóga\n")
+    fw.write("Hoppípolla\n")
+    fw.write("Svefn-g-englar\n")
+
+with open("road_trip.txt", mode="a", encoding="utf-8") as fa:
+    fa.write("Glósóli\n")
+```
+
+- File `road_trip.txt` then holds :
+
+```text
+Jóga
+Hoppípolla
+Svefn-g-englar
+Glósóli
+```
+
+> `demo04 · writetextfile`
+
+
+---
+
+# Closing Files
+
+- Without `with`, a file stays open until `close` is called :
+  - `close` writes unwritten data, then closes the file object
+  - No more reading or writing can be done after calling `close`
+  - Do not rely on garbage collection to close a file promptly
+- Older code opens and closes files by hand :
+
+```python
+playlist = open("playlist.txt", encoding="utf-8")
+first = playlist.readline()
+playlist.close()
+print(first, end="")  # So What
+```
+
+- An exception between `open` and `close` skips the `close`; `with` does not.
+
+---
+
+# File Object Attributes
+
+- File objects expose their name, mode, encoding and closed state.
+
+```python
+playlist = open("playlist.txt", encoding="utf-8")
+print("Name of the file :", playlist.name)
+print("Opening mode     :", playlist.mode)
+print("Encoding         :", playlist.encoding)
+print("First line       :", playlist.readline(), end="")
+print("Closed or not    :", playlist.closed)
+playlist.close()
+print("Closed or not    :", playlist.closed)
+```
+
+```text
+Name of the file : playlist.txt
+Opening mode     : r
+Encoding         : utf-8
+First line       : So What
+Closed or not    : False
+Closed or not    : True
+```
+
+> `demo05 · fileioobject`
+
+
+---
+
+# IO Module
+
+- Core of the I/O system is implemented in io library module
+- Consists of a collection of different I/O classes :
+  - `FileIO`
+  - `BufferedReader`
+  - `BufferedWriter`
+  - `BufferedRWPair`
+  - `BufferedRandom`
+  - `TextIOWrapper`
+  - `BytesIO`
+  - `StringIO`
+- Each class implements a different kind of I/O
+- Classes get layered to add features
+
+---
+
 # Result of Calling open
 
 - The object returned varies with the file mode and the buffering :
 
 ```text
->>> open("test.txt", "rt", encoding="utf-8")
-<_io.TextIOWrapper name='test.txt' mode='rt' encoding='utf-8'>
->>> open("test.txt", "rb")
-<_io.BufferedReader name='test.txt'>
->>> open("test.txt", "rb", buffering=0)
-<_io.FileIO name='test.txt' mode='rb'>
+>>> open("playlist.txt", "rt", encoding="utf-8")
+<_io.TextIOWrapper name='playlist.txt' mode='rt' encoding='utf-8'>
+>>> open("playlist.txt", "rb")
+<_io.BufferedReader name='playlist.txt'>
+>>> open("playlist.txt", "rb", buffering=0)
+<_io.FileIO name='playlist.txt' mode='rb' closefd=True>
 ```
 
 - Opening a text file stacks three objects, and you are handed the outermost :
@@ -130,30 +264,7 @@ file_object = open(file, mode="r", buffering=-1, encoding=None)
 </g>
 </svg>
 
-> `demo02 · openfile`
-
-
----
-
-# File Object Attributes
-
-- File objects expose their name, mode and closed state.
-
-```python
-fo = open("test_02.txt", "wb")
-print("Name of the file:", fo.name)
-print("Closed or not :", fo.closed)
-print("Opening mode :", fo.mode)
-fo.close()
-```
-
-```text
-Name of the file: test_02.txt
-Closed or not : False
-Opening mode : wb
-```
-
-> `demo03 · fileioobject`
+> `demo06 · openfile`
 
 
 ---
@@ -161,43 +272,47 @@ Opening mode : wb
 # Bytes and Byte Arrays
 
 - `bytes` is immutable; `bytearray` allows individual bytes to change.
+- Encoding converts text to bytes; decoding converts bytes back to text :
+  - In UTF-8, `ó` takes two bytes, so `Jóga` is four characters and five bytes
 - Indexing returns an integer from 0 to 255, not a character.
-- Encoding converts text to bytes; decoding converts bytes back to text.
 
 ```python
-text = "ABCDE"
-arr = bytes(text, "utf-8")
-print(arr)  # b'ABCDE'
-print(arr[0])  # 65
-print(arr.decode("utf-8"))  # ABCDE
+title = "Jóga"
+data = title.encode("utf-8")
+print(data)  # b'J\xc3\xb3ga'
+print(len(title), len(data))  # 4 5
+print(data[0])  # 74
+print(data.decode("utf-8"))  # Jóga
 
-mutable = bytearray(arr)
-mutable[0] = 70
-print(mutable)  # bytearray(b'FBCDE')
-print(mutable.decode("utf-8"))  # FBCDE
+mutable = bytearray(data)
+mutable[0] = 89
+print(mutable)  # bytearray(b'Y\xc3\xb3ga')
+print(mutable.decode("utf-8"))  # Yóga
 ```
 
 - Binary files read and write bytes; text files handle encoding for you.
 
-> `demo04 · bytesandbytesarrays`
+> `demo07 · bytesandbytesarrays`
 
 ---
 
 # Reading Binary Files
 
 - Binary mode (`rb`) reads bytes without decoding them.
-- `read(3)` reads up to three bytes; `read()` reads the remaining contents.
+- `read()` reads the remaining contents; `read(3)` reads up to three bytes.
 - Binary mode takes no `encoding` argument.
 
 ```python
-fr = open("trilobyte.jpg", mode="rb")
-data = fr.read(3)
+with open("trilobyte.jpg", mode="rb") as photo:
+    data = photo.read()
 print(type(data))  # <class 'bytes'>
-print(data.hex())  # ffd8ff
-fr.close()
+print(len(data))  # 49278, the size in bytes
+print(data[:3].hex())  # ffd8ff, the start of every JPEG photo
 ```
 
-> `demo05 · readbinaryfile`
+- `hex()` shows each byte as two hexadecimal digits.
+
+> `demo08 · readbinaryfile`
 
 
 ---
@@ -211,158 +326,41 @@ fr.close()
 ```python
 from struct import pack, unpack
 
-payload = pack("<iii", 1, 2, 3)
-fw = open("numbers.bin", mode="wb")
-fw.write(payload)
-fw.close()
+state = pack("<iii", 7, 184, 65)  # track number, seconds played, volume
+with open("player.bin", mode="wb") as fw:
+    fw.write(state)
 
-fr = open("numbers.bin", mode="rb")
-print(unpack("<iii", fr.read()))  # (1, 2, 3)
-fr.close()
+with open("player.bin", mode="rb") as fr:
+    track, seconds, volume = unpack("<iii", fr.read())
+print(track, seconds, volume)  # 7 184 65
 ```
 
-> `demo06 · writebinaryfile`
+- `player.bin` holds twelve bytes, which a later run reads back to resume playback.
 
-
----
-
-# Writing Text Files
-
-- Open file for writing specifying mode and encoding :
-
-```python
-fw = open("textfilepolish.txt", mode="w", encoding="UTF-8")
-```
-
-- `write` method writes any string to an open file :
-  - Parameter is the content to be written into the opened file
-  - Does not add a newline character ('\n') to the end of the string
-
-```python
-s = "Polish text: ąćęłńóśźżĄĆĘŁŃÓŚŹŻ"
-fw.write(s)
-```
-
-- Always close the file when you are done :
-
-```python
-fw.close()
-```
-
-- File `textfilepolish.txt` with following content is created :
-
-```text
-Polish text: ąćęłńóśźżĄĆĘŁŃÓŚŹŻ
-```
-
-> `demo07 · writetextfile`
-
-
----
-
-# Reading Text Files
-
-- Open file for reading specifying mode and encoding :
-
-```python
-fr = open("textfilepolish.txt", mode="r", encoding="UTF-8")
-```
-
-- `read` method reads a string from an open file :
-  - In text mode the count is a number of characters, not bytes
-
-```text
-file_object.read([count])
-```
-
-- `read()` starts at the current file position :
-  - If count is missing then it tries to read as much as possible, may be until end of file
-- Example of reading and closing file `textfilepolish.txt` :
-
-```python
-data = fr.read()
-print(data)
-fr.close()
-```
-
-- Result :
-
-
-
-```text
-Polish text: ąćęłńóśźżĄĆĘŁŃÓŚŹŻ
-```
-
-
----
-
-# Closing Files
-
-- `close` method flushes unwritten data and closes file object :
-  - No more writing can be done after calling `close`
-  - Do not rely on garbage collection to close a file promptly
-- Syntax :
-
-```python
-file_object.close()
-```
-
-- Example :
-
-```python
-fo = open("foo.txt", "wb")
-print("Name of the file:", fo.name)
-fo.close()
-```
-
-- Result :
-
-```text
-Name of the file: foo.txt
-```
-
-- Good practice to use `close()` method to close a file, but see the next slide
-
----
-
-# Using with
-
-- `with` closes the file when the block ends, even after an exception or `return`.
-- Prefer this form whenever you open a file.
-
-```python
-with open("foo.txt", mode="w", encoding="utf-8") as fw:
-    fw.write("one line\n")
-# The file is closed here, even if write() raised.
-print(fw.closed)  # True
-
-with open("foo.txt", encoding="utf-8") as fr:
-    print(fr.read(), end="")  # one line
-```
-
-> `demo08 · usingwith`
+> `demo09 · writebinaryfile`
 
 
 ---
 
 # File Positions
 
-- `tell()` reports the current position; `seek(0)` returns to the start.
+- `tell()` reports the current position; `seek(offset)` moves it.
 - Binary file positions count bytes from the beginning.
 - Text file positions are opaque values; use `seek(0)` or a value from `tell()`.
 
 ```python
-with open("positions.bin", "wb") as fw:
-    fw.write(b"ABCDE")
-
-with open("positions.bin", "rb") as fr:
-    print(fr.read(2))  # b'AB'
-    print(fr.tell())  # 2
-    fr.seek(0)
-    print(fr.read(2))  # b'AB'
+with open("trilobyte.jpg", "rb") as photo:
+    print(photo.read(2).hex())  # ffd8
+    print(photo.tell())  # 2
+    photo.seek(6)
+    print(photo.read(4))  # b'JFIF'
+    photo.seek(0)
+    print(photo.read(2).hex())  # ffd8
 ```
 
-> `demo09 · file_positions`
+- A JPEG photo in the JFIF format has the bytes `JFIF` from position 6.
+
+> `demo10 · file_positions`
 
 
 ---
@@ -375,17 +373,23 @@ with open("positions.bin", "rb") as fr:
 ```python
 import csv
 
-with open("planets.csv", "w", newline="", encoding="utf-8") as fw:
+with open("history.csv", "w", newline="", encoding="utf-8") as fw:
     writer = csv.writer(fw)
-    writer.writerow(["name", "moons"])
-    writer.writerows([["Earth", 1], ["Mars", 2]])
+    writer.writerow(["track", "artist", "seconds"])
+    writer.writerows([["So What", "Miles Davis", 562], ["Hello, Goodbye", "The Beatles", 208]])
 
-with open("planets.csv", newline="", encoding="utf-8") as fr:
+with open("history.csv", newline="", encoding="utf-8") as fr:
     for row in csv.reader(fr):
         print(row)
 ```
 
-> `demo10 · csv_module`
+```text
+['track', 'artist', 'seconds']
+['So What', 'Miles Davis', '562']
+['Hello, Goodbye', 'The Beatles', '208']
+```
+
+> `demo11 · csv_module`
 
 ---
 
@@ -393,24 +397,27 @@ with open("planets.csv", newline="", encoding="utf-8") as fr:
 
 - `DictReader` uses the first row as column names.
 - Field values are strings; convert numeric fields explicitly.
-- The demo creates the same CSV file, then reads it by column name :
+- `listening_history.csv` holds one row per track played :
 
 ```python
-with open("planets.csv", newline="", encoding="utf-8") as fr:
+total = 0
+with open("listening_history.csv", newline="", encoding="utf-8") as fr:
     for row in csv.DictReader(fr):
-        name = row["name"]
-        moons = int(row["moons"])
-        print(f"{name}: {moons} moons")
+        seconds = int(row["seconds"])
+        total += seconds
+        print(f"{row['track']}: {seconds} s")
+print(f"Total: {total // 60} min {total % 60} s")
 ```
 
 ```text
-Earth: 1 moons
-Mars: 2 moons
+So What: 562 s
+Hello, Goodbye: 208 s
+Jóga: 305 s
+Take Five: 324 s
+Total: 23 min 19 s
 ```
 
-- `csv.reader` returns lists instead : `['Earth', '1']`.
-
-> `demo11 · csv_dictionary`
+> `demo12 · csv_dictionary`
 
 ---
 
@@ -423,21 +430,21 @@ Mars: 2 moons
 ```python
 from pathlib import Path
 
-here = Path.cwd()                   # the current working directory
-sample = here / "data" / "one.txt"  # joining, with / instead of concatenation
+here = Path.cwd()  # the current working directory
+song = here / "music" / "jazz" / "so_what.mp3"  # joining, with / instead of +
 ```
 
 - The `/` operator joins path segments :
   - It produces the right separator on Windows, macOS and Linux alike
-  - No more `"dir" + "\\" + name`, and no more forgetting the separator
+  - No more `"music" + "\\" + name`, and no more forgetting the separator
 - A path answers questions about itself :
 
 ```python
-sample.name      # one.txt
-sample.stem      # one
-sample.suffix    # .txt
-sample.parent    # the containing directory, as a Path
-sample.exists()  # True or False
+song.name      # so_what.mp3
+song.stem      # so_what
+song.suffix    # .mp3
+song.parent    # the jazz directory, as a Path
+song.exists()  # True or False
 ```
 
 ---
@@ -458,6 +465,8 @@ with Path(__file__).open(encoding="utf-8") as source:
     print(source.readline().strip())  # from pathlib import Path
 ```
 
+- `here / "playlist.txt"` then finds a data file beside the module, whatever the working directory.
+
 ---
 
 # Renaming and Deleting Files
@@ -467,9 +476,9 @@ with Path(__file__).open(encoding="utf-8") as source:
 ```python
 from pathlib import Path
 
-data_file = Path("datafile1.txt")
-data_file.touch()
-renamed = data_file.rename("renamedfile.txt")
+photo = Path("IMG_0412.jpg")
+photo.touch()
+renamed = photo.rename("2026-07-14 beach.jpg")
 renamed.unlink()
 ```
 
@@ -478,15 +487,15 @@ renamed.unlink()
 - Short reads and writes need no `open` at all :
 
 ```python
-sample = Path("sample.txt")
-sample.write_text("first\n", encoding="utf-8")
-content = sample.read_text(encoding="utf-8")
+caption = Path("beach.txt")
+caption.write_text("Sunset at the beach\n", encoding="utf-8")
+print(caption.read_text(encoding="utf-8"), end="")
 ```
 
 - The `os` module still has `os.rename` and `os.remove` :
   - They take strings and are what older code uses
 
-> `demo12 · renaming_files`
+> `demo13 · renaming_files`
 
 
 ---
@@ -498,8 +507,8 @@ content = sample.read_text(encoding="utf-8")
 ```python
 from pathlib import Path
 
-Path("test1").mkdir(exist_ok=True)
-Path("test1").rmdir()
+Path("albums").mkdir(exist_ok=True)
+Path("albums").rmdir()
 ```
 
 - Two keyword arguments cover the awkward cases :
@@ -507,14 +516,14 @@ Path("test1").rmdir()
   - `exist_ok=True` succeeds quietly when the directory is already there
 
 ```python
-Path("test2/nested/deeper").mkdir(parents=True, exist_ok=True)
+Path("albums/2026/07 beach").mkdir(parents=True, exist_ok=True)
 ```
 
 - `rmdir` only removes an empty directory :
   - Remove the contents first, from the leaf upwards
   - `shutil.rmtree` removes a whole tree at once, and does not ask twice
 
-> `demo13 · creatingandremoving_directories`
+> `demo14 · creatingandremoving_directories`
 
 
 ---
@@ -529,15 +538,21 @@ Path("test2/nested/deeper").mkdir(parents=True, exist_ok=True)
 from pathlib import Path
 
 here = Path.cwd()
-work = here / "justtesting"
-work.mkdir(exist_ok=True)
-(work / "one.txt").write_text("first\n", encoding="utf-8")
-(work / "two.txt").write_text("second\n", encoding="utf-8")
-print("contents          :", sorted(p.name for p in work.iterdir()))
-print("only the text     :", sorted(p.name for p in work.glob("*.txt")))
+album = here / "holiday"
+album.mkdir(exist_ok=True)
+for name in ["beach.jpg", "sunset.jpg", "notes.txt"]:
+    (album / name).touch()
+
+print("contents   :", sorted(p.name for p in album.iterdir()))
+print("only photos:", sorted(p.name for p in album.glob("*.jpg")))
 ```
 
-> `demo14 · directorymethods`
+```text
+contents   : ['beach.jpg', 'notes.txt', 'sunset.jpg']
+only photos: ['beach.jpg', 'sunset.jpg']
+```
+
+> `demo15 · directorymethods`
 
 
 ---
@@ -548,14 +563,14 @@ print("only the text     :", sorted(p.name for p in work.glob("*.txt")))
   - Allows you to pass zero or more expressions, separated by commas
 - The `input` function reads a line of text from standard input :
   - It always returns a string, so convert it before doing arithmetic with it
-- Python also has File Object methods to manipulate files :
-  - Creating, opening files, closing files, reading, writing, renaming and deleting files
+- Open files with `with`, which closes them whatever happens :
+  - The manual `open` and `close` pair is shown so that you recognise older code
+- A text file is read whole, by line, or by iterating over it
 - Files can be opened in several modes :
   - For reading, for writing, for appending or combinations thereof
 - Binary files contain bytes; text files encode and decode strings.
+- `tell` and `seek` report and move the file position
 - Use `csv.reader`, `csv.writer` and `DictReader` for tabular text.
-- Open files with `with`, which closes them whatever happens :
-  - The manual `open` and `close` pair is shown so that you recognise older code
 - `pathlib` represents a path as an object :
   - `Path` joins with `/`, and creates, renames, deletes, reads and lists
 

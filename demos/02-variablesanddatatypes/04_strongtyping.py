@@ -1,11 +1,6 @@
-a = "Day"
-b = 1
-# c = a + b # gives an error
-c = a + str(b)
-print(c)
-
-x = 11
-y = "1"
-# z = x + y # gives an error
-z = x + int(y)
-print(z)
+seconds = 222
+intro = 30
+print(seconds + intro)  # 252
+print("222" + "30")  # 22230
+# print("222" + 30)  # TypeError: convert the text first.
+print(int("222") + 30)  # 252

@@ -1,18 +1,15 @@
-"""A parameter that may be absent is typed with `| None`."""
+def find_duration(title: str, durations: dict[str, int]) -> int | None:
+    return durations.get(title)
 
 
-def greet(name: str | None = None) -> str:
-    """Greet someone by name, or greet a stranger."""
-    if name is None:
-        return "Hello, stranger"
-    return f"Hello, {name}"
-
-
-def parse(value: str | int) -> int:
-    """Accept either a string or an integer and return an integer."""
+def parse_seconds(value: str | int) -> int:
     return int(value)
 
 
-print(greet())
-print(greet("Alice"))
-print(parse("42"), parse(42))
+durations = {"Orbit": 222, "Echo": 185}
+seconds = find_duration("Comet", durations)
+if seconds is None:
+    print("Track not found")
+else:
+    print(f"Track length: {seconds} seconds")
+print(parse_seconds("222"))

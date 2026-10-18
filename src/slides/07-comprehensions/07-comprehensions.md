@@ -12,9 +12,9 @@ footer: Comprehensions
 - Read the `for` part first, then the expression on its left.
 
 ```python
-filenames: list[str] = ["sales", "stock", "prices"]
-csv_files = [f"{name}.csv" for name in filenames]
-print(csv_files)  # ['sales.csv', 'stock.csv', 'prices.csv']
+filenames: list[str] = ["cover", "stage", "crowd"]
+photo_files = [f"{name}.jpg" for name in filenames]
+print(photo_files)  # ['cover.jpg', 'stage.jpg', 'crowd.jpg']
 ```
 
 
@@ -30,14 +30,14 @@ print(csv_files)  # ['sales.csv', 'stock.csv', 'prices.csv']
 - `expression` computes the value added to the new list.
 
 ```python
-filenames: list[str] = ["sales", "stock", "prices"]
-csv_files = []
+filenames: list[str] = ["cover", "stage", "crowd"]
+photo_files = []
 for name in filenames:
-    csv_files.append(f"{name}.csv")
-print(csv_files)  # ['sales.csv', 'stock.csv', 'prices.csv']
+    photo_files.append(f"{name}.jpg")
+print(photo_files)  # ['cover.jpg', 'stage.jpg', 'crowd.jpg']
 
-csv_files = [f"{name}.csv" for name in filenames]
-print(csv_files)  # ['sales.csv', 'stock.csv', 'prices.csv']
+photo_files = [f"{name}.jpg" for name in filenames]
+print(photo_files)  # ['cover.jpg', 'stage.jpg', 'crowd.jpg']
 ```
 
 - Both forms create a new list and leave `filenames` unchanged.
@@ -50,15 +50,15 @@ print(csv_files)  # ['sales.csv', 'stock.csv', 'prices.csv']
 - These two forms produce the same list :
 
 ```python
-filenames = ["sales.csv", "notes.txt", "stock.csv"]
-csv_files = []
+filenames = ["cover.jpg", "notes.txt", "stage.jpg"]
+photo_files = []
 for name in filenames:
-    if name.endswith(".csv"):
-        csv_files.append(name)
-print(csv_files)  # ['sales.csv', 'stock.csv']
+    if name.endswith(".jpg"):
+        photo_files.append(name)
+print(photo_files)  # ['cover.jpg', 'stage.jpg']
 
-csv_files = [name for name in filenames if name.endswith(".csv")]
-print(csv_files)  # ['sales.csv', 'stock.csv']
+photo_files = [name for name in filenames if name.endswith(".jpg")]
+print(photo_files)  # ['cover.jpg', 'stage.jpg']
 ```
 
 
@@ -72,13 +72,13 @@ print(csv_files)  # ['sales.csv', 'stock.csv']
 - A nested comprehension builds a list of lists, preserving the row structure.
 
 ```python
-readings = [[18.2, 19.6], [20.1, 21.8]]
-rounded = [[round(value) for value in row] for row in readings]
+photo_sizes = [[18.2, 19.6], [20.1, 21.8]]
+rounded = [[round(value) for value in row] for row in photo_sizes]
 print(rounded)  # [[18, 20], [20, 22]]
 ```
 
-- Each row holds the temperature readings from one location.
-- The inner comprehension rounds the readings in one row.
+- Each row holds the photo sizes in megabytes from one album.
+- The inner comprehension rounds the photo sizes in one row.
 - The outer comprehension repeats that operation for every row.
 - Use an ordinary loop when the nesting needs more explanation.
 
@@ -88,41 +88,45 @@ print(rounded)  # [[18, 20], [20, 22]]
 
 # Flattening a List of Lists
 
-- Two `for` clauses collect all the readings into one list.
+- Two `for` clauses collect all the photo_sizes into one list.
 - Their order is the same as in the equivalent nested loops.
 
 ```python
-readings = [[18.2, 19.6], [20.1, 21.8]]
+photo_sizes = [[18.2, 19.6], [20.1, 21.8]]
 flat = []
-for row in readings:
+for row in photo_sizes:
     for value in row:
         flat.append(value)
 print(flat)  # [18.2, 19.6, 20.1, 21.8]
 
-flat = [value for row in readings for value in row]
+flat = [value for row in photo_sizes for value in row]
 print(flat)  # [18.2, 19.6, 20.1, 21.8]
 ```
 
-- The result can be used to calculate a minimum or maximum across all locations.
+- The result can be used to calculate a minimum or maximum across all albums.
 
 ---
 
 # Comprehension Features
 
-- Unpack each tuple into names inside the `for` part.
-- The expression can call a function.
+- Unpack each track into a title and duration inside the `for` part
+- The expression can call a function :
 
 ```python
-def line_total(price: float, quantity: int) -> float:
-    return round(price * quantity, 2)
+def format_duration(seconds: int) -> str:
+    minutes = seconds // 60
+    remainder = seconds % 60
+    return f"{minutes}:{remainder:02d}"
 
 
-items = [(12.50, 2), (4.00, 3), (7.25, 1)]
-totals = [line_total(price, quantity) for price, quantity in items]
-print(totals)  # [25.0, 12.0, 7.25]
+tracks = [("Orbit", 222), ("Echo", 185), ("Pulse", 204)]
+labels = [f"{title} [{format_duration(seconds)}]" for title, seconds in tracks]
+print(labels)
 ```
 
-
+```text
+['Orbit [3:42]', 'Echo [3:05]', 'Pulse [3:24]']
+```
 
 > `demo04 · comprehension_features`
 
@@ -130,20 +134,23 @@ print(totals)  # [25.0, 12.0, 7.25]
 
 # Zip Function
 
-- `zip` pairs items from its input iterables.
-- By default it stops when the shortest input runs out.
-- `strict=True` raises a `ValueError` when the inputs differ in length, instead of stopping early :
+- `zip` pairs each track title with its duration :
+  - It stops when the shortest input runs out by default
+  - `strict=True` raises `ValueError` if their lengths differ
 
 ```python
-products = ["tea", "coffee", "cocoa"]
-quantities = [12, 8, 5]
-pairs = list(zip(products, quantities))
-print(pairs)  # [('tea', 12), ('coffee', 8), ('cocoa', 5)]
-checked = list(zip(products, quantities, strict=True))
-print(checked)  # [('tea', 12), ('coffee', 8), ('cocoa', 5)]
+titles = ["Orbit", "Echo", "Pulse"]
+lengths = [222, 185, 204]
+pairs = list(zip(titles, lengths))
+print(pairs)
+checked = list(zip(titles, lengths, strict=True))
+print(checked)
 ```
 
-
+```text
+[('Orbit', 222), ('Echo', 185), ('Pulse', 204)]
+[('Orbit', 222), ('Echo', 185), ('Pulse', 204)]
+```
 
 > `demo05 · zip_function`
 
@@ -151,16 +158,18 @@ print(checked)  # [('tea', 12), ('coffee', 8), ('cocoa', 5)]
 
 # Dictionary Construction with zip
 
-- Pass pairs of keys and values to `dict` to build a dictionary.
+- `dict` builds a lookup from pairs of keys and values :
 
 ```python
-products = ["tea", "coffee", "cocoa"]
-quantities = [12, 8, 5]
-stock = dict(zip(products, quantities))
-print(stock)  # {'tea': 12, 'coffee': 8, 'cocoa': 5}
+titles = ["Orbit", "Echo", "Pulse"]
+lengths = [222, 185, 204]
+durations = dict(zip(titles, lengths))
+print(durations)
 ```
 
-
+```text
+{'Orbit': 222, 'Echo': 185, 'Pulse': 204}
+```
 
 > `demo06 · dictionary_with_zip`
 
@@ -168,19 +177,16 @@ print(stock)  # {'tea': 12, 'coffee': 8, 'cocoa': 5}
 
 # Dictionary Comprehensions
 
-- Use `key: value` to compute each dictionary entry.
-- Add an `if` to keep only some entries.
+- `key: value` computes each dictionary entry
+- An optional `if` keeps only matching tracks :
 
 ```python
-stock = {"tea": 12, "coffee": 0, "cocoa": 5}
-available = {name: count for name, count in stock.items() if count > 0}
-print(available)  # {'tea': 12, 'cocoa': 5}
-prices = {"tea": 2.0, "coffee": 4.0}
-with_tax = {name: round(price * 1.21, 2) for name, price in prices.items()}
-print(with_tax)  # {'tea': 2.42, 'coffee': 4.84}
+durations = {"Orbit": 222, "Echo": 185, "Pulse": 204}
+short_tracks = {title: seconds for title, seconds in durations.items() if seconds < 200}
+print(short_tracks)  # {'Echo': 185}
+minutes = {title: round(seconds / 60, 1) for title, seconds in durations.items()}
+print(minutes)  # {'Orbit': 3.7, 'Echo': 3.1, 'Pulse': 3.4}
 ```
-
-
 
 > `demo07 · dictionary_comprehension`
 
@@ -188,19 +194,24 @@ print(with_tax)  # {'tea': 2.42, 'coffee': 4.84}
 
 # Dictionary from Keys
 
-- `dict.fromkeys` gives every key the same value.
-- Use a comprehension when each key needs its own mutable value.
+- `dict.fromkeys` gives each key the same value
+- A comprehension gives each playlist its own mutable track list :
 
 ```python
-sites = ["AMS", "RTM"]
-counts = dict.fromkeys(sites, 0)
-print(counts)  # {'AMS': 0, 'RTM': 0}
-groups: dict[str, list[str]] = {site: [] for site in sites}
-groups["AMS"].append("web01")
-print(groups)  # {'AMS': ['web01'], 'RTM': []}
+albums = ["Night drive", "Warm-up"]
+play_counts = dict.fromkeys(albums, 0)
+print(play_counts)
+playlists: dict[str, list[str]] = {name: [] for name in albums}
+playlists["Night drive"].append("Orbit")
+print(playlists)
 ```
 
-- Avoid `dict.fromkeys(keys, [])` : every key would share the same list.
+```text
+{'Night drive': 0, 'Warm-up': 0}
+{'Night drive': ['Orbit'], 'Warm-up': []}
+```
+
+- `dict.fromkeys(albums, [])` would make every album share one list
 
 > `demo08 · dictionary_from_keys`
 
@@ -208,20 +219,20 @@ print(groups)  # {'AMS': ['web01'], 'RTM': []}
 
 # Set Comprehensions
 
-- A set comprehension uses braces around an expression.
-- Duplicate results disappear; sets have no defined display order.
+- A set comprehension keeps each result once :
+  - Titles that differ only in spacing and case can become one value
 
 ```python
-names = [" Sales ", "Stock", "sales", "Prices "]
-unique = {name.strip().lower() for name in names}
-print(sorted(unique))  # ['prices', 'sales', 'stock']
+titles = [" Orbit ", "Echo", "orbit", "Pulse "]
+unique = {title.strip().lower() for title in titles}
+print(sorted(unique))  # ['echo', 'orbit', 'pulse']
 
-csv_files = ["sales.csv", "notes.txt", "sales.csv", "stock.csv"]
-unique_csv = {name for name in csv_files if name.endswith(".csv")}
-print(sorted(unique_csv))  # ['sales.csv', 'stock.csv']
+files = ["cover.jpg", "notes.txt", "cover.jpg", "stage.jpg"]
+unique_photos = {name for name in files if name.endswith(".jpg")}
+print(sorted(unique_photos))  # ['cover.jpg', 'stage.jpg']
 ```
 
-
+- Sets have no display order; `sorted` makes printed output predictable
 
 > `demo09 · set_comprehensions`
 
@@ -229,19 +240,20 @@ print(sorted(unique_csv))  # ['sales.csv', 'stock.csv']
 
 # Generator Expressions
 
-- A generator expression supplies values as they are needed, without building a list.
-- As the only argument of a call, it needs no extra parentheses.
+- A generator expression supplies values without building a new list :
+  - These photo sizes are checked and totalled as they are consumed
 
 ```python
-sizes_mb = [120, 80, 250]
-print(sum(size for size in sizes_mb if size >= 100))  # 370
-print(any(size > 200 for size in sizes_mb))  # True
-print(all(size <= 200 for size in sizes_mb))  # False
+sizes_mb = [12, 8, 25]
+print(sum(size for size in sizes_mb if size >= 10))  # 37
+print(any(size > 20 for size in sizes_mb))  # True
+print(all(size <= 20 for size in sizes_mb))  # False
 print(any([]), all([]))  # False True
 ```
 
-- `any` and `all` stop as soon as the answer is known.
-- Generator functions, `yield` and generators in depth belong to Advanced Python.
+- `any` and `all` stop as soon as the answer is known
+- As the only argument of a call, the expression needs no extra parentheses
+- Generator functions and `yield` belong to Advanced Python
 
 > `demo10 · generator_expressions`
 
@@ -249,18 +261,18 @@ print(any([]), all([]))  # False True
 
 # Built-ins that Take a Function
 
-- `sorted` returns a new list; `list.sort` changes a list in place.
-- A `key` function computes the comparison value for each item.
-- `min` and `max` accept a `key` function too.
+- A `key` function selects the value used for ordering :
+  - Track titles can be sorted alphabetically or by title length
 
 ```python
-words = ["ticket", "to", "mars", "one", "way"]
-print(sorted(words))  # ['mars', 'one', 'ticket', 'to', 'way']
-print(sorted(words, key=len))  # ['to', 'one', 'way', 'mars', 'ticket']
-print(min(words, key=len), max(words, key=len))  # to ticket
+titles = ["Afterglow", "Echo", "Orbit"]
+print(sorted(titles))  # ['Afterglow', 'Echo', 'Orbit']
+print(sorted(titles, key=len))  # ['Echo', 'Orbit', 'Afterglow']
+print(min(titles, key=len), max(titles, key=len))  # Echo Afterglow
 ```
 
-
+- `sorted` returns a new list; `list.sort` changes a list in place
+- `min` and `max` also accept a key function
 
 > `demo11 · sorted_by_key`
 
@@ -268,25 +280,26 @@ print(min(words, key=len), max(words, key=len))  # to ticket
 
 # Recognising map and filter
 
-- You will encounter these function-based forms in other people's code.
-- `map` applies a function; `filter` keeps items for which a function returns true.
-- Both return iterators; `list` collects their results.
+- `map` transforms each item; `filter` keeps matching items
+- Both return iterators; `list` collects the results :
 
 ```python
-def square(x: int) -> int:
-    return x * x
+def clean_filename(name: str) -> str:
+    return name.strip().lower()
 
 
-def even(x: int) -> bool:
-    return x % 2 == 0
+def is_photo(name: str) -> bool:
+    return name.endswith(".jpg")
 
 
-print(list(map(square, range(1, 6))))  # [1, 4, 9, 16, 25]
-print(list(filter(even, range(1, 6))))  # [2, 4]
-print([square(x) for x in range(1, 6) if even(x)])  # [4, 16]
+files = ["  COVER.JPG ", "STAGE.JPG", "NOTES.TXT"]
+cleaned = list(map(clean_filename, files))
+photos = list(filter(is_photo, cleaned))
+print(photos)  # ['cover.jpg', 'stage.jpg']
+print([name for name in cleaned if is_photo(name)])
 ```
 
-
+- These forms also occur in existing code
 
 > `demo12 · map_and_filter_functions`
 
@@ -294,17 +307,17 @@ print([square(x) for x in range(1, 6) if even(x)])  # [4, 16]
 
 # Comprehensions and map
 
-- A comprehension often reads more directly than a combination of `map` and `filter`.
-- Recognise both forms; choose the one that makes the operation clear.
+- A comprehension can express the same filename transformation as `map` :
 
 ```python
-mapped = list(map(lambda x: 2 * x + 1, [10, 20, 30]))
-print(mapped)  # [21, 41, 61]
-comprehended = [2 * x + 1 for x in [10, 20, 30]]
-print(comprehended)  # [21, 41, 61]
+files = ["COVER.JPG", "STAGE.JPG"]
+mapped = list(map(lambda name: name.lower(), files))
+print(mapped)  # ['cover.jpg', 'stage.jpg']
+comprehended = [name.lower() for name in files]
+print(comprehended)  # ['cover.jpg', 'stage.jpg']
 ```
 
-
+- Choose the form that makes the operation clear
 
 > `demo13 · syntactic_sugar`
 
@@ -312,22 +325,19 @@ print(comprehended)  # [21, 41, 61]
 
 # Recognising reduce
 
-- `functools.reduce` combines items into one result.
-- Here each step multiplies the running result by the next number.
+- `functools.reduce` combines items into one running result :
+  - Each step adds the next track's duration to the accumulated duration
 
 ```python
 from functools import reduce
 
-product = reduce(lambda x, y: x * y, [1, 2, 3, 4])
-print(product)  # 24
-
-result = 1
-for number in [1, 2, 3, 4]:
-    result *= number
-print(result)  # 24
+lengths = [222, 185, 204]
+total = reduce(lambda running, seconds: running + seconds, lengths)
+print(total)  # 611
+print(sum(lengths))  # 611
 ```
 
-- Prefer a named built-in such as `sum` when it expresses the operation directly.
+- Prefer `sum` when it names the operation directly
 
 > `demo14 · reduce_and_lambda`
 

@@ -1,6 +1,6 @@
-sites = ["AMS", "RTM"]
-counts = dict.fromkeys(sites, 0)
-print(counts)  # {'AMS': 0, 'RTM': 0}
-groups: dict[str, list[str]] = {site: [] for site in sites}
-groups["AMS"].append("web01")
-print(groups)  # {'AMS': ['web01'], 'RTM': []}
+albums = ["Night drive", "Warm-up"]
+play_counts = dict.fromkeys(albums, 0)
+print(play_counts)
+playlists: dict[str, list[str]] = {name: [] for name in albums}
+playlists["Night drive"].append("Orbit")
+print(playlists)

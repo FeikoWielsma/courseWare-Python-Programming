@@ -1,7 +1,9 @@
-def line_total(price: float, quantity: int) -> float:
-    return round(price * quantity, 2)
+def format_duration(seconds: int) -> str:
+    minutes = seconds // 60
+    remainder = seconds % 60
+    return f"{minutes}:{remainder:02d}"
 
 
-items = [(12.50, 2), (4.00, 3), (7.25, 1)]
-totals = [line_total(price, quantity) for price, quantity in items]
-print(totals)  # [25.0, 12.0, 7.25]
+tracks = [("Orbit", 222), ("Echo", 185), ("Pulse", 204)]
+labels = [f"{title} [{format_duration(seconds)}]" for title, seconds in tracks]
+print(labels)

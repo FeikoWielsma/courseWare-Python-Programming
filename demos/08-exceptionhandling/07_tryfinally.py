@@ -1,11 +1,11 @@
-def divide(total: int, count: int) -> float:
+def parse_seconds(text: str) -> int:
     try:
-        return total / count
+        return int(text)
     finally:
-        print("This always runs")
+        print("Duration check finished")
 
 
 try:
-    divide(10, 0)
-except ZeroDivisionError:
-    print("Cannot divide by zero")
+    parse_seconds("live")
+except ValueError:
+    print("Duration unavailable")
