@@ -1,3 +1,5 @@
+> Historical record (2026-10-18). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # Slidev Data Structures pilot
 
 Recorded 2026-10-18. Package for stage 2 of the

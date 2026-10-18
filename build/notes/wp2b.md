@@ -1,3 +1,5 @@
+> Historical record (2026-10-17). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # WP2b progress
 
 - Exercise 5 converted to containers and tier badges; fixed WORDLE_SECRET instructions and the early render import required by pytest collection.

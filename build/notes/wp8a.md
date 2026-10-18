@@ -1,3 +1,5 @@
+> Historical record (2026-10-17). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # WP8a : review findings fixed in the solutions and exercise texts
 
 Date: 2026-10-17. Model: Claude Sonnet 5.5. Branch `t3/242639ef` (from `prg400-wordle`).

@@ -1,3 +1,5 @@
+> Historical record (2026-10-18). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # Slidev rollout and teaching examples
 
 Current integration record, 2026-10-18. Supersedes the stopping points and counts

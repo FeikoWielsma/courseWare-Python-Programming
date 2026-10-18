@@ -1,3 +1,5 @@
+> Historical record (2026-10-18). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # Slidev integration evidence
 
 Continuation of [the adoption plan](slidev-migration-plan.md), 2026-10-18.

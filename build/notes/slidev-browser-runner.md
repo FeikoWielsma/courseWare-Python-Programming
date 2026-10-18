@@ -1,3 +1,5 @@
+> Historical record (2026-10-18). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # Slidev browser delivery gate
 
 `bun run build/check-slidev-delivery.ts` serves the staged public student app

@@ -1,3 +1,5 @@
+> Historical record (2026-10-17). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # WP8b : factual slide corrections
 
 Completed on 2026-10-17. Branch: `t3/fix-slide-factual-errors`.

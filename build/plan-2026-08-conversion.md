@@ -1,3 +1,5 @@
+> Historical record (2026-08-15). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # PRG400 conversion plan
 
 Where the Presentation-as-Code conversion of *Python Programming* (PRG400) stands,

@@ -1,3 +1,5 @@
+> Historical record (2026-10-17). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # WP5 : student review of PRG400
 
 Date: 2026-10-17. Reviewer: GPT-6.1-sol. Package: `wp5`.

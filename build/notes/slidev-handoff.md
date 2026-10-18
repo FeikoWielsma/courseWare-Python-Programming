@@ -1,3 +1,5 @@
+> Historical record (2026-10-18). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # Slidev migration handoff
 
 Updated 2026-10-18. Start here when continuing the presentation migration,

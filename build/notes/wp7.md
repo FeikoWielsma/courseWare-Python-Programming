@@ -1,3 +1,5 @@
+> Historical record (2026-10-17). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # WP7 notes : solutions and exercise texts 9 to 13 made to agree
 
 Resolves the problems listed in `wp2c.md`.

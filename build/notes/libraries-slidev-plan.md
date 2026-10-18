@@ -1,3 +1,5 @@
+> Historical record (2026-10-18). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # Plan : Libraries and Tools to Slidev, with an example rewrite
 
 Drafted 2026-10-18. Scope: the optional companion course in `libraries/`
