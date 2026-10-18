@@ -19,7 +19,7 @@ import zlib
 from contextlib import closing
 from datetime import datetime
 from pathlib import Path
-from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
+from zipfile import ZIP_STORED, ZipFile, ZipInfo
 
 import matplotlib.image as image
 import numpy as np
@@ -60,7 +60,9 @@ def write_workbook(tracks: pd.DataFrame, name: str = "tracks.xlsx") -> None:
                     rb"\g<1>2026-10-12T00:00:00Z\2", contents,
                 )
             entry = ZipInfo(name, (2026, 10, 12, 0, 0, 0))
-            entry.compress_type = ZIP_DEFLATED
+            # ZIP platform flags and zlib versions differ between Windows and Linux.
+            entry.create_system = 0
+            entry.compress_type = ZIP_STORED
             target.writestr(entry, contents)
 
 
@@ -134,17 +136,22 @@ def main() -> None:
             f"2026-10-12 {8 + index // 6:02d}:{index % 6 * 10:02d}:00 {level} "
             f"{action} {rows[index % len(rows)]['title']}"
         )
-    (DATA / "listening.log").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (DATA / "listening.log").write_text(
+        "\n".join(lines) + "\n", encoding="utf-8", newline="\n",
+    )
     with tempfile.TemporaryDirectory() as directory:
         database = Path(directory) / "tracks.db"
         with closing(sqlite3.connect(database)) as connection:
             tracks.to_sql("tracks", connection, index=False)
         (DATA / "tracks.db").write_bytes(database.read_bytes())
-    tracks.sort_values("plays", ascending=False).to_csv(DATA / "tracks-report.csv", index=False)
+    tracks.sort_values("plays", ascending=False).to_csv(
+        DATA / "tracks-report.csv", index=False, lineterminator="\n",
+    )
     report = tracks.sort_values("plays", ascending=False)
-    report.to_csv(DATA / "tracks-report.tsv", sep="\t", index=False)
+    report.to_csv(DATA / "tracks-report.tsv", sep="\t", index=False, lineterminator="\n")
     write_workbook(report, "tracks-report.xlsx")
-    np.savetxt(DATA / "plays-hourly-mean.csv", hours.mean(axis=0), delimiter=",", fmt="%.2f")
+    with (DATA / "plays-hourly-mean.csv").open("w", encoding="utf-8", newline="\n") as handle:
+        np.savetxt(handle, hours.mean(axis=0), delimiter=",", fmt="%.2f")
     per_decade = tracks.groupby(tracks["year"] // 10 * 10)["plays"].sum()
     figure = Figure(figsize=(7, 4))
     axes = figure.subplots()
@@ -171,7 +178,14 @@ if __name__ == "__main__":
                 "tracks-report.tsv", "tracks-report.xlsx", "tracks-plot.png",
                 "plays-hourly-mean.csv",
             ):
-                assert (source / name).read_bytes() == (DATA / name).read_bytes(), name
-        print("Twelve checked-in data artifacts reproduce byte-for-byte.")
+                if name.endswith(".png"):
+                    # Different zlib builds encode identical pixels differently.
+                    np.testing.assert_array_equal(
+                        image.imread(source / name), image.imread(DATA / name),
+                        err_msg=name,
+                    )
+                else:
+                    assert (source / name).read_bytes() == (DATA / name).read_bytes(), name
+        print("Twelve data artifacts reproduce: exact bytes, or exact decoded PNG pixels.")
     else:
         main()

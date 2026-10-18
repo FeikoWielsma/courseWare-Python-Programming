@@ -19,7 +19,7 @@ commit. Demo fences were aligned with their source scripts.
 
 `libraries/build/make-data.py` regenerates 40 tracks, ten artist lookup rows,
 listening events, a 7 by 24 plays grid, the 64 by 48 photo, spreadsheets,
-database and reports. Twelve committed artifacts reproduce byte-for-byte.
+database and reports. Twelve committed artifacts reproduce; PNG files compare exact decoded pixels.
 Song metadata identifies its release edition; some durations therefore differ
 from the fundamentals examples. Counts and listening dates are fictional.
 See [the source record](../../libraries/data/SOURCES.md) for metadata and NASA
@@ -47,7 +47,7 @@ removing an unrelated second example. All ten additions were visually inspected.
 
 | Check | Result |
 |---|---|
-| Data regeneration | 12 committed artifacts identical |
+| Data regeneration | 12 artifacts match: exact bytes or exact PNG pixels |
 | Native state regeneration | 10 additions, 55 executed states match |
 | Demo runner | 119 compiled, 113 executed, zero failures |
 | Solution runner | 37 command cases, zero failures |

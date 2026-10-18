@@ -69,3 +69,11 @@ The implementation checks passed:
 Temporary page renders, contact sheets, extracted delivery files, logs, and QA
 scripts are under ignored `libraries/build/`. No release, commit, or push was
 performed.
+
+## Release portability correction
+
+The first remote release check exposed XLSX ZIP platform flags that differed
+between Windows and Linux. Workbook archives now use fixed platform metadata
+and stored entries; generated text uses LF line endings. PNG checks compare
+exact decoded pixels because zlib builds can encode identical pixels differently.
+The complete data check passes on both Windows and Linux.

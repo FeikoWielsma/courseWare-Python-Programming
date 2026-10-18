@@ -7,7 +7,7 @@ import { computed } from 'vue'
 const props = defineProps({ run: { type: Object, required: true }, step: { type: Number, required: true } })
 const rowHeight = 50
 const keyWidth = 190
-const valueWidth = 170
+const valueWidth = 140
 const top = 64
 const capacity = computed(() => Math.max(...props.run.states.map(state => state.rows.length)))
 const ghostTop = computed(() => top + capacity.value * (rowHeight - 2) + 32)
@@ -72,7 +72,7 @@ const hasGhost = computed(() => rows.value.some(row => row.status === 'ghost'))
 </template>
 
 <style scoped>
-.ds-dict { position: relative; width: 460px; font-family: 'IBM Plex Mono', monospace; }
+.ds-dict { position: relative; width: 400px; font-family: 'IBM Plex Mono', monospace; }
 .name { position: absolute; left: 0; top: 0; font: 600 18px 'IBM Plex Mono', monospace; color: var(--ds-accent); }
 .head { position: absolute; top: 36px; padding-left: 14px; box-sizing: border-box; font: 600 12px 'IBM Plex Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--ds-muted); }
 .removed { position: absolute; left: 0; font-size: 15px; color: var(--ds-remove); opacity: 0; transition: opacity 300ms ease; }
@@ -92,8 +92,8 @@ const hasGhost = computed(() => rows.value.some(row => row.status === 'ghost'))
 .item { position: absolute; left: 14px; transition: transform var(--ds-time) var(--ds-ease), opacity var(--ds-time) var(--ds-ease); white-space: nowrap; }
 .item.now { opacity: 1; }
 .item.later { opacity: 0; transform: translateY(-22px); }
-.item.old { opacity: 0; transform: translateX(176px); }
-.item.replaced { opacity: .8; transform: translateX(176px); color: var(--ds-remove); text-decoration: line-through; }
+.item.old { opacity: 0; transform: translateX(146px); }
+.item.replaced { opacity: .8; transform: translateX(146px); color: var(--ds-remove); text-decoration: line-through; }
 @media (prefers-reduced-motion: reduce) {
   .row, .key, .value, .item, .removed { transition: none; }
 }
