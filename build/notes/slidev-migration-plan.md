@@ -86,7 +86,8 @@ Primary references: [Mermaid fences](https://sli.dev/features/mermaid),
 ## Ownership and orchestration
 
 - Initial work: one Opus pilot author and one Luna research/verification agent.
-- Later work: at most two Opus authors and one Luna verification agent.
+- Later work: one Opus author at a time and one Luna verification agent, following
+  the trainer's quota-saving decision. Remaining author packages run sequentially.
 - Each author has an isolated worktree, a module/file boundary, a notes file and
   a commit. The coordinator reads each diff and integrates it.
 - Coordinator-only: config, shared tooling, existing check scripts, CI,
@@ -123,4 +124,8 @@ Primary references: [Mermaid fences](https://sli.dev/features/mermaid),
 - Bounded rollout packages: core (01, 02, 04, 05), middle (06, 07, 08),
   stateful (09, 10, 11), appendices (12, 13). Each module is inspected; additions
   are chosen where motion explains a mechanism. No quota/usage tool is exposed
-  by the live provider catalogue; at most two Opus authors run at once.
+  by the live provider catalogue.
+- Started core and middle author tasks plus Luna's student/browser gate task.
+  The trainer cancelled the middle author during source inspection to conserve
+  quota. Core continues; middle, stateful and appendices remain queued, with
+  only one Opus task to run at a time.
