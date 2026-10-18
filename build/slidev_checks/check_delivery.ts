@@ -3,22 +3,30 @@ import * as path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const courseRoot = path.resolve(import.meta.dirname, '../..');
-const output = path.join(courseRoot, 'build/slidev/dist');
+const args = process.argv.slice(2);
+const option = (name: string) => {
+  const index = args.indexOf(name);
+  if (index < 0) return undefined;
+  const value = args[index + 1];
+  if (!value || value.startsWith('--')) throw new Error(`${name} requires a value.`);
+  return value;
+};
+const output = path.resolve(option('--output') || path.join(courseRoot, 'build/slidev/dist'));
 const template = process.env.PRESENTATION_TEMPLATE_DIR;
 if (!template) throw new Error('Set PRESENTATION_TEMPLATE_DIR to the Slidev-capable Presentation-Template worktree.');
 const { launchBrowser } = await import(pathToFileURL(path.join(template, 'build/lint-slides.ts')).href);
-const { serveDirectory } = await import(pathToFileURL(path.join(template, 'build/slidev/build.ts')).href);
+const originOption = option('--origin');
+const { serveDirectory } = originOption
+  ? { serveDirectory: undefined }
+  : await import(pathToFileURL(path.join(template, 'build/slidev/build.ts')).href);
 const manifest = JSON.parse(fs.readFileSync(path.join(output, 'manifest.json'), 'utf8'));
-const server = serveDirectory(output, 0);
-await new Promise<void>(resolve => server.once('listening', resolve));
-const address = server.address();
-if (!address || typeof address === 'string') throw new Error('Cannot start Slidev delivery server.');
-const origin = `http://127.0.0.1:${address.port}`;
-const browser = await launchBrowser();
-const page = await browser.newPage();
-await page.setViewport({ width: 1280, height: 800 });
+const server = originOption ? undefined : serveDirectory!(output, 0);
+let origin = originOption?.replace(/\/$/, '');
+type Browser = Awaited<ReturnType<typeof launchBrowser>>;
+let browser: Browser | undefined;
 
 const pause = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+let page: Awaited<ReturnType<Browser['newPage']>>;
 const current = () => new URL(page.url()).hash;
 const state = (id: string) => page.evaluate((sourceId: string) =>
   [...document.querySelectorAll<HTMLElement>(`.course-frame[data-source-id="${sourceId}"] .course-step`)]
@@ -31,6 +39,16 @@ const wheel = async (deltaY: number, modifiers = 0) => {
 };
 
 try {
+  if (server) {
+    await new Promise<void>(resolve => server.once('listening', resolve));
+    const address = server.address();
+    if (!address || typeof address === 'string') throw new Error('Cannot start Slidev delivery server.');
+    origin = `http://127.0.0.1:${address.port}`;
+  }
+  if (!origin) throw new Error('No delivery origin is available.');
+  browser = await launchBrowser();
+  page = await browser.newPage();
+  await page.setViewport({ width: 1280, height: 800 });
   const topic = manifest.topics.find((item: { id: string }) => item.id === '03-data-structures-3')
     || manifest.topics.find((item: { id: string }) => item.id === '02-variables-and-data-types-2');
   require(topic, 'Could not find a representative source topic.');
@@ -111,6 +129,6 @@ try {
   require(current() === boundaryFrom, 'Wheel-up did not cross the slide boundary in reverse.');
   console.log(`PASS wheel slide boundary forward/reverse: ${boundaryFrom} -> ${boundaryTo}`);
 } finally {
-  await browser.close();
-  await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
+  await browser?.close();
+  if (server) await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
 }
