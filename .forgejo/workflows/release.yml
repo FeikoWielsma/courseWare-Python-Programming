@@ -258,16 +258,30 @@ jobs:
           if [ -n "${EXISTING_ID}" ]; then
             curl -sf -X DELETE -H "Authorization: token ${GITHUB_TOKEN}" "${API}/releases/${EXISTING_ID}"
           fi
-          curl -sf -X DELETE -H "Authorization: token ${GITHUB_TOKEN}" "${API}/git/refs/tags/latest" || true
+          TAG_STATUS=$(curl -s -o /dev/null -w '%{http_code}' \
+            -H "Authorization: token ${GITHUB_TOKEN}" "${API}/tags/latest")
+          if [ "${TAG_STATUS}" = "200" ]; then
+            curl -sf -X DELETE -H "Authorization: token ${GITHUB_TOKEN}" "${API}/tags/latest"
+          elif [ "${TAG_STATUS}" != "404" ]; then
+            echo "Cannot inspect latest tag: HTTP ${TAG_STATUS}"
+            exit 1
+          fi
 
           # Create fresh latest release
           RELEASE=$(curl -sf -X POST \
             -H "Authorization: token ${GITHUB_TOKEN}" \
             -H "Content-Type: application/json" \
-            -d "{\"tag_name\":\"latest\",\"name\":\"Latest build\",\"body\":\"Built from commit \`${SHORT_SHA}\`\",\"prerelease\":true}" \
+            -d "{\"tag_name\":\"latest\",\"target_commitish\":\"${GITHUB_SHA}\",\"name\":\"Latest build\",\"body\":\"Built from commit \`${SHORT_SHA}\`\",\"prerelease\":true}" \
             "${API}/releases")
 
           RELEASE_ID=$(echo "${RELEASE}" | bun -e "const fs = require('fs'); console.log(JSON.parse(fs.readFileSync(0, 'utf-8')).id);")
+
+          TAG_SHA=$(curl -sf -H "Authorization: token ${GITHUB_TOKEN}" "${API}/tags/latest" \
+            | bun -e "const fs = require('fs'); console.log(JSON.parse(fs.readFileSync(0, 'utf-8')).commit.sha);")
+          if [ "${TAG_SHA}" != "${GITHUB_SHA}" ]; then
+            echo "Release tag points at ${TAG_SHA}, expected ${GITHUB_SHA}"
+            exit 1
+          fi
 
           for asset in "${SLIDES_PDF}" "${MARP_PDF}" "${MARP_HTML}" "${EXERCISES_PDF}" "${EXERCISES_HTML}" libraries/PRG400-Python-Libraries-and-Tools*.pdf libraries/PRG400-Python-Libraries-and-Tools*.html; do
             echo "Uploading ${asset}..."
