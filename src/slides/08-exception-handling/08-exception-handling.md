@@ -362,7 +362,6 @@ except InvalidDurationError as error:
 ```
 
 - `InvalidDurationError` is also a `ValueError`; the existing broader handler still matches
-- This small class needs no methods; Classes covers class definitions in detail
 
 > `demo10 · userdefinedexceptions`
 

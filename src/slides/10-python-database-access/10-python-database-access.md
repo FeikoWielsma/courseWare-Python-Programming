@@ -87,9 +87,7 @@ import sqlite3
 con = sqlite3.connect("watchlist.db")
 with con:
     cur = con.cursor()
-    cur.execute("CREATE TABLE IF NOT EXISTS films(id INTEGER PRIMARY KEY, title TEXT)")
     cur.execute("SELECT COUNT(*) FROM films")
-    print(f"Films on the watchlist: {cur.fetchone()[0]}")
 con.close()  # `with con:` commits or rolls back, it does not close
 ```
 
@@ -98,10 +96,11 @@ con.close()  # `with con:` commits or rolls back, it does not close
 - `closing()` from `contextlib` calls `close()` when the block ends, so one `with` line can commit and close :
 
 ```python
+from contextlib import closing
+
 with closing(sqlite3.connect("watchlist.db")) as con, con:
     cur = con.cursor()
     cur.execute("SELECT COUNT(*) FROM films")
-    print(f"Films on the watchlist: {cur.fetchone()[0]}")
 ```
 
 > `demo02 · usingwith`
