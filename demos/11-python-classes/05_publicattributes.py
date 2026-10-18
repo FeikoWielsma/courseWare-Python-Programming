@@ -1,9 +1,10 @@
-class Square:
-    def __init__(self, length: float) -> None:
-        self.length = length
+class Character:
+    def __init__(self, name: str, health: int) -> None:
+        self.name = name
+        self.health = health
 
 
-sq = Square(5)
-print(sq.length)  # read it
-sq.length = 6  # write it
-print(sq.length)
+hero = Character("Aria", 100)
+print(hero.health)  # read it
+hero.health = 80  # write it
+print(hero.health)

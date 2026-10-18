@@ -1,17 +1,17 @@
-class Car:
-    wheels = 4  # class attribute, one value shared by every car
+class Character:
+    max_health = 100  # class attribute, one value shared by every character
 
-    def __init__(self, plate: str) -> None:
-        self.plate = plate  # instance attribute, one value per car
+    def __init__(self, name: str) -> None:
+        self.name = name  # instance attribute, one value per character
 
 
-a = Car("ABC 111")
-b = Car("XYX 123")
-print(a.plate, b.plate)  # ABC 111 XYX 123
-print(a.wheels, b.wheels)  # 4 4
+hero = Character("Aria")
+mage = Character("Lumi")
+print(hero.name, mage.name)  # Aria Lumi
+print(hero.max_health, mage.max_health)  # 100 100
 
-Car.wheels = 6  # changes the shared value
-print(a.wheels, b.wheels)  # 6 6
+Character.max_health = 120  # changes the shared value
+print(hero.max_health, mage.max_health)  # 120 120
 
-a.wheels = 3  # creates an instance attribute on a only
-print(a.wheels, b.wheels, Car.wheels)  # 3 6 6
+hero.max_health = 150  # creates an instance attribute on hero only
+print(hero.max_health, mage.max_health, Character.max_health)  # 150 120 120
