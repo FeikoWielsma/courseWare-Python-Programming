@@ -9,25 +9,25 @@ pills: ["demo07 · tryfinally"]
 <script setup>
 const run = {
   "frames": [
-    {"id": "module", "label": "<module>", "clauses": [{"id": "try", "text": "try:"}, {"id": "except", "text": "except ZeroDivisionError:"}]},
-    {"id": "divide", "label": "divide()", "clauses": [{"id": "try", "text": "try:"}, {"id": "finally", "text": "finally:"}]}
+    {"id": "module", "label": "<module>", "clauses": [{"id": "try", "text": "try:"}, {"id": "except", "text": "except ValueError:"}]},
+    {"id": "parse_seconds", "label": "parse_seconds()", "clauses": [{"id": "try", "text": "try:"}, {"id": "finally", "text": "finally:"}]}
   ],
-  "exceptions": {"zde": {"type": "ZeroDivisionError", "message": "division by zero"}},
+  "exceptions": {"zde": {"type": "ValueError", "message": "invalid literal for int() with base 10: 'live'"}},
   "states": [
-    {"frames": ["module", "divide"], "clauses": {"module.try": "run"}, "exception": null},
-    {"frames": ["module", "divide"], "clauses": {"module.try": "run", "divide.try": "raised"}, "exception": {"id": "zde", "at": "divide.try", "handled": false}},
-    {"frames": ["module", "divide"], "clauses": {"module.try": "run", "divide.try": "raised", "divide.finally": "run"}, "exception": {"id": "zde", "at": "divide.finally", "handled": false}},
+    {"frames": ["module", "parse_seconds"], "clauses": {"module.try": "run"}, "exception": null},
+    {"frames": ["module", "parse_seconds"], "clauses": {"module.try": "run", "parse_seconds.try": "raised"}, "exception": {"id": "zde", "at": "parse_seconds.try", "handled": false}},
+    {"frames": ["module", "parse_seconds"], "clauses": {"module.try": "run", "parse_seconds.try": "raised", "parse_seconds.finally": "run"}, "exception": {"id": "zde", "at": "parse_seconds.finally", "handled": false}},
     {"frames": ["module"], "clauses": {"module.try": "raised"}, "exception": {"id": "zde", "at": "module.try", "handled": false}},
     {"frames": ["module"], "clauses": {"module.try": "raised", "module.except": "match"}, "exception": {"id": "zde", "at": "module.except", "handled": false}},
     {"frames": ["module"], "clauses": {"module.try": "raised", "module.except": "match"}, "exception": {"id": "zde", "at": "module.except", "handled": true}}
   ],
-  "output": [[], [], ["This always runs"], [], [], ["Cannot divide by zero"]],
+  "output": [[], [], ["Duration check finished"], [], [], ["Duration unavailable"]],
   "captions": [
-    "The `try` block calls `divide(10, 0)`",
-    "`total / count` raises `ZeroDivisionError`, so `return` hands nothing back",
+    "The `try` block calls `parse_seconds('live')`",
+    "`int(text)` raises `ValueError`, so `return` hands nothing back",
     "On the way out, `finally` runs; the exception still has no handler",
-    "`divide` has no handler, so the call ends and the exception reaches its caller",
-    "`except ZeroDivisionError` matches the exception",
+    "`parse_seconds` has no handler, so the call ends and the exception reaches its caller",
+    "`except ValueError` matches the exception",
     "The handler runs; the program continues after the `try` statement"
   ]
 }
@@ -36,17 +36,17 @@ const run = {
 <DataStructuresRun :run="run" layout="side">
 
 ```python {8-9|2-3|4-5|9|10|11}
-def divide(total: int, count: int) -> float:
+def parse_seconds(text: str) -> int:
     try:
-        return total / count
+        return int(text)
     finally:
-        print("This always runs")
+        print("Duration check finished")
 
 
 try:
-    divide(10, 0)
-except ZeroDivisionError:
-    print("Cannot divide by zero")
+    parse_seconds("live")
+except ValueError:
+    print("Duration unavailable")
 ```
 
 <template #visual="{ step }">

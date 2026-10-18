@@ -1,22 +1,20 @@
-"""Annotating variables and function signatures."""
-
-age: int = 25
-height: float = 1.87
-name: str = "Alice"
-is_student: bool = True
-
-print(age, height, name, is_student)
+seconds: int = 222
+size_mb: float = 8.5
+title: str = "Orbit"
+is_favourite: bool = True
 
 
-def area(width: float, height: float) -> float:
-    """Return the area of a rectangle."""
-    return width * height
+def format_duration(seconds: int) -> str:
+    minutes = seconds // 60
+    remainder = seconds % 60
+    return f"{minutes}:{remainder:02d}"
 
 
-def log_message(message: str) -> None:
-    """Print a message and return nothing."""
-    print(message)
+def print_playlist(name: str, tracks: list[str]) -> None:
+    print(f"Playlist: {name}")
+    for number, title in enumerate(tracks, start=1):
+        print(f"{number}. {title}")
 
 
-print(area(3.0, 4.0))
-log_message("annotated and run")
+print(format_duration(seconds))
+print_playlist("Night drive", [title, "Echo"])

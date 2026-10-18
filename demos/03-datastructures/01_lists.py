@@ -1,4 +1,4 @@
-list1 = ["abcd", 786, 2.23, "john", True]
+list1 = ["Intro", "Orbit", "Echo", "Pulse", "Outro"]
 print(list1)  # Prints complete list
 print(list1[0])  # Prints first element of the list
 print(list1[1:3])  # Prints the 2nd and 3rd elements

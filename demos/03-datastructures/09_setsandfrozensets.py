@@ -16,10 +16,10 @@ frozen = frozenset(numbers)
 print(frozen)  # frozenset({3, 4})
 # frozen.add(5)  # AttributeError: 'frozenset' object has no attribute 'add'
 
-physics = {"Einstein", "Bohr", "Curie", "Fermi"}
-chemistry = {"Curie", "Rutherford", "Pauling"}
-print("Curie" in chemistry)  # True
-print(sorted(physics | chemistry))  # union, in either set
-print(sorted(physics & chemistry))  # intersection, in both
-print(sorted(physics - chemistry))  # difference, in physics only
-print(sorted(physics ^ chemistry))  # in one of the two, not both
+day_one = {"Nova", "Echo", "Pulse", "Orbit"}
+day_two = {"Pulse", "Muse", "Vega"}
+print("Pulse" in day_two)  # True
+print(sorted(day_one | day_two))  # union, in either set
+print(sorted(day_one & day_two))  # intersection, in both
+print(sorted(day_one - day_two))  # difference, in day_one only
+print(sorted(day_one ^ day_two))  # in one of the two, not both

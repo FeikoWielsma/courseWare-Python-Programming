@@ -19,11 +19,11 @@ footer: Variables and Data Types
   - A name does not need a separate declaration before assignment
 
 ```python
-counter = 100  # An integer assignment
-miles = 1000.0  # A floating point
-name = "John"  # A string
+duration = 222  # Track length in seconds
+size_mb = 8.5  # Photo file size
+title = "Orbit"  # Track title
 ```
-- Python language does not have constants
+- Uppercase names such as `MAX_VOLUME` mark values intended to stay constant
 
 > `demo01 · variables`
 
@@ -142,26 +142,21 @@ a, b, c = 1, 2, "john"
 
 # Annotating Variables
 
-- A variable can carry a type hint saying what it is meant to hold :
+- A variable annotation records what a value is intended to represent :
 
 ```python
-age: int = 25
-height: float = 1.87
-name: str = "Alice"
-is_student: bool = True
+seconds: int = 222
+size_mb: float = 8.5
+title: str = "Orbit"
+is_favourite: bool = True
 ```
 
-- The hint changes nothing at runtime :
-  - Python still stores whatever it is given, and still checks types only when
-    an operation is attempted
-  - The annotation records the intent, so that a reader and a tool can see it
-- It is worth writing where the type is not obvious from the value :
-  - `total: float = 0` says that the running total will not stay an integer
-  - An editor can then complete and check against the annotation
-- Annotations appear throughout the rest of this course :
-  - Collections in the data structures module, functions in the functions module
-  - The appendix gathers them up and adds a checker
-
+- An annotation does not change runtime behaviour :
+  - It does not convert a value or prevent another type from being assigned
+  - Editors and type checkers use it to find mismatches
+- An annotation is useful when the intended type is unclear :
+  - `total_mb: float = 0` records that a total may later include fractions
+- Collection annotations and function signatures are introduced with those subjects
 
 ---
 
@@ -218,26 +213,25 @@ del var_a, var_b
 
 # Conversion Functions
 
-- Functions to convert between built-in types :
-
-| Function | Description |
-|---|---|
-| `str(x)` | Converts object x to a string representation |
-| `repr(x)` | Converts object x to an expression string |
-| `eval(expression)` | Evaluates a Python expression and returns result |
-| `chr(x)` | Converts an integer Unicode codepoint to a character |
-| `ord(x)` | Converts character to integer representing Unicode code point |
-| `hex(x)` | Converts an integer to a hexadecimal string |
-| `oct(x)` | Converts an integer to an octal string |
+- Convert text to a number before using it in arithmetic :
 
 ```python
-y2 = repr("abc")  # y2 is "'abc'"
-y3 = str("abc")   # y3 is 'abc'
-i = 65
-print(chr(i))    # A
-print(hex(i))    # 0x41
-print(ord("A"))  # 65
+duration_text = "222"
+duration = int(duration_text)
+print(duration + 30)  # 252
+print(str(duration))  # 222
+print(repr(" Orbit "))  # ' Orbit '
 ```
+
+- `str` produces display text; `repr` exposes quotes and whitespace
+- Other conversions are useful when inspecting character and byte values :
+
+| Function | Result |
+| --- | --- |
+| `chr(65)` | `'A'` |
+| `ord("A")` | `65` |
+| `hex(65)` | `'0x41'` |
+| `oct(65)` | `'0o101'` |
 
 > `demo06 · conversionfunctions`
 
@@ -270,7 +264,7 @@ print(ord("A"))  # 65
 
 ```python
 print(7 / 2)  # 3.5, true division always gives a float
-print(7 // 2)  # 3, floor division drops the fraction
+print(7 // 2)  # 3, floor division rounds down
 print(7 % 2)  # 1, the remainder
 print(2**10)  # 1024, exponentiation
 ```
@@ -401,27 +395,21 @@ print(2**3**2)  # 512, ** groups from the right
 
 # Python Strings
 
-- Strings are sequences of characters between quotation marks :
-  - Pairs of single `'` quotes, of double `"` quotes and of triple (''' or """) quotes supported
-  - There is no distinction between single and double quoted strings
-- Creating strings is as simple as assigning a value to a variable :
+- A string is a sequence of Unicode characters between matching quotes :
+  - Single and double quotes produce the same type
+  - Triple quotes allow the text to span lines
 
 ```python
-var1 = "Hello World!"
-var2 = "Python Programming"
+filename = "IMG_0421.jpg"
+title = "Orbit"
 ```
 
-- Python does not support a character type :
-  - Characters are treated as strings of length one, thus also considered a substring
-  - To access substrings, use square brackets for slicing along with the index
-
-```python
-print("var2[1:5]:", var2[1:5])
-```
-
-  - Indexes start at 0 in beginning of the string, then upwards and to -1 at the end
-- Strings are immutable data types like Numbers :
-  - Changing the value of a string data type results in a newly allocated object
+- Indexing selects one character; slicing selects a section :
+  - The first position is `0`; negative indexes count from the end
+  - The stop position of a slice is excluded
+  - A single character is still a string
+- Strings are immutable :
+  - A changed filename is a new string; the original value is preserved
 
 ---
 
@@ -441,35 +429,27 @@ print("var2[1:5]:", var2[1:5])
 
 # String Operations
 
-- Examples :
+- Indexes and slices select parts of a photo filename :
 
 ```python
-print(str1)  # Prints complete string
-print(str1[0])  # Prints first character of the string
-print(str1[-1])  # Prints last character of the string
-print(str1[2:5])  # Prints characters starting from 3rd through 5th
-print(str1 * 2)  # Prints string two times
-print(str1 + "TEST")  # Prints concatenated string
-print(str1[::-1])  # Prints string backwards
+filename = "IMG_0421.jpg"
+print(filename[0])  # I
+print(filename[-1])  # g
+print(filename[4:8])  # 0421
+print(filename[-4:])  # .jpg
+print(".jpg" in filename)  # True
 ```
 
-- String updated by assigning part of it to new string :
-  - New value can be related to its previous value or to a completely different string
+- Concatenation builds a new name without changing the original :
 
 ```python
-var1 = "Hello World!"
-var2 = var1[:6] + "Python"
-print("Updated String :-", var2)
+edited = filename[:-4] + "_edit.jpg"
+print(edited)  # IMG_0421_edit.jpg
+print(filename)  # IMG_0421.jpg
 ```
 
-- Result :
-
-
-
-```text
-Updated String :- Hello Python
-```
-- New string var2 will have different id
+- Repetition can produce a separator : `"-" * 12`
+- A negative step reverses the characters : `filename[::-1]`
 
 > `demo10 · stringoperations`
 
@@ -527,29 +507,27 @@ print(r"C:\nowhere")
 
 # f-Strings
 
-- An f-string is a string literal with an `f` in front of the opening quote :
-  - Each `{expression}` inside it is evaluated, and its value takes its place
-  - Any expression works, including arithmetic and method calls
+- An f-string inserts values into text using `{...}` fields :
+  - Put `f` before the opening quote
+  - Fields can contain arithmetic and method calls
 
 ```python
-name = "Albert"
-age = 55
-print(f"My name is {name} and my age is {age}")
-print(f"{name.upper()} will be {age + 1} next year")
+title = "Orbit"
+seconds = 222
+print(f"Now playing: {title.upper()}")
+print(f"With a 30-second intro: {seconds + 30} seconds")
 ```
 
 ```text
-My name is Albert and my age is 55
-ALBERT will be 56 next year
+Now playing: ORBIT
+With a 30-second intro: 252 seconds
 ```
 
-- Two markers after the expression change what is shown :
-  - `!r` shows the value as `repr()` does, a string with its quotes
-  - `=` shows the expression as well as its value, which helps when debugging
+- `!r` shows quotes and whitespace; `=` also shows the field's name :
 
 ```python
-print(f"{name!r}")  # 'Albert', the repr() with its quotes
-print(f"{age = }")  # age = 55, the expression and its value
+print(f"{title!r}")  # 'Orbit', quotes remain visible
+print(f"{seconds = }")  # seconds = 222, useful during debugging
 ```
 
 > `demo12 · f-strings`
@@ -558,68 +536,29 @@ print(f"{age = }")  # age = 55, the expression and its value
 
 # Format Specifications
 
-- A colon after the expression starts a format specification :
-
-<svg viewBox="0 0 960 240" width="100%" style="width:100%;height:auto;display:block;margin:10px 0 6px" role="img" aria-label="Each replacement field of the f-string renders its expression with its format specification into the result string">
-<g fill="currentColor" font-size="17" opacity="0.75" text-anchor="middle">
-<text x="152" y="52">art is 453</text>
-<text x="488" y="52">price is 59.058</text>
-</g>
-<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="currentColor">
-<text x="20" y="92" textLength="72" lengthAdjust="spacingAndGlyphs">f"Art:</text>
-<text x="104" y="92" textLength="96" lengthAdjust="spacingAndGlyphs">{art:5d}</text>
-<text x="200" y="92" textLength="204" lengthAdjust="spacingAndGlyphs">, Price per Unit:</text>
-<text x="416" y="92" textLength="144" lengthAdjust="spacingAndGlyphs">{price:8.2f}</text>
-<text x="560" y="92" textLength="12" lengthAdjust="spacingAndGlyphs">"</text>
-</g>
-<g fill="none" stroke="currentColor" stroke-width="2">
-<rect x="102" y="72" width="100" height="28" rx="3"/>
-<rect x="414" y="72" width="148" height="28" rx="3"/>
-</g>
-<defs>
-<marker id="fs-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-<path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
-</marker>
-</defs>
-<g fill="none" stroke="currentColor" stroke-width="1.8" marker-end="url(#fs-arrow)">
-<path d="M 152 100 L 152 140 L 110 140 L 110 186"/>
-<path d="M 488 100 L 488 140 L 404 140 L 404 186"/>
-</g>
-<g fill="currentColor" opacity="0.12">
-<rect x="80" y="188" width="60" height="38"/>
-<rect x="356" y="188" width="96" height="38"/>
-</g>
-<g fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5">
-<rect x="20" y="188" width="432" height="38"/>
-</g>
-<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="currentColor">
-<text x="20" y="214" textLength="48" lengthAdjust="spacingAndGlyphs">Art:</text>
-<text x="140" y="214" textLength="36" lengthAdjust="spacingAndGlyphs" text-anchor="end">453</text>
-<text x="140" y="214" textLength="204" lengthAdjust="spacingAndGlyphs">, Price per Unit:</text>
-<text x="452" y="214" textLength="60" lengthAdjust="spacingAndGlyphs" text-anchor="end">59.06</text>
-</g>
-<g fill="currentColor" font-size="17" opacity="0.75">
-<text x="600" y="124">5d : an integer, 5 wide</text>
-<text x="600" y="152">8.2f : a float, 8 wide, 2 decimals</text>
-<text x="480" y="214">result string</text>
-</g>
-</svg>
-
-- The specification sets the width, the alignment and the decimals :
+- A colon inside a field introduces its display format :
 
 ```python
-print(f"[{'Curie':<10}]")  # [Curie     ]
-print(f"[{'Curie':^10}]")  # [  Curie   ]
-print(f"[{'Curie':>10}]")  # [     Curie]
-print(f"{1234567.891:,.2f}")  # 1,234,567.89
-print(f"{0.25:.0%}")  # 25%
+photo_id = 421
+size_mb = 8.537
+print(f"Photo {photo_id:05d}: {size_mb:6.2f} MB")
 ```
 
-- Older code formats the same way with `%` or `str.format`, recognise them :
+- The result is `Photo 00421:   8.54 MB`
+
+| Format | Effect |
+| --- | --- |
+| `05d` | Integer padded to five digits with zeroes |
+| `6.2f` | Number six characters wide, with two decimal places |
+| `<10`, `^10`, `>10` | Left, centre or right alignment in ten characters |
+| `:,.0f` | Thousands separators and no decimals |
+| `:.0%` | Percentage with no decimals |
+
+- Older code uses `%` or `str.format`; recognise these forms :
 
 ```python
-print("Art: %5d, Price per Unit: %8.2f" % (art, price))
-print("Art: {:5d}, Price per Unit: {:8.2f}".format(art, price))
+print("Photo %05d: %6.2f MB" % (photo_id, size_mb))
+print("Photo {:05d}: {:6.2f} MB".format(photo_id, size_mb))
 ```
 
 > `demo13 · formatspecs`
@@ -628,39 +567,40 @@ print("Art: {:5d}, Price per Unit: {:8.2f}".format(art, price))
 
 # Triple Quotes
 
-- Allow strings to span multiple lines :
-  - Including verbatim NEWLINEs, TABs, and any other special characters
-- Syntax consists of three consecutive single or double quotes :
+- A triple-quoted string keeps line breaks written in the source :
 
 ```python
-para_str = """this string is made up of several lines and non-printable
-characters such as TAB ( \t ) and they will show up that way when displayed.
-NEWLINEs within the string, whether explicitly given like this within the
-brackets [ \n ], or just a NEWLINE within
-the variable assignment will also show up."""
-print(para_str)
+message = """Tonight's playlist
+1. Orbit
+2. Echo
+Bring headphones."""
+print(message)
 ```
-
-- Result :
 
 ```text
-this string is made up of several lines and non-printable
-characters such as TAB (         ) and they will show up that way when displayed.
-NEWLINEs within the string, whether explicitly given like this within the
-brackets [
- ], or just a NEWLINE within
-the variable assignment will also show up.
+Tonight's playlist
+1. Orbit
+2. Echo
+Bring headphones.
 ```
 
-> `demo14 · triplequotes`
+- Both triple single quotes and triple double quotes are supported
+- Escape sequences such as `\n` and `\t` still work inside the string
 
+> `demo14 · triplequotes`
 
 ---
 
 # Built-in String Methods
 
-- String methods are called with dot notation : `"albert".upper()`
+- String methods are called with dot notation : `"Orbit".upper()`
   - A string never changes, so each method returns a new string or a value
+
+```python
+filename = "  IMG_0421.JPG  "
+clean = filename.strip().lower()
+print(repr(clean))  # 'img_0421.jpg'
+```
 
 | Method | Description |
 |---|---|
@@ -686,7 +626,7 @@ the variable assignment will also show up.
 # Summary : Variables and Data Types
 
 - A variable is a name bound to an object :
-  - Created on first assignment with `=`, and can be annotated, as in `age: int = 25`
+  - Created on first assignment with `=`, and can be annotated, as in `seconds: int = 222`
   - Every object has an identity, `id(x)`, a type, `type(x)`, and a value
 - Python is strongly typed :
   - Converting between types is explicit, with `int()`, `float()`, `str()` and `bool()`
@@ -696,6 +636,6 @@ the variable assignment will also show up.
 - Strings are immutable sequences of Unicode characters :
   - Indexed and sliced with `[]`, and have methods such as `strip()` and `split()`
 - f-strings are the way to format text :
-  - `f"{price:8.2f}"` sets the width and the decimals of the value it shows
+  - `f"{size_mb:6.2f}"` sets the width and the decimals of the value it shows
 
 > `exercise02 · Variables and Data Types`

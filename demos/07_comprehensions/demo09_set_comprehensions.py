@@ -1,7 +1,7 @@
-names = [" Sales ", "Stock", "sales", "Prices "]
-unique = {name.strip().lower() for name in names}
-print(sorted(unique))  # ['prices', 'sales', 'stock']
+titles = [" Orbit ", "Echo", "orbit", "Pulse "]
+unique = {title.strip().lower() for title in titles}
+print(sorted(unique))  # ['echo', 'orbit', 'pulse']
 
-csv_files = ["sales.csv", "notes.txt", "sales.csv", "stock.csv"]
-unique_csv = {name for name in csv_files if name.endswith(".csv")}
-print(sorted(unique_csv))  # ['sales.csv', 'stock.csv']
+files = ["cover.jpg", "notes.txt", "cover.jpg", "stage.jpg"]
+unique_photos = {name for name in files if name.endswith(".jpg")}
+print(sorted(unique_photos))  # ['cover.jpg', 'stage.jpg']

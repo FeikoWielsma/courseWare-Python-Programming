@@ -1,20 +1,20 @@
-t = ("Albert", "Einstein")
-print(t)  # ('Albert', 'Einstein')
+selection = ("Orbit", "Nova")
+print(selection)  # ('Orbit', 'Nova')
 
-v, s = t
+primary, backup = selection
 
-print(v)  # 'Albert'
-print(s)  # 'Einstein'
+print(primary)  # 'Orbit'
+print(backup)  # 'Nova'
 
-v, s = s, v
+primary, backup = backup, primary
 
-print(v)  # 'Einstein'
-print(s)  # 'Albert'
+print(primary)  # 'Nova'
+print(backup)  # 'Orbit'
 
 rows = [(1,), (2,)]
 for (number,) in rows:
     print(number)  # 1, then 2
 
-records = [(1, ("Albert", "Einstein"))]
-for number, (first, last) in records:
-    print(number, first, last)  # 1 Albert Einstein
+records = [(1, ("Orbit", "Nova"))]
+for number, (title, artist) in records:
+    print(number, title, artist)  # 1 Orbit Nova

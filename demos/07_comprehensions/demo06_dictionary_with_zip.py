@@ -1,4 +1,4 @@
-products = ["tea", "coffee", "cocoa"]
-quantities = [12, 8, 5]
-stock = dict(zip(products, quantities))
-print(stock)  # {'tea': 12, 'coffee': 8, 'cocoa': 5}
+titles = ["Orbit", "Echo", "Pulse"]
+lengths = [222, 185, 204]
+durations = dict(zip(titles, lengths))
+print(durations)

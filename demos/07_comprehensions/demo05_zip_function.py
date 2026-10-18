@@ -1,6 +1,6 @@
-products = ["tea", "coffee", "cocoa"]
-quantities = [12, 8, 5]
-pairs = list(zip(products, quantities))
-print(pairs)  # [('tea', 12), ('coffee', 8), ('cocoa', 5)]
-checked = list(zip(products, quantities, strict=True))
-print(checked)  # [('tea', 12), ('coffee', 8), ('cocoa', 5)]
+titles = ["Orbit", "Echo", "Pulse"]
+lengths = [222, 185, 204]
+pairs = list(zip(titles, lengths))
+print(pairs)
+checked = list(zip(titles, lengths, strict=True))
+print(checked)

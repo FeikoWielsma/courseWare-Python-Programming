@@ -1,10 +1,10 @@
 ---
 layout: default
-title: Using the Returned Delivery Cost
+title: Using the Returned Duration
 pills: ["demo02 · returnstatement"]
 ---
 
-# Using the Returned Delivery Cost
+# Using the Returned Duration
 
 <script setup>
 const run = {
@@ -15,187 +15,227 @@ const run = {
     },
     {
       "id": "call",
-      "label": "delivery_cost()"
+      "label": "format_duration()"
     }
   ],
   "order": [
     "fn",
-    "amount",
-    "fee",
-    "grand"
+    "seconds",
+    "minutes",
+    "remainder",
+    "label",
+    "message"
   ],
   "states": [
     {
       "names": {
         "global": {
-          "delivery_cost": "fn"
+          "format_duration": "fn"
         }
       },
       "objects": {
         "fn": {
           "type": "function",
-          "value": "delivery_cost"
+          "value": "format_duration"
         }
       },
       "active": [
-        "global.delivery_cost"
+        "global.format_duration"
       ]
     },
     {
       "names": {
         "global": {
-          "delivery_cost": "fn"
+          "format_duration": "fn"
         },
         "call": {
-          "total": "amount"
+          "seconds": "seconds"
         }
       },
       "objects": {
         "fn": {
           "type": "function",
-          "value": "delivery_cost"
+          "value": "format_duration"
         },
-        "amount": {
-          "type": "float",
-          "value": "35.0"
+        "seconds": {
+          "type": "int",
+          "value": "222"
         }
       },
       "active": [
-        "call.total"
+        "call.seconds"
       ]
     },
     {
       "names": {
         "global": {
-          "delivery_cost": "fn"
+          "format_duration": "fn"
         },
         "call": {
-          "total": "amount"
+          "seconds": "seconds",
+          "minutes": "minutes"
         }
       },
       "objects": {
         "fn": {
           "type": "function",
-          "value": "delivery_cost"
+          "value": "format_duration"
         },
-        "amount": {
-          "type": "float",
-          "value": "35.0"
+        "seconds": {
+          "type": "int",
+          "value": "222"
+        },
+        "minutes": {
+          "type": "int",
+          "value": "3"
         }
       },
       "active": [
-        "call.total"
+        "call.minutes"
       ]
     },
     {
       "names": {
         "global": {
-          "delivery_cost": "fn"
+          "format_duration": "fn"
         },
         "call": {
-          "total": "amount",
-          "return": "fee"
+          "seconds": "seconds",
+          "minutes": "minutes",
+          "remainder": "remainder"
         }
       },
       "objects": {
         "fn": {
           "type": "function",
-          "value": "delivery_cost"
+          "value": "format_duration"
         },
-        "amount": {
-          "type": "float",
-          "value": "35.0"
+        "seconds": {
+          "type": "int",
+          "value": "222"
         },
-        "fee": {
-          "type": "float",
-          "value": "4.95"
+        "minutes": {
+          "type": "int",
+          "value": "3"
+        },
+        "remainder": {
+          "type": "int",
+          "value": "42"
+        }
+      },
+      "active": [
+        "call.remainder"
+      ]
+    },
+    {
+      "names": {
+        "global": {
+          "format_duration": "fn"
+        },
+        "call": {
+          "seconds": "seconds",
+          "minutes": "minutes",
+          "remainder": "remainder",
+          "return": "label"
+        }
+      },
+      "objects": {
+        "fn": {
+          "type": "function",
+          "value": "format_duration"
+        },
+        "seconds": {
+          "type": "int",
+          "value": "222"
+        },
+        "minutes": {
+          "type": "int",
+          "value": "3"
+        },
+        "remainder": {
+          "type": "int",
+          "value": "42"
+        },
+        "label": {
+          "type": "str",
+          "value": "'3:42'"
         }
       },
       "active": [
         "call.return"
-      ],
-      "mark": {
-        "object": "fee"
-      }
-    },
-    {
-      "names": {
-        "global": {
-          "delivery_cost": "fn",
-          "shipping": "fee"
-        }
-      },
-      "objects": {
-        "fn": {
-          "type": "function",
-          "value": "delivery_cost"
-        },
-        "amount": {
-          "type": "float",
-          "value": "35.0"
-        },
-        "fee": {
-          "type": "float",
-          "value": "4.95"
-        }
-      },
-      "active": [
-        "global.shipping"
       ]
     },
     {
       "names": {
         "global": {
-          "delivery_cost": "fn",
-          "shipping": "fee",
-          "grand_total": "grand"
+          "format_duration": "fn",
+          "label": "label"
         }
       },
       "objects": {
         "fn": {
           "type": "function",
-          "value": "delivery_cost"
+          "value": "format_duration"
         },
-        "fee": {
-          "type": "float",
-          "value": "4.95"
-        },
-        "grand": {
-          "type": "float",
-          "value": "39.95"
+        "label": {
+          "type": "str",
+          "value": "'3:42'"
         }
       },
       "active": [
-        "global.grand_total"
-      ],
-      "mark": {
-        "object": "grand"
-      }
+        "global.label"
+      ]
     },
     {
       "names": {
         "global": {
-          "delivery_cost": "fn",
-          "shipping": "fee",
-          "grand_total": "grand"
+          "format_duration": "fn",
+          "label": "label",
+          "message": "message"
         }
       },
       "objects": {
         "fn": {
           "type": "function",
-          "value": "delivery_cost"
+          "value": "format_duration"
         },
-        "fee": {
-          "type": "float",
-          "value": "4.95"
+        "label": {
+          "type": "str",
+          "value": "'3:42'"
         },
-        "grand": {
-          "type": "float",
-          "value": "39.95"
+        "message": {
+          "type": "str",
+          "value": "'Orbit [3:42]'"
         }
       },
       "active": [
-        "global.grand_total"
+        "global.message"
+      ]
+    },
+    {
+      "names": {
+        "global": {
+          "format_duration": "fn",
+          "label": "label",
+          "message": "message"
+        }
+      },
+      "objects": {
+        "fn": {
+          "type": "function",
+          "value": "format_duration"
+        },
+        "label": {
+          "type": "str",
+          "value": "'3:42'"
+        },
+        "message": {
+          "type": "str",
+          "value": "'Orbit [3:42]'"
+        }
+      },
+      "active": [
+        "global.message"
       ]
     }
   ],
@@ -206,36 +246,38 @@ const run = {
     [],
     [],
     [],
+    [],
     [
-      "Order total: 39.95"
+      "Orbit [3:42]"
     ]
   ],
   "captions": [
-    "The definition names the delivery calculation",
-    "The call supplies an order total of `35.0`",
-    "The order is below `50.0`, so delivery is not free",
-    "`return 4.95` ends the call and supplies its result",
-    "The caller stores the returned charge in `shipping`",
-    "The caller adds `shipping` to the order total",
-    "The result can be used in the caller\u2019s calculation and printed"
+    "The definition binds the name `format_duration`",
+    "The call supplies a track length of `222` seconds",
+    "`222 // 60` gives `3` complete minutes",
+    "`222 % 60` gives `42` remaining seconds",
+    "The formatted string `3:42` is returned to the caller",
+    "The caller stores the returned string in `label`",
+    "The caller uses `label` to build a track description",
+    "The message is printed; the function binding and caller variables remain"
   ]
 }
 </script>
 
 <DataStructuresRun :run="run" layout="side" output-width="400px">
 
-```python {1|6|2|4|6|7|8}
-def delivery_cost(total):
-    if total >= 50.0:
-        return 0.0
-    return 4.95
+```python {1|6|2|3|4|6|7|8}
+def format_duration(seconds):
+    minutes = seconds // 60
+    remainder = seconds % 60
+    return f"{minutes}:{remainder:02d}"
 
-shipping = delivery_cost(35.0)
-grand_total = 35.0 + shipping
-print(f"Order total: {grand_total:.2f}")
+label = format_duration(222)
+message = f"Orbit [{label}]"
+print(message)
 ```
 
 <template #visual="{ step }">
-<CoreNames :run="run" :step="step" :frame-width="230" :gap="90" />
+<CoreNames :run="run" :step="step" :frame-width="250" :gap="70" />
 </template>
 </DataStructuresRun>

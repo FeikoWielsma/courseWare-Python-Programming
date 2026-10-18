@@ -1,10 +1,10 @@
 ---
 layout: default
-title: Adding an Export Column
+title: Adding an Encore
 pills: ["demo09 · objectreferences"]
 ---
 
-# Adding an Export Column
+# Adding an Encore
 
 <script setup>
 const run = {
@@ -15,7 +15,7 @@ const run = {
     },
     {
       "id": "call",
-      "label": "add_status_column()"
+      "label": "add_encore()"
     }
   ],
   "order": [
@@ -26,96 +26,96 @@ const run = {
     {
       "names": {
         "global": {
-          "add_status_column": "fn"
+          "add_encore": "fn"
         }
       },
       "objects": {
         "fn": {
           "type": "function",
-          "value": "add_status_column"
+          "value": "add_encore"
         }
       },
       "active": [
-        "global.add_status_column"
+        "global.add_encore"
       ]
     },
     {
       "names": {
         "global": {
-          "add_status_column": "fn",
-          "fields": "original"
+          "add_encore": "fn",
+          "queue": "original"
         }
       },
       "objects": {
         "fn": {
           "type": "function",
-          "value": "add_status_column"
+          "value": "add_encore"
         },
         "original": {
           "type": "list",
           "items": [
-            "'id'",
-            "'total'"
+            "'Orbit'",
+            "'Echo'"
           ]
         }
       },
       "active": [
-        "global.fields"
+        "global.queue"
       ]
     },
     {
       "names": {
         "global": {
-          "add_status_column": "fn",
-          "fields": "original"
+          "add_encore": "fn",
+          "queue": "original"
         },
         "call": {
-          "columns": "original"
+          "tracks": "original"
         }
       },
       "objects": {
         "fn": {
           "type": "function",
-          "value": "add_status_column"
+          "value": "add_encore"
         },
         "original": {
           "type": "list",
           "items": [
-            "'id'",
-            "'total'"
+            "'Orbit'",
+            "'Echo'"
           ]
         }
       },
       "active": [
-        "call.columns"
+        "call.tracks"
       ]
     },
     {
       "names": {
         "global": {
-          "add_status_column": "fn",
-          "fields": "original"
+          "add_encore": "fn",
+          "queue": "original"
         },
         "call": {
-          "columns": "original"
+          "tracks": "original"
         }
       },
       "objects": {
         "fn": {
           "type": "function",
-          "value": "add_status_column"
+          "value": "add_encore"
         },
         "original": {
           "type": "list",
           "items": [
-            "'id'",
-            "'total'",
-            "'status'"
+            "'Orbit'",
+            "'Echo'",
+            "'Encore'"
           ]
         }
       },
       "active": [
-        "call.columns"
+        "call.tracks"
       ],
       "mark": {
         "object": "original",
@@ -125,54 +125,54 @@ const run = {
     {
       "names": {
         "global": {
-          "add_status_column": "fn",
-          "fields": "original"
+          "add_encore": "fn",
+          "queue": "original"
         },
         "call": {
-          "columns": "original"
+          "tracks": "original"
         }
       },
       "objects": {
         "fn": {
           "type": "function",
-          "value": "add_status_column"
+          "value": "add_encore"
         },
         "original": {
           "type": "list",
           "items": [
-            "'id'",
-            "'total'",
-            "'status'"
+            "'Orbit'",
+            "'Echo'",
+            "'Encore'"
           ]
         }
       },
       "active": [
-        "call.columns"
+        "call.tracks"
       ]
     },
     {
       "names": {
         "global": {
-          "add_status_column": "fn",
-          "fields": "original"
+          "add_encore": "fn",
+          "queue": "original"
         }
       },
       "objects": {
         "fn": {
           "type": "function",
-          "value": "add_status_column"
+          "value": "add_encore"
         },
         "original": {
           "type": "list",
           "items": [
-            "'id'",
-            "'total'",
-            "'status'"
+            "'Orbit'",
+            "'Echo'",
+            "'Encore'"
           ]
         }
       },
       "active": [
-        "global.fields"
+        "global.queue"
       ]
     }
   ],
@@ -182,19 +182,19 @@ const run = {
     [],
     [],
     [
-      "Inside: ['id', 'total', 'status']"
+      "Inside: ['Orbit', 'Echo', 'Encore']"
     ],
     [
-      "After call: ['id', 'total', 'status']"
+      "After call: ['Orbit', 'Echo', 'Encore']"
     ]
   ],
   "captions": [
-    "`def` defines the task of adding the export column",
-    "`fields` refers to the original column list",
-    "The parameter `columns` refers to that same list",
-    "`append` adds `status` to the existing list",
-    "The function prints the updated column list",
-    "The caller sees the added column in `fields`"
+    "`def` defines the task of adding the encore mix track",
+    "`queue` refers to the original track list",
+    "The parameter `tracks` refers to that same list",
+    "`append` adds `Encore` to the existing list",
+    "The function prints the extended track list",
+    "The caller sees the added track in `queue`"
   ]
 }
 </script>
@@ -202,13 +202,13 @@ const run = {
 <DataStructuresRun :run="run" layout="stack" output-width="400px">
 
 ```python {1|5|6|2|3|7}
-def add_status_column(columns: list[str]) -> None:
-    columns.append("status")
-    print(f"Inside: {columns}")
+def add_encore(tracks: list[str]) -> None:
+    tracks.append("Encore")
+    print(f"Inside: {tracks}")
 
-fields = ["id", "total"]
-add_status_column(fields)
-print(f"After call: {fields}")
+queue = ["Orbit", "Echo"]
+add_encore(queue)
+print(f"After call: {queue}")
 ```
 
 <template #visual="{ step }">

@@ -9,19 +9,19 @@ pills: ["demo03 · typedexceptionhandling"]
 <script setup>
 const run = {
   "frames": [
-    {"id": "module", "label": "<module>", "clauses": [{"id": "try", "text": "try:"}, {"id": "notfound", "text": "except FileNotFoundError:"}, {"id": "oserror", "text": "except OSError as error:"}, {"id": "else", "text": "else:"}]}
+    {"id": "module", "label": "<module>", "clauses": [{"id": "try", "text": "try:"}, {"id": "notfound", "text": "except ValueError:"}, {"id": "oserror", "text": "except Exception as error:"}, {"id": "else", "text": "else:"}]}
   ],
-  "exceptions": {"fnf": {"type": "FileNotFoundError", "message": "[Errno 2] No such file or directory: 'somefile'"}},
+  "exceptions": {"fnf": {"type": "ValueError", "message": "invalid literal for int() with base 10: 'three'"}},
   "states": [
     {"frames": ["module"], "clauses": {"module.try": "raised"}, "exception": {"id": "fnf", "at": "module.try", "handled": false}},
     {"frames": ["module"], "clauses": {"module.try": "raised", "module.notfound": "match"}, "exception": {"id": "fnf", "at": "module.notfound", "handled": false}},
     {"frames": ["module"], "clauses": {"module.try": "raised", "module.notfound": "match", "module.oserror": "unchecked", "module.else": "skip"}, "exception": {"id": "fnf", "at": "module.notfound", "handled": true}}
   ],
-  "output": [[], [], ["The file does not exist"]],
+  "output": [[], [], ["Track length must be a whole number"]],
   "captions": [
-    "`open` raises `FileNotFoundError`, so `fh` is never bound",
-    "Python tries the handlers in order; the first, `FileNotFoundError`, matches",
-    "Its block runs; `except OSError` would also match but is not checked, and `else` is skipped"
+    "`int('three')` raises `ValueError`, so `seconds` is never bound",
+    "Python tries the handlers in order; the first, `ValueError`, matches",
+    "Its block runs; `except Exception` would also match but is not checked, and `else` is skipped"
   ]
 }
 </script>
@@ -30,13 +30,13 @@ const run = {
 
 ```python {1-2|3|4}
 try:
-    fh = open("somefile", "r")
-except FileNotFoundError:
-    print("The file does not exist")
-except OSError as error:
-    print(f"Cannot open the file: {error}")
+    seconds = int("three")
+except ValueError:
+    print("Track length must be a whole number")
+except Exception as error:
+    print(f"Other problem: {error}")
 else:
-    fh.close()
+    print(f"Track length: {seconds}")
 ```
 
 <template #visual="{ step }">

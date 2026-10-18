@@ -1,18 +1,16 @@
-delivery_fee = 4.95
-free_from = 50.0
+volume = 50
+queue_limit = 20
+
+def preview_volume() -> None:
+    volume = 10
+    print(f"Preview volume: {volume}")
 
 
-def preview_fee() -> None:
-    delivery_fee = 0.0
-    print(f"Preview fee: {delivery_fee:.2f}")
+def set_limit() -> None:
+    global queue_limit
+    queue_limit = 30
 
-
-def set_threshold() -> None:
-    global free_from
-    free_from = 75.0
-
-
-preview_fee()
-print(f"Current fee: {delivery_fee:.2f}")
-set_threshold()
-print(f"Free from: {free_from:.2f}")
+preview_volume()
+print(f"Current volume: {volume}")
+set_limit()
+print(f"Queue limit: {queue_limit}")

@@ -1,14 +1,6 @@
-"""Annotations are ignored while the program runs."""
+def repeat_track(title: str, count: int) -> list[str]:
+    return [title] * count
 
 
-def double(n: int) -> int:
-    """Double a number, at least when it is given one."""
-    return n * 2
-
-
-# The annotation says int. Passing a string is not an error at runtime :
-# str supports *, so this prints abab.
-print(double("ab"))
-
-# The annotations are kept, and can be read back.
-print(double.__annotations__)
+print(repeat_track(222, 2))  # [222, 222], despite the str annotation.
+print(repeat_track.__annotations__)

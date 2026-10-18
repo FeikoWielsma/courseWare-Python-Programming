@@ -1,10 +1,10 @@
-def print_dispatch(destination: str, *items: str, **details: str) -> None:
-    print(f"Send to {destination}")
-    for item in items:
-        print(f"- {item}")
-    for name, value in details.items():
-        print(f"{name}: {value}")
+def show_playlist(name: str, *tracks: str, **details: str) -> None:
+    print(f"Playlist: {name}")
+    for track in tracks:
+        print(f"- {track}")
+    for key, value in details.items():
+        print(f"{key}: {value}")
 
 
-print_dispatch("London", "keyboard", "mouse", service="express", reference="A104")
-print_dispatch("Paris", "monitor", service="standard")
+show_playlist("Night drive", "Orbit", "Echo", mood="calm", owner="Nova")
+show_playlist("Warm-up", "Pulse", mood="energetic")

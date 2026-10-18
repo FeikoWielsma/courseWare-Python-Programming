@@ -1,3 +1,3 @@
-orders = [("A104", 35.0), ("A105", 75.0), ("A106", 20.0)]
-by_total = sorted(orders, key=lambda order: order[1])
-print(by_total)
+tracks = [("Orbit", 222), ("Echo", 185), ("Pulse", 204)]
+by_length = sorted(tracks, key=lambda track: track[1])
+print(by_length)

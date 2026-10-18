@@ -1,10 +1,10 @@
 ---
 layout: default
-title: Local and Shared Delivery Settings
+title: Local and Shared Player Settings
 pills: ["demo15 · variablescope"]
 ---
 
-# Local and Shared Delivery Settings
+# Local and Shared Player Settings
 
 <script setup>
 const run = {
@@ -15,11 +15,11 @@ const run = {
     },
     {
       "id": "preview",
-      "label": "preview_fee()"
+      "label": "preview_volume()"
     },
     {
       "id": "settings",
-      "label": "set_threshold()"
+      "label": "set_limit()"
     }
   ],
   "order": [
@@ -27,307 +27,307 @@ const run = {
     "threshold",
     "preview_fn",
     "setter_fn",
-    "preview_fee",
+    "preview_volume",
     "new_threshold"
   ],
   "states": [
     {
       "names": {
         "global": {
-          "delivery_fee": "fee",
-          "free_from": "threshold"
+          "volume": "fee",
+          "queue_limit": "threshold"
         }
       },
       "objects": {
         "fee": {
-          "type": "float",
-          "value": "4.95"
+          "type": "int",
+          "value": "50"
         },
         "threshold": {
-          "type": "float",
-          "value": "50.0"
+          "type": "int",
+          "value": "20"
         }
       },
       "active": [
-        "global.delivery_fee",
-        "global.free_from"
+        "global.volume",
+        "global.queue_limit"
       ]
     },
     {
       "names": {
         "global": {
-          "delivery_fee": "fee",
-          "free_from": "threshold",
-          "preview_fee": "preview_fn",
-          "set_threshold": "setter_fn"
+          "volume": "fee",
+          "queue_limit": "threshold",
+          "preview_volume": "preview_fn",
+          "set_limit": "setter_fn"
         }
       },
       "objects": {
         "fee": {
-          "type": "float",
-          "value": "4.95"
+          "type": "int",
+          "value": "50"
         },
         "threshold": {
-          "type": "float",
-          "value": "50.0"
+          "type": "int",
+          "value": "20"
         },
         "preview_fn": {
           "type": "function",
-          "value": "preview_fee"
+          "value": "preview_volume"
         },
         "setter_fn": {
           "type": "function",
-          "value": "set_threshold"
+          "value": "set_limit"
         }
       },
       "active": [
-        "global.preview_fee",
-        "global.set_threshold"
+        "global.preview_volume",
+        "global.set_limit"
       ]
     },
     {
       "names": {
         "global": {
-          "delivery_fee": "fee",
-          "free_from": "threshold",
-          "preview_fee": "preview_fn",
-          "set_threshold": "setter_fn"
+          "volume": "fee",
+          "queue_limit": "threshold",
+          "preview_volume": "preview_fn",
+          "set_limit": "setter_fn"
         },
         "preview": {}
       },
       "objects": {
         "fee": {
-          "type": "float",
-          "value": "4.95"
+          "type": "int",
+          "value": "50"
         },
         "threshold": {
-          "type": "float",
-          "value": "50.0"
+          "type": "int",
+          "value": "20"
         },
         "preview_fn": {
           "type": "function",
-          "value": "preview_fee"
+          "value": "preview_volume"
         },
         "setter_fn": {
           "type": "function",
-          "value": "set_threshold"
+          "value": "set_limit"
         }
       },
       "active": [
-        "global.preview_fee"
+        "global.preview_volume"
       ]
     },
     {
       "names": {
         "global": {
-          "delivery_fee": "fee",
-          "free_from": "threshold",
-          "preview_fee": "preview_fn",
-          "set_threshold": "setter_fn"
+          "volume": "fee",
+          "queue_limit": "threshold",
+          "preview_volume": "preview_fn",
+          "set_limit": "setter_fn"
         },
         "preview": {
-          "delivery_fee": "preview_fee"
+          "volume": "preview_volume"
         }
       },
       "objects": {
         "fee": {
-          "type": "float",
-          "value": "4.95"
+          "type": "int",
+          "value": "50"
         },
         "threshold": {
-          "type": "float",
-          "value": "50.0"
+          "type": "int",
+          "value": "20"
         },
         "preview_fn": {
           "type": "function",
-          "value": "preview_fee"
+          "value": "preview_volume"
         },
         "setter_fn": {
           "type": "function",
-          "value": "set_threshold"
+          "value": "set_limit"
         },
-        "preview_fee": {
-          "type": "float",
-          "value": "0.0"
+        "preview_volume": {
+          "type": "int",
+          "value": "10"
         }
       },
       "active": [
-        "preview.delivery_fee"
+        "preview.volume"
       ]
     },
     {
       "names": {
         "global": {
-          "delivery_fee": "fee",
-          "free_from": "threshold",
-          "preview_fee": "preview_fn",
-          "set_threshold": "setter_fn"
+          "volume": "fee",
+          "queue_limit": "threshold",
+          "preview_volume": "preview_fn",
+          "set_limit": "setter_fn"
         },
         "preview": {
-          "delivery_fee": "preview_fee"
+          "volume": "preview_volume"
         }
       },
       "objects": {
         "fee": {
-          "type": "float",
-          "value": "4.95"
+          "type": "int",
+          "value": "50"
         },
         "threshold": {
-          "type": "float",
-          "value": "50.0"
+          "type": "int",
+          "value": "20"
         },
         "preview_fn": {
           "type": "function",
-          "value": "preview_fee"
+          "value": "preview_volume"
         },
         "setter_fn": {
           "type": "function",
-          "value": "set_threshold"
+          "value": "set_limit"
         },
-        "preview_fee": {
-          "type": "float",
-          "value": "0.0"
+        "preview_volume": {
+          "type": "int",
+          "value": "10"
         }
       },
       "active": [
-        "preview.delivery_fee"
+        "preview.volume"
       ]
     },
     {
       "names": {
         "global": {
-          "delivery_fee": "fee",
-          "free_from": "threshold",
-          "preview_fee": "preview_fn",
-          "set_threshold": "setter_fn"
+          "volume": "fee",
+          "queue_limit": "threshold",
+          "preview_volume": "preview_fn",
+          "set_limit": "setter_fn"
         }
       },
       "objects": {
         "fee": {
-          "type": "float",
-          "value": "4.95"
+          "type": "int",
+          "value": "50"
         },
         "threshold": {
-          "type": "float",
-          "value": "50.0"
+          "type": "int",
+          "value": "20"
         },
         "preview_fn": {
           "type": "function",
-          "value": "preview_fee"
+          "value": "preview_volume"
         },
         "setter_fn": {
           "type": "function",
-          "value": "set_threshold"
+          "value": "set_limit"
         },
-        "preview_fee": {
-          "type": "float",
-          "value": "0.0"
+        "preview_volume": {
+          "type": "int",
+          "value": "10"
         }
       },
       "active": [
-        "global.delivery_fee"
+        "global.volume"
       ]
     },
     {
       "names": {
         "global": {
-          "delivery_fee": "fee",
-          "free_from": "threshold",
-          "preview_fee": "preview_fn",
-          "set_threshold": "setter_fn"
+          "volume": "fee",
+          "queue_limit": "threshold",
+          "preview_volume": "preview_fn",
+          "set_limit": "setter_fn"
         },
         "settings": {}
       },
       "objects": {
         "fee": {
-          "type": "float",
-          "value": "4.95"
+          "type": "int",
+          "value": "50"
         },
         "threshold": {
-          "type": "float",
-          "value": "50.0"
+          "type": "int",
+          "value": "20"
         },
         "preview_fn": {
           "type": "function",
-          "value": "preview_fee"
+          "value": "preview_volume"
         },
         "setter_fn": {
           "type": "function",
-          "value": "set_threshold"
+          "value": "set_limit"
         }
       },
       "active": [
-        "global.set_threshold"
+        "global.set_limit"
       ]
     },
     {
       "names": {
         "global": {
-          "delivery_fee": "fee",
-          "free_from": "new_threshold",
-          "preview_fee": "preview_fn",
-          "set_threshold": "setter_fn"
+          "volume": "fee",
+          "queue_limit": "new_threshold",
+          "preview_volume": "preview_fn",
+          "set_limit": "setter_fn"
         },
         "settings": {
-          "global free_from": null
+          "global queue_limit": null
         }
       },
       "objects": {
         "fee": {
-          "type": "float",
-          "value": "4.95"
+          "type": "int",
+          "value": "50"
         },
         "threshold": {
-          "type": "float",
-          "value": "50.0"
+          "type": "int",
+          "value": "20"
         },
         "preview_fn": {
           "type": "function",
-          "value": "preview_fee"
+          "value": "preview_volume"
         },
         "setter_fn": {
           "type": "function",
-          "value": "set_threshold"
+          "value": "set_limit"
         },
         "new_threshold": {
-          "type": "float",
-          "value": "75.0"
+          "type": "int",
+          "value": "30"
         }
       },
       "active": [
-        "global.free_from",
-        "settings.global free_from"
+        "global.queue_limit",
+        "settings.global queue_limit"
       ]
     },
     {
       "names": {
         "global": {
-          "delivery_fee": "fee",
-          "free_from": "new_threshold",
-          "preview_fee": "preview_fn",
-          "set_threshold": "setter_fn"
+          "volume": "fee",
+          "queue_limit": "new_threshold",
+          "preview_volume": "preview_fn",
+          "set_limit": "setter_fn"
         }
       },
       "objects": {
         "fee": {
-          "type": "float",
-          "value": "4.95"
+          "type": "int",
+          "value": "50"
         },
         "preview_fn": {
           "type": "function",
-          "value": "preview_fee"
+          "value": "preview_volume"
         },
         "setter_fn": {
           "type": "function",
-          "value": "set_threshold"
+          "value": "set_limit"
         },
         "new_threshold": {
-          "type": "float",
-          "value": "75.0"
+          "type": "int",
+          "value": "30"
         }
       },
       "active": [
-        "global.free_from"
+        "global.queue_limit"
       ]
     }
   ],
@@ -337,27 +337,27 @@ const run = {
     [],
     [],
     [
-      "Preview fee: 0.00"
+      "Preview volume: 10"
     ],
     [
-      "Current fee: 4.95"
+      "Current volume: 50"
     ],
     [],
     [],
     [
-      "Free from: 75.00"
+      "Queue limit: 30"
     ]
   ],
   "captions": [
-    "The module stores the delivery fee and free-delivery threshold",
+    "The module stores the player volume and queue limit",
     "The definitions bind the two function names",
-    "`preview_fee()` starts a local scope",
-    "Its local `delivery_fee` is separate from the module\u2019s configured fee",
+    "`preview_volume()` starts a local scope",
+    "Its local `volume` is separate from the module\u2019s configured volume",
     "The preview prints its local value",
-    "After the call, the configured fee is still `4.95`",
-    "`set_threshold()` starts another local scope",
-    "`global free_from` directs the assignment to the module\u2019s name",
-    "The configured threshold is now `75.0`"
+    "After the call, the configured volume is still `50`",
+    "`set_limit()` starts another local scope",
+    "`global queue_limit` directs the assignment to the module\u2019s name",
+    "The queue limit is now `30`"
   ]
 }
 </script>
@@ -365,21 +365,21 @@ const run = {
 <DataStructuresRun :run="run" layout="side" output-width="400px">
 
 ```python {1-2|4,8|12|5|6|13|14|9-10|15}
-delivery_fee = 4.95
-free_from = 50.0
+volume = 50
+queue_limit = 20
 
-def preview_fee() -> None:
-    delivery_fee = 0.0
-    print(f"Preview fee: {delivery_fee:.2f}")
+def preview_volume() -> None:
+    volume = 10
+    print(f"Preview volume: {volume}")
 
-def set_threshold() -> None:
-    global free_from
-    free_from = 75.0
+def set_limit() -> None:
+    global queue_limit
+    queue_limit = 30
 
-preview_fee()
-print(f"Current fee: {delivery_fee:.2f}")
-set_threshold()
-print(f"Free from: {free_from:.2f}")
+preview_volume()
+print(f"Current volume: {volume}")
+set_limit()
+print(f"Queue limit: {queue_limit}")
 ```
 
 <template #visual="{ step }">

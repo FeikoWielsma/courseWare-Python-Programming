@@ -1,19 +1,19 @@
-li = ["physics", "chemistry", "biology", "computer science"]
+playlist = ["Intro", "Orbit", "Echo", "Outro"]
 
 print("Value available at index 2 : ")
-print(li[2])
-li[2] = "mathematics"
+print(playlist[2])
+playlist[2] = "Remix"
 print("New value available at index 2 : ")
-print(li[2])
+print(playlist[2])
 
-print(li)
-del li[2]
+print(playlist)
+del playlist[2]
 print("After deleting value at index 2 : ")
-print(li)  # ['physics', 'chemistry', 'computer science']
+print(playlist)  # ['Intro', 'Orbit', 'Outro']
 
-li.remove("physics")
-print("After deleting value 'physics' ")
-print(li)  # ['chemistry', 'computer science']
+playlist.remove("Intro")
+print("After deleting value 'Intro' ")
+print(playlist)  # ['Orbit', 'Outro']
 
 li2 = [1, 2, 3]
 li2.append(4)

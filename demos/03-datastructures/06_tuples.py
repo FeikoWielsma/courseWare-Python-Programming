@@ -1,4 +1,4 @@
-tup1 = ("physics", "chemistry", "biology", "computer science")
+tup1 = ("Intro", "Orbit", "Echo", "Outro")
 tup2 = (1, 2, 3, 4, 5)
 tup3 = "a", "b", "c", "d"  # not recommended
 tup4 = ()                  # empty tuple

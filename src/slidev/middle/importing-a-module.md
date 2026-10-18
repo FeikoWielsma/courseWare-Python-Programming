@@ -8,24 +8,24 @@ pills: ["demo01 · importmodule"]
 
 <script setup>
 const run = {
-  "frames": [{"id": "global", "label": "global"}, {"id": "shipping", "label": "module shipping"}],
+  "frames": [{"id": "global", "label": "global"}, {"id": "timing", "label": "module timing"}],
   "order": ["mod", "f50", "fn"],
   "states": [
-    {"names": {"global": {}, "shipping": {"FREE_SHIPPING": "f50", "delivery_cost": "fn"}}, "objects": {"f50": {"type": "float", "value": "50.0"}, "fn": {"type": "function", "value": "delivery_cost"}}, "active": ["shipping.FREE_SHIPPING", "shipping.delivery_cost"], "mark": [{"object": "f50"}, {"object": "fn"}]},
-    {"names": {"global": {"shipping": "mod"}, "shipping": {"FREE_SHIPPING": "f50", "delivery_cost": "fn"}}, "objects": {"mod": {"type": "module", "value": "shipping"}, "f50": {"type": "float", "value": "50.0"}, "fn": {"type": "function", "value": "delivery_cost"}}, "active": ["global.shipping"], "mark": {"object": "mod"}},
-    {"names": {"global": {"shipping": "mod"}, "shipping": {"FREE_SHIPPING": "f50", "delivery_cost": "fn"}}, "objects": {"mod": {"type": "module", "value": "shipping"}, "f50": {"type": "float", "value": "50.0"}, "fn": {"type": "function", "value": "delivery_cost"}}, "active": ["global.shipping", "shipping.delivery_cost"], "mark": {"object": "fn"}},
-    {"names": {"global": {"shipping": "mod"}, "shipping": {"FREE_SHIPPING": "f50", "delivery_cost": "fn"}}, "objects": {"mod": {"type": "module", "value": "shipping"}, "f50": {"type": "float", "value": "50.0"}, "fn": {"type": "function", "value": "delivery_cost"}}, "active": ["global.shipping", "shipping.delivery_cost"], "mark": {"object": "fn"}},
-    {"names": {"global": {"shipping": "mod", "delivery": "mod"}, "shipping": {"FREE_SHIPPING": "f50", "delivery_cost": "fn"}}, "objects": {"mod": {"type": "module", "value": "shipping"}, "f50": {"type": "float", "value": "50.0"}, "fn": {"type": "function", "value": "delivery_cost"}}, "active": ["global.delivery"], "mark": {"object": "mod"}},
-    {"names": {"global": {"shipping": "mod", "delivery": "mod"}, "shipping": {"FREE_SHIPPING": "f50", "delivery_cost": "fn"}}, "objects": {"mod": {"type": "module", "value": "shipping"}, "f50": {"type": "float", "value": "50.0"}, "fn": {"type": "function", "value": "delivery_cost"}}, "active": ["global.delivery", "shipping.FREE_SHIPPING"], "mark": {"object": "f50"}}
+    {"names": {"global": {}, "timing": {"SECONDS_PER_MINUTE": "f50", "format_duration": "fn"}}, "objects": {"f50": {"type": "int", "value": "60"}, "fn": {"type": "function", "value": "format_duration"}}, "active": ["timing.SECONDS_PER_MINUTE", "timing.format_duration"], "mark": [{"object": "f50"}, {"object": "fn"}]},
+    {"names": {"global": {"timing": "mod"}, "timing": {"SECONDS_PER_MINUTE": "f50", "format_duration": "fn"}}, "objects": {"mod": {"type": "module", "value": "timing"}, "f50": {"type": "int", "value": "60"}, "fn": {"type": "function", "value": "format_duration"}}, "active": ["global.timing"], "mark": {"object": "mod"}},
+    {"names": {"global": {"timing": "mod"}, "timing": {"SECONDS_PER_MINUTE": "f50", "format_duration": "fn"}}, "objects": {"mod": {"type": "module", "value": "timing"}, "f50": {"type": "int", "value": "60"}, "fn": {"type": "function", "value": "format_duration"}}, "active": ["global.timing", "timing.format_duration"], "mark": {"object": "fn"}},
+    {"names": {"global": {"timing": "mod"}, "timing": {"SECONDS_PER_MINUTE": "f50", "format_duration": "fn"}}, "objects": {"mod": {"type": "module", "value": "timing"}, "f50": {"type": "int", "value": "60"}, "fn": {"type": "function", "value": "format_duration"}}, "active": ["global.timing", "timing.format_duration"], "mark": {"object": "fn"}},
+    {"names": {"global": {"timing": "mod", "clock": "mod"}, "timing": {"SECONDS_PER_MINUTE": "f50", "format_duration": "fn"}}, "objects": {"mod": {"type": "module", "value": "timing"}, "f50": {"type": "int", "value": "60"}, "fn": {"type": "function", "value": "format_duration"}}, "active": ["global.clock"], "mark": {"object": "mod"}},
+    {"names": {"global": {"timing": "mod", "clock": "mod"}, "timing": {"SECONDS_PER_MINUTE": "f50", "format_duration": "fn"}}, "objects": {"mod": {"type": "module", "value": "timing"}, "f50": {"type": "int", "value": "60"}, "fn": {"type": "function", "value": "format_duration"}}, "active": ["global.clock", "timing.SECONDS_PER_MINUTE"], "mark": {"object": "f50"}}
   ],
-  "output": [[], [], ["4.95"], ["0.0"], [], ["50.0"]],
+  "output": [[], [], ["3:42"], ["1:05"], [], ["60"]],
   "captions": [
-    "`import shipping` runs `shipping.py`, which binds `FREE_SHIPPING` and `delivery_cost` in the module",
-    "Then it binds the name `shipping` to the module",
-    "`shipping.delivery_cost` finds `delivery_cost` in the module and calls it",
-    "The same function, called with `75.0`, returns `0.0`",
-    "`import shipping as delivery` binds a second name to the same module; `shipping.py` does not run again",
-    "`delivery.FREE_SHIPPING` reaches the module's `FREE_SHIPPING`"
+    "`import timing` runs `timing.py`, which binds `SECONDS_PER_MINUTE` and `format_duration` in the module",
+    "Then it binds the name `timing` to the module",
+    "`timing.format_duration` finds `format_duration` in the module and calls it",
+    "The same formatter displays `65` seconds as `1:05`",
+    "`import timing as clock` binds a second name to the same module; `timing.py` does not run again",
+    "`clock.SECONDS_PER_MINUTE` reaches the module's `SECONDS_PER_MINUTE`"
   ]
 }
 </script>
@@ -33,14 +33,14 @@ const run = {
 <DataStructuresRun :run="run" layout="side">
 
 ```python {1|1|3|4|6|8}
-import shipping
+import timing
 
-print(shipping.delivery_cost(35.0))  # 4.95
-print(shipping.delivery_cost(75.0))  # 0.0
+print(timing.format_duration(222))  # 3:42
+print(timing.format_duration(65))  # 1:05
 
-import shipping as delivery
+import timing as clock
 
-print(delivery.FREE_SHIPPING)  # 50.0
+print(clock.SECONDS_PER_MINUTE)  # 60
 ```
 
 <template #visual="{ step }">

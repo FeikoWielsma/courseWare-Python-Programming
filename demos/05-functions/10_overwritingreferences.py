@@ -1,9 +1,8 @@
-def with_status_column(columns: list[str]) -> list[str]:
-    columns = columns + ["status"]
-    return columns
+def with_encore(tracks: list[str]) -> list[str]:
+    tracks = tracks + ["Encore"]
+    return tracks
 
-
-fields = ["id", "total"]
-updated = with_status_column(fields)
-print(f"Original: {fields}")
-print(f"Export: {updated}")
+queue = ["Orbit", "Echo"]
+extended = with_encore(queue)
+print(f"Original: {queue}")
+print(f"Encore mix: {extended}")

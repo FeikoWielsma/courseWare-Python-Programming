@@ -1,7 +1,7 @@
-import reports
+import player
 
-print(reports.delivery_cost(35.0))  # 4.95
+print(player.format_duration(222))  # 3:42
 
-from reports import delivery_cost
+from player import format_duration
 
-print(delivery_cost(75.0))  # 0.0
+print(format_duration(65))  # 1:05

@@ -8,24 +8,24 @@ pills: ["demo07 · implicitimport"]
 
 <script setup>
 const run = {
-  "frames": [{"id": "global", "label": "global"}, {"id": "reports", "label": "module reports"}, {"id": "shipping", "label": "module reports.shipping"}],
+  "frames": [{"id": "global", "label": "global"}, {"id": "player", "label": "module player"}, {"id": "timing", "label": "module player.timing"}],
   "order": ["pkg", "mod", "fn", "f50"],
   "states": [
-    {"names": {"global": {}, "reports": {}, "shipping": {"FREE_SHIPPING": "f50", "delivery_cost": "fn"}}, "objects": {"fn": {"type": "function", "value": "delivery_cost"}, "f50": {"type": "float", "value": "50.0"}}, "active": ["shipping.FREE_SHIPPING", "shipping.delivery_cost"], "mark": [{"object": "fn"}, {"object": "f50"}]},
-    {"names": {"global": {}, "reports": {"shipping": "mod", "delivery_cost": "fn"}, "shipping": {"FREE_SHIPPING": "f50", "delivery_cost": "fn"}}, "objects": {"mod": {"type": "module", "value": "reports.shipping"}, "fn": {"type": "function", "value": "delivery_cost"}, "f50": {"type": "float", "value": "50.0"}}, "active": ["reports.shipping", "reports.delivery_cost"], "mark": [{"object": "mod"}, {"object": "fn"}]},
-    {"names": {"global": {"reports": "pkg"}, "reports": {"shipping": "mod", "delivery_cost": "fn"}, "shipping": {"FREE_SHIPPING": "f50", "delivery_cost": "fn"}}, "objects": {"pkg": {"type": "module", "value": "reports"}, "mod": {"type": "module", "value": "reports.shipping"}, "fn": {"type": "function", "value": "delivery_cost"}, "f50": {"type": "float", "value": "50.0"}}, "active": ["global.reports"], "mark": {"object": "pkg"}},
-    {"names": {"global": {"reports": "pkg"}, "reports": {"shipping": "mod", "delivery_cost": "fn"}, "shipping": {"FREE_SHIPPING": "f50", "delivery_cost": "fn"}}, "objects": {"pkg": {"type": "module", "value": "reports"}, "mod": {"type": "module", "value": "reports.shipping"}, "fn": {"type": "function", "value": "delivery_cost"}, "f50": {"type": "float", "value": "50.0"}}, "active": ["global.reports", "reports.delivery_cost"], "mark": {"object": "fn"}},
-    {"names": {"global": {"reports": "pkg", "delivery_cost": "fn"}, "reports": {"shipping": "mod", "delivery_cost": "fn"}, "shipping": {"FREE_SHIPPING": "f50", "delivery_cost": "fn"}}, "objects": {"pkg": {"type": "module", "value": "reports"}, "mod": {"type": "module", "value": "reports.shipping"}, "fn": {"type": "function", "value": "delivery_cost"}, "f50": {"type": "float", "value": "50.0"}}, "active": ["global.delivery_cost"], "mark": {"object": "fn"}},
-    {"names": {"global": {"reports": "pkg", "delivery_cost": "fn"}, "reports": {"shipping": "mod", "delivery_cost": "fn"}, "shipping": {"FREE_SHIPPING": "f50", "delivery_cost": "fn"}}, "objects": {"pkg": {"type": "module", "value": "reports"}, "mod": {"type": "module", "value": "reports.shipping"}, "fn": {"type": "function", "value": "delivery_cost"}, "f50": {"type": "float", "value": "50.0"}}, "active": ["global.delivery_cost"], "mark": {"object": "fn"}}
+    {"names": {"global": {}, "player": {}, "timing": {"SECONDS_PER_MINUTE": "f50", "format_duration": "fn"}}, "objects": {"fn": {"type": "function", "value": "format_duration"}, "f50": {"type": "int", "value": "60"}}, "active": ["timing.SECONDS_PER_MINUTE", "timing.format_duration"], "mark": [{"object": "fn"}, {"object": "f50"}]},
+    {"names": {"global": {}, "player": {"timing": "mod", "format_duration": "fn"}, "timing": {"SECONDS_PER_MINUTE": "f50", "format_duration": "fn"}}, "objects": {"mod": {"type": "module", "value": "player.timing"}, "fn": {"type": "function", "value": "format_duration"}, "f50": {"type": "int", "value": "60"}}, "active": ["player.timing", "player.format_duration"], "mark": [{"object": "mod"}, {"object": "fn"}]},
+    {"names": {"global": {"player": "pkg"}, "player": {"timing": "mod", "format_duration": "fn"}, "timing": {"SECONDS_PER_MINUTE": "f50", "format_duration": "fn"}}, "objects": {"pkg": {"type": "module", "value": "player"}, "mod": {"type": "module", "value": "player.timing"}, "fn": {"type": "function", "value": "format_duration"}, "f50": {"type": "int", "value": "60"}}, "active": ["global.player"], "mark": {"object": "pkg"}},
+    {"names": {"global": {"player": "pkg"}, "player": {"timing": "mod", "format_duration": "fn"}, "timing": {"SECONDS_PER_MINUTE": "f50", "format_duration": "fn"}}, "objects": {"pkg": {"type": "module", "value": "player"}, "mod": {"type": "module", "value": "player.timing"}, "fn": {"type": "function", "value": "format_duration"}, "f50": {"type": "int", "value": "60"}}, "active": ["global.player", "player.format_duration"], "mark": {"object": "fn"}},
+    {"names": {"global": {"player": "pkg", "format_duration": "fn"}, "player": {"timing": "mod", "format_duration": "fn"}, "timing": {"SECONDS_PER_MINUTE": "f50", "format_duration": "fn"}}, "objects": {"pkg": {"type": "module", "value": "player"}, "mod": {"type": "module", "value": "player.timing"}, "fn": {"type": "function", "value": "format_duration"}, "f50": {"type": "int", "value": "60"}}, "active": ["global.format_duration"], "mark": {"object": "fn"}},
+    {"names": {"global": {"player": "pkg", "format_duration": "fn"}, "player": {"timing": "mod", "format_duration": "fn"}, "timing": {"SECONDS_PER_MINUTE": "f50", "format_duration": "fn"}}, "objects": {"pkg": {"type": "module", "value": "player"}, "mod": {"type": "module", "value": "player.timing"}, "fn": {"type": "function", "value": "format_duration"}, "f50": {"type": "int", "value": "60"}}, "active": ["global.format_duration"], "mark": {"object": "fn"}}
   ],
-  "output": [[], [], [], ["4.95"], [], ["0.0"]],
+  "output": [[], [], [], ["3:42"], [], ["1:05"]],
   "captions": [
-    "`import reports` runs `reports/__init__.py`, whose import first runs `reports/shipping.py`",
-    "Back in `__init__.py`, the package gets the names `shipping` and `delivery_cost`",
-    "Then `import reports` binds the name `reports` to the package",
-    "`reports.delivery_cost` is the name that `__init__.py` bound",
-    "`from reports import delivery_cost` runs nothing again; it binds the same function in the calling file",
-    "Called without a prefix, the function returns `0.0`"
+    "`import player` runs `player/__init__.py`, whose import first runs `player/timing.py`",
+    "Back in `__init__.py`, the package gets the names `timing` and `format_duration`",
+    "Then `import player` binds the name `player` to the package",
+    "`player.format_duration` is the name that `__init__.py` bound",
+    "`from player import format_duration` runs nothing again; it binds the same function in the calling file",
+    "Called without a prefix, the function returns `1:05`"
   ]
 }
 </script>
@@ -33,13 +33,13 @@ const run = {
 <DataStructuresRun :run="run" layout="side">
 
 ```python {1|1|1|3|5|7}
-import reports
+import player
 
-print(reports.delivery_cost(35.0))  # 4.95
+print(player.format_duration(222))  # 3:42
 
-from reports import delivery_cost
+from player import format_duration
 
-print(delivery_cost(75.0))  # 0.0
+print(format_duration(65))  # 1:05
 ```
 
 <template #visual="{ step }">

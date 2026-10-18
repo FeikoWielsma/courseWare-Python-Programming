@@ -1,19 +1,12 @@
-def to_celsius(value: float) -> float:
-    return (value - 32) * 5 / 9
+def clean_title(title: str) -> str:
+    return title.strip()
 
 
-def to_fahrenheit(value: float) -> float:
-    return value * 9 / 5 + 32
+def shout_title(title: str) -> str:
+    return title.upper()
 
 
-converters = {
-    "C": to_celsius,
-    "F": to_fahrenheit,
-    "K": lambda value: value + 273.15,
-}
-
-unit = "C"
-print(converters[unit](212))  # look up the function, then call it
-
-for unit, convert in converters.items():
-    print(unit, convert(100))
+formatters = {"clean": clean_title, "shout": shout_title}
+print(formatters["clean"]("  Orbit  "))
+for name, format_title in formatters.items():
+    print(name, format_title("Echo"))

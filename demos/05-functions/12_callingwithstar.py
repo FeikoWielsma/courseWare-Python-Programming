@@ -1,11 +1,11 @@
-def delivery_cost(total: float, free_from: float) -> float:
-    if total >= free_from:
-        return 0.0
-    return 4.95
+def show_playlist(name: str, *tracks: str, **details: str) -> None:
+    print(f"Playlist: {name}")
+    for track in tracks:
+        print(f"- {track}")
+    for key, value in details.items():
+        print(f"{key}: {value}")
 
 
-order = (35.0, 50.0)
-print(delivery_cost(*order))
-
-options = {"total": 75.0, "free_from": 50.0}
-print(delivery_cost(**options))
+tracks = ["Orbit", "Echo"]
+details = {"mood": "calm", "owner": "Nova"}
+show_playlist("Night drive", *tracks, **details)

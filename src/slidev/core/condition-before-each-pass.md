@@ -10,22 +10,22 @@ pills: ["demo05 · while"]
 const run = {
   "frames": [{"id": "names", "label": "names"}],
   "states": [
-    {"names": {"names": {"x": "i1"}}, "objects": {"i1": {"type": "int", "value": "1"}}, "active": ["names.x"], "mark": {"object": "i1"}},
-    {"names": {"names": {"x": "i2"}}, "objects": {"i1": {"type": "int", "value": "1"}, "i2": {"type": "int", "value": "2"}}, "active": ["names.x"], "mark": {"object": "i2"}},
-    {"names": {"names": {"x": "i3"}}, "objects": {"i1": {"type": "int", "value": "1"}, "i2": {"type": "int", "value": "2"}, "i3": {"type": "int", "value": "3"}}, "active": ["names.x"], "mark": {"object": "i3"}},
-    {"names": {"names": {"x": "i4"}}, "objects": {"i1": {"type": "int", "value": "1"}, "i2": {"type": "int", "value": "2"}, "i3": {"type": "int", "value": "3"}, "i4": {"type": "int", "value": "4"}}, "active": ["names.x"], "mark": {"object": "i4"}},
-    {"names": {"names": {"x": "i5"}}, "objects": {"i1": {"type": "int", "value": "1"}, "i2": {"type": "int", "value": "2"}, "i3": {"type": "int", "value": "3"}, "i4": {"type": "int", "value": "4"}, "i5": {"type": "int", "value": "5"}}, "active": ["names.x"], "mark": {"object": "i5"}},
-    {"names": {"names": {"x": "i6"}}, "objects": {"i1": {"type": "int", "value": "1"}, "i2": {"type": "int", "value": "2"}, "i3": {"type": "int", "value": "3"}, "i4": {"type": "int", "value": "4"}, "i5": {"type": "int", "value": "5"}, "i6": {"type": "int", "value": "6"}}, "active": ["names.x"], "mark": {"object": "i6"}},
-    {"names": {"names": {"x": "i6"}}, "objects": {"i1": {"type": "int", "value": "1"}, "i2": {"type": "int", "value": "2"}, "i3": {"type": "int", "value": "3"}, "i4": {"type": "int", "value": "4"}, "i5": {"type": "int", "value": "5"}, "i6": {"type": "int", "value": "6"}}, "active": ["names.x"]}
+    {"names": {"names": {"shot": "i1"}}, "objects": {"i1": {"type": "int", "value": "1"}}, "active": ["names.shot"], "mark": {"object": "i1"}},
+    {"names": {"names": {"shot": "i2"}}, "objects": {"i1": {"type": "int", "value": "1"}, "i2": {"type": "int", "value": "2"}}, "active": ["names.shot"], "mark": {"object": "i2"}},
+    {"names": {"names": {"shot": "i3"}}, "objects": {"i1": {"type": "int", "value": "1"}, "i2": {"type": "int", "value": "2"}, "i3": {"type": "int", "value": "3"}}, "active": ["names.shot"], "mark": {"object": "i3"}},
+    {"names": {"names": {"shot": "i4"}}, "objects": {"i1": {"type": "int", "value": "1"}, "i2": {"type": "int", "value": "2"}, "i3": {"type": "int", "value": "3"}, "i4": {"type": "int", "value": "4"}}, "active": ["names.shot"], "mark": {"object": "i4"}},
+    {"names": {"names": {"shot": "i5"}}, "objects": {"i1": {"type": "int", "value": "1"}, "i2": {"type": "int", "value": "2"}, "i3": {"type": "int", "value": "3"}, "i4": {"type": "int", "value": "4"}, "i5": {"type": "int", "value": "5"}}, "active": ["names.shot"], "mark": {"object": "i5"}},
+    {"names": {"names": {"shot": "i6"}}, "objects": {"i1": {"type": "int", "value": "1"}, "i2": {"type": "int", "value": "2"}, "i3": {"type": "int", "value": "3"}, "i4": {"type": "int", "value": "4"}, "i5": {"type": "int", "value": "5"}, "i6": {"type": "int", "value": "6"}}, "active": ["names.shot"], "mark": {"object": "i6"}},
+    {"names": {"names": {"shot": "i6"}}, "objects": {"i1": {"type": "int", "value": "1"}, "i2": {"type": "int", "value": "2"}, "i3": {"type": "int", "value": "3"}, "i4": {"type": "int", "value": "4"}, "i5": {"type": "int", "value": "5"}, "i6": {"type": "int", "value": "6"}}, "active": ["names.shot"]}
   ],
-  "output": [[], ["1"], ["2"], ["3"], ["4"], ["5"], []],
+  "output": [[], ["Photo 1"], ["Photo 2"], ["Photo 3"], ["Photo 4"], ["Photo 5"], []],
   "captions": [
-    "`x` refers to `1`",
-    "`1 <= 5` is true, so the block runs; it prints `1` and rebinds `x` to `2`",
+    "`shot` refers to `1`",
+    "`1 <= 5` is true, so the block runs; it prints `Photo 1` and rebinds `shot` to `2`",
     "The condition is tested again before each pass; `2 <= 5` is true",
-    "`x += 1` works out `x + 1` and rebinds `x` to the result",
-    "Each pass prints the value `x` refers to at that moment",
-    "`5 <= 5` is still true, so `5` is printed and `x` becomes `6`",
+    "`shot += 1` works out `shot + 1` and rebinds `shot` to the result",
+    "Each pass labels a photo with the current `shot` number",
+    "`5 <= 5` is still true, so `Photo 5` is printed and `shot` becomes `6`",
     "`6 <= 5` is false, so the loop ends without running the block"
   ]
 }
@@ -34,10 +34,10 @@ const run = {
 <DataStructuresRun :run="run" layout="side">
 
 ```python {1|2-4|2-4|2-4|2-4|2-4|2}
-x = 1
-while x <= 5:
-    print(x)
-    x += 1
+shot = 1
+while shot <= 5:
+    print(f"Photo {shot}")
+    shot += 1
 ```
 
 <template #visual="{ step }">

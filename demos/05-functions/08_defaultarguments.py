@@ -1,8 +1,8 @@
-def delivery_cost(total: float, free_from: float = 50.0) -> float:
-    if total >= free_from:
-        return 0.0
-    return 4.95
+def format_duration(seconds: int, separator: str = ":") -> str:
+    minutes = seconds // 60
+    remainder = seconds % 60
+    return f"{minutes}{separator}{remainder:02d}"
 
 
-print(delivery_cost(35.0))
-print(delivery_cost(35.0, free_from=30.0))
+print(format_duration(222))
+print(format_duration(222, separator="m "))

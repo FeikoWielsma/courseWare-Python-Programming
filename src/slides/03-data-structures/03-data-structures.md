@@ -29,7 +29,8 @@ footer: Data Structures
 
 # Lists
 
-- Lists are mutable sequences :
+- A playlist stores tracks in a chosen order :
+  - Lists are mutable sequences
   - List contains items separated by commas and enclosed within square brackets `[]`
   - The items of one list can be of different data types
 - Values are accessed using the index or slice operator `[ ]` and `[ : ]` :
@@ -41,7 +42,7 @@ footer: Data Structures
 - Lists respond to all sequence operations usable on strings :
 
 ```python
-list1 = ["abcd", 786, 2.23, "john", True]
+list1 = ["Intro", "Orbit", "Echo", "Pulse", "Outro"]
 print(list1)  # Prints complete list
 print(list1[0])  # Prints first element of the list
 print(list1[1:3])  # Prints the 2nd and 3rd elements
@@ -97,18 +98,18 @@ print(list1[::-1])  # Prints complete list in reverse order
 <path d="M 280 158 L 280 176 L 540 176 L 540 158"/>
 </g>
 <g fill="currentColor" font-size="19" text-anchor="middle">
-<text x="410" y="196">li[1:3] gives [20, 30]</text>
+<text x="410" y="196">playlist[1:3] gives [20, 30]</text>
 </g>
 </svg>
 
 
 ```python
-li = ["physics", "chemistry", "biology", "computer science"]
+playlist = ["Intro", "Orbit", "Echo", "Outro"]
 print("Value available at index 2 : ")
-print(li[2])
-li[2] = "mathematics"
+print(playlist[2])
+playlist[2] = "Remix"
 print("New value available at index 2 : ")
-print(li[2])
+print(playlist[2])
 ```
 
 - Elements can be added to a list with `append()` :
@@ -135,18 +136,18 @@ print(list2)  # [99, 1, 2, 3, 4, 5]
 - Use `del` statement if you know index of element to remove :
 
 ```python
-li = ["physics", "chemistry", "biology", "computer science"]
-del li[2]
+playlist = ["Intro", "Orbit", "Echo", "Outro"]
+del playlist[2]
 print("After deleting value at index 2 : ")
-print(li)  # ['physics', 'chemistry', 'computer science']
+print(playlist)  # ['Intro', 'Orbit', 'Outro']
 ```
 
 - Use `remove()` if want to remove element by value :
 
 ```python
-li.remove("physics")
-print("After deleting value 'physics' ")
-print(li)  # ['chemistry', 'computer science']
+playlist.remove("Intro")
+print("After deleting value 'Intro' ")
+print(playlist)  # ['Orbit', 'Outro']
 ```
 
 - List itself can also be removed with `del` :
@@ -163,7 +164,8 @@ list1.append(100)  # gives NameError, name list1 not defined anymore
 
 # Multidimensional Lists
 
-- A list can hold other lists, which gives a grid of rows and columns :
+- A tiny image can store brightness values in rows and columns :
+  - Each row is a list inside the outer list
 
 ```python
 grid = [
@@ -206,15 +208,16 @@ print(shared)  # [[1, 0, 0], [1, 0, 0]], both rows are one list
 | `3 in [1,2,3]` | `True` | Membership |
 | `for x in [1,2,3]: print(x)` | `1 2 3` | Iteration |
 
-- A list also works as a stack : `append` puts an item on top, `pop` takes the top one off
+- A music player can keep a stack of visited views :
+  - `append` records the latest view; `pop` removes it when going back
 
 ```python
-stack = [3, 4, 5]
-stack.append(6)
-stack.append(7)
-print(stack)  # [3, 4, 5, 6, 7]
-print(stack.pop())  # 7
-print(stack)  # [3, 4, 5, 6]
+history = ["Library", "Album", "Track"]
+history.append("Queue")
+history.append("Artist")
+print(history)  # ['Library', 'Album', 'Track', 'Queue', 'Artist']
+print(history.pop())  # Artist
+print(history)  # ['Library', 'Album', 'Track', 'Queue']
 ```
 
 > `demo04 · listsasstacks`
@@ -256,7 +259,7 @@ print(stack)  # [3, 4, 5, 6]
   - For a tuple containing a single value include a comma, otherwise it is a single value
 
 ```python
-tup1 = ("physics", "chemistry", "biology", "computer science")
+tup1 = ("Intro", "Orbit", "Echo", "Outro")
 tup2 = (1, 2, 3, 4, 5)
 tup3 = "a", "b", "c", "d"  # not recommended
 tup4 = ()                  # empty tuple
@@ -309,8 +312,8 @@ print(tup3)  # (12, 34.56, 'abc', 'xyz')
 - Entire tuple can be removed with `del` statement :
 
 ```python
-tup = ("physics", "chemistry", "biology", "computer science")
-print(tup)  # ('physics', 'chemistry', 'biology', 'computer science')
+tup = ("Intro", "Orbit", "Echo", "Outro")
+print(tup)  # ('Intro', 'Orbit', 'Echo', 'Outro')
 del tup
 print("After deleting tup : ")
 print(tup)
@@ -333,7 +336,7 @@ NameError: name 'tup' is not defined
 # Usage of Tuples
 
 - Tuples have many uses :
-  - Coordinate pairs, records from a database
+  - Photo dimensions, track metadata and records from a database
 - Any set of comma-separated objects default to tuples :
   - Even without parentheses around them
 - Tuples can be dictionary keys and set members if every item is hashable
@@ -344,11 +347,11 @@ NameError: name 'tup' is not defined
 - Tuple can be destructured and contents assigned to variables :
 
 ```python
-t = ("Albert", "Einstein")
-print(t)  # ('Albert', 'Einstein')
-v, s = t
-print(v)  # 'Albert'
-print(s)  # 'Einstein'
+selection = ("Orbit", "Nova")
+print(selection)  # ('Orbit', 'Nova')
+primary, backup = selection
+print(primary)  # 'Orbit'
+print(backup)  # 'Nova'
 ```
 
 > `demo08 · destructurewithtuples`
@@ -365,9 +368,9 @@ rows = [(1,), (2,)]
 for (number,) in rows:
     print(number)  # 1, then 2
 
-records = [(1, ("Albert", "Einstein"))]
-for number, (first, last) in records:
-    print(number, first, last)  # 1 Albert Einstein
+records = [(1, ("Orbit", "Nova"))]
+for number, (title, artist) in records:
+    print(number, title, artist)  # 1 Orbit Nova
 ```
 
 ---
@@ -418,24 +421,24 @@ print(frozen)  # frozenset({3, 4})
 
 # Set Operations
 
-- Sets support the operations of set theory, each written as an operator :
+- Two festival lineups show which artists play either day or both days :
 
 ```python
-physics = {"Einstein", "Bohr", "Curie", "Fermi"}
-chemistry = {"Curie", "Rutherford", "Pauling"}
-print("Curie" in chemistry)  # True
-print(sorted(physics | chemistry))  # union, in either set
-print(sorted(physics & chemistry))  # intersection, in both
-print(sorted(physics - chemistry))  # difference, in physics only
-print(sorted(physics ^ chemistry))  # in one of the two, not both
+day_one = {"Nova", "Echo", "Pulse", "Orbit"}
+day_two = {"Pulse", "Muse", "Vega"}
+print("Pulse" in day_two)  # True
+print(sorted(day_one | day_two))  # union, in either set
+print(sorted(day_one & day_two))  # intersection, in both
+print(sorted(day_one - day_two))  # difference, in day_one only
+print(sorted(day_one ^ day_two))  # in one of the two, not both
 ```
 
 ```text
 True
-['Bohr', 'Curie', 'Einstein', 'Fermi', 'Pauling', 'Rutherford']
-['Curie']
-['Bohr', 'Einstein', 'Fermi']
-['Bohr', 'Einstein', 'Fermi', 'Pauling', 'Rutherford']
+['Echo', 'Muse', 'Nova', 'Orbit', 'Pulse', 'Vega']
+['Pulse']
+['Echo', 'Nova', 'Orbit']
+['Echo', 'Muse', 'Nova', 'Orbit', 'Vega']
 ```
 
 - A set has no order, so `sorted()` turns it into a list to print it predictably
@@ -446,7 +449,8 @@ True
 
 # Dictionaries
 
-- Dictionaries consist of pairs of keys and values :
+- A dictionary can map a track title to its duration in seconds :
+  - Entries consist of keys and values
   - Keys must be hashable; strings and numbers are common choices
   - Values can be any arbitrary Python object
 - Dictionaries are hash tables :
@@ -455,16 +459,16 @@ True
 - Dictionaries are enclosed by curly braces `{ }` :
 
 ```python
-dict1 = {"Albert": 2341, "Robert": 9102, "Enrico": 3258}
-print(dict1)  # {'Albert': 2341, 'Robert': 9102, 'Enrico': 3258}
+durations = {"Orbit": 222, "Echo": 185, "Pulse": 204}
+print(durations)  # {'Orbit': 222, 'Echo': 185, 'Pulse': 204}
 ```
 
 - Values can be assigned and accessed using square brackets `[]` :
 
 ```python
-dict1["Werner"] = 3490
-dict1[2] = "Data"
-print(dict1)  # {'Albert': 2341, 'Robert': 9102, 'Enrico': 3258, 'Werner': 3490, 2: 'Data'}
+durations["Nova"] = 196
+durations["Intro"] = 90
+print(durations)  # {'Orbit': 222, 'Echo': 185, 'Pulse': 204, 'Nova': 196, 'Intro': 90}
 ```
 
 - Dictionaries remember insertion order :
@@ -480,22 +484,22 @@ print(dict1)  # {'Albert': 2341, 'Robert': 9102, 'Enrico': 3258, 'Werner': 3490,
 - Use square brackets along with the key to obtain its value :
 
 ```python
-print(dict1["Robert"])  # 9102
-print(dict1[2])  # Data
+print(durations["Echo"])  # 185
+print(durations["Intro"])  # 90
 ```
 
 - Dictionary can be updated by modifying an existing entry :
 
 ```python
-dict1["Enrico"] = 9999
-print(dict1["Enrico"])  # 9999
+durations["Pulse"] = 210
+print(durations["Pulse"])  # 210
 ```
 
 - Dictionary entry can be deleted :
 
 ```python
-del dict1["Albert"]
-print(dict1["Albert"])  # KeyError
+del durations["Orbit"]
+print(durations["Orbit"])  # KeyError
 ```
 
 - Entire contents of dictionary is cleared with `clear()` :
@@ -514,14 +518,14 @@ print(dict1["Albert"])  # KeyError
 - Values can be any object; assigning an equal key replaces its value
 
 ```python
-extensions = {("Albert", "Einstein"): 2341}
-print(extensions[("Albert", "Einstein")])  # 2341
+track_lengths = {("Orbit", "Nova"): 222}
+print(track_lengths[("Orbit", "Nova")])  # 222
 ```
 
 - An immutable tuple can contain an unhashable list :
 
 ```python
-hash(("Albert", []))  # TypeError: unhashable type: 'list'
+hash(("Orbit", []))  # TypeError: unhashable type: 'list'
 ```
 
 ---
@@ -533,7 +537,7 @@ hash(("Albert", []))  # TypeError: unhashable type: 'list'
 ```python
 scores: list[int] = [10, 20, 30]
 names: set[str] = {"Alice", "Bob"}
-extensions: dict[str, int] = {"Albert": 2341, "Robert": 9102}
+track_lengths: dict[str, int] = {"Orbit": 222, "Echo": 185}
 ```
 
 - A dictionary takes two types, the key first and then the value
@@ -541,7 +545,7 @@ extensions: dict[str, int] = {"Albert": 2341, "Robert": 9102}
 
 ```python
 point: tuple[int, int] = (3, 4)
-row: tuple[str, int, float] = ("Audi", 2019, 52643.0)
+track: tuple[str, int] = ("Orbit", 222)
 ```
 
 - An ellipsis means any number of one type :
@@ -551,8 +555,8 @@ readings: tuple[float, ...] = (1.5, 2.5, 3.5)
 ```
 
 - Annotate where the collection is homogeneous, which most are :
-  - A deliberately mixed list such as `['abcd', 786, 2.23]` has no single
-    element type, and is better left bare than annotated `list[object]`
+  - Mixed element types are allowed, but a playlist of titles has the clearer
+    annotation `list[str]`
 
 ---
 
@@ -567,10 +571,10 @@ readings: tuple[float, ...] = (1.5, 2.5, 3.5)
 | `dict.copy()` | Returns a shallow copy of dictionary dict |
 | `dict.get(key)` | For key key, returns value or default if key not in dictionary |
 | `dict.popitem()` | Removes and returns the (key, value) pair added last |
-| `dict.items()` | Returns a view of dict's (key, value) tuple pairs |
-| `dict.keys()` | Returns a view of dictionary dict's keys |
-| `dict.update(dict2)` | Adds dictionary dict2's key-values pairs to dict |
-| `dict.values()` | Returns a view of dictionary dict's values |
+| `dict.items()` | Returns a view of dict'backup (key, value) tuple pairs |
+| `dict.keys()` | Returns a view of dictionary dict'backup keys |
+| `dict.update(dict2)` | Adds dictionary dict2'backup key-values pairs to dict |
+| `dict.values()` | Returns a view of dictionary dict'backup values |
 
 > `demo11 · dictionarymethods`
 
@@ -581,7 +585,8 @@ readings: tuple[float, ...] = (1.5, 2.5, 3.5)
 - Sequences are most basic data structure :
   - Each element of a sequence is assigned a number, its position or index
   - First index is zero, the second index is one, and so forth
-- Lists are mutable sequences :
+- A playlist stores tracks in a chosen order :
+  - Lists are mutable sequences
   - Contain items separated by commas and enclosed within square brackets `[]`
   - Items can be of different data types, and lists can hold other lists
 - Tuples are immutable sequences :

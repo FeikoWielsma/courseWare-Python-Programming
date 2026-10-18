@@ -1,8 +1,7 @@
-def add_status_column(columns: list[str]) -> None:
-    columns.append("status")
-    print(f"Inside: {columns}")
+def add_encore(tracks: list[str]) -> None:
+    tracks.append("Encore")
+    print(f"Inside: {tracks}")
 
-
-fields = ["id", "total"]
-add_status_column(fields)
-print(f"After call: {fields}")
+queue = ["Orbit", "Echo"]
+add_encore(queue)
+print(f"After call: {queue}")

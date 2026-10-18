@@ -1,21 +1,21 @@
-dict1 = {"Albert": 2341, "Robert": 9102, "Enrico": 3258}
-print(dict1)  # {'Albert': 2341, 'Robert': 9102, 'Enrico': 3258}
+durations = {"Orbit": 222, "Echo": 185, "Pulse": 204}
+print(durations)  # {'Orbit': 222, 'Echo': 185, 'Pulse': 204}
 
-dict1["Werner"] = 3490
-dict1[2] = "Data"
-print(dict1)  # {'Albert': 2341, 'Robert': 9102, 'Enrico': 3258, 'Werner': 3490, 2: 'Data'}
+durations["Nova"] = 196
+durations["Intro"] = 90
+print(durations)  # {'Orbit': 222, 'Echo': 185, 'Pulse': 204, 'Nova': 196, 'Intro': 90}
 
-print(dict1["Robert"])  # 9102
-print(dict1[2])  # Data
+print(durations["Echo"])  # 185
+print(durations["Intro"])  # 90
 
-dict1["Enrico"] = 9999
-print(dict1["Enrico"])  # 9999
+durations["Pulse"] = 210
+print(durations["Pulse"])  # 210
 
-del dict1["Albert"]
-# print(dict1["Albert"])  # KeyError
+del durations["Orbit"]
+# print(durations["Orbit"])  # KeyError
 
-dict1.clear()  # remove all entries in dict
-print(dict1)  # {}
+durations.clear()  # remove all entries in dict
+print(durations)  # {}
 
-del dict1  # delete entire dictionary
-# print(dict1)  # NameError: name 'dict1' is not defined
+del durations  # delete entire dictionary
+# print(durations)  # NameError: name 'durations' is not defined

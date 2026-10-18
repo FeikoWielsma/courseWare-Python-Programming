@@ -1,13 +1,18 @@
-item_one = 1
-item_two = 2
-item_three = 3
+intro = 30
+orbit = 222
+echo = 185
 
-total = item_one + \
-        item_two + \
-        item_three
+total = (
+    intro + orbit + echo
+)
+print(total)  # 437
 
-print(total)
+playlist = [
+    "Intro", "Orbit", "Echo",
+]
+print(playlist)
 
-days = ["Monday", "Tuesday", "Wednesday",
-        "Thursday", "Friday"]
-print(days)
+# A backslash also continues a line; parentheses are easier to maintain.
+same_total = intro + \
+    orbit + echo
+print(same_total)

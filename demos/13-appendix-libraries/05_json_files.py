@@ -1,17 +1,12 @@
-"""dump and load work on a file object rather than a string."""
-
 import json
 from pathlib import Path
 
-book = {"title": "Fluent Python", "pages": 1012}
-path = Path("book.json")
+playlist = {"name": "Night drive", "tracks": ["Orbit", "Echo"], "cover": None}
+path = Path("playlist.json")
 
-# dump writes to an open file, no s on the end.
-with path.open("w", encoding="utf-8") as f:
-    json.dump(book, f, indent=2)
+with path.open("w", encoding="utf-8") as file:
+    json.dump(playlist, file, indent=2)
 
-with path.open(encoding="utf-8") as f:
-    restored = json.load(f)
-
-print(restored)
-path.unlink()  # tidy up after the demo
+with path.open(encoding="utf-8") as file:
+    restored = json.load(file)
+print(restored["tracks"])

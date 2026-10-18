@@ -1,9 +1,8 @@
-def delivery_cost(total):
-    if total >= 50.0:
-        return 0.0
-    return 4.95
+def format_duration(seconds):
+    minutes = seconds // 60
+    remainder = seconds % 60
+    return f"{minutes}:{remainder:02d}"
 
-
-shipping = delivery_cost(35.0)
-grand_total = 35.0 + shipping
-print(f"Order total: {grand_total:.2f}")
+label = format_duration(222)
+message = f"Orbit [{label}]"
+print(message)

@@ -8,40 +8,40 @@ footer: Modules
 
 # Modules
 
-- A module is a Python file containing related functions and variables.
-- Other files import the module to reuse those definitions.
-- `shipping.py` holds the delivery rule for an order :
+- A module is a Python file containing related functions and variables
+- Other files import the module to reuse those definitions
+- `timing.py` holds the duration formatter used by a music player :
 
 ```python
-FREE_SHIPPING: float = 50.0
+SECONDS_PER_MINUTE: int = 60
 
 
-def delivery_cost(total: float) -> float:
-    if total >= FREE_SHIPPING:
-        return 0.0
-    return 4.95
+def format_duration(seconds: int) -> str:
+    minutes = seconds // SECONDS_PER_MINUTE
+    remainder = seconds % SECONDS_PER_MINUTE
+    return f"{minutes}:{remainder:02d}"
 ```
 
-- The module name is the file name without `.py`.
-- Put `shipping.py` and the script that imports it in the same directory.
+- The module name is the filename without `.py`
+- Keep `timing.py` beside the script that imports it
 
 ---
 
 # import Statement
 
-- `import shipping` loads the module and binds the name `shipping`.
+- `import timing` loads the module and binds the name `timing`.
 - The module prefix identifies where a function or constant comes from.
 - `as` gives a module an alternative name in the calling file.
 
 ```python
-import shipping
+import timing
 
-print(shipping.delivery_cost(35.0))  # 4.95
-print(shipping.delivery_cost(75.0))  # 0.0
+print(timing.format_duration(222))  # 3:42
+print(timing.format_duration(65))  # 1:05
 
-import shipping as delivery
+import timing as clock
 
-print(delivery.FREE_SHIPPING)  # 50.0
+print(clock.SECONDS_PER_MINUTE)  # 60
 ```
 
 > `demo01 · importmodule`
@@ -53,13 +53,13 @@ print(delivery.FREE_SHIPPING)  # 50.0
 - `from ... import` binds selected names directly in the calling file.
 - Call the function without the module prefix.
 - Both import forms load the same module; they differ in the names they bind.
-- Explicit names keep dependencies visible; avoid `from shipping import *`.
+- Explicit names keep dependencies visible; avoid `from timing import *`.
 
 ```python
-from shipping import FREE_SHIPPING, delivery_cost
+from timing import SECONDS_PER_MINUTE, format_duration
 
-print(delivery_cost(35.0))  # 4.95
-print(FREE_SHIPPING)  # 50.0
+print(format_duration(222))  # 3:42
+print(SECONDS_PER_MINUTE)  # 60
 ```
 
 > `demo02 · usingfromimport`
@@ -71,7 +71,7 @@ print(FREE_SHIPPING)  # 50.0
 - Python searches the directories in `sys.path` for local modules.
 - A script's directory is searched before installed packages.
 - With `python -m`, the current directory is searched first.
-- Keep `shipping.py` beside the script that imports it.
+- Keep `timing.py` beside the script that imports it.
 - A file named `json.py` can hide the standard library's `json` module.
 - `ModuleNotFoundError` means the requested module could not be found.
 
@@ -88,18 +88,25 @@ print(sys.executable)
 
 # Using Modules
 
-- Several programs can reuse `shipping.py` without copying the function.
-- The order report supplies the data; the shipping module applies the rule.
-- Changing the delivery rule in one module updates every caller.
+- A playlist display reuses the formatter without copying its calculation :
+  - The calling script supplies track titles and lengths
+  - The module formats each length consistently
 
 ```python
-from shipping import delivery_cost
+from timing import format_duration
 
-order_totals = [35.0, 75.0]
-for total in order_totals:
-    fee = delivery_cost(total)
-    print(f"Order {total:.2f}: delivery {fee:.2f}")
+tracks = {"Orbit": 222, "Echo": 185}
+for title, seconds in tracks.items():
+    label = format_duration(seconds)
+    print(f"{title}: {label}")
 ```
+
+```text
+Orbit: 3:42
+Echo: 3:05
+```
+
+- Updating the formatter in one module updates every caller
 
 > `demo04 · usingmodules`
 
@@ -112,10 +119,10 @@ for total in order_totals:
 - Names starting and ending with double underscores include module metadata.
 
 ```python
-import shipping
+import timing
 
-print("delivery_cost" in dir(shipping))  # True
-print("FREE_SHIPPING" in dir(shipping))  # True
+print("format_duration" in dir(timing))  # True
+print("SECONDS_PER_MINUTE" in dir(timing))  # True
 ```
 
 > `demo05 · usingdir`
@@ -128,13 +135,13 @@ print("FREE_SHIPPING" in dir(shipping))  # True
 - A regular package contains an `__init__.py` file; it may be empty.
 
 ```text
-reports/
+player/
 ├── __init__.py
-├── shipping.py     the delivery_cost function
+├── timing.py     the format_duration function
 └── __main__.py     the command-line entry point
 ```
 
-- Move the existing `shipping.py` into `reports/` to group reporting code.
+- Move the existing `timing.py` into `player/` to group reporting code.
 - `__init__.py` runs when the package is first imported.
 - A module's top-level code runs on its first import in a Python process.
 
@@ -143,13 +150,13 @@ reports/
 # Explicit Import of Package Modules
 
 - Dots in an import follow directories in the package.
-- `reports.shipping` refers to `reports/shipping.py`.
+- `player.timing` refers to `player/timing.py`.
 - The full call is `package.module.function()`.
 
 ```python
-import reports.shipping
+import player.timing
 
-print(reports.shipping.delivery_cost(35.0))  # 4.95
+print(player.timing.format_duration(222))  # 3:42
 ```
 
 > `demo06 · explicitimport`
@@ -159,22 +166,22 @@ print(reports.shipping.delivery_cost(35.0))  # 4.95
 # Importing Names from a Package
 
 - A package can expose selected functions from its internal modules.
-- `reports/__init__.py` contains this import :
+- `player/__init__.py` contains this import :
 
 ```python
-from reports.shipping import delivery_cost
+from player.timing import format_duration
 ```
 
 - Callers can then use the shorter package-level name.
 
 ```python
-import reports
+import player
 
-print(reports.delivery_cost(35.0))  # 4.95
+print(player.format_duration(222))  # 3:42
 
-from reports import delivery_cost
+from player import format_duration
 
-print(delivery_cost(75.0))  # 0.0
+print(format_duration(65))  # 1:05
 ```
 
 > `demo07 · implicitimport`
@@ -186,14 +193,14 @@ print(delivery_cost(75.0))  # 0.0
 - `__name__` is `"__main__"` when a file runs directly.
 - When imported, `__name__` is the module's name.
 - The guard runs `main()` only for direct execution.
-- Importing defines `main` without printing the delivery report.
+- Importing defines `main` without printing the playlist display.
 
 ```python
-from shipping import delivery_cost
+from timing import format_duration
 
 
 def main() -> None:
-    print(f"Delivery: {delivery_cost(35.0):.2f}")
+    print(f"Duration: {format_duration(222)}")
 
 
 if __name__ == "__main__":
@@ -207,20 +214,20 @@ if __name__ == "__main__":
 # Running Packages with python -m
 
 - A package's `__main__.py` is its entry point.
-- The following code belongs in `reports/__main__.py`.
-- Run from the directory containing `reports/` :
+- The following code belongs in `player/__main__.py`.
+- Run from the directory containing `player/` :
 
 ```bash
-uv run python -m reports
+uv run python -m player
 ```
 
 
 ```python
-from reports.shipping import delivery_cost
+from player.timing import format_duration
 
 
 def main() -> None:
-    print(f"Delivery: {delivery_cost(35.0):.2f}")
+    print(f"Duration: {format_duration(222)}")
 
 
 if __name__ == "__main__":

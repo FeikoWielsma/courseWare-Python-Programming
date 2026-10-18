@@ -1,9 +1,8 @@
-def delivery_cost(total: float) -> float:
-    """Return the delivery charge; orders of 50 or more ship free."""
-    if total >= 50.0:
-        return 0.0
-    return 4.95
+def format_duration(seconds: int) -> str:
+    """Format a non-negative track length as minutes and two-digit seconds."""
+    minutes = seconds // 60
+    remainder = seconds % 60
+    return f"{minutes}:{remainder:02d}"
 
 
-print(delivery_cost(35.0))
-print(delivery_cost.__doc__)
+help(format_duration)

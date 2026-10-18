@@ -1,6 +1,7 @@
+text = "222"
 try:
-    x = int(input("Please enter a number: "))
+    seconds = int(text)
 except ValueError:
-    print("Oops! That was not a valid number")
+    print(f"Invalid track length: {text!r}")
 else:
-    print(f"Yeah! {x} was a really good number")
+    print(f"Track length: {seconds} seconds")

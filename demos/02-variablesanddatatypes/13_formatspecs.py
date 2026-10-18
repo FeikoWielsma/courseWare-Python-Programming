@@ -1,14 +1,12 @@
-# The last two lines show the older styles on purpose, for recognising them.
+photo_id = 421
+size_mb = 8.537
+print(f"Photo {photo_id:05d}: {size_mb:6.2f} MB")
+print(f"[{'Orbit':<10}]")  # [Orbit     ]
+print(f"[{'Orbit':^10}]")  # [  Orbit   ]
+print(f"[{'Orbit':>10}]")  # [     Orbit]
+print(f"{1234567:,.0f} pixels")  # 1,234,567 pixels
+print(f"{0.25:.0%} complete")  # 25% complete
 
-art = 453
-price = 59.058
-print(f"Art: {art:5d}, Price per Unit: {price:8.2f}")
-
-print(f"[{'Curie':<10}]")  # [Curie     ]
-print(f"[{'Curie':^10}]")  # [  Curie   ]
-print(f"[{'Curie':>10}]")  # [     Curie]
-print(f"{1234567.891:,.2f}")  # 1,234,567.89
-print(f"{0.25:.0%}")  # 25%
-
-print("Art: %5d, Price per Unit: %8.2f" % (art, price))
-print("Art: {:5d}, Price per Unit: {:8.2f}".format(art, price))
+# Recognise these older forms; use f-strings in new code.
+print("Photo %05d: %6.2f MB" % (photo_id, size_mb))
+print("Photo {:05d}: {:6.2f} MB".format(photo_id, size_mb))

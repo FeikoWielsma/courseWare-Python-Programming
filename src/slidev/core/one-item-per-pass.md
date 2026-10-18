@@ -8,7 +8,7 @@ pills: ["demo07 · for"]
 
 <script setup>
 const run = {
-  "rows": [{"id": "files", "label": "files", "variable": "filename", "items": ["'sales.csv'", "'stock.csv'", "'prices.csv'"], "width": 168}],
+  "rows": [{"id": "files", "label": "files", "variable": "filename", "items": ["'cover.jpg'", "'stage.jpg'", "'crowd.jpg'"], "width": 168}],
   "states": [
     {"cursor": null, "status": {"files": []}, "ended": []},
     {"cursor": {"row": "files", "at": 0}, "status": {"files": ["ran"]}, "ended": []},
@@ -16,7 +16,7 @@ const run = {
     {"cursor": {"row": "files", "at": 2}, "status": {"files": ["ran", "ran", "ran"]}, "ended": []},
     {"cursor": {"row": "files", "at": 2}, "status": {"files": ["ran", "ran", "ran"]}, "ended": ["files"]}
   ],
-  "output": [[], ["Processing sales.csv"], ["Processing stock.csv"], ["Processing prices.csv"], ["All files processed"]],
+  "output": [[], ["Processing cover.jpg"], ["Processing stage.jpg"], ["Processing crowd.jpg"], ["All files processed"]],
   "captions": [
     "`files` refers to a list of three file names",
     "`filename` receives the first item, then the block runs",
@@ -30,7 +30,7 @@ const run = {
 <DataStructuresRun :run="run" layout="stack" output-width="300px">
 
 ```python {1|2-3|2-3|2-3|4}
-files = ["sales.csv", "stock.csv", "prices.csv"]
+files = ["cover.jpg", "stage.jpg", "crowd.jpg"]
 for filename in files:
     print(f"Processing {filename}")
 print("All files processed")

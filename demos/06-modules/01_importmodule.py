@@ -1,8 +1,8 @@
-import shipping
+import timing
 
-print(shipping.delivery_cost(35.0))  # 4.95
-print(shipping.delivery_cost(75.0))  # 0.0
+print(timing.format_duration(222))  # 3:42
+print(timing.format_duration(65))  # 1:05
 
-import shipping as delivery
+import timing as clock
 
-print(delivery.FREE_SHIPPING)  # 50.0
+print(clock.SECONDS_PER_MINUTE)  # 60

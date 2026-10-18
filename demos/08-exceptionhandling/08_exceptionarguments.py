@@ -1,8 +1,6 @@
-def temp_convert(value: str) -> None:
-    try:
-        print(int(value))
-    except ValueError as error:
-        print("Argument does not contain numbers:", error)
-
-
-temp_convert("xyz")
+text = "live"
+try:
+    int(text)
+except ValueError as error:
+    print(f"Cannot read track length {text!r}: {error}")
+    print(error.args)

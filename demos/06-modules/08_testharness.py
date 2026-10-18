@@ -1,8 +1,8 @@
-from shipping import delivery_cost
+from timing import format_duration
 
 
 def main() -> None:
-    print(f"Delivery: {delivery_cost(35.0):.2f}")
+    print(f"Duration: {format_duration(222)}")
 
 
 if __name__ == "__main__":

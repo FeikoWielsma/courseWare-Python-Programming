@@ -1,4 +1,4 @@
-from shipping import FREE_SHIPPING, delivery_cost
+from timing import SECONDS_PER_MINUTE, format_duration
 
-print(delivery_cost(35.0))  # 4.95
-print(FREE_SHIPPING)  # 50.0
+print(format_duration(222))  # 3:42
+print(SECONDS_PER_MINUTE)  # 60

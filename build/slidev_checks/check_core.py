@@ -461,30 +461,30 @@ def verify_static(slide: Slide) -> None:
                     expected_rows[0], shown["cursor"]["at"]
                 ):
                     fail(slide.file, f"state {k} loop variable does not match Python filename")
-                if k == len(checkpoints) - 1 and module.get("filename") != "prices.csv":
+                if k == len(checkpoints) - 1 and module.get("filename") != "crowd.jpg":
                     fail(slide.file, "loop exhaustion should preserve the final filename")
                 if (row["id"] in shown.get("ended", [])) != (k == len(checkpoints) - 1):
                     fail(slide.file, f"state {k} end slot does not match Python loop exhaustion")
             elif slide.file == "leaving-a-loop-with-break.md":
                 module = event.globals
                 at = shown.get("cursor", {}).get("at")
-                if at is not None and module.get("letter") != row_value(expected_rows[0], at):
+                if at is not None and module.get("track") != row_value(expected_rows[0], at):
                     fail(slide.file, f"state {k} letter differs from the Python loop variable")
                 count = sum(
-                    line.startswith("Current Letter : ")
+                    line.startswith("Checked ")
                     for batch in slide.run["output"][: k + 1]
                     for line in batch
                 )
                 expected_status = ["ran"] * count
                 if k >= 3:
-                    expected_status += ["stop", "never", "never"]
+                    expected_status += ["stop"] + ["never"] * (len(row["items"]) - count - 1)
                 if statuses != expected_status:
                     fail(
                         slide.file,
                         f"state {k} loop statuses {statuses}, expected {expected_status}",
                     )
-                if k >= 3 and (module.get("letter") != "i" or at != count):
-                    fail(slide.file, "break must preserve letter='i' and leave g unreached")
+                if k >= 3 and (module.get("track") != "Pulse" or at != count):
+                    fail(slide.file, "break must preserve track='Pulse' and leave Outro unreached")
         elif slide.kind == "stream":
             shown_writes = slide.run["states"][k]["writes"]
             actual_text = event.output
