@@ -1,62 +1,388 @@
 ---
 layout: default
-title: Local and Global Names
-pills: ["demo12 · variablescope"]
+title: Local and Shared Delivery Settings
+pills: ["demo15 · variablescope"]
 ---
 
-# Local and Global Names
+# Local and Shared Delivery Settings
 
 <script setup>
 const run = {
-  "frames": [{"id": "global", "label": "global"}, {"id": "func1", "label": "func1()"}, {"id": "func2", "label": "func2()"}],
-  "order": ["i50", "f1", "f2", "i2"],
-  "states": [
-    {"names": {"global": {"x": "i50", "y": "i50"}}, "objects": {"i50": {"type": "int", "value": "50"}}, "active": ["global.x", "global.y"], "mark": {"object": "i50"}},
-    {"names": {"global": {"x": "i50", "y": "i50", "func1": "f1", "func2": "f2"}}, "objects": {"i50": {"type": "int", "value": "50"}, "f1": {"type": "function", "value": "func1"}, "f2": {"type": "function", "value": "func2"}}, "active": ["global.func1", "global.func2"], "mark": [{"object": "f1"}, {"object": "f2"}]},
-    {"names": {"global": {"x": "i50", "y": "i50", "func1": "f1", "func2": "f2"}, "func1": {}}, "objects": {"i50": {"type": "int", "value": "50"}, "f1": {"type": "function", "value": "func1"}, "f2": {"type": "function", "value": "func2"}}, "active": ["global.func1"]},
-    {"names": {"global": {"x": "i50", "y": "i50", "func1": "f1", "func2": "f2"}, "func1": {"x": "i2"}}, "objects": {"i50": {"type": "int", "value": "50"}, "f1": {"type": "function", "value": "func1"}, "f2": {"type": "function", "value": "func2"}, "i2": {"type": "int", "value": "2"}}, "active": ["func1.x"], "mark": {"object": "i2"}},
-    {"names": {"global": {"x": "i50", "y": "i50", "func1": "f1", "func2": "f2"}, "func1": {"x": "i2"}}, "objects": {"i50": {"type": "int", "value": "50"}, "f1": {"type": "function", "value": "func1"}, "f2": {"type": "function", "value": "func2"}, "i2": {"type": "int", "value": "2"}}, "active": ["func1.x"]},
-    {"names": {"global": {"x": "i50", "y": "i50", "func1": "f1", "func2": "f2"}}, "objects": {"i50": {"type": "int", "value": "50"}, "f1": {"type": "function", "value": "func1"}, "f2": {"type": "function", "value": "func2"}, "i2": {"type": "int", "value": "2"}}, "active": ["global.x"]},
-    {"names": {"global": {"x": "i50", "y": "i50", "func1": "f1", "func2": "f2"}, "func2": {}}, "objects": {"i50": {"type": "int", "value": "50"}, "f1": {"type": "function", "value": "func1"}, "f2": {"type": "function", "value": "func2"}}, "active": ["global.func2"]},
-    {"names": {"global": {"x": "i50", "y": "i2", "func1": "f1", "func2": "f2"}, "func2": {"global y": null}}, "objects": {"i50": {"type": "int", "value": "50"}, "f1": {"type": "function", "value": "func1"}, "f2": {"type": "function", "value": "func2"}, "i2": {"type": "int", "value": "2"}}, "active": ["global.y", "func2.global y"], "mark": {"object": "i2"}},
-    {"names": {"global": {"x": "i50", "y": "i2", "func1": "f1", "func2": "f2"}}, "objects": {"i50": {"type": "int", "value": "50"}, "f1": {"type": "function", "value": "func1"}, "f2": {"type": "function", "value": "func2"}, "i2": {"type": "int", "value": "2"}}, "active": ["global.y"]}
+  "frames": [
+    {
+      "id": "global",
+      "label": "global"
+    },
+    {
+      "id": "preview",
+      "label": "preview_fee()"
+    },
+    {
+      "id": "settings",
+      "label": "set_threshold()"
+    }
   ],
-  "output": [[], [], [], [], ["Local x   : 2"], ["x is still: 50"], [], [], ["y is now  : 2"]],
+  "order": [
+    "fee",
+    "threshold",
+    "preview_fn",
+    "setter_fn",
+    "preview_fee",
+    "new_threshold"
+  ],
+  "states": [
+    {
+      "names": {
+        "global": {
+          "delivery_fee": "fee",
+          "free_from": "threshold"
+        }
+      },
+      "objects": {
+        "fee": {
+          "type": "float",
+          "value": "4.95"
+        },
+        "threshold": {
+          "type": "float",
+          "value": "50.0"
+        }
+      },
+      "active": [
+        "global.delivery_fee",
+        "global.free_from"
+      ]
+    },
+    {
+      "names": {
+        "global": {
+          "delivery_fee": "fee",
+          "free_from": "threshold",
+          "preview_fee": "preview_fn",
+          "set_threshold": "setter_fn"
+        }
+      },
+      "objects": {
+        "fee": {
+          "type": "float",
+          "value": "4.95"
+        },
+        "threshold": {
+          "type": "float",
+          "value": "50.0"
+        },
+        "preview_fn": {
+          "type": "function",
+          "value": "preview_fee"
+        },
+        "setter_fn": {
+          "type": "function",
+          "value": "set_threshold"
+        }
+      },
+      "active": [
+        "global.preview_fee",
+        "global.set_threshold"
+      ]
+    },
+    {
+      "names": {
+        "global": {
+          "delivery_fee": "fee",
+          "free_from": "threshold",
+          "preview_fee": "preview_fn",
+          "set_threshold": "setter_fn"
+        },
+        "preview": {}
+      },
+      "objects": {
+        "fee": {
+          "type": "float",
+          "value": "4.95"
+        },
+        "threshold": {
+          "type": "float",
+          "value": "50.0"
+        },
+        "preview_fn": {
+          "type": "function",
+          "value": "preview_fee"
+        },
+        "setter_fn": {
+          "type": "function",
+          "value": "set_threshold"
+        }
+      },
+      "active": [
+        "global.preview_fee"
+      ]
+    },
+    {
+      "names": {
+        "global": {
+          "delivery_fee": "fee",
+          "free_from": "threshold",
+          "preview_fee": "preview_fn",
+          "set_threshold": "setter_fn"
+        },
+        "preview": {
+          "delivery_fee": "preview_fee"
+        }
+      },
+      "objects": {
+        "fee": {
+          "type": "float",
+          "value": "4.95"
+        },
+        "threshold": {
+          "type": "float",
+          "value": "50.0"
+        },
+        "preview_fn": {
+          "type": "function",
+          "value": "preview_fee"
+        },
+        "setter_fn": {
+          "type": "function",
+          "value": "set_threshold"
+        },
+        "preview_fee": {
+          "type": "float",
+          "value": "0.0"
+        }
+      },
+      "active": [
+        "preview.delivery_fee"
+      ]
+    },
+    {
+      "names": {
+        "global": {
+          "delivery_fee": "fee",
+          "free_from": "threshold",
+          "preview_fee": "preview_fn",
+          "set_threshold": "setter_fn"
+        },
+        "preview": {
+          "delivery_fee": "preview_fee"
+        }
+      },
+      "objects": {
+        "fee": {
+          "type": "float",
+          "value": "4.95"
+        },
+        "threshold": {
+          "type": "float",
+          "value": "50.0"
+        },
+        "preview_fn": {
+          "type": "function",
+          "value": "preview_fee"
+        },
+        "setter_fn": {
+          "type": "function",
+          "value": "set_threshold"
+        },
+        "preview_fee": {
+          "type": "float",
+          "value": "0.0"
+        }
+      },
+      "active": [
+        "preview.delivery_fee"
+      ]
+    },
+    {
+      "names": {
+        "global": {
+          "delivery_fee": "fee",
+          "free_from": "threshold",
+          "preview_fee": "preview_fn",
+          "set_threshold": "setter_fn"
+        }
+      },
+      "objects": {
+        "fee": {
+          "type": "float",
+          "value": "4.95"
+        },
+        "threshold": {
+          "type": "float",
+          "value": "50.0"
+        },
+        "preview_fn": {
+          "type": "function",
+          "value": "preview_fee"
+        },
+        "setter_fn": {
+          "type": "function",
+          "value": "set_threshold"
+        },
+        "preview_fee": {
+          "type": "float",
+          "value": "0.0"
+        }
+      },
+      "active": [
+        "global.delivery_fee"
+      ]
+    },
+    {
+      "names": {
+        "global": {
+          "delivery_fee": "fee",
+          "free_from": "threshold",
+          "preview_fee": "preview_fn",
+          "set_threshold": "setter_fn"
+        },
+        "settings": {}
+      },
+      "objects": {
+        "fee": {
+          "type": "float",
+          "value": "4.95"
+        },
+        "threshold": {
+          "type": "float",
+          "value": "50.0"
+        },
+        "preview_fn": {
+          "type": "function",
+          "value": "preview_fee"
+        },
+        "setter_fn": {
+          "type": "function",
+          "value": "set_threshold"
+        }
+      },
+      "active": [
+        "global.set_threshold"
+      ]
+    },
+    {
+      "names": {
+        "global": {
+          "delivery_fee": "fee",
+          "free_from": "new_threshold",
+          "preview_fee": "preview_fn",
+          "set_threshold": "setter_fn"
+        },
+        "settings": {
+          "global free_from": null
+        }
+      },
+      "objects": {
+        "fee": {
+          "type": "float",
+          "value": "4.95"
+        },
+        "threshold": {
+          "type": "float",
+          "value": "50.0"
+        },
+        "preview_fn": {
+          "type": "function",
+          "value": "preview_fee"
+        },
+        "setter_fn": {
+          "type": "function",
+          "value": "set_threshold"
+        },
+        "new_threshold": {
+          "type": "float",
+          "value": "75.0"
+        }
+      },
+      "active": [
+        "global.free_from",
+        "settings.global free_from"
+      ]
+    },
+    {
+      "names": {
+        "global": {
+          "delivery_fee": "fee",
+          "free_from": "new_threshold",
+          "preview_fee": "preview_fn",
+          "set_threshold": "setter_fn"
+        }
+      },
+      "objects": {
+        "fee": {
+          "type": "float",
+          "value": "4.95"
+        },
+        "preview_fn": {
+          "type": "function",
+          "value": "preview_fee"
+        },
+        "setter_fn": {
+          "type": "function",
+          "value": "set_threshold"
+        },
+        "new_threshold": {
+          "type": "float",
+          "value": "75.0"
+        }
+      },
+      "active": [
+        "global.free_from"
+      ]
+    }
+  ],
+  "output": [
+    [],
+    [],
+    [],
+    [],
+    [
+      "Preview fee: 0.00"
+    ],
+    [
+      "Current fee: 4.95"
+    ],
+    [],
+    [],
+    [
+      "Free from: 75.00"
+    ]
+  ],
   "captions": [
-    "`x` and `y` are global names, both referring to `50`",
-    "The two `def` statements bind `func1` and `func2`; the bodies do not run yet",
-    "Calling `func1` starts a new local scope",
-    "`x = 2` creates a local `x`; the global `x` is not touched",
-    "Inside `func1` the local `x` is found first",
-    "The local scope ends with the call; the global `x` is still `50`",
-    "Calling `func2` starts another local scope",
-    "`global y` makes `y` mean the global name, so `y = 2` rebinds it",
-    "The global `y` now refers to `2`"
+    "The module stores the delivery fee and free-delivery threshold",
+    "The definitions bind the two function names",
+    "`preview_fee()` starts a local scope",
+    "Its local `delivery_fee` is separate from the module\u2019s configured fee",
+    "The preview prints its local value",
+    "After the call, the configured fee is still `4.95`",
+    "`set_threshold()` starts another local scope",
+    "`global free_from` directs the assignment to the module\u2019s name",
+    "The configured threshold is now `75.0`"
   ]
 }
 </script>
 
-<DataStructuresRun :run="run" layout="side">
+<DataStructuresRun :run="run" layout="side" output-width="400px">
 
 ```python {1-2|4,8|12|5|6|13|14|9-10|15}
-x = 50
-y = 50
+delivery_fee = 4.95
+free_from = 50.0
 
-def func1() -> None:
-    x = 2
-    print("Local x   :", x)
+def preview_fee() -> None:
+    delivery_fee = 0.0
+    print(f"Preview fee: {delivery_fee:.2f}")
 
-def func2() -> None:
-    global y
-    y = 2
+def set_threshold() -> None:
+    global free_from
+    free_from = 75.0
 
-func1()
-print("x is still:", x)
-func2()
-print("y is now  :", y)
+preview_fee()
+print(f"Current fee: {delivery_fee:.2f}")
+set_threshold()
+print(f"Free from: {free_from:.2f}")
 ```
 
 <template #visual="{ step }">
-<CoreNames :run="run" :step="step" :frame-width="200" :gap="120" />
+<CoreNames :run="run" :step="step" :frame-width="230" :gap="90" />
 </template>
 </DataStructuresRun>

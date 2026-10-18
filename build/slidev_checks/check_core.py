@@ -61,24 +61,24 @@ FILES = {
         "04-control-flow-and-operators-13-enhancement",
     ),
     "parameter-shares-the-list.md": (
-        "05-functions/02_objectreferences.py",
+        "05-functions/09_objectreferences.py",
         "names",
-        "05-functions-5-enhancement",
+        "05-functions-11-enhancement",
     ),
     "rebinding-a-parameter.md": (
-        "05-functions/03_overwritingreferences.py",
+        "05-functions/10_overwritingreferences.py",
         "names",
-        "05-functions-6-enhancement",
+        "05-functions-12-enhancement",
     ),
     "handing-back-a-result.md": (
-        "05-functions/11_returnstatement.py",
+        "05-functions/02_returnstatement.py",
         "names",
-        "05-functions-14-enhancement",
+        "05-functions-4-enhancement",
     ),
     "local-and-global-names.md": (
-        "05-functions/12_variablescope.py",
+        "05-functions/15_variablescope.py",
         "names",
-        "05-functions-16-enhancement",
+        "05-functions-18-enhancement",
     ),
 }
 

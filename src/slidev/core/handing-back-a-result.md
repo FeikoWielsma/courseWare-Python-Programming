@@ -1,50 +1,241 @@
 ---
 layout: default
-title: Handing Back a Result
-pills: ["demo11 · returnstatement"]
+title: Using the Returned Delivery Cost
+pills: ["demo02 · returnstatement"]
 ---
 
-# Handing Back a Result
+# Using the Returned Delivery Cost
 
 <script setup>
 const run = {
-  "frames": [{"id": "global", "label": "global"}, {"id": "call", "label": "summation()"}],
-  "order": ["fn", "i10", "i20", "i30"],
-  "states": [
-    {"names": {"global": {"summation": "fn"}}, "objects": {"fn": {"type": "function", "value": "summation"}}, "active": ["global.summation"], "mark": {"object": "fn"}},
-    {"names": {"global": {"summation": "fn"}, "call": {"arg1": "i10", "arg2": "i20"}}, "objects": {"fn": {"type": "function", "value": "summation"}, "i10": {"type": "int", "value": "10"}, "i20": {"type": "int", "value": "20"}}, "active": ["call.arg1", "call.arg2"], "mark": [{"object": "i10"}, {"object": "i20"}]},
-    {"names": {"global": {"summation": "fn"}, "call": {"arg1": "i10", "arg2": "i20", "tot": "i30"}}, "objects": {"fn": {"type": "function", "value": "summation"}, "i10": {"type": "int", "value": "10"}, "i20": {"type": "int", "value": "20"}, "i30": {"type": "int", "value": "30"}}, "active": ["call.arg1", "call.arg2", "call.tot"], "mark": {"object": "i30"}},
-    {"names": {"global": {"summation": "fn"}, "call": {"arg1": "i10", "arg2": "i20", "tot": "i30"}}, "objects": {"fn": {"type": "function", "value": "summation"}, "i10": {"type": "int", "value": "10"}, "i20": {"type": "int", "value": "20"}, "i30": {"type": "int", "value": "30"}}, "active": ["call.tot"]},
-    {"names": {"global": {"summation": "fn"}, "call": {"arg1": "i10", "arg2": "i20", "tot": "i30", "return": "i30"}}, "objects": {"fn": {"type": "function", "value": "summation"}, "i10": {"type": "int", "value": "10"}, "i20": {"type": "int", "value": "20"}, "i30": {"type": "int", "value": "30"}}, "active": ["call.tot", "call.return"]},
-    {"names": {"global": {"summation": "fn", "total": "i30"}}, "objects": {"fn": {"type": "function", "value": "summation"}, "i10": {"type": "int", "value": "10"}, "i20": {"type": "int", "value": "20"}, "i30": {"type": "int", "value": "30"}}, "active": ["global.total"], "mark": {"object": "i30"}},
-    {"names": {"global": {"summation": "fn", "total": "i30"}}, "objects": {"fn": {"type": "function", "value": "summation"}, "i30": {"type": "int", "value": "30"}}, "active": ["global.total"]}
+  "frames": [
+    {
+      "id": "global",
+      "label": "global"
+    },
+    {
+      "id": "call",
+      "label": "delivery_cost()"
+    }
   ],
-  "output": [[], [], [], ["Inside the function : 30"], [], [], ["Outside the function : 30"]],
+  "order": [
+    "fn",
+    "amount",
+    "fee",
+    "grand"
+  ],
+  "states": [
+    {
+      "names": {
+        "global": {
+          "delivery_cost": "fn"
+        }
+      },
+      "objects": {
+        "fn": {
+          "type": "function",
+          "value": "delivery_cost"
+        }
+      },
+      "active": [
+        "global.delivery_cost"
+      ]
+    },
+    {
+      "names": {
+        "global": {
+          "delivery_cost": "fn"
+        },
+        "call": {
+          "total": "amount"
+        }
+      },
+      "objects": {
+        "fn": {
+          "type": "function",
+          "value": "delivery_cost"
+        },
+        "amount": {
+          "type": "float",
+          "value": "35.0"
+        }
+      },
+      "active": [
+        "call.total"
+      ]
+    },
+    {
+      "names": {
+        "global": {
+          "delivery_cost": "fn"
+        },
+        "call": {
+          "total": "amount"
+        }
+      },
+      "objects": {
+        "fn": {
+          "type": "function",
+          "value": "delivery_cost"
+        },
+        "amount": {
+          "type": "float",
+          "value": "35.0"
+        }
+      },
+      "active": [
+        "call.total"
+      ]
+    },
+    {
+      "names": {
+        "global": {
+          "delivery_cost": "fn"
+        },
+        "call": {
+          "total": "amount",
+          "return": "fee"
+        }
+      },
+      "objects": {
+        "fn": {
+          "type": "function",
+          "value": "delivery_cost"
+        },
+        "amount": {
+          "type": "float",
+          "value": "35.0"
+        },
+        "fee": {
+          "type": "float",
+          "value": "4.95"
+        }
+      },
+      "active": [
+        "call.return"
+      ],
+      "mark": {
+        "object": "fee"
+      }
+    },
+    {
+      "names": {
+        "global": {
+          "delivery_cost": "fn",
+          "shipping": "fee"
+        }
+      },
+      "objects": {
+        "fn": {
+          "type": "function",
+          "value": "delivery_cost"
+        },
+        "amount": {
+          "type": "float",
+          "value": "35.0"
+        },
+        "fee": {
+          "type": "float",
+          "value": "4.95"
+        }
+      },
+      "active": [
+        "global.shipping"
+      ]
+    },
+    {
+      "names": {
+        "global": {
+          "delivery_cost": "fn",
+          "shipping": "fee",
+          "grand_total": "grand"
+        }
+      },
+      "objects": {
+        "fn": {
+          "type": "function",
+          "value": "delivery_cost"
+        },
+        "fee": {
+          "type": "float",
+          "value": "4.95"
+        },
+        "grand": {
+          "type": "float",
+          "value": "39.95"
+        }
+      },
+      "active": [
+        "global.grand_total"
+      ],
+      "mark": {
+        "object": "grand"
+      }
+    },
+    {
+      "names": {
+        "global": {
+          "delivery_cost": "fn",
+          "shipping": "fee",
+          "grand_total": "grand"
+        }
+      },
+      "objects": {
+        "fn": {
+          "type": "function",
+          "value": "delivery_cost"
+        },
+        "fee": {
+          "type": "float",
+          "value": "4.95"
+        },
+        "grand": {
+          "type": "float",
+          "value": "39.95"
+        }
+      },
+      "active": [
+        "global.grand_total"
+      ]
+    }
+  ],
+  "output": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "Order total: 39.95"
+    ]
+  ],
   "captions": [
-    "`def` binds `summation` to a function object; the body does not run yet",
-    "The call binds the parameters `arg1` and `arg2` to the arguments",
-    "`tot` is a local name for the sum",
-    "Inside the function, `tot` refers to `30`",
-    "`return tot` hands that object back to the caller and ends the call",
-    "The result of the call is bound to `total`; it is the same object, not a copy",
-    "The call has ended; `total` refers to the returned object"
+    "The definition names the delivery calculation",
+    "The call supplies an order total of `35.0`",
+    "The order is below `50.0`, so delivery is not free",
+    "`return 4.95` ends the call and supplies its result",
+    "The caller stores the returned charge in `shipping`",
+    "The caller adds `shipping` to the order total",
+    "The result can be used in the caller\u2019s calculation and printed"
   ]
 }
 </script>
 
-<DataStructuresRun :run="run" layout="side">
+<DataStructuresRun :run="run" layout="side" output-width="400px">
 
-```python {1|6|2|3|4|6|7}
-def summation(arg1: int, arg2: int) -> int:
-    tot = arg1 + arg2
-    print("Inside the function :", tot)
-    return tot
+```python {1|6|2|4|6|7|8}
+def delivery_cost(total):
+    if total >= 50.0:
+        return 0.0
+    return 4.95
 
-total = summation(10, 20)
-print("Outside the function :", total)
+shipping = delivery_cost(35.0)
+grand_total = 35.0 + shipping
+print(f"Order total: {grand_total:.2f}")
 ```
 
 <template #visual="{ step }">
-<CoreNames :run="run" :step="step" :frame-width="210" :gap="120" />
+<CoreNames :run="run" :step="step" :frame-width="230" :gap="90" />
 </template>
 </DataStructuresRun>

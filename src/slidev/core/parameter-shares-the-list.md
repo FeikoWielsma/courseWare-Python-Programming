@@ -1,47 +1,217 @@
 ---
 layout: default
-title: A Parameter Shares the List
-pills: ["demo02 · objectreferences"]
+title: Adding an Export Column
+pills: ["demo09 · objectreferences"]
 ---
 
-# A Parameter Shares the List
+# Adding an Export Column
 
 <script setup>
 const run = {
-  "frames": [{"id": "global", "label": "global"}, {"id": "call", "label": "change_me1()"}],
-  "states": [
-    {"names": {"global": {"change_me1": "fn"}}, "objects": {"fn": {"type": "function", "value": "change_me1"}}, "active": ["global.change_me1"], "mark": {"object": "fn"}},
-    {"names": {"global": {"change_me1": "fn", "my_list_outer": "outer"}}, "objects": {"fn": {"type": "function", "value": "change_me1"}, "outer": {"type": "list", "items": ["10", "20", "30"]}}, "active": ["global.my_list_outer"], "mark": {"object": "outer"}},
-    {"names": {"global": {"change_me1": "fn", "my_list_outer": "outer"}, "call": {"mylist": "outer"}}, "objects": {"fn": {"type": "function", "value": "change_me1"}, "outer": {"type": "list", "items": ["10", "20", "30"]}}, "active": ["global.my_list_outer", "call.mylist"]},
-    {"names": {"global": {"change_me1": "fn", "my_list_outer": "outer"}, "call": {"mylist": "outer"}}, "objects": {"fn": {"type": "function", "value": "change_me1"}, "outer": {"type": "list", "items": ["10", "20", "30", "40"]}}, "active": ["call.mylist"], "mark": {"object": "outer", "index": 3}},
-    {"names": {"global": {"change_me1": "fn", "my_list_outer": "outer"}, "call": {"mylist": "outer"}}, "objects": {"fn": {"type": "function", "value": "change_me1"}, "outer": {"type": "list", "items": ["10", "20", "30", "40"]}}, "active": ["call.mylist"]},
-    {"names": {"global": {"change_me1": "fn", "my_list_outer": "outer"}}, "objects": {"fn": {"type": "function", "value": "change_me1"}, "outer": {"type": "list", "items": ["10", "20", "30", "40"]}}, "active": ["global.my_list_outer"]}
+  "frames": [
+    {
+      "id": "global",
+      "label": "global"
+    },
+    {
+      "id": "call",
+      "label": "add_status_column()"
+    }
   ],
-  "output": [[], [], [], [], ["List inside the function change_me1: [10, 20, 30, 40]"], ["List outside the function: [10, 20, 30, 40]"]],
+  "order": [
+    "fn",
+    "original"
+  ],
+  "states": [
+    {
+      "names": {
+        "global": {
+          "add_status_column": "fn"
+        }
+      },
+      "objects": {
+        "fn": {
+          "type": "function",
+          "value": "add_status_column"
+        }
+      },
+      "active": [
+        "global.add_status_column"
+      ]
+    },
+    {
+      "names": {
+        "global": {
+          "add_status_column": "fn",
+          "fields": "original"
+        }
+      },
+      "objects": {
+        "fn": {
+          "type": "function",
+          "value": "add_status_column"
+        },
+        "original": {
+          "type": "list",
+          "items": [
+            "'id'",
+            "'total'"
+          ]
+        }
+      },
+      "active": [
+        "global.fields"
+      ]
+    },
+    {
+      "names": {
+        "global": {
+          "add_status_column": "fn",
+          "fields": "original"
+        },
+        "call": {
+          "columns": "original"
+        }
+      },
+      "objects": {
+        "fn": {
+          "type": "function",
+          "value": "add_status_column"
+        },
+        "original": {
+          "type": "list",
+          "items": [
+            "'id'",
+            "'total'"
+          ]
+        }
+      },
+      "active": [
+        "call.columns"
+      ]
+    },
+    {
+      "names": {
+        "global": {
+          "add_status_column": "fn",
+          "fields": "original"
+        },
+        "call": {
+          "columns": "original"
+        }
+      },
+      "objects": {
+        "fn": {
+          "type": "function",
+          "value": "add_status_column"
+        },
+        "original": {
+          "type": "list",
+          "items": [
+            "'id'",
+            "'total'",
+            "'status'"
+          ]
+        }
+      },
+      "active": [
+        "call.columns"
+      ],
+      "mark": {
+        "object": "original",
+        "index": 2
+      }
+    },
+    {
+      "names": {
+        "global": {
+          "add_status_column": "fn",
+          "fields": "original"
+        },
+        "call": {
+          "columns": "original"
+        }
+      },
+      "objects": {
+        "fn": {
+          "type": "function",
+          "value": "add_status_column"
+        },
+        "original": {
+          "type": "list",
+          "items": [
+            "'id'",
+            "'total'",
+            "'status'"
+          ]
+        }
+      },
+      "active": [
+        "call.columns"
+      ]
+    },
+    {
+      "names": {
+        "global": {
+          "add_status_column": "fn",
+          "fields": "original"
+        }
+      },
+      "objects": {
+        "fn": {
+          "type": "function",
+          "value": "add_status_column"
+        },
+        "original": {
+          "type": "list",
+          "items": [
+            "'id'",
+            "'total'",
+            "'status'"
+          ]
+        }
+      },
+      "active": [
+        "global.fields"
+      ]
+    }
+  ],
+  "output": [
+    [],
+    [],
+    [],
+    [],
+    [
+      "Inside: ['id', 'total', 'status']"
+    ],
+    [
+      "After call: ['id', 'total', 'status']"
+    ]
+  ],
   "captions": [
-    "`def` makes a function object and binds the name `change_me1` to it",
-    "`my_list_outer` refers to a new list",
-    "The call binds the parameter `mylist` to the same list object",
-    "`append()` changes that one list through the name `mylist`",
-    "Inside the function, `mylist` shows the added item",
-    "The call has returned and `mylist` is gone; `my_list_outer` sees the change"
+    "`def` defines the task of adding the export column",
+    "`fields` refers to the original column list",
+    "The parameter `columns` refers to that same list",
+    "`append` adds `status` to the existing list",
+    "The function prints the updated column list",
+    "The caller sees the added column in `fields`"
   ]
 }
 </script>
 
-<DataStructuresRun :run="run" layout="stack" output-width="560px">
+<DataStructuresRun :run="run" layout="stack" output-width="400px">
 
 ```python {1|5|6|2|3|7}
-def change_me1(mylist: list[int]) -> None:
-    mylist.append(40)
-    print("List inside the function change_me1:", mylist)
+def add_status_column(columns: list[str]) -> None:
+    columns.append("status")
+    print(f"Inside: {columns}")
 
-my_list_outer = [10, 20, 30]
-change_me1(my_list_outer)
-print("List outside the function:", my_list_outer)
+fields = ["id", "total"]
+add_status_column(fields)
+print(f"After call: {fields}")
 ```
 
 <template #visual="{ step }">
-<CoreNames :run="run" :step="step" :frame-width="230" :gap="110" :cell-width="54" />
+<CoreNames :run="run" :step="step" :frame-width="290" :gap="60" :cell-width="118" />
 </template>
 </DataStructuresRun>

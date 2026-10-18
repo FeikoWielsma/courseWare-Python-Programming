@@ -48,3 +48,9 @@
 .course-frame[data-source-id="08-exception-handling-1"] .course-diagram-step > .mermaid-diagram {
   margin: 0;
 }
+
+/* This eight-line walkthrough reserves both call-frame rows for the returned list. */
+.course-frame[data-source-id="05-functions-12-enhancement"] .ds-code .slidev-code {
+  --slidev-code-font-size: 16px;
+  --slidev-code-line-height: 1.35;
+}

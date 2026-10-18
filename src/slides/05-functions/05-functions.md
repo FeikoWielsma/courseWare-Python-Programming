@@ -8,364 +8,366 @@ footer: Functions
 
 # Functions
 
-- Named blocks of reusable code :
-  - Python includes many built-in functions such as `print()`, `input()`, `len()`
+- A function gives a name to a task that a program repeats :
+  - Delivery charges depend on an order's total
+  - The same calculation can be called for each order
+- Python provides functions such as `print()`, `input()` and `len()` :
   - Programs define their own functions with `def`
-- Functions provide modularity and code reuse :
-  - A task is written and tested once, then called from multiple places
-- Defining a function :
-  - Starts with `def`, the function name, and parentheses for parameters
-  - The header line ends with a colon `:`, and the body is indented
-- Exiting a function :
-  - The `return` statement leaves the function and passes a value back
-  - A function without a `return`, or a bare `return`, returns `None`
+- A function can take values and return a result :
+  - The caller supplies the order total
+  - The function returns the delivery charge
 
 ---
 
 # Function Syntax
 
-- The first statement can be a documentation string (docstring) :
-  - Explains what the function does and what parameters it expects
-  - Documenting tools such as `pdoc` extract docstrings into HTML
+- `delivery_cost` calculates the delivery charge for an order :
+  - Orders of 50 or more have free delivery
+  - Smaller orders have a charge of 4.95
 
 ```python
-def function_name(parameter: type) -> return_type:
-    """function docstring"""
-    statement(s)
-    return expression
+def delivery_cost(total):
+    if total >= 50.0:
+        return 0.0
+    return 4.95
 ```
 
-- Positional parameters :
-  - By default, arguments are passed in the order they are defined
-- Example of a simple function :
-  - Accepts a string and prints it to standard output
-
-```python
-def show_message(message: str) -> None:
-    """Print the passed string."""
-    print(message)
-```
-
----
-
-# Annotating a Function
-
-- Each parameter takes a colon and the type it expects :
-  - The result takes an arrow and the type it returns
-  - A function that returns nothing is annotated `-> None`
-
-```python
-def area(width: float, height: float) -> float:
-    return width * height
-
-
-def show_message(message: str) -> None:
-    print(message)
-```
-
-- The annotation is documentation the interpreter carries with the function :
-  - Nothing is converted and nothing is checked while the program runs
-  - Passing the wrong type still works, right up until an operation fails
-- What it buys is everything that reads the signature :
-  - The editor, a checker, and the next person to read the code
-- A collection parameter is annotated like any other collection :
-
-```python
-def average(values: list[float]) -> float:
-    return sum(values) / len(values)
-```
+- The definition starts with `def`, the name and parentheses :
+  - `total` is a parameter that receives the order total
+  - The colon starts the indented body
+- `return` passes the charge back to the code that called the function
 
 ---
 
 # Calling Functions
 
-- A function is invoked by its name followed by parentheses :
-  - Any required arguments are placed inside the parentheses
-- Functions must be defined before they are called :
-  - Python executes line by line, so definitions must come before use
-- Calling `show_message()` :
+- Define a function before calling it :
+  - Parentheses contain the argument supplied for `total`
+  - Each call runs the body with that order total
 
 ```python
-show_message("First call to user defined function!")
-show_message("Again second call to the same function")
-show_message()  # results in error
+print(delivery_cost(35.0))
+print(delivery_cost(75.0))
 ```
-
-- Output :
 
 ```text
-First call to user defined function!
-Again second call to the same function
-Traceback (most recent call last):
-  File "01_showmessage.py", line 10, in <module>
-    show_message()
-TypeError: show_message() missing 1 required positional argument: 'message'
+4.95
+0.0
 ```
 
-> `demo01 · showmessage`
+- Defining the function does not run its body :
+  - The two calls use the same definition with different arguments
+  - Omitting a required argument raises `TypeError`
 
+> `demo01 · delivery_cost`
 
 ---
 
-# Passing Object References
+# return Statement
 
-- Python passes arguments by object reference :
-  - The parameter inside the function is bound to the same object as the caller's argument
-  - Both names refer to the identical object in memory
-- Mutating an object affects the caller :
-  - Modifying a mutable object (such as a list) in place is visible outside
-  - Immutable objects (such as integers or strings) cannot be modified in place
+- A returned value can be stored and used in another calculation :
+  - `shipping` receives the delivery charge
+  - The caller adds that charge to the order total
 
 ```python
-def change_me1(mylist: list[int]) -> None:
-    mylist.append(40)
-    print("List inside the function change_me1:", mylist)
+def delivery_cost(total):
+    if total >= 50.0:
+        return 0.0
+    return 4.95
+
+shipping = delivery_cost(35.0)
+grand_total = 35.0 + shipping
+print(f"Order total: {grand_total:.2f}")
 ```
-
-- Calling `change_me1` :
-
-```python
-my_list_outer = [10, 20, 30]
-change_me1(my_list_outer)
-print("List outside the function:", my_list_outer)
-```
-
-- The caller sees the item added to the list :
 
 ```text
-List inside the function change_me1: [10, 20, 30, 40]
-List outside the function: [10, 20, 30, 40]
+Order total: 39.95
 ```
 
-> `demo02 · objectreferences`
+- `return` ends the current call immediately :
+  - An order of 50 or more returns `0.0` before reaching `return 4.95`
 
+> `demo02 · returnstatement`
 
 ---
 
-# Overwriting References
+# Functions Without a Result
 
-- Rebinding a parameter does not affect the caller :
-  - Assigning to the parameter name creates a new local binding
-  - The caller's variable continues to refer to the original object
-
-```python
-def change_me2(mylist: list[int]) -> None:
-    mylist = [1, 2, 3, 4]  # rebinds the local name
-    print("Values inside the function change_me2:", mylist)
-```
-
-- Calling `change_me2` :
+- Some functions perform a task without returning a useful value :
+  - `print_receipt` calculates and prints an order line
+  - The caller does not need to store a result
 
 ```python
-my_list_outer = [10, 20, 30]
-change_me2(my_list_outer)
-print("Values outside the function:", my_list_outer)
-```
+def print_receipt(product, unit_price, quantity):
+    total = unit_price * quantity
+    print(f"{quantity} x {product}: {total:.2f}")
 
-- The caller's list is unchanged :
+
+print_receipt("Keyboard", 25.0, 2)
+print_receipt("Mouse", 15.0, 1)
+```
 
 ```text
-Values inside the function change_me2: [1, 2, 3, 4]
-Values outside the function: [10, 20, 30]
+2 x Keyboard: 50.00
+1 x Mouse: 15.00
 ```
 
-> `demo03 · overwritingreferences`
+- Reaching the end of a function returns `None` :
+  - A bare `return` also returns `None`
 
-> `demo04 · swap`
-
+> `demo03 · receipt`
 
 ---
 
-# Mutating Versus Rebinding
+# Annotating a Function
 
-- The two previous slides differ in one character, and that changes everything :
+- Annotations describe the values a function expects and returns :
+  - `total: float` describes the argument
+  - `-> float` describes the delivery charge returned to the caller
 
-<svg viewBox="0 0 960 250" width="100%" style="width:100%;height:auto;display:block;margin:8px 0 4px" role="img" aria-label="Mutating the list through the parameter is visible to the caller, rebinding the parameter is not">
-<defs>
-<marker id="mr-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-<path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
-</marker>
-</defs>
-<g fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4">
-<rect x="10" y="10" width="460" height="230" rx="5"/>
-<rect x="490" y="10" width="460" height="230" rx="5"/>
-</g>
-<g fill="currentColor" font-size="20" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
-<text x="30" y="42">mylist.append(40)</text>
-<text x="510" y="42">mylist = [1, 2, 3, 4]</text>
-</g>
-<g fill="none" stroke="currentColor" stroke-width="2">
-<rect x="30" y="70" width="160" height="38" rx="3"/>
-<rect x="30" y="140" width="160" height="38" rx="3"/>
-<rect x="270" y="95" width="180" height="58" rx="3"/>
-<rect x="510" y="70" width="160" height="38" rx="3"/>
-<rect x="510" y="140" width="160" height="38" rx="3"/>
-<rect x="750" y="62" width="180" height="54" rx="3"/>
-<rect x="750" y="132" width="180" height="54" rx="3"/>
-</g>
-<g fill="currentColor" font-size="18" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle">
-<text x="110" y="95">my_list_outer</text>
-<text x="110" y="165">mylist</text>
-<text x="360" y="130">[10,20,30,40]</text>
-<text x="590" y="95">my_list_outer</text>
-<text x="590" y="165">mylist</text>
-<text x="840" y="95">[10, 20, 30]</text>
-<text x="840" y="165">[1, 2, 3, 4]</text>
-</g>
-<g fill="none" stroke="currentColor" stroke-width="1.8" marker-end="url(#mr-arrow)">
-<path d="M 190 89 L 230 89 L 230 124 L 264 124"/>
-<path d="M 190 159 L 230 159 L 230 124 L 264 124"/>
-<path d="M 670 89 L 744 89"/>
-<path d="M 670 159 L 744 159"/>
-</g>
-<g fill="currentColor" font-size="17" opacity="0.75" text-anchor="middle">
-<text x="240" y="222">one object, two names, the caller sees the change</text>
-<text x="720" y="222">the name is rebound, the caller sees nothing</text>
-</g>
-</svg>
+```python
+def delivery_cost(total: float) -> float:
+    if total >= 50.0:
+        return 0.0
+    return 4.95
+```
+
+- `-> None` describes a function that does not return a useful value :
+
+```python
+def print_receipt(product: str, unit_price: float, quantity: int) -> None:
+    total = unit_price * quantity
+    print(f"{quantity} x {product}: {total:.2f}")
+```
+
+- Annotations help the editor and type checkers; Python does not enforce them
+- Collection parameters use the same types as variables, such as `list[str]`
+
+> `demo04 · annotated_delivery`
+
+---
+
+# Documenting a Function
+
+- A docstring describes the task and any rule callers need to know :
+  - It is the first string inside the function body
+  - Triple quotes allow the description to span several lines
+
+```python
+def delivery_cost(total: float) -> float:
+    """Return the delivery charge; orders of 50 or more ship free."""
+    if total >= 50.0:
+        return 0.0
+    return 4.95
+```
+
+- `help(delivery_cost)` displays the docstring :
+  - Tools such as `pdoc` can include it in generated documentation
+- The docstring explains the delivery rule without changing the calculation
+
+> `demo05 · docstring`
 
 ---
 
 # Function Arguments
 
-- Python supports several styles of function arguments :
-- Positional arguments :
-  - Passed to a function in order matching the parameter list
-- Keyword arguments :
-  - Passed by name (`name=value`), allowing arguments to be given in any order
-- Default arguments :
-  - Parameters that take a default value when omitted by the caller
-- Variable-length arguments :
-  - Accept an arbitrary number of positional or keyword arguments
-- Python does not support function overloading :
-  - Defining the same function name multiple times with different signatures replaces the earlier definition
+- Positional arguments follow the parameter order :
+  - `total` receives the first value; `free_from` receives the second
 
-> `demo05 · power1`
+```python
+def delivery_cost(total: float, free_from: float) -> float:
+    if total >= free_from:
+        return 0.0
+    return 4.95
+
+
+print(delivery_cost(35.0, 50.0))
+```
+
+- Keyword arguments specify parameter names
+- Default values allow an argument to be omitted
+- `*args` and `**kwargs` collect extra positional and keyword arguments
+- Defining a name again replaces its earlier definition :
+  - Python does not select between several definitions by their parameter types
+
+> `demo06 · positionalarguments`
 
 ---
 
 # Keyword Arguments
 
-- Function definition :
+- Keyword arguments identify the parameters by name :
+  - The order of keyword arguments can differ from the definition
 
 ```python
-def print_info(name: str, age: int) -> None:
-    """Print the name and age passed to this function."""
-    print("Name:", name)
-    print("Age:", age)
+def delivery_cost(total: float, free_from: float) -> float:
+    if total >= free_from:
+        return 0.0
+    return 4.95
+
+
+print(delivery_cost(free_from=50.0, total=35.0))
 ```
-
-- Calling with keyword arguments :
-
-```python
-print_info(age=55, name="Albert")
-```
-
-- Output :
 
 ```text
-Name: Albert
-Age: 55
+4.95
 ```
 
-- Calling code specifies arguments by name :
-  - Positional order does not need to be followed
-  - Positional arguments must appear before keyword arguments
+- Positional arguments must come before keyword arguments
+- Parameter names make calls with several numeric values easier to read
 
-> `demo06 · keywordarguments`
-
+> `demo07 · keywordarguments`
 
 ---
 
 # Default Arguments
 
-- Default values provide a fallback when an argument is omitted :
+- A default supplies a value when the caller omits an argument :
+  - The usual free-delivery threshold is 50
+  - A call can supply a different threshold
 
 ```python
-def print_info(name: str, age: int = 35) -> None:
-    """Print name and age, defaulting age to 35."""
-    print("Name:", name)
-    print("Age:", age)
+def delivery_cost(total: float, free_from: float = 50.0) -> float:
+    if total >= free_from:
+        return 0.0
+    return 4.95
+
+
+print(delivery_cost(35.0))
+print(delivery_cost(35.0, free_from=30.0))
 ```
-
-- Calling with and without the default argument :
-
-```python
-print_info(age=55, name="Albert")
-print_info(name="Werner")
-```
-
-- Output :
 
 ```text
-Name: Albert
-Age: 55
-Name: Werner
-Age: 35
+4.95
+0.0
 ```
 
 - Parameters without defaults cannot follow parameters with defaults
 
-> `demo07 · defaultarguments`
+> `demo08 · defaultarguments`
 
+---
+
+# Passing Object References
+
+- A parameter refers to the same object as the caller's argument :
+  - The export starts with the columns `id` and `total`
+  - `add_status_column` adds the column required by the export
+
+```python
+def add_status_column(columns: list[str]) -> None:
+    columns.append("status")
+    print(f"Inside: {columns}")
+
+fields = ["id", "total"]
+add_status_column(fields)
+print(f"After call: {fields}")
+```
+
+```text
+Inside: ['id', 'total', 'status']
+After call: ['id', 'total', 'status']
+```
+
+- `append` changes the existing list, so the caller sees the new column
+
+> `demo09 · objectreferences`
+
+---
+
+# Overwriting References
+
+- A function can build a new list while keeping the original list :
+  - `columns + ["status"]` creates the export's new column list
+  - Assigning to `columns` changes only that local name
+
+```python
+def with_status_column(columns: list[str]) -> list[str]:
+    columns = columns + ["status"]
+    return columns
+
+fields = ["id", "total"]
+updated = with_status_column(fields)
+print(f"Original: {fields}")
+print(f"Export: {updated}")
+```
+
+```text
+Original: ['id', 'total']
+Export: ['id', 'total', 'status']
+```
+
+- The caller stores the returned list in `updated`; `fields` keeps its original list
+
+> `demo10 · overwritingreferences`
+
+---
+
+# Mutating Versus Rebinding
+
+- Both functions add a status column, with different effects on the original list :
+
+| Operation inside the function | Effect |
+| --- | --- |
+| `columns.append("status")` | Adds to the list the caller already holds |
+| `columns = columns + ["status"]` | Binds the local name to a new list |
+| `return columns` | Passes that new list back to the caller |
+
+- Choose the behaviour the caller needs :
+  - Update a shared list when the original should change
+  - Return a new list when the original should be preserved
+- Integers and strings cannot be changed in place :
+  - Calculating a different value creates a new binding
 
 ---
 
 # Variable Length Arguments
 
-- `*args` gathers extra positional arguments into a tuple :
-  - Commonly used when a function accepts any number of items
-- `**kwargs` gathers extra keyword arguments into a dictionary :
-  - Commonly used for configuration or passing options through
+- `*items` collects extra positional arguments into a tuple
+- `**details` collects extra keyword arguments into a dictionary
 
 ```python
-def show_arg_lists(arg: int, *args: int, **kwargs: int) -> None:
-    """Demonstrate positional and keyword variable-length arguments."""
-    print("arg   :", arg)
-    print("args  :", args)
-    print("kwargs:", kwargs)
+def print_dispatch(destination: str, *items: str, **details: str) -> None:
+    print(f"Send to {destination}")
+    for item in items:
+        print(f"- {item}")
+    for name, value in details.items():
+        print(f"{name}: {value}")
 
 
-show_arg_lists(1, 2, 3, 4, 5, x=1, y=2)
-show_arg_lists(33, x=8, y=9)
-show_arg_lists(44)
+print_dispatch("London", "keyboard", "mouse", service="express", reference="A104")
+print_dispatch("Paris", "monitor", service="standard")
 ```
 
-> `demo08 · variableargumentlist`
+- `args` and `kwargs` are common names; task-specific names can describe their contents
+- At a call, `*values` unpacks a sequence and `**options` unpacks a dictionary
 
+> `demo11 · variableargumentlist`
+
+> `demo12 · callingwithstar`
 
 ---
 
 # Lambda Functions
 
-- The `lambda` keyword creates a small anonymous function inline :
-  - Has no `def` statement and no name of its own
-  - The body is a single expression evaluated and returned automatically
-  - Cannot contain statements, loops or assignments
-- Best framed as a small function passed to another function :
-  - `sorted(key=...)` is the classic use case
+- A lambda is a small function passed directly to another function :
+  - `sorted` calls the key function for each order
+  - `order[1]` selects the order total used for sorting
 
 ```python
-words = ["banana", "pie", "Washington", "book"]
-
-# Sort by last letter
-by_last = sorted(words, key=lambda w: w[-1])
-print("By last letter  :", by_last)
-
-# Sort case-insensitively
-by_case = sorted(words, key=lambda w: w.lower())
-print("Case-insensitive:", by_case)
+orders = [("A104", 35.0), ("A105", 75.0), ("A106", 20.0)]
+by_total = sorted(orders, key=lambda order: order[1])
+print(by_total)
 ```
-
-- Output :
 
 ```text
-By last letter  : ['banana', 'pie', 'book', 'Washington']
-Case-insensitive: ['banana', 'book', 'pie', 'Washington']
+[('A106', 20.0), ('A104', 35.0), ('A105', 75.0)]
 ```
 
-> `demo09 · lambdafunctions`
+- The value after the colon is returned automatically
+- Use a named function when the calculation needs several lines
 
+> `demo13 · lambdafunctions`
 
 ---
 
@@ -397,40 +399,7 @@ F 212.0
 K 373.15
 ```
 
-> `demo10 · functionsindictionaries`
-
-
----
-
-# return Statement
-
-- Exits a function and optionally passes a value back to the caller :
-  - A function without a `return`, or a bare `return`, returns `None`
-- Function definition :
-
-```python
-def summation(arg1: int, arg2: int) -> int:
-    """Add both parameters and return the sum."""
-    tot = arg1 + arg2
-    print("Inside the function :", tot)
-    return tot
-```
-
-- Calling `summation` :
-
-```python
-total = summation(10, 20)
-print("Outside the function :", total)
-```
-
-- Output :
-
-```text
-Inside the function : 30
-Outside the function : 30
-```
-
-> `demo11 · returnstatement`
+> `demo14 · functionsindictionaries`
 
 ---
 
@@ -461,27 +430,30 @@ flowchart LR
 
 # Example Variable Scope
 
-- Global variables are shadowed by local bindings unless declared `global` :
+- A local assignment affects only the current call :
+  - `preview_fee` displays a local fee without changing the configured fee
+- `global` makes an assignment update the module's name :
+  - `set_threshold` changes the shared free-delivery threshold
 
 ```python
-x = 50
-y = 50
+delivery_fee = 4.95
+free_from = 50.0
 
-def func1() -> None:
-    x = 2
-    print("Local x   :", x)
+def preview_fee() -> None:
+    delivery_fee = 0.0
+    print(f"Preview fee: {delivery_fee:.2f}")
 
-def func2() -> None:
-    global y
-    y = 2
+def set_threshold() -> None:
+    global free_from
+    free_from = 75.0
 
-func1()
-print("x is still:", x)  # 50: global x unchanged
-func2()
-print("y is now  :", y)  # 2: global y modified
+preview_fee()
+print(f"Current fee: {delivery_fee:.2f}")
+set_threshold()
+print(f"Free from: {free_from:.2f}")
 ```
 
-> `demo12 · variablescope`
+> `demo15 · variablescope`
 
 ---
 

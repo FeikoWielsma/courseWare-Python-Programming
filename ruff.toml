@@ -91,6 +91,10 @@ ignore = [
 # The tuple demo calls tuple() to show the constructor beside the literal.
 "demos/03-datastructures/06_tuples.py" = ["C408"]
 
+# Overwriting References teaches list concatenation followed by rebinding before
+# call-site star unpacking is introduced; keep the visible assignment in this demo.
+"demos/05-functions/10_overwritingreferences.py" = ["RUF005"]
+
 # The pass statement is the subject of its own slide, and an empty class body
 # needs one.
 "demos/04-controlflow/11_passstatement.py" = ["PIE790"]

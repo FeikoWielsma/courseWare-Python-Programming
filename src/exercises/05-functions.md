@@ -91,7 +91,7 @@ if not is_valid(guess, words):
 
 :::hint
 
-The slide *Built-in String Methods*, in module 02, lists a method that tells whether a string holds only letters. *return Statement* shows a function that returns the value of an expression.
+The slide *Built-in String Methods*, in module 02, lists a method that tells whether a string holds only letters. *return Statement* shows how a function passes a value back to its caller.
 
 :::
 
