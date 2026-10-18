@@ -21,6 +21,9 @@ export default {
     '13-appendix-libraries-1',
   ],
   enrichments: [
+    { module: '01-python-intro', after: 'Lines and Indentation', file: 'src/slidev/core/blocks-and-line-endings.md' },
+    { module: '02-variables-and-data-types', after: 'Variables', file: 'src/slidev/core/binding-and-rebinding.md' },
+    { module: '02-variables-and-data-types', after: 'Multiple Assignment', file: 'src/slidev/core/several-names-one-object.md' },
     { module: '03-data-structures', after: 'Lists', file: 'src/slidev/data-structures/indexing-and-slicing.md' },
     { module: '03-data-structures', after: 'Accessing Lists', file: 'src/slidev/list-mutation.md' },
     { module: '03-data-structures', after: 'Delete List Elements', file: 'src/slidev/data-structures/replacing-and-deleting.md' },
@@ -29,5 +32,12 @@ export default {
     { module: '03-data-structures', after: 'Usage of Tuples', file: 'src/slidev/tuple-unpacking.md' },
     { module: '03-data-structures', after: 'Set Operations', file: 'src/slidev/data-structures/set-operations.md' },
     { module: '03-data-structures', after: 'Accessing Values in Dictionary', file: 'src/slidev/data-structures/updating-a-dictionary.md' },
+    { module: '04-control-flow-and-operators', after: 'while Loop', file: 'src/slidev/core/condition-before-each-pass.md' },
+    { module: '04-control-flow-and-operators', after: 'Processing Each File', file: 'src/slidev/core/one-item-per-pass.md' },
+    { module: '04-control-flow-and-operators', after: 'break and continue Statements', file: 'src/slidev/core/leaving-a-loop-with-break.md' },
+    { module: '05-functions', after: 'Passing Object References', file: 'src/slidev/core/parameter-shares-the-list.md' },
+    { module: '05-functions', after: 'Overwriting References', file: 'src/slidev/core/rebinding-a-parameter.md' },
+    { module: '05-functions', after: 'return Statement', file: 'src/slidev/core/handing-back-a-result.md' },
+    { module: '05-functions', after: 'Example Variable Scope', file: 'src/slidev/core/local-and-global-names.md' },
   ],
 };

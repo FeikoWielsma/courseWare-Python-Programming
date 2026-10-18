@@ -129,3 +129,8 @@ Primary references: [Mermaid fences](https://sli.dev/features/mermaid),
   The trainer cancelled the middle author during source inspection to conserve
   quota. Core continues; middle, stateful and appendices remain queued, with
   only one Opus task to run at a time.
+- Integrated core author `f2a0eba`: ten native additions across 01, 02, 04 and 05,
+  65 states / 55 clicks, reusing the pilot shell. The combined course now has
+  257 pages, with its 226 original topics and 299 fences unchanged. Detailed
+  verification follows in a fresh Luna round. The core notes record grouped
+  loop/call line execution; these states need tracing rather than prefix runs.
