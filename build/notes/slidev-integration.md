@@ -148,3 +148,21 @@ exclusions and forward/reverse slide boundaries all pass. The check reads actual
 navigation after 60ms, before visual transitions finish. The public preview was
 reloaded to use the rebuilt JavaScript. PDF content was unchanged; no new export
 was necessary for this interaction-only change.
+
+## Core package integration
+
+Merged Opus `f2a0eba` and integrated ten insertion points in `25941da`. A fresh
+full build/export/check passed: 257 pages, 226 original topics, 299 original
+fences, zero layout failures and the same known upstream warning. The full PDF
+has 906 link annotations. Restaged the public app with this fresh PDF. Rendered
+PDF pages 27, 94 and 120 (binding/rebinding, for-loop traversal and return values)
+were inspected by the coordinator; code, output and reference arrows are readable.
+The return-value final caption's phrase "Only total remains" should be made
+more precise because the global function binding also remains.
+
+Luna round `slidev-20261018-luna-core-verification-r4` owns all 65 detailed
+state checks, reverse/reduced-motion and selected exports. The sole Opus task
+`slidev-20261018-opus-middle-animations-r2` authors modules 06/07/08. Stateful
+modules 09/10/11 and appendices 12/13 remain queued. Named Marp fallback and
+animation/delivery check scripts are now available; ordinary default build and
+release routing still wait for full acceptance.
