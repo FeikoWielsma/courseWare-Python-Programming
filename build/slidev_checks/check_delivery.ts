@@ -1,6 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { templateDir } from '../toolchain.ts';
 
 const courseRoot = path.resolve(import.meta.dirname, '../..');
 const args = process.argv.slice(2);
@@ -12,8 +13,7 @@ const option = (name: string) => {
   return value;
 };
 const variant = path.resolve(option('--output') || path.join(courseRoot, '.courseware/fundamentals/student'));
-const template = process.env.PRESENTATION_TEMPLATE_DIR;
-if (!template) throw new Error('Set PRESENTATION_TEMPLATE_DIR to the Slidev-capable Presentation-Template worktree.');
+const template = templateDir();
 const { withBrowser, browserTimeoutMs } = await import(pathToFileURL(path.join(template, 'build/browser.ts')).href);
 const { readManifest, deliverable } = await import(pathToFileURL(path.join(template, 'build/artifacts.ts')).href);
 const originOption = option('--origin')?.replace(/\/$/, '');

@@ -19,6 +19,10 @@
     "libraries": "bun run libraries.ts",
     "libraries:marp": "bun run libraries.ts --marp",
     "libraries:serve": "bun run libraries.ts --serve",
-    "lint:libraries": "bun run libraries.ts --lint"
+    "lint:libraries": "bun run libraries.ts --lint",
+    "toolchain": "bun run toolchain.ts toolchain",
+    "pin": "bun run toolchain.ts pin",
+    "verify": "bun run toolchain.ts verify",
+    "test": "bun test toolchain.test.ts"
   }
 }
