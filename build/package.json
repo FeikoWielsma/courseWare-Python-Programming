@@ -14,7 +14,7 @@
     "check:delivery": "bun run check-slidev-delivery.ts",
     "build": "bun run course.ts",
     "serve": "bun run course.ts --serve",
-    "lint": "bun run ../../Presentation-Template/build/lint-slides.ts",
+    "lint": "bun run course.ts --lint",
     "site": "bun run site.config.ts",
     "libraries": "bun run libraries.ts",
     "libraries:marp": "bun run libraries.ts --marp",
