@@ -27,7 +27,7 @@ const run = {
     "Inside the function, `tot` refers to `30`",
     "`return tot` hands that object back to the caller and ends the call",
     "The result of the call is bound to `total`; it is the same object, not a copy",
-    "Only `total` remains; the parameters and `tot` ended with the call"
+    "The call has ended; `total` refers to the returned object"
   ]
 }
 </script>

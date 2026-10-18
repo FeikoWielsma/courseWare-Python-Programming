@@ -137,3 +137,19 @@ Primary references: [Mermaid fences](https://sli.dev/features/mermaid),
 - Integrated middle author `986c3db`: six additions across 06/07/08, 34 states
   and 28 clicks. Full-course verification follows; the stateful author package
   (09/10/11) is next, still one Opus task at a time.
+- Stateful author hit Claude's five-hour limit. User explicitly chose to wait,
+  keeping Claude Opus 5.5. Four partial 09/10 slides and two components are saved
+  as WIP `aa47245b10c73d14c6273ffda7493f76946e4d93` on
+  `t3/slidev-native-animations`, checkout
+  `C:/Users/feiko/.t3/worktrees/Python-Programming/t3-54be0d52`.
+  They are not integrated or verified; module 11 remains to be authored.
+- Provider reports reset 16:40 Europe/Amsterdam on 2026-10-18. A 16:45 daily
+  wake-up is configured to delete itself on its first trigger, then launch one
+  new stateful author round from the WIP commit. Timer ID:
+  `scheduled-task:command:mcp:65d72ca9-7c48-4607-8a2d-6e8cc26ddf97:schedule-task:slidev-20261018-claude-reset-resume`.
+  Do not substitute providers/models or duplicate a manually resumed author.
+- Integrated Luna core verification `6f4bd4a`: all 65 states match traced Python,
+  130 settled forward/reverse browser frames pass, reduced motion and motion
+  containment pass, and the 10 final / 65 click PDF pages were reviewed. The
+  coordinator clarified the final return caption to account for the function
+  binding remaining in global scope; no animation state changed.
