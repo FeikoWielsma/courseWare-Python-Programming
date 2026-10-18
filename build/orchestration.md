@@ -124,7 +124,7 @@ file; resume from branch + notes.
 | T5 shared browser/serve module in the template (stage 6a) | Grok 4.7 | template `feature/courseware-browser` (139b7d5, 4a9b1ce) | done; to merge into feature/courseware-cli after T4; course checks (stage 6b) wait for T4 to avoid path conflicts |
 | T6 notes index + history banners (stage 7 prep) | Gemini 3.8 Flash | `tc/docs` | merged. Follow-up (coordinator): AGENTS.md still tells agents to read `slidev-handoff.md`, now bannered historical; point it at `build/notes/README.md`; write the MAINTAINING.md operating guide from `toolchain-docs.md` outline after stages 3-5 |
 | T7 course checks onto shared browser module (stage 6b) | Grok 4.7 | course `tc/browser6` | merged (239d855); deleteProfile retry fix applied on template cli branch |
-| T8 pin the toolchain (stage 4) | Opus 5.5 | template `feature/courseware-pin`, course `tc/pin` | running |
+| T8 pin the toolchain (stage 4) | Opus 5.5 | template `feature/courseware-pin`, course `tc/pin` | merged (template cli aaa65d8; course integration). Final re-pin to the merged template SHA still to do; release.yml text for T9 in toolchain-pin.md |
 | T9 release assembly + publishing from manifest (stage 5); owns release.yml | Opus 5.5 | template `feature/courseware-release`, course `tc/release` | running |
 
 Findings to resolve (user decision): the published Marp HTML (PRG400-Python-Programming-Marp.html) contains the preamble's trainer notes (pre-existing, found by `verify --bundle`). `dev.ts` still writes build/slidev/authoring/ (stage 3 leftover).
