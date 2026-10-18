@@ -35,12 +35,7 @@ buttons lead to this presentation; hint previews still work directly from disk.
 `build:marp` writes `PRG400-Python-Programming-Marp.pdf` and `.html`. Exercise and
 separate `libraries/` builds retain their existing engines.
 
-Shared implementation is in `../_worktrees/presentation-template-slidev` on
-`feature/slidev-foundation`. The local wrappers prefer the production template
-once it contains the Slidev toolchain, otherwise they use this worktree.
-`PRESENTATION_TEMPLATE_DIR` overrides that choice. Install both the template's
-`build/` and `build/slidev/` dependencies. Set the override for `check:delivery`
-and direct shared verification commands while testing the feature worktree.
+Builds run the shared `build/courseware.ts` from Presentation-Template, configured by `courseware.config.ts` in the course root (decks `fundamentals` and `libraries`). The template is `PRESENTATION_TEMPLATE_DIR` when set, otherwise `../Presentation-Template`; the build prints which one it uses and fails if that checkout has no `build/courseware.ts`. Install both the template's `build/` and `build/slidev/` dependencies. Set `PRESENTATION_TEMPLATE_DIR` to test a template worktree.
 
 The release workflow is prepared for Slidev, but **the shared feature must be
 merged into Presentation-Template main before a course release**. CI checks for
@@ -270,8 +265,8 @@ cd libraries
 uv run python ../../Presentation-Template/build/tools/check-fences.py
 ```
 
-The course-local `build/libraries.ts` runs the shared template with `libraries/`
-as its working directory. Slidev is the default, with its configuration in
+`build/libraries.ts` runs the shared `courseware.ts` for the `libraries` deck, which
+builds with `libraries/` as its working directory. Slidev is the default, with its configuration in
 `libraries/build/slidev.config.ts`; `libraries:serve` starts native authoring on
 port 3030. `libraries:marp` retains named `-Marp.pdf` and `-Marp.html` fallbacks
 and copies the legacy standalone HTML alias. `--exercises` keeps the existing
