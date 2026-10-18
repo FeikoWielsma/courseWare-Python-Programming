@@ -165,6 +165,8 @@ jobs:
           bun run libraries:marp -- --skip-lint --force
           bun run lint:libraries
           bun run libraries -- --exercises --force
+          bun run "${PRESENTATION_TEMPLATE_DIR}/build/courseware.ts" verify fundamentals
+          bun run "${PRESENTATION_TEMPLATE_DIR}/build/courseware.ts" verify libraries
 
       - name: Assemble student bundle
         shell: bash
@@ -179,7 +181,7 @@ jobs:
 
           cp "${SLIDES_PDF}" "${MARP_PDF}" "${MARP_HTML}" "${EXERCISES_PDF}" "${EXERCISES_HTML}" "${BUNDLE}/"
           # Only the public allowlisted presentation enters student delivery.
-          cp -r build/slidev/dist/student "${BUNDLE}/slides"
+          cp -r .courseware/fundamentals/student/slides "${BUNDLE}/slides"
 
           # One demo folder per module, exactly the folders the slides reference.
           for item in \
@@ -220,7 +222,7 @@ jobs:
 
           # Optional topics have their own project and PDFs. Only teaching
           # sources and runtime files travel; caches and authoring sources do not.
-          cp -r libraries/build/slidev/dist/student "${BUNDLE}/libraries/slides"
+          cp -r .courseware/libraries/student/slides "${BUNDLE}/libraries/slides"
           rm -rf "${BUNDLE}/libraries/build" "${BUNDLE}/libraries/src"
 
           # Strip build and editor droppings that travelled along with the copies.

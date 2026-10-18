@@ -27,7 +27,7 @@ bun run --cwd build check:delivery
 ```
 
 An ordinary build writes `PRG400-Python-Programming.pdf`, packages the public
-presentation at `build/slidev/dist/student/` and creates
+presentation at `.courseware/fundamentals/student/slides/` and creates
 `build/dist/Python-Programming-slides.zip`. The ZIP contains the PDF and `slides/`.
 From the extracted folder run `python slides/serve.py`, then open port 4188.
 It needs no Node installation or internet connection. The exercise site's module
@@ -36,6 +36,7 @@ buttons lead to this presentation; hint previews still work directly from disk.
 separate `libraries/` builds retain their existing engines.
 
 Builds run the shared `build/courseware.ts` from Presentation-Template, configured by `courseware.config.ts` in the course root (decks `fundamentals` and `libraries`). The template is `PRESENTATION_TEMPLATE_DIR` when set, otherwise `../Presentation-Template`; the build prints which one it uses and fails if that checkout has no `build/courseware.ts`. Install both the template's `build/` and `build/slidev/` dependencies. Set `PRESENTATION_TEMPLATE_DIR` to test a template worktree.
+`courseware.ts verify [deck]` checks each build's `artifacts.json`: checksums, completeness, and no trainer notes, sources or logs in student output.
 
 The release workflow is prepared for Slidev, but **the shared feature must be
 merged into Presentation-Template main before a course release**. CI checks for
@@ -53,7 +54,7 @@ bun run --cwd build slidev:check
 bun run --cwd build slidev -- --serve-only
 ```
 
-Page numbers can change; locate a title in `build/slidev/dist/manifest.json`
+Page numbers can change; locate a title in `.courseware/fundamentals/student/manifest.json`
 before choosing an export range. Full PDFs show the final state; `--with-clicks`
 exports the steps. Ordinary student builds strip speaker notes. Use a separate
 `slidev --notes` build for trainers. Native development mode watches canonical
