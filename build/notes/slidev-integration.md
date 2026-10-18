@@ -125,5 +125,7 @@ from every page and compared exact strings, without whitespace normalization:
 
 All four PDF builds passed. JSON evidence is in ignored
 `build/slidev/shared-regression.json`. Production checkout and both unrelated
-course source trees remain unchanged. This satisfies the documented shared
+course sources were not edited by this work (unrelated existing changes were
+left alone). Regression PDFs are retained under ignored `build/slidev/regression/`.
+This satisfies the documented shared
 before/after PDF comparison gate; no production merge or push was performed.
