@@ -83,7 +83,7 @@ then `bun run --cwd build toolchain` without the variable.
 Clean checkout : `git worktree add --detach C:/Users/feiko/AppData/Local/Temp/prg-pin-clean/Python-Programming tc/pin`
 (no `Presentation-Template` beside it), no `PRESENTATION_*` variables, `build/toolchain.json`
 repository set to `file:///C:/Git/courseWare/_worktrees/presentation-template-pin` in a local-only
-test commit (`812d914`, not on `tc/pin`). Logs in that temp folder; fingerprint in `_baselines/t8/`.
+test commit (`812d914`, not on `tc/pin`). The temp worktree and its logs were removed afterwards; fingerprint in `_baselines/t8/`.
 
 | Command | Result |
 |---|---|
