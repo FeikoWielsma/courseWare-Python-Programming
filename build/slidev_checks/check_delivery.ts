@@ -11,7 +11,7 @@ const option = (name: string) => {
   if (!value || value.startsWith('--')) throw new Error(`${name} requires a value.`);
   return value;
 };
-const output = path.resolve(option('--output') || path.join(courseRoot, 'build/slidev/dist'));
+const output = path.resolve(option('--output') || path.join(courseRoot, '.courseware/fundamentals/student'));
 const template = process.env.PRESENTATION_TEMPLATE_DIR;
 if (!template) throw new Error('Set PRESENTATION_TEMPLATE_DIR to the Slidev-capable Presentation-Template worktree.');
 const { launchBrowser } = await import(pathToFileURL(path.join(template, 'build/lint-slides.ts')).href);

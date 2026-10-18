@@ -103,8 +103,9 @@ async function main() {
     summary.push(`${label}: ${code.split(/\r?\n/, 1)[0]}, nodes=${svgNodes}, edges=${svgEdges}, viewBox=${viewBox?.[3]}x${viewBox?.[4]}, ids=${ids.length}, cache=${fs.existsSync(cacheFile) ? 'hit' : 'miss'}`);
   }
 
-  const manifestPath = path.join(root, 'build/slidev/dist/manifest.json');
-  if (!fs.existsSync(manifestPath)) fail('Build Slidev first; build/slidev/dist/manifest.json is missing.');
+  const output = path.join(root, '.courseware/fundamentals/student');
+  const manifestPath = path.join(output, 'manifest.json');
+  if (!fs.existsSync(manifestPath)) fail('Build Slidev first; .courseware/fundamentals/student/manifest.json is missing.');
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   const browserCases: { id: string; title: string; source: string }[] = [];
   for (const sourceFile of [...new Set(found.map(item => item.file))]) {
@@ -122,7 +123,6 @@ async function main() {
   }
 
   if (browserCases.length) {
-    const output = path.join(root, 'build/slidev/dist');
     const server = serveDirectory(output, 0);
     await new Promise<void>(resolve => { if (server.listening) resolve(); else server.once('listening', resolve); });
     const address = server.address();

@@ -697,7 +697,7 @@ console.log('Browser state results written.');
 def browser_plan(slides: list[Slide], origin: str) -> int:
     shared = os.environ.get("PRESENTATION_TEMPLATE_DIR")
     template = Path(shared) if shared else ROOT.parent / "Presentation-Template"
-    manifest_path = ROOT / "build/slidev/dist/manifest.json"
+    manifest_path = ROOT / ".courseware/fundamentals/student/manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     native = {
         page["title"]: page["sourceId"]

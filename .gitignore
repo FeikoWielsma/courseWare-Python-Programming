@@ -90,4 +90,6 @@ libraries/PRG400-Python-Libraries-and-Tools*.pdf
 libraries/PRG400-Python-Libraries-and-Tools*.html
 libraries/data/*.db
 build/slidev/
+# Generated work per deck and variant: Slidev apps, PDFs, logs, artifacts.json
+.courseware/
 build/prototypes/presentation-framework/
