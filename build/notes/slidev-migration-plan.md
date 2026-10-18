@@ -115,3 +115,12 @@ Primary references: [Mermaid fences](https://sli.dev/features/mermaid),
   The known FloatingVue private-patch warning is still recorded.
 - Started isolated Opus Data Structures pilot and Luna parity/diagram audit.
   The remaining module packages wait for the rendered pilot review.
+- Trainer approved the rendered pilot style for the remaining modules. Rollout
+  uses stationary code with an active line, moving values/references and
+  reversible steps. Opus authors focus on animation implementation and basic
+  sanity checks; Luna and the coordinator own detailed verification, per the
+  trainer's explicit request to reduce Opus verification tokens.
+- Bounded rollout packages: core (01, 02, 04, 05), middle (06, 07, 08),
+  stateful (09, 10, 11), appendices (12, 13). Each module is inspected; additions
+  are chosen where motion explains a mechanism. No quota/usage tool is exposed
+  by the live provider catalogue; at most two Opus authors run at once.

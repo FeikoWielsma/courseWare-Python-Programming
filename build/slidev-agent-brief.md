@@ -34,22 +34,24 @@ when a delegated worktree starts from an earlier commit.
 - Canonical Mermaid syntax is rendered by Pele during preparation. Native
   additions go through the same preprocessing. Report renderer issues rather
   than replacing shared rendering from your package.
-- Add a package-local executable check under
-  `build/slidev_checks/check_<package>.py`. Execute the Python actually displayed
-  by the slide, compare state/output against the data actually passed to its
-  component, and verify provenance against the cited demo. Report any example
-  that needs a different verification method. Existing global checker integration
-  belongs to the coordinator.
-- The check accepts `--browser <origin>` to verify every rendered state against
-  the executed data, plus forward/reverse clicks and frame containment. The Data
-  Structures package is the working reference. Static mode remains the default.
+- The trainer approved the Data Structures pilot on 2026-10-18. Follow its
+  stationary code, active line, moving values/references and reversible steps.
+  Reuse `DataStructuresRun` where it helps; do not redesign the shared shell.
+- Author verification is deliberately small, per the trainer's request: execute
+  displayed Python to establish its output and perform basic syntax/build sanity.
+  Focus Opus time on implementing the animations. Do not write exhaustive check
+  scripts, run full-course browser audits or export/review PDFs in author tasks.
+- Keep the state data in the native slide or component readily inspectable, and
+  record its demo provenance and expected states. Luna and the coordinator own
+  detailed Python/browser/reverse/reduced-motion/export verification and fixes.
+  Their package checks use `build/slidev_checks/check_<package>.py`, with static
+  mode and `--browser <origin>`, following the Data Structures reference.
 
 ## Verify and hand back
 
-1. Render the package using a temporary config or an ignored scratch checkout;
-   restore coordinator-owned files before committing. Inspect initial,
-   intermediate, final and reverse states, and final/click PDF output. Record
-   exact commands and any missing checks honestly.
+1. Perform the small author checks above. A temporary config may be used for
+   syntax/build sanity; restore coordinator-owned files before committing.
+   Record exact commands and leave comprehensive verification to Luna.
 2. Keep `build/notes/slidev-<package>.md` current. Include an insertion list with
    exact module slug, existing title and native file, click counts, demo paths,
    state-check command, design rationale and remaining findings.
