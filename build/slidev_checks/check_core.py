@@ -536,6 +536,7 @@ def verify_provenance(slide: Slide) -> None:
 BROWSER_SCRIPT = r"""
 import { launchBrowser } from %(launch)s;
 const origin = process.argv[2], plan = JSON.parse(process.argv[3]);
+const outputFile = process.argv[4];
 const browser = await launchBrowser();
 const results = {};
 try {
@@ -685,7 +686,8 @@ try {
     results[item.route]={states,reverse,reduced};
   }
 } finally { await browser.close(); }
-console.log(JSON.stringify(results));
+await Bun.write(outputFile, JSON.stringify(results));
+console.log('Browser state results written.');
 """
 
 
@@ -710,17 +712,18 @@ def browser_plan(slides: list[Slide], origin: str) -> int:
     launch = json.dumps((template / "build/lint-slides.ts").as_posix())
     with tempfile.TemporaryDirectory() as folder:
         script = Path(folder) / "read-core.ts"
+        output = Path(folder) / "rendered.json"
         script.write_text(BROWSER_SCRIPT % {"launch": launch}, encoding="utf-8", newline="\n")
         result = subprocess.run(
-            [shutil.which("bun") or "bun", str(script), origin, json.dumps(plan)],
+            [shutil.which("bun") or "bun", str(script), origin, json.dumps(plan), str(output)],
             capture_output=True,
             text=True,
             encoding="utf-8",
             check=False,
         )
-    if result.returncode:
-        raise RuntimeError(result.stderr[-4000:])
-    rendered = json.loads(result.stdout.strip().splitlines()[-1])
+        if result.returncode:
+            raise RuntimeError(result.stderr[-4000:])
+        rendered = json.loads(output.read_text(encoding="utf-8"))
     checked = 0
     for slide in slides:
         record = rendered[slide.route]
