@@ -123,7 +123,7 @@ file; resume from branch + notes.
 | T4 outputs separation + artifact manifest (stage 3) | Opus 5.5 | template `feature/courseware-cli` (16fcb8a..679ea94), course `tc/stage3` | merged; template cli+browser merged (862c490); merged state rebuilt, all 4 PDFs identical text to baselines, verify passes |
 | T5 shared browser/serve module in the template (stage 6a) | Grok 4.7 | template `feature/courseware-browser` (139b7d5, 4a9b1ce) | done; to merge into feature/courseware-cli after T4; course checks (stage 6b) wait for T4 to avoid path conflicts |
 | T6 notes index + history banners (stage 7 prep) | Gemini 3.8 Flash | `tc/docs` | merged. Follow-up (coordinator): AGENTS.md still tells agents to read `slidev-handoff.md`, now bannered historical; point it at `build/notes/README.md`; write the MAINTAINING.md operating guide from `toolchain-docs.md` outline after stages 3-5 |
-| T7 course checks onto shared browser module (stage 6b) | Grok 4.7 | course `tc/browser6` | running |
+| T7 course checks onto shared browser module (stage 6b) | Grok 4.7 | course `tc/browser6` | merged (239d855); deleteProfile retry fix applied on template cli branch |
 | T8 pin the toolchain (stage 4) | Opus 5.5 | template `feature/courseware-pin`, course `tc/pin` | running |
 | T9 release assembly + publishing from manifest (stage 5); owns release.yml | Opus 5.5 | template `feature/courseware-release`, course `tc/release` | running |
 
