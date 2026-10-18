@@ -120,6 +120,12 @@ file; resume from branch + notes.
 | T1 inventory of commands, consumers, deliverables | Gemini 3.8 Flash | `tc/inventory` | merged |
 | T2 browser/serving duplication survey | Grok 4.7 | `tc/browser-survey` | merged; feeds stage 6 |
 | T3 shared orchestration entry + migrate both decks (stage 1-2) | Opus 5.5 | template `feature/courseware-cli` (aa78ed9 + docs), course `tc/stage1` | merged into integration; template branch NOT yet merged to Presentation-Template main (additive; merge after all stages + 2-course regression) |
-| T4 outputs separation + artifact manifest (stage 3) | Opus 5.5 | template `feature/courseware-cli`, course `tc/stage3` | launching |
+| T4 outputs separation + artifact manifest (stage 3) | Opus 5.5 | template `feature/courseware-cli` (16fcb8a..679ea94), course `tc/stage3` | merged; template cli+browser merged (862c490); merged state rebuilt, all 4 PDFs identical text to baselines, verify passes |
 | T5 shared browser/serve module in the template (stage 6a) | Grok 4.7 | template `feature/courseware-browser` (139b7d5, 4a9b1ce) | done; to merge into feature/courseware-cli after T4; course checks (stage 6b) wait for T4 to avoid path conflicts |
 | T6 notes index + history banners (stage 7 prep) | Gemini 3.8 Flash | `tc/docs` | merged. Follow-up (coordinator): AGENTS.md still tells agents to read `slidev-handoff.md`, now bannered historical; point it at `build/notes/README.md`; write the MAINTAINING.md operating guide from `toolchain-docs.md` outline after stages 3-5 |
+| T7 course checks onto shared browser module (stage 6b) | Grok 4.7 | course `tc/browser6` | running |
+| T8 pin the toolchain (stage 4) | Opus 5.5 | template `feature/courseware-pin`, course `tc/pin` | running |
+| T9 release assembly + publishing from manifest (stage 5); owns release.yml | Opus 5.5 | template `feature/courseware-release`, course `tc/release` | running |
+
+Findings to resolve (user decision): the published Marp HTML (PRG400-Python-Programming-Marp.html) contains the preamble's trainer notes (pre-existing, found by `verify --bundle`). `dev.ts` still writes build/slidev/authoring/ (stage 3 leftover).
+Template integration branch: `feature/courseware-cli` (not merged to Presentation-Template main). Child template branches: -pin, -release.
