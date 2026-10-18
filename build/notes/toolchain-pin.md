@@ -78,6 +78,80 @@ and merge the template, then re-pin to the merged SHA** :
 `PRESENTATION_TEMPLATE_DIR=<checkout at the merged commit> bun run --cwd build pin -- <merged sha>`,
 then `bun run --cwd build toolchain` without the variable.
 
-## Verification
+## Verification (2026-10-19)
 
-See the report table below (filled in as run).
+Clean checkout : `git worktree add --detach C:/Users/feiko/AppData/Local/Temp/prg-pin-clean/Python-Programming tc/pin`
+(no `Presentation-Template` beside it), no `PRESENTATION_*` variables, `build/toolchain.json`
+repository set to `file:///C:/Git/courseWare/_worktrees/presentation-template-pin` in a local-only
+test commit (`812d914`, not on `tc/pin`). Logs in that temp folder; fingerprint in `_baselines/t8/`.
+
+| Command | Result |
+|---|---|
+| `bun run toolchain` (first run) | fetched 3627a35, `bun install --frozen-lockfile` in `build/` (311 packages) and `build/slidev/` (655), `Template: ...\.courseware\toolchain\3627a35... (pinned)`; 1 m 29 s |
+| `bun run build -- --skip-lint` | exit 0; `(pinned)`; 276 pages, 0 failures; ZIP written; identical text on every page against `_baselines/python/PRG400-Python-Programming.json` |
+| `bun run verify -- fundamentals` | `PASS fundamentals student`; manifest `toolchain` : commit = pin = 3627a35, `override: false`, `dirty: false` |
+| `bun run check:delivery` | exit 0; check_core, check_data_structures, wheel probe PASS (Python checks resolved the template through `toolchain.ts --path`) |
+| `git status --porcelain` in the cache after build and delivery | empty |
+| final pin adef04a on `tc/pin`, fetched with `PRESENTATION_TEMPLATE_REPOSITORY=file:///...` | `(pinned)`; `verify` PASS |
+| same pin from the real ssh remote (`GIT_SSH_COMMAND="ssh -o BatchMode=yes"`) | `ERROR Cannot fetch ... (fatal: unable to read tree (adef04a...))`, no cache left : the commit is not pushed |
+| template tip run directly against `tc/pin` without the override | `ERROR template is adef04a..., build/toolchain.json pins 3627a35...`, nonzero exit |
+| `PRESENTATION_TEMPLATE_DIR=<template worktree> bun run toolchain` | two `DEVELOPMENT OVERRIDE` lines (bootstrap, template), exit 0 |
+| `bun run --cwd build test` (course) | 6 pass |
+| `uv run ruff check .` | All checks passed |
+
+Template : `typecheck` clean, `bun run --cwd build test` 27 pass, `smoke` SMOKE PASS,
+`bun test` in `build/slidev` 14 pass. Not run : `libraries`, Marp, exercises and site builds
+through the pin (same resolver path), other courses (no pin, so `courseware.ts` behaves as before;
+none of them calls it yet).
+
+## Coordinator : release.yml (T9 owns it)
+
+Replace the `Checkout Presentation Template` step, the `test -f` guard and both `bun install`
+lines in `Install template dependencies`, and the `PRESENTATION_TEMPLATE_DIR` env of
+`Build slides and exercises`, with :
+
+```yaml
+      - name: Fetch the pinned Presentation-Template
+        shell: bash
+        env:
+          PRESENTATION_TEMPLATE_REPOSITORY: ${{ github.server_url }}/SpiralTrain/Presentation-Template.git
+        run: |
+          echo "TEMPLATE=$(bun run build/toolchain.ts --path)" >> "$GITHUB_ENV"
+```
+
+placed after `Install Bun 1.4 for Slidev` (the fetch runs `bun install --frozen-lockfile`).
+Then `../Presentation-Template/build/tools/...` becomes `"$TEMPLATE/build/tools/..."` in the
+fences, slide-references and starters steps, and in the libraries step
+`uv run python "$TEMPLATE/build/tools/check-fences.py"` (it is absolute, so `cd libraries` is
+fine). The two verify lines become `bun run verify -- fundamentals` and `bun run verify -- libraries`.
+The build steps need no template variable at all. Optional : cache `.courseware/toolchain/` keyed
+on `hashFiles('build/toolchain.json')`. Publishing should refuse a manifest with
+`toolchain.override: true`.
+
+## Coordinator : documentation
+
+- Course `AGENTS.md` Checks and `MAINTAINING.md` : `../Presentation-Template/build/tools/X.py` →
+  `"$(bun run build/toolchain.ts --path)/build/tools/X.py"`; MAINTAINING line 38 becomes :
+  "Builds run the shared `build/courseware.ts` from the Presentation-Template commit pinned in
+  `build/toolchain.json`; `build/toolchain.ts` fetches it into `.courseware/toolchain/<commit>`
+  and installs its dependencies on first use. `PRESENTATION_TEMPLATE_DIR` is the development
+  override and is reported as `DEVELOPMENT OVERRIDE` by the build and in every artifact manifest.
+  `bun run --cwd build toolchain` shows the pin; after a template merge, re-pin with
+  `PRESENTATION_TEMPLATE_DIR=<checkout> bun run --cwd build pin -- <sha>`." The line saying the
+  Slidev toolchain must be merged into template main before a release becomes "the pin must be a
+  pushed commit".
+- AGENTS.md "Read first" links to `../Presentation-Template/...` docs stay (reading, not building).
+- Template `AGENTS.md` (after the `courseware.ts` paragraph) : "A course with
+  `build/toolchain.json` pins this repository; `courseware.ts` refuses to run from any other commit
+  unless `PRESENTATION_TEMPLATE_DIR` is set. Changes reach such a course only when it re-pins."
+  `docs/course-tools.md` keeps its sibling default for courses without a pin.
+
+## Open decisions
+
+- Per-checkout cache (~1 GB, ~90 s per checkout and pin) versus a shared machine cache.
+- Two override lines (bootstrap on stderr, template on stdout) : keep both, or drop the bootstrap's
+  when it forwards to `courseware.ts`.
+- Whether `verify` should also fail a manifest whose pin differs from the course's current pin
+  (today the `source.commit` check at publish time covers that).
+- Other courses : adopt `build/toolchain.ts` (copied, about 75 lines) when they move to
+  `courseware.config.ts`.
