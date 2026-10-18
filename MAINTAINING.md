@@ -7,37 +7,73 @@ documentation goes in `README.md`; do not put behind-the-scenes material there.
 See also `AGENTS.md` for the writing and coding conventions, and `build/plan.md`
 and `build/tasks.md` for where the conversion stands and what is left.
 
-## Parallel Slidev build
+## Slidev delivery
 
-The existing Marp build remains the default. `bun run --cwd build slidev:compare`
-builds the complete fundamentals course in both engines and serves the comparison
-at `http://localhost:4188`. The 239 original pages keep their boundaries; two
-native Magic Move slides are added, for 241 Slidev pages.
-
-Shared implementation currently lives in the dedicated template worktree
-`../_worktrees/presentation-template-slidev` on `feature/slidev-foundation`.
-`build/slidev.ts` uses that checkout until the foundation exists in the main
-`../Presentation-Template` checkout, then prefers main. `PRESENTATION_TEMPLATE_DIR`
-overrides both. Install the chosen checkout's `build/` and `build/slidev/`
-dependencies once.
+Slidev is the default for the 13 fundamentals modules. The canonical Markdown
+stays in `src/slides/`; native additions and Vue components live in `src/slidev/`
+and are inserted by `build/slidev.config.ts`. The course currently has 229 source
+topics, 242 Marp pages and 275 Slidev pages, including 33 native additions.
+Music and photos recur in the examples, Classes uses game characters and SQLite
+uses a film watchlist. The Wordle exercise spine remains separate.
 
 ```bash
-bun run --cwd build slidev --pdf --check
-bun run --cwd build slidev --with-clicks --range 53
-bun run --cwd build slidev:check
-bun run --cwd build slidev --serve-only
-uv run python build/check-slidev-examples.py
+bun run --cwd build build              # Slidev app, final-state PDF, public ZIP and checks
+bun run --cwd build serve              # native Slidev development server on port 3030
+bun run --cwd build build:marp          # named static fallback PDF and HTML
+bun run --cwd build build -- --exercises
+bun run --cwd build site
+bun run --cwd build check:animations
+bun run --cwd build check:delivery
 ```
 
-The canonical slides stay in `src/slides/`. Native additions live in `src/slidev/`
-and are placed by `build/slidev.config.ts`. That file lists explicit compact
-layouts; no automatic pagination or font fitting runs. All outputs and the review
-copy `build/slidev/converted.md` are ignored. The generated bundle can be moved to
-another machine and opened with its included `python serve.py` launcher.
+An ordinary build writes `PRG400-Python-Programming.pdf`, packages the public
+presentation at `build/slidev/dist/student/` and creates
+`build/dist/Python-Programming-slides.zip`. The ZIP contains the PDF and `slides/`.
+From the extracted folder run `python slides/serve.py`, then open port 4188.
+It needs no Node installation or internet connection. The exercise site's module
+buttons lead to this presentation; hint previews still work directly from disk.
+`build:marp` writes `PRG400-Python-Programming-Marp.pdf` and `.html`. Exercise and
+separate `libraries/` builds retain their existing engines.
 
-See the shared `docs/slidev.md` for source IDs, components, export choices and
-limitations. The exercise site and release allowlists continue using Marp; this
-comparison does not replace the published student material.
+Shared implementation is in `../_worktrees/presentation-template-slidev` on
+`feature/slidev-foundation`. The local wrappers prefer the production template
+once it contains the Slidev toolchain, otherwise they use this worktree.
+`PRESENTATION_TEMPLATE_DIR` overrides that choice. Install both the template's
+`build/` and `build/slidev/` dependencies. Set the override for `check:delivery`
+and direct shared verification commands while testing the feature worktree.
+
+The release workflow is prepared for Slidev, but **the shared feature must be
+merged into Presentation-Template main before a course release**. CI checks for
+its delivery toolchain and stops with an explicit message if it is absent.
+The two unrelated-course PDF comparisons required by the shared repository have
+passed; see its `docs/slidev-regression.md`. No remote release is performed by
+these local build commands.
+
+For comparison and trainer exports:
+
+```bash
+bun run --cwd build slidev -- --compare --pdf --check
+bun run --cwd build slidev -- --with-clicks --range 109
+bun run --cwd build slidev:check
+bun run --cwd build slidev -- --serve-only
+```
+
+Page numbers can change; locate a title in `build/slidev/dist/manifest.json`
+before choosing an export range. Full PDFs show the final state; `--with-clicks`
+exports the steps. Ordinary student builds strip speaker notes. Use a separate
+`slidev --notes` build for trainers. Native development mode watches canonical
+and native sources. Explicit compact layouts are listed in the course config;
+there is no automatic pagination or font fitting.
+
+Mermaid fences are rendered at build time by Pele 1.6.0 and embedded as SVG.
+Slidev also supports native Mermaid fences, configuration and a custom renderer;
+keeping the shared Pele path gives both engines the same diagrams and an offline
+student deck. Wheel navigation uses the shared course component, with an 18px
+threshold and 120ms quiet period, no fixed cooldown, and immediate reversal.
+
+Entry point and current verification: `build/notes/slidev-handoff.md`,
+`build/notes/slidev-integration.md` and `build/notes/engaging-examples.md`.
+The shared `docs/slidev.md` describes components, exports and remaining limits.
 
 ## What this repository is
 
@@ -54,7 +90,7 @@ The `uv` and `ruff` material inside module 01, and the two appendices,
 
 ```
 src/slides/00-preamble/00-preamble.md      title and logistics, carries pdfName: and language:
-src/slides/NN-topic/NN-topic.md            one Marp Markdown file per module
+src/slides/NN-topic/NN-topic.md            one canonical Markdown file per module
 src/slides/12-appendix-type-hinting/       appendix, the type hinting recap
 src/slides/13-appendix-libraries/          appendix, datetime, json, re, sys.argv, pytest
 src/exercises/NN-topic.md                  one exercise guide per module, ::: markup
@@ -118,16 +154,15 @@ uv sync                                     # ruff and mypy for the code checks
 Then, from this course root :
 
 ```bash
-bun run --cwd build build                  # slides PDF and HTML
+bun run --cwd build build                  # animated slides, PDF and student ZIP
 bun run --cwd build build -- --exercises   # exercises PDF and HTML
-bun run --cwd build serve                  # live presenter mode
+bun run --cwd build serve                  # native Slidev development server
 bun run --cwd build lint                   # style and layout linter
 ```
 
-**Order matters when a slide has a diagram.** The lint pass inside `build` runs
-before mermaid is rendered, so it measures a placeholder and will report a diagram
-slide as fitting when it does not. Run `build` first to populate
-`build/.mermaid-cache/`, then run `lint` separately.
+The ordinary build validates the rendered Slidev frames and runs the canonical
+slide linter. `bun run --cwd build lint` also checks the Marp fallback layout.
+Diagram checks inspect the rendered Pele SVG rather than placeholders.
 
 ## Checking the code
 

@@ -21,8 +21,8 @@ navigation and export work, read `build/notes/slidev-handoff.md` before editing.
 ## What this course is
 
 Eleven modules plus two appendices (`12-appendix-type-hinting`,
-`13-appendix-libraries`) of Marp slides, runnable demos, and thirteen exercises that
-build one Wordle game. Modules 01 to 11 were converted from the original deck
+`13-appendix-libraries`) of Markdown slides with native Slidev additions, runnable
+demos, and thirteen exercises that build one Wordle game. Modules 01 to 11 were converted from the original deck
 (`PRG400-Python-Programming_og.pdf`, kept for reference, never edited).
 
 ## Course-specific rules
@@ -32,6 +32,11 @@ build one Wordle game. Modules 01 to 11 were converted from the original deck
 - **Type hints are taught as the course goes** : variables in 02, collections in 03,
   signatures in 05, constructors in 11; the appendix is the recap. Keep the
   annotations when you touch a demo, and keep its slide fence identical to it.
+  The first Functions examples deliberately teach calls and results before
+  introducing annotations; preserve that progression.
+- **Teaching examples** use music and photos, game characters for Classes and
+  a film watchlist for SQLite. For example rewrites, read
+  `build/notes/engaging-examples.md`; the Wordle exercise contracts stay separate.
 - **All code is PEP 8 named and Pythonic**, in slides, demos, exercises and
   solutions alike. Where an unpythonic form is the lesson (the `%` formatting
   example kept for recognition), keep it and say so in a comment or a `ruff.toml`

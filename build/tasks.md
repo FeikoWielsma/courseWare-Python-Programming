@@ -537,13 +537,33 @@ comparison does not change the existing exercise site or release allowlists.
 
 ## Slidev parity follow-up (2026-10-18)
 
-Entry point: `build/notes/slidev-handoff.md`. The full-course conversion above is
-complete; the expanded feature-parity objective below remains open.
+Entry point: `build/notes/slidev-handoff.md`. The original stopping points above
+are historical; the current rollout is recorded below.
 
 - [x] Add wheel/trackpad navigation, preserving reveal steps and scrollable content.
 - [x] Match Marp's Shiki `min-light` theme and green comments, including Magic Move.
 - [x] Save the cross-repository handoff, implementation map and verification limits.
-- [ ] Audit current Marp behaviour and publish an evidence-based parity matrix.
-- [ ] Close comparison blockers found by the audit; preserve existing Marp builds.
-- [ ] Enrich a complete module with verified native Slidev teaching features.
-- [ ] Regenerate full/click exports, inspect the latest output and document parity.
+- [x] Audit current Marp behaviour and publish an evidence-based parity matrix.
+- [x] Close comparison blockers found by the audit; preserve existing Marp builds.
+- [x] Enrich a complete module with verified native Slidev teaching features.
+- [x] Regenerate full/click exports, inspect the latest output and document parity.
+
+## Slidev adoption and engaging examples (2026-10-18)
+
+- [x] Rewrite canonical examples around music/photos, film watchlists and game
+      characters; teach concrete Functions calls/results before annotations.
+- [x] Integrate 33 native additions across all 13 modules, with 207 authored states.
+- [x] Check demos, source fences/references, Ruff, Wordle stages/starters and quiz.
+- [x] Verify all 275 Slidev frames, nine Pele diagrams, full/click PDFs and selected
+      rendered pages; retain explicit layouts and source page boundaries.
+- [x] Verify forward/reverse animation state, reduced motion, stationary code,
+      packaged launcher and physical wheel behavior; fix discovered clipping.
+- [x] Make Slidev the default local build and student package; retain named Marp
+      PDF/HTML fallback, portable exercise previews and existing exercise builds.
+- [x] Wire release assets, student bundle and Codespaces; record shared-template
+      prerequisites and the successful two-course PDF regression comparison.
+
+Executed evidence, artifact paths and limits: `build/notes/slidev-rollout.md`.
+No remote push/release or shared-production merge was performed. Merge the shared
+`feature/slidev-foundation` into Presentation-Template main before releasing this
+course; the workflow checks for that toolchain and stops if it is missing.

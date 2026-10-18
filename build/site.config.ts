@@ -2,6 +2,7 @@ import * as path from 'path';
 import { spawnSync } from 'child_process';
 import questions from './site/quiz.json';
 import { wordlePlugin } from './site/plugin.ts';
+import { presentationPage } from './site/presentation.ts';
 
 // Shared exercise site. The coordinator supplies course content and quiz questions separately.
 export default {
@@ -10,6 +11,10 @@ export default {
   storagePrefix: 'prg400-site:',
   solutions: 'next-page',
   eggs: true,
+  extraPages: [presentationPage],
+  moduleDeckHref(module: string) {
+    return `presentation.html?module=${encodeURIComponent(module)}`;
+  },
   starterRows(entry: { label: string; modName: string }) {
     const exercise = Number(entry.label);
     if (exercise === 1) return [];

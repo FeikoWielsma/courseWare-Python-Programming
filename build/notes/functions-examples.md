@@ -1,5 +1,9 @@
 # Functions examples rework
 
+Historical first rewrite. The trainer subsequently approved music and photos;
+the implemented Functions examples now use `format_duration` and playlists.
+See [the current example map](engaging-examples.md).
+
 Trainer feedback on 2026-10-18 authorized replacing the old abstract examples
 while retaining the native animation design. This supersedes the earlier
 migration requirement to leave all canonical Functions content unchanged.

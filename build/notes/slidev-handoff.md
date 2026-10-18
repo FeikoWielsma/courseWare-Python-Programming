@@ -3,11 +3,17 @@
 Updated 2026-10-18. Start here when continuing the presentation migration,
 Marp parity work, comparison, theme, navigation or exports.
 
-Continuation: this document records the original foundation handoff. Read
+Current status: the 13-module rollout and teaching-example rewrite are complete,
+with Slidev as the local build/delivery default and explicit Marp fallback.
+Read [the current rollout and verification record](slidev-rollout.md) first.
+It records 275 pages, 33 native additions, successful packaged-navigation checks
+and the shared-template merge prerequisite for remote releases.
+
+Historical context below records the original foundation handoff. Read
 [the accepted migration plan](slidev-migration-plan.md) and
 [integration evidence](slidev-integration.md) for subsequent decisions and the
-current state. Those include the approved animation rollout, Slidev default
-after verification, practical Functions rewrite and stop on further Luna rounds.
+subsequent decisions. The old stopping points and counts below are superseded
+by the rollout record; production-template main remains untouched.
 
 ## Objective and current stopping point
 

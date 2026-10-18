@@ -215,3 +215,39 @@ overlap or corrupted labels remain. These focused checks replace further Luna
 rounds at the trainer's request. Stateful authoring remains saved, unintegrated
 WIP awaiting the scheduled Claude quota reset; appendices and final cutover
 remain open.
+
+## Completed rollout and media examples
+
+The trainer's subsequent instruction to use music/photos, game characters and
+a film watchlist supersedes the delivery-pricing examples and pending-work
+statements above. Stateful authoring `9af38f8` and appendix authoring `b054bcc`
+are integrated. There are 229 canonical topics, 294 canonical fences and
+242 Marp pages, plus 33 native additions for 275 Slidev pages and 207 native
+states. [The current rollout record](slidev-rollout.md) has the full inventory,
+commands, verification granularity, delivery behavior and remaining limits.
+
+The ordinary Slidev build and canonical layout lint pass. All nine Pele diagrams
+pass, the full PDF has 275 pages and 945 valid internal links, and all 207 native
+click states export. Six latest PDF pages and live character/JSON frames were
+visually reviewed. The 98 middle/stateful/appendix states pass a focused browser
+run including reverse navigation, restored visual state, output and reduced
+motion. Existing static core, Data Structures and legacy snapshot checks pass.
+
+Final `bun run --cwd build check:delivery` exits zero against the public package:
+136 core forward/reverse frames, reduced motion and containment; all 33 Data
+Structures states match Python in the browser; physical wheel rapid gestures,
+immediate reversal, momentum grouping, exclusions, scrollable controls and
+forward/reverse slide boundaries pass. A popped stack value was moved inside the
+frame, and output now reserves its final layout to prevent code/diagram shifts.
+The stack labels were subsequently placed above their columns for legibility.
+
+`build` and `serve` use the Slidev wrapper; named Marp fallback, exercise build,
+portable inline exercise previews, release allowlists and Codespaces are wired.
+The public ZIP contains only 421 current files and the canonical PDF, with no
+trainer notes or authoring sources. Shared `e1b1c63` clears stale output chunks;
+shared TypeScript and 14 focused tests pass. Two unrelated-course PDF regression
+comparisons passed earlier. No further Luna rounds were used.
+
+Shared production main is untouched. The shared feature must be merged before
+a remote course release; the prepared CI workflow explicitly checks for its
+delivery toolchain. No push, PR, remote release or production merge was made.

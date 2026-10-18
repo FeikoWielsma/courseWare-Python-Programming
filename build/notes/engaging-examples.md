@@ -92,3 +92,8 @@ so it cannot launch a duplicate author.
   formatting slide's duplicated output. Rebuild/render checks follow integration.
 - Appendix canonical examples are ready for one final Opus animation package.
   No further Luna review rounds or new exhaustive check infrastructure.
+- Completed appendix package `b054bcc`: optional duration lookup and playlist
+  JSON round trip, 12 states. Both insertions are integrated. The coordinator
+  completed focused browser/export review and the default-delivery cutover;
+  [current counts, verification and limits](slidev-rollout.md) supersede the
+  intermediate stopping points above.

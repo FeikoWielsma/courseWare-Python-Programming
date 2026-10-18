@@ -9,8 +9,12 @@ material, so a `git pull` always gives you the latest version.
 
 ## What is in this bundle
 
-- **`PRG400-Python-Programming.pdf`** : the course slides. The same deck is also
-  available as `.html` if you prefer reading in a browser.
+- **`slides/`** : the animated course presentation. From the course folder, run
+  `python slides/serve.py`, then open <http://localhost:4188/slidev/>. Arrow keys
+  or scrolling move through the steps; going back reverses them.
+- **`PRG400-Python-Programming.pdf`** : the slides as a PDF, showing the completed
+  examples. **`PRG400-Python-Programming-Marp.html`** and **`-Marp.pdf`** are the
+  static fallback deck; the HTML opens directly from disk.
 - **`PRG400-Python-Programming-Exercises.pdf`** : the lab guide, one exercise per
   module.
 - **`site/index.html`** : the same exercises as a small website that opens from
@@ -55,6 +59,8 @@ the whole course in your browser. You need a free GitHub account; it includes
    of inactivity; that is harmless, your files stay.
 
 The tkinter GUI demos need a desktop and do not open a window in a codespace.
+To view the animated slides in Codespaces, run `python slides/serve.py` in the
+terminal, then open **Course slides** on port **4188** in the **Ports** panel.
 
 ## Setting up Python
 
