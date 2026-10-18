@@ -12,9 +12,11 @@ Recorded 2026-10-18. Entry context: [handoff](slidev-handoff.md).
 - The separate `libraries/` companion course remains outside this conversion.
 - Example selection should favour engaging, realistic tasks involving music,
   photos, films or small games. Avoid defaulting to stock items and order status.
-  Keep examples small and introduce one language mechanism at a time. Broader
-  replacements are still at the proposal stage; this preference does not expand
-  the remaining authors' canonical-source editing boundary.
+  Keep examples small and introduce one language mechanism at a time. The
+  trainer approved the broader rewrite: music/photos recur, Classes uses game
+  characters and SQLite uses a film watchlist. Assigned authors may update their
+  canonical slides/demos and matching animations together. See
+  [the example map](engaging-examples.md) for current ownership.
 - Claude Opus 5.5 authors animations. Luna completed the initial audits; the
   trainer has stopped further Luna rounds. The coordinator owns focused
   verification, integration and the cutover.

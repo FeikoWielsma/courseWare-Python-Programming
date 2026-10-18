@@ -19,15 +19,16 @@ when a delegated worktree starts from an earlier commit.
 
 ## Implement within the assigned file boundary
 
-- Keep canonical course slides, demos, exercises and solutions intact. The
-  coordinator is explicitly reworking module 05 examples at the trainer's request;
-  use that updated canonical content when it is present. Quote
-  their code verbatim, including annotations. Additional labels follow house
-  style and explain only already-taught concepts.
-- For newly assigned example design, the trainer prefers engaging, realistic
-  music, photo, film or small-game scenarios over stock items and order status.
-  This preference does not authorize changes outside your package or replacement
-  of canonical examples unless that replacement is explicitly assigned.
+- The trainer now authorizes canonical example replacements within explicitly
+  assigned modules. Read `build/notes/engaging-examples.md` for the accepted map
+  and ownership. Keep the subject coverage, useful teaching order and exercise
+  contracts; quote the updated demos verbatim in slides and native additions.
+  Preserve annotations after their introduction. The first Functions examples
+  remain unannotated by explicit trainer direction. Additional labels follow
+  house style and explain only already-taught concepts.
+- Music and photos are recurring themes, game characters teach Classes and a
+  film watchlist teaches SQLite. Use small realistic tasks, one new mechanism at
+  a time and supplied offline data. No external services or setup are needed.
 - Put native slides under your assigned `src/slidev/<package>/` folder, one
   Slidev page with frontmatter per file. Use unique Vue component names under
   `src/slidev/components/`; keep styling scoped. Existing examples are references,
