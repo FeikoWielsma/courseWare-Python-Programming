@@ -4,6 +4,10 @@ Implemented 2026-10-18. Shared code is in the Presentation-Template worktree
 `../_worktrees/presentation-template-slidev`, branch `feature/slidev-foundation`.
 The default Marp build and published exercise site remain independent.
 
+For continuing work, read `slidev-handoff.md` in this folder. It records the
+expanded parity objective, saved repository state and remaining work; this file
+is the foundation implementation report.
+
 ## Course coverage
 
 - All 13 fundamentals modules, including both appendices, and the preamble.
@@ -26,9 +30,19 @@ The module name opens that module's overview. The comparison's topic picker
 opens the corresponding source page in both frameworks. Native Slidev navigation
 keeps the Marp comparison on the associated source topic.
 
+Syntax highlighting uses Marp's `min-light` theme and its green comment colour
+replacement (`#c2c3c5` to `#4a9c59`), also in native Magic Move examples.
+
 Ordinary slides reveal parent bullet groups, code/output blocks, tables and SVGs
 in reading order. Previous hides the preceding step. Magic Move keeps its initial
 code state visible and advances the code and collection together.
+
+Mouse-wheel and trackpad scrolling navigate these same steps: down advances,
+up reverses. A gesture quiet period and animation cooldown suppress momentum
+skips. Scrollable content and Ctrl/Command-wheel retain their normal behaviour.
+Browser checks verified forward/reverse reveals, crossing slide boundaries,
+sustained momentum, zoom exclusion and scrollable content. Shared typecheck and
+the full 241-page browser validation passed after this addition.
 
 ## Executed checks
 

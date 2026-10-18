@@ -534,3 +534,16 @@ a CSV reader that no longer skips its header. Rendered PDF pages were inspected.
 
 Details and executed evidence: `build/notes/slidev-foundation.md`. This opt-in
 comparison does not change the existing exercise site or release allowlists.
+
+## Slidev parity follow-up (2026-10-18)
+
+Entry point: `build/notes/slidev-handoff.md`. The full-course conversion above is
+complete; the expanded feature-parity objective below remains open.
+
+- [x] Add wheel/trackpad navigation, preserving reveal steps and scrollable content.
+- [x] Match Marp's Shiki `min-light` theme and green comments, including Magic Move.
+- [x] Save the cross-repository handoff, implementation map and verification limits.
+- [ ] Audit current Marp behaviour and publish an evidence-based parity matrix.
+- [ ] Close comparison blockers found by the audit; preserve existing Marp builds.
+- [ ] Enrich a complete module with verified native Slidev teaching features.
+- [ ] Regenerate full/click exports, inspect the latest output and document parity.

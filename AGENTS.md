@@ -13,6 +13,9 @@ Read first, in this order :
 Changes to the shared build are made in `../Presentation-Template` itself, from a
 worktree, and must keep the other courses building. See its `AGENTS.md`.
 
+For Slidev migration, Marp parity, presentation comparisons or Slidev theme,
+navigation and export work, read `build/notes/slidev-handoff.md` before editing.
+
 ---
 
 ## What this course is
