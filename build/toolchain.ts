@@ -41,13 +41,18 @@ function fetchPin(repository: string, commit: string, dir: string) {
   console.error(`Fetching Presentation-Template ${commit} from ${repository}`);
   const partial = `${dir}.partial-${process.pid}`;
   fs.mkdirSync(partial, { recursive: true });
-  const ok = (...args: string[]) => git(partial, ...args).status === 0;
+  let reason = '';
+  const ok = (...args: string[]) => {
+    const result = git(partial, ...args);
+    reason = result.stderr.trim().split('\n').pop() || reason;
+    return result.status === 0;
+  };
   const fetched = ok('init', '--quiet') && ok('remote', 'add', 'origin', repository)
     && (ok('fetch', '--quiet', '--depth=1', 'origin', commit) || ok('fetch', '--quiet', 'origin'))
     && ok('-c', 'advice.detachedHead=false', 'checkout', '--quiet', commit);
   if (!fetched) {
     fs.rmSync(partial, { recursive: true, force: true });
-    throw new Error(`Cannot fetch Presentation-Template ${commit} from ${repository}. build/toolchain.json must pin a pushed commit; set PRESENTATION_TEMPLATE_DIR to a checkout for development.`);
+    throw new Error(`Cannot fetch Presentation-Template ${commit} from ${repository} (${reason}). build/toolchain.json must pin a pushed commit; set PRESENTATION_TEMPLATE_DIR to a checkout for development.`);
   }
   fs.renameSync(partial, dir);
 }
