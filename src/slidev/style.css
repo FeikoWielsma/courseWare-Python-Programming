@@ -27,3 +27,24 @@
   margin-left: 0;
   max-width: 100%;
 }
+
+/* Explicit grid gives the exception tree room without changing its source page. */
+.course-frame[data-source-id="08-exception-handling-1"] .course-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto auto;
+  gap: 8px 28px;
+}
+.course-frame[data-source-id="08-exception-handling-1"] .course-body > h1,
+.course-frame[data-source-id="08-exception-handling-1"] .course-step:nth-of-type(3),
+.course-frame[data-source-id="08-exception-handling-1"] .course-step:nth-of-type(4),
+.course-frame[data-source-id="08-exception-handling-1"] .course-step:nth-of-type(5) {
+  grid-column: 1 / -1;
+}
+.course-frame[data-source-id="08-exception-handling-1"] .course-step {
+  margin: 0;
+  min-width: 0;
+}
+.course-frame[data-source-id="08-exception-handling-1"] .course-diagram-step > .mermaid-diagram {
+  margin: 0;
+}
