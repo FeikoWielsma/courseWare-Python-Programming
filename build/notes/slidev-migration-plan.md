@@ -65,6 +65,19 @@ Pele 1.6.0 and embedding themeable inline SVG. Preserve that consistent renderin
 path unless evidence warrants a reviewed change. Motion within a diagram needs
 explicit choreography; accepting Mermaid syntax does not establish that motion.
 
+Upstream route checked against GitHub and installed Slidev 53 on 2026-10-18:
+[PR #2465](https://github.com/slidevjs/slidev/pull/2465) merged the supported
+custom-renderer hook on 2026-03-03. The installed client invokes custom renderers
+before its Mermaid renderer. A Pele adapter can return `render(code, options).svg`
+after mapping the supported options. No Slidev fork or upgrade is necessary.
+Current GitHub issue/PR searches for Pele in `slidevjs/slidev` and Slidev in
+`obsidianmd/pele` returned no entries. The general hook already provides the seam.
+For the accepted canonical-source workflow, keep existing cached build-time Pele
+rendering: it is implemented and adds no browser diagram-rendering step. Use the
+client hook if native, live Mermaid authoring becomes a requirement; that route
+still needs explicit font, theme, sizing and export checks. This is an engineering
+effort recommendation, not a measured performance comparison between renderers.
+
 Primary references: [Mermaid fences](https://sli.dev/features/mermaid),
 [configuration](https://sli.dev/custom/config-mermaid),
 [custom renderer](https://sli.dev/custom/config-mermaid-renderer),
