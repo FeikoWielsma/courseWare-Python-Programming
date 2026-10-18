@@ -1,3 +1,5 @@
+> Historical record (2026-10-17). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # WP2a progress : exercise texts 1 to 4
 
 ## Done

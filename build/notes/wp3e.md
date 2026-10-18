@@ -1,3 +1,5 @@
+> Historical record (2026-10-14). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # WP3e Progress Notes: Appendix slides and demos 12 & 13
 
 ## Status

@@ -1,3 +1,5 @@
+> Historical record (2026-10-15). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # WP3a notes : slides and demos 01 to 03
 
 Branch : t3/wp3a-slides-demos-01-03 (worktree), fast-forwarded to prg400-wordle 57429f8 first.

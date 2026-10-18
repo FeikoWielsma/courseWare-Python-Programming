@@ -1,3 +1,5 @@
+> Historical record (2026-10-17). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # Slide gaps : what the slides now teach for the exercises
 
 Date: 2026-10-17. Branch `t3/aca89c91`. Closes the "Missing" lines of

@@ -1,3 +1,5 @@
+> Historical record (2026-10-18). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # PRG400 Slidev parity and diagram audit
 
 Audit date: 2026-10-18

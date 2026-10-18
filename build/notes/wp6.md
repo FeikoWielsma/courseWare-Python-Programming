@@ -1,3 +1,5 @@
+> Historical record (2026-10-17). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # WP6 : PRG400 exercise-site extras
 
 Implementation notes for the course-side quiz, starter rows and Wordle Easter egg.

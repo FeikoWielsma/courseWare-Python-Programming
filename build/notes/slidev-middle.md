@@ -1,3 +1,5 @@
+> Historical record (2026-10-18). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # Slidev middle modules package
 
 Recorded 2026-10-18. Native animated slides for modules 06, 07 and 08, in the

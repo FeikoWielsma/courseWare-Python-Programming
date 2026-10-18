@@ -1,3 +1,5 @@
+> Historical record (2026-10-18). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # Parallel Slidev foundation
 
 Implemented 2026-10-18. Shared code is in the Presentation-Template worktree

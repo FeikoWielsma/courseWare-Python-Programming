@@ -1,3 +1,5 @@
+> Historical record (2026-10-17). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # Hints pass : hints that point back, nothing new on the required path
 
 Date: 2026-10-17. Branches: `t3/e52c920d` (Exercises 2 to 8), then `t3/da48ba47` (the rest, and tests out of the main course).

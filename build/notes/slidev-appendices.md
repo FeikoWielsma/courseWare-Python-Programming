@@ -1,3 +1,5 @@
+> Historical record (2026-10-18). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # Slidev appendices package
 
 Recorded 2026-10-18. The last native animation package : one addition in each

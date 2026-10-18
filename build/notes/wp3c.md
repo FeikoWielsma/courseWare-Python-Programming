@@ -1,3 +1,5 @@
+> Historical record (2026-10-14). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # WP3c implementation report
 
 Branch: `t3/wp3c-slides-demos` (renamed by the host during this session). Package complete within its owned files; coordinator integration remains below.

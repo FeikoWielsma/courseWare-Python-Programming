@@ -1,3 +1,5 @@
+> Historical record (2026-10-17). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # WP3b : slides and demos 04, 05, 06
 
 Working notes so a resumed session can continue. Spec : `build/plan.md` section 5.

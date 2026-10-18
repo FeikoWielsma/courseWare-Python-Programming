@@ -1,3 +1,5 @@
+> Historical record (2026-10-18). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # Slidev delivery verification
 
 Independent verification of the integrated baseline on 2026-10-18, before the

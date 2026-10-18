@@ -1,3 +1,5 @@
+> Historical record (2026-10-14). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # WP1 progress
 
 ## Status
