@@ -18,7 +18,7 @@ compares what the components actually rendered with the same Python states.
     uv run python build/slidev_checks/check_data_structures.py --browser http://127.0.0.1:4188
 
 The browser check needs the built app served (`build/slidev.ts --serve-only`)
-and reads routes from build/slidev/dist/manifest.json.
+and reads routes from .courseware/fundamentals/student/manifest.json.
 """
 
 from __future__ import annotations
@@ -404,7 +404,7 @@ def check_browser(slides: list[Slide], origin: str) -> int:
     """Compare each rendered click state with the Python state."""
     shared = os.environ.get("PRESENTATION_TEMPLATE_DIR")
     template = Path(shared) if shared else ROOT.parent / "Presentation-Template"
-    manifest = json.loads((ROOT / "build/slidev/dist/manifest.json").read_text(encoding="utf-8"))
+    manifest = json.loads((ROOT / ".courseware/fundamentals/student/manifest.json").read_text(encoding="utf-8"))
     native = [page for page in manifest["pages"] if page["kind"] == "enrichment"]
     pages = {page["title"]: page["sourceId"] for page in native}
     plan = []
