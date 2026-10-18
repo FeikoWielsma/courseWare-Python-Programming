@@ -36,8 +36,8 @@ async function main() {
   const diagramsUrl = pathToFileURL(path.join(shared, 'build/src/diagrams.ts')).href;
   const { DIAGRAM_RENDERER, diagramCacheFile, diagramHash, embedDiagram } = await import(diagramsUrl) as DiagramApi;
   const { parseModule } = await import(pathToFileURL(path.join(shared, 'build/src/parser.ts')).href);
-  const { launchBrowser } = await import(pathToFileURL(path.join(shared, 'build/lint-slides.ts')).href);
-  const { serveDirectory } = await import(pathToFileURL(path.join(shared, 'build/slidev/build.ts')).href);
+  const { withBrowser, browserTimeoutMs } = await import(pathToFileURL(path.join(shared, 'build/browser.ts')).href);
+  const { readManifest, deliverable } = await import(pathToFileURL(path.join(shared, 'build/artifacts.ts')).href);
   const sources = [
     ...markdownFiles(path.join(root, 'src/slides')),
     ...markdownFiles(path.join(root, 'src/slidev')),
@@ -123,17 +123,11 @@ async function main() {
   }
 
   if (browserCases.length) {
-    const server = serveDirectory(output, 0);
-    await new Promise<void>(resolve => { if (server.listening) resolve(); else server.once('listening', resolve); });
-    const address = server.address();
-    if (!address || typeof address === 'string') fail('Cannot start the diagram validation server.');
-    const browser = await launchBrowser();
-    try {
-      const page = await browser.newPage();
-      await page.setViewport({ width: 1280, height: 800 });
+    const presentation = path.join(root, deliverable(readManifest(output), 'presentation').path);
+    await withBrowser({ dir: presentation, port: 0 }, async ({ page, origin }) => {
       for (const testCase of browserCases) {
-        await page.goto(`http://127.0.0.1:${address.port}/slidev/#/${testCase.id}`, { waitUntil: 'networkidle0', timeout: 120000 });
-        await page.waitForSelector(`.course-frame[data-source-id="${testCase.id}"] svg.pele`, { timeout: 120000 });
+        await page.goto(`${origin}/slidev/#/${testCase.id}`, { waitUntil: 'networkidle0', timeout: browserTimeoutMs });
+        await page.waitForSelector(`.course-frame[data-source-id="${testCase.id}"] svg.pele`, { timeout: browserTimeoutMs });
         const state = await page.evaluate(async (id: string) => {
           await document.fonts.ready;
           const frame = document.querySelector<HTMLElement>(`.course-frame[data-source-id="${id}"]`);
@@ -168,10 +162,7 @@ async function main() {
           if (state.escaped.length) failures.push(`${testCase.id}: diagram text escapes its SVG/frame bounds: ${state.escaped.join(', ')}`);
         }
       }
-    } finally {
-      await browser.close();
-      await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
-    }
+    });
   }
 
   console.log(`Renderer: ${DIAGRAM_RENDERER}; audited ${found.length} Mermaid fence(s).`);

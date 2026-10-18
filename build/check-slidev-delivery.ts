@@ -17,8 +17,9 @@ if (!fs.existsSync(path.join(student, 'index.html'))) {
   throw new Error(`Packaged student app not found: ${student}`);
 }
 
-const { serveDirectory } = await import(pathToFileURL(path.join(template, 'build/slidev/build.ts')).href);
-const server = serveDirectory(student, 0);
+const { serve } = await import(pathToFileURL(path.join(template, 'build/browser.ts')).href);
+const server = await serve(student, { port: 0 });
+const origin = server.url;
 const children: ReturnType<typeof Bun.spawn>[] = [];
 
 function run(label: string, command: string[]) {
@@ -32,13 +33,6 @@ function run(label: string, command: string[]) {
 }
 
 try {
-  await new Promise<void>((resolve, reject) => {
-    server.once('listening', resolve);
-    server.once('error', reject);
-  });
-  const address = server.address();
-  if (!address || typeof address === 'string') throw new Error('Cannot start the packaged student server.');
-  const origin = `http://127.0.0.1:${address.port}`;
   console.log(`Serving ${student} at ${origin}`);
 
   const animationChecks = fs.readdirSync(checksDir)
@@ -68,5 +62,5 @@ try {
     if (child.exitCode === null) child.kill();
   }
   await Promise.all(children.map(child => child.exited));
-  await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
+  await server.close();
 }
