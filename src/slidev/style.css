@@ -54,3 +54,14 @@
   --slidev-code-font-size: 16px;
   --slidev-code-line-height: 1.35;
 }
+
+/* The transaction example needs a little more room for its two code blocks. */
+.course-frame[data-source-id="10-python-database-access-4"] {
+  --slidev-code-font-size: 14px;
+  --slidev-code-line-height: 1.2;
+}
+
+.course-frame[data-source-id="10-python-database-access-4"] .course-body {
+  font-size: 22px;
+  line-height: 1.16;
+}

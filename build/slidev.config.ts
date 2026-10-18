@@ -19,6 +19,7 @@ export default {
     '05-functions-16',
     '05-functions-18',
     '08-exception-handling-1',
+    '08-exception-handling-15',
     '08-exception-handling-16',
     '10-python-database-access-4',
     '10-python-database-access-5',
