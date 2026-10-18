@@ -567,3 +567,20 @@ Executed evidence, artifact paths and limits: `build/notes/slidev-rollout.md`.
 No remote push/release or shared-production merge was performed. Merge the shared
 `feature/slidev-foundation` into Presentation-Template main before releasing this
 course; the workflow checks for that toolchain and stops if it is missing.
+
+## Libraries Slidev plan (2026-10-18)
+
+- [x] Phase 0: add offline demo/solution runners, a quoted-output audit and CI
+      checks; record the original 168-page Marp baseline and initial failures.
+- [x] Repair the first argparse demo, fixture defaults in scraping examples and
+      two stale output quotes; all new checks pass.
+- [x] Phase 1: wire Slidev and its config, validate layouts, package delivery and
+      retain Marp fallback assets.
+- [x] Phase 2: add shared music/photo data, rewrite modules and exercises, then
+      add verified native slides.
+- [x] Phase 3: browser/export/delivery verification and final documentation;
+      see `build/notes/libraries-slidev-phase3.md`.
+
+Implementation details, commands and limits: `build/notes/libraries-review.md`.
+Phase 1 evidence: `build/notes/libraries-slidev-phase1.md`.
+Phase 2 evidence: `build/notes/libraries-slidev-phase2.md`.

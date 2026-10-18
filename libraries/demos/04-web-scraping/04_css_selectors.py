@@ -1,9 +1,17 @@
+import sys
+from pathlib import Path
+
 import requests
 from bs4 import BeautifulSoup
 
 URL = "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html"
 
-soup = BeautifulSoup(requests.get(URL, timeout=10).text, "lxml")
+if "--live" in sys.argv:
+    html = requests.get(URL, timeout=10).text
+else:
+    fixture = Path(__file__).resolve().parents[2] / "data" / "books-fixture.html"
+    html = fixture.read_text(encoding="utf-8")
+soup = BeautifulSoup(html, "lxml")
 
 # select always returns a list, select_one the first match or None.
 print(len(soup.select("article.product_pod h3 a")), "title links")

@@ -1,25 +1,14 @@
+import math
 import time
 
 import numpy as np
 
-COUNT = 2_000_000
-
-# Small values on purpose, so both totals stay exact and match to the digit.
-left_list = [float(i % 10) for i in range(COUNT)]
-right_list = [float(i % 7) for i in range(COUNT)]
-left_array = np.array(left_list)
-right_array = np.array(right_list)
-
+count = 60 * 44100
 start = time.perf_counter()
-total = 0.0
-for i in range(COUNT):
-    total += left_list[i] * right_list[i]
-slow = time.perf_counter() - start
-print(f"Python loop  {slow:7.3f} s   {total:,.1f}")
-
+samples = [math.sin(2 * math.pi * 440 * i / 44100) for i in range(count)]
+print(f"Python: {time.perf_counter() - start:.3f} s")
 start = time.perf_counter()
-total = float((left_array * right_array).sum())
-fast = time.perf_counter() - start
-print(f"NumPy arrays {fast:7.3f} s   {total:,.1f}")
-
-print(f"{slow / fast:.0f}x faster")
+times = np.arange(count) / 44100
+tone = np.sin(2 * np.pi * 440 * times)
+print(f"NumPy: {time.perf_counter() - start:.3f} s")
+print(np.allclose(samples, tone))

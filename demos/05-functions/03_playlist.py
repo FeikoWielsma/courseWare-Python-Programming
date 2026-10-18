@@ -4,4 +4,4 @@ def print_playlist(name, tracks):
         print(f"{number}. {title}")
 
 
-print_playlist("Night drive", ["Orbit", "Echo"])
+print_playlist("Night drive", ["Imagine", "Yesterday"])

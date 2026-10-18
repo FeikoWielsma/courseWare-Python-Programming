@@ -1,8 +1,8 @@
 def with_encore(tracks: list[str]) -> list[str]:
-    tracks = tracks + ["Encore"]
+    tracks = tracks + ["Let It Be"]
     return tracks
 
-queue = ["Orbit", "Echo"]
+queue = ["Imagine", "Yesterday"]
 extended = with_encore(queue)
 print(f"Original: {queue}")
-print(f"Encore mix: {extended}")
+print(f"With encore: {extended}")

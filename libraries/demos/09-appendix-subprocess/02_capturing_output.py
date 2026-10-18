@@ -7,7 +7,7 @@ if __name__ == "__main__":
     # capture_output=True fills in stdout and stderr. Without text=True they
     # arrive as bytes, which is almost never what you want.
     finished = subprocess.run(
-        ["wc", "-l", str(DATA / "cli-sample.log")],
+        ["wc", "-l", str(DATA / "listening.log")],
         capture_output=True,
         text=True,
         check=True,

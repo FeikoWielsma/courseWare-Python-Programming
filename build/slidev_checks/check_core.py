@@ -448,7 +448,7 @@ def verify_static(slide: Slide) -> None:
             if slide.file == "one-item-per-pass.md":
                 module = event.globals
                 count = sum(
-                    line.startswith("Processing ")
+                    line.startswith("Now playing: ")
                     for batch in slide.run["output"][: k + 1]
                     for line in batch
                 )
@@ -457,12 +457,12 @@ def verify_static(slide: Slide) -> None:
                         slide.file,
                         f"state {k} loop statuses {statuses}, expected {['ran'] * count}",
                     )
-                if shown.get("cursor") and module.get("filename") != row_value(
+                if shown.get("cursor") and module.get("title") != row_value(
                     expected_rows[0], shown["cursor"]["at"]
                 ):
-                    fail(slide.file, f"state {k} loop variable does not match Python filename")
-                if k == len(checkpoints) - 1 and module.get("filename") != "crowd.jpg":
-                    fail(slide.file, "loop exhaustion should preserve the final filename")
+                    fail(slide.file, f"state {k} loop variable does not match Python title")
+                if k == len(checkpoints) - 1 and module.get("title") != "Respect":
+                    fail(slide.file, "loop exhaustion should preserve the final title")
                 if (row["id"] in shown.get("ended", [])) != (k == len(checkpoints) - 1):
                     fail(slide.file, f"state {k} end slot does not match Python loop exhaustion")
             elif slide.file == "leaving-a-loop-with-break.md":
@@ -483,8 +483,11 @@ def verify_static(slide: Slide) -> None:
                         slide.file,
                         f"state {k} loop statuses {statuses}, expected {expected_status}",
                     )
-                if k >= 3 and (module.get("track") != "Pulse" or at != count):
-                    fail(slide.file, "break must preserve track='Pulse' and leave Outro unreached")
+                if k >= 3 and (module.get("track") != "Respect" or at != count):
+                    fail(
+                        slide.file,
+                        "break must preserve track='Respect' and leave Hey Jude unreached",
+                    )
         elif slide.kind == "stream":
             shown_writes = slide.run["states"][k]["writes"]
             actual_text = event.output

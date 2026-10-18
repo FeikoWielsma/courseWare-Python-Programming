@@ -124,7 +124,7 @@ saying what it does.
 - Handed-out `tests/test_game.py` and every pytest run removed; Step 4's validation test
   became a session with the two `ValueError`s, re-run.
 - New first hints : Step 2 (*Class Members*), Step 3 (*A Computed Attribute*), Step 4
-  (*When a Plain Attribute Is Not Enough*, `demo07 · validatingsetter`), Step 5
+  (*When a Plain Attribute Is Not Enough*, `demo08 · validatingsetter`), Step 5
   (*`__str__` and `__repr__`*, *Generator Expressions*). Removed a muddled sentence that
   pointed at *Class Attributes and Instance Attributes* for `__str__`.
 

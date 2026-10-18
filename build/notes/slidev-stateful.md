@@ -70,7 +70,7 @@ lesson.
 ### 11 Python Classes
 
 Same 17 slides in the same order. `02_employee.py` is renamed
-`02_character.py` (pill `demo02 · character`); other names unchanged.
+`03_character.py` (pill `demo03 · character`); other names unchanged.
 `Character` with independent `health`, `take_damage`, `heal` and
 `show_status` comes before the class attribute (`max_health`, slide 8, with
 a game-wide change and a per-character override). Plain `health`, the
@@ -86,9 +86,9 @@ with unchanged calling code. `_gold` and `__save_key` for internal names,
 | `09-python-io` | `File Positions` | `moving-the-file-position.md` | 8 | 7 | `09-python-io/10_file_positions.py` (whole) | stack | `StatefulFile` |
 | `10-python-database-access` | `Last inserted row id` | `inserts-wait-for-the-commit.md` | 7 | 6 | `10-python-database-access/05_lastinsertedrowid.py` (slide fence) | stack | `StatefulRecords` |
 | `10-python-database-access` | `Fetching Rows` | `one-row-per-fetch.md` | 8 | 7 | `10-python-database-access/09_fetchone.py` (slide fence; table from demo03/04) | side | `StatefulRecords` |
-| `11-python-classes` | `Creating and Using Objects` | `each-object-has-its-own-health.md` (new) | 7 | 6 | `11-python-classes/02_character.py` (calling lines, verbatim) | side | `StatefulObjects` |
-| `11-python-classes` | `Class Attributes and Instance Attributes` | `object-first-then-class.md` | 9 | 8 | `11-python-classes/03_classattributes.py` (slide fence) | stack | `StatefulObjects` |
-| `11-python-classes` | `A Computed Attribute` | `computed-on-every-read.md` | 6 | 5 | `11-python-classes/06_computedproperty.py` (slide fence) | side | `StatefulObjects` |
+| `11-python-classes` | `Creating and Using Objects` | `each-object-has-its-own-health.md` (new) | 7 | 6 | `11-python-classes/03_character.py` (calling lines, verbatim) | side | `StatefulObjects` |
+| `11-python-classes` | `Class Attributes and Instance Attributes` | `object-first-then-class.md` | 9 | 8 | `11-python-classes/04_classattributes.py` (slide fence) | stack | `StatefulObjects` |
+| `11-python-classes` | `A Computed Attribute` | `computed-on-every-read.md` | 6 | 5 | `11-python-classes/07_computedproperty.py` (slide fence) | side | `StatefulObjects` |
 
 52 states, 45 clicks. Module 09 and 10 both have a slide titled `Using with`;
 the module slug disambiguates. Scratch-build routes (preamble and 09 to 11

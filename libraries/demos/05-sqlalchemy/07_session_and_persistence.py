@@ -27,8 +27,10 @@ with Session(engine) as session:
     session.add_all([first, second])
     print(first.id, second.id)
 
-    # One commit writes both rows in one transaction, then refreshes the objects,
-    # which is where the ids come from.
+    session.flush()
+    print(first.id, second.id)
+
+    # Flush assigns ids inside the transaction; commit makes the writes permanent.
     session.commit()
     print(first.id, second.id)
 

@@ -5,7 +5,7 @@ from collections import Counter
 from pathlib import Path
 
 DATA = Path(__file__).resolve().parents[2] / "data"
-LOG = DATA / "cli-sample.log"
+LOG = DATA / "listening.log"
 LEVELS = ("INFO", "WARN", "ERROR")
 TIMEOUT = 5.0
 

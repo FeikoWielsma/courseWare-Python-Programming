@@ -97,3 +97,14 @@ so it cannot launch a duplicate author.
   completed focused browser/export review and the default-delivery cutover;
   [current counts, verification and limits](slidev-rollout.md) supersede the
   intermediate stopping points above.
+- 2026-10-18 trainer review: invented track names replaced by well-known songs
+  with their real lengths (Imagine 183, Yesterday 125, Respect 149, Toxic 199,
+  Thriller 357, Hey Jude, Let It Be, Jolene, Wonderwall, Bohemian Rhapsody).
+  Set operations use physics/chemistry again (Curie in both); the else slide
+  uses a fixed battery value; the for-loop slide loops over a playlist and a
+  string, and the index/enumerate slides use the playlist instead of planets.
+- 2026-10-18 trainer review: Classes use World of Warcraft characters (Jaina,
+  Thrall, Hogger; `max_level` 60 raised to 70 by an expansion; `Mage` as the
+  subclass). A new slide and demo, *A First Attribute and Method*
+  (`02_firstmethod.py`), introduce one attribute and one method before health;
+  the later class demos moved up one number.

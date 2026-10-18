@@ -10,14 +10,14 @@ pills: ["demo10 · dictionaries"]
 const run = {
   "name": "durations",
   "states": [
-    {"rows": [{"id": "albert", "key": "'Orbit'", "value": "222"}, {"id": "robert", "key": "'Echo'", "value": "185"}, {"id": "enrico", "key": "'Pulse'", "value": "204"}], "active": null},
-    {"rows": [{"id": "albert", "key": "'Orbit'", "value": "222"}, {"id": "robert", "key": "'Echo'", "value": "185"}, {"id": "enrico", "key": "'Pulse'", "value": "204"}, {"id": "werner", "key": "'Nova'", "value": "196"}], "active": "werner"},
-    {"rows": [{"id": "albert", "key": "'Orbit'", "value": "222"}, {"id": "robert", "key": "'Echo'", "value": "185"}, {"id": "enrico", "key": "'Pulse'", "value": "204"}, {"id": "werner", "key": "'Nova'", "value": "196"}, {"id": "two", "key": "'Intro'", "value": "90"}], "active": "two"},
-    {"rows": [{"id": "albert", "key": "'Orbit'", "value": "222"}, {"id": "robert", "key": "'Echo'", "value": "185"}, {"id": "enrico", "key": "'Pulse'", "value": "204"}, {"id": "werner", "key": "'Nova'", "value": "196"}, {"id": "two", "key": "'Intro'", "value": "90"}], "active": "robert"},
-    {"rows": [{"id": "albert", "key": "'Orbit'", "value": "222"}, {"id": "robert", "key": "'Echo'", "value": "185"}, {"id": "enrico", "key": "'Pulse'", "value": "210"}, {"id": "werner", "key": "'Nova'", "value": "196"}, {"id": "two", "key": "'Intro'", "value": "90"}], "active": "enrico", "tone": "change"},
-    {"rows": [{"id": "robert", "key": "'Echo'", "value": "185"}, {"id": "enrico", "key": "'Pulse'", "value": "210"}, {"id": "werner", "key": "'Nova'", "value": "196"}, {"id": "two", "key": "'Intro'", "value": "90"}], "active": null}
+    {"rows": [{"id": "albert", "key": "'Imagine'", "value": "183"}, {"id": "robert", "key": "'Yesterday'", "value": "125"}, {"id": "enrico", "key": "'Respect'", "value": "149"}], "active": null},
+    {"rows": [{"id": "albert", "key": "'Imagine'", "value": "183"}, {"id": "robert", "key": "'Yesterday'", "value": "125"}, {"id": "enrico", "key": "'Respect'", "value": "149"}, {"id": "werner", "key": "'Toxic'", "value": "199"}], "active": "werner"},
+    {"rows": [{"id": "albert", "key": "'Imagine'", "value": "183"}, {"id": "robert", "key": "'Yesterday'", "value": "125"}, {"id": "enrico", "key": "'Respect'", "value": "149"}, {"id": "werner", "key": "'Toxic'", "value": "199"}, {"id": "two", "key": "'Thriller'", "value": "357"}], "active": "two"},
+    {"rows": [{"id": "albert", "key": "'Imagine'", "value": "183"}, {"id": "robert", "key": "'Yesterday'", "value": "125"}, {"id": "enrico", "key": "'Respect'", "value": "149"}, {"id": "werner", "key": "'Toxic'", "value": "199"}, {"id": "two", "key": "'Thriller'", "value": "357"}], "active": "robert"},
+    {"rows": [{"id": "albert", "key": "'Imagine'", "value": "183"}, {"id": "robert", "key": "'Yesterday'", "value": "125"}, {"id": "enrico", "key": "'Respect'", "value": "147"}, {"id": "werner", "key": "'Toxic'", "value": "199"}, {"id": "two", "key": "'Thriller'", "value": "357"}], "active": "enrico", "tone": "change"},
+    {"rows": [{"id": "robert", "key": "'Yesterday'", "value": "125"}, {"id": "enrico", "key": "'Respect'", "value": "147"}, {"id": "werner", "key": "'Toxic'", "value": "199"}, {"id": "two", "key": "'Thriller'", "value": "357"}], "active": null}
   ],
-  "output": [[], [], [], ["185"], [], []],
+  "output": [[], [], [], ["125"], [], []],
   "captions": [
     "`durations` maps three keys to their values, in insertion order",
     "Assigning to a new key adds a pair after the existing ones",
@@ -32,12 +32,12 @@ const run = {
 <DataStructuresRun :run="run" layout="side">
 
 ```python {1|1-2|1-3|1-4|1-5|1-6}
-durations = {"Orbit": 222, "Echo": 185, "Pulse": 204}
-durations["Nova"] = 196
-durations["Intro"] = 90
-print(durations["Echo"])  # 185
-durations["Pulse"] = 210
-del durations["Orbit"]
+durations = {"Imagine": 183, "Yesterday": 125, "Respect": 149}
+durations["Toxic"] = 199
+durations["Thriller"] = 357
+print(durations["Yesterday"])  # 125
+durations["Respect"] = 147
+del durations["Imagine"]
 ```
 
 <template #visual="{ step }">

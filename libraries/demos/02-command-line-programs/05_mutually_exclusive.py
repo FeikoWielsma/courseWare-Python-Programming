@@ -1,30 +1,21 @@
 import argparse
-import sys
+import csv
+from pathlib import Path
+
+DATA = Path(__file__).resolve().parents[2] / "data"
 
 
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Raise a base to an exponent.")
-    # Asking for both --verbose and --quiet is refused before any code runs.
-    loudness = parser.add_mutually_exclusive_group()
-    loudness.add_argument("-v", "--verbose", action="store_true", help="explain the answer")
-    loudness.add_argument("-q", "--quiet", action="store_true", help="print the answer only")
-    parser.add_argument("base", type=int, help="the base")
-    parser.add_argument("exponent", type=int, help="the exponent")
-    return parser
+def load(path: Path) -> list[dict[str, str]]:
+    with path.open(encoding="utf-8", newline="") as handle:
+        return list(csv.DictReader(handle))
 
-
-def main(argv: list[str]) -> None:
-    parser = build_parser()
-    args = parser.parse_args(argv)
-    answer = args.base**args.exponent
-
-    if args.quiet:
-        print(answer)
-    elif args.verbose:
-        print(f"{args.base} to the power {args.exponent} equals {answer}")
-    else:
-        print(f"{args.base}^{args.exponent} == {answer}")
-
-
-if __name__ == "__main__":
-    main(sys.argv[1:] or ["2", "10", "--quiet"])
+parser = argparse.ArgumentParser(prog="playlist")
+parser.add_argument("file", type=Path, nargs="?", default=DATA / "tracks.csv")
+order = parser.add_mutually_exclusive_group()
+order.add_argument("--longest", action="store_true")
+order.add_argument("--shortest", action="store_true")
+args = parser.parse_args()
+rows = sorted(load(args.file), key=lambda row: int(row["duration_s"]),
+              reverse=not args.shortest)
+for row in rows[:3]:
+    print(f"{row['title']}: {row['duration_s']} s")

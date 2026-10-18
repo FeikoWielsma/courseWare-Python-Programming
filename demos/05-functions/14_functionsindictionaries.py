@@ -7,6 +7,6 @@ def shout_title(title: str) -> str:
 
 
 formatters = {"clean": clean_title, "shout": shout_title}
-print(formatters["clean"]("  Orbit  "))
+print(formatters["clean"]("  Imagine  "))
 for name, format_title in formatters.items():
-    print(name, format_title("Echo"))
+    print(name, format_title("Yesterday"))

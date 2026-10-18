@@ -14,11 +14,11 @@ const run = {
       "label": "playlist",
       "variable": "track",
       "items": [
-        "Intro",
-        "Orbit",
-        "Echo",
-        "Pulse",
-        "Outro"
+        "Thriller",
+        "Imagine",
+        "Yesterday",
+        "Respect",
+        "Hey Jude"
       ],
       "width": 100
     }
@@ -98,13 +98,13 @@ const run = {
   ],
   "output": [
     [
-      "Checked Intro"
+      "Checked Thriller"
     ],
     [
-      "Checked Orbit"
+      "Checked Imagine"
     ],
     [
-      "Checked Echo"
+      "Checked Yesterday"
     ],
     [],
     [
@@ -112,11 +112,11 @@ const run = {
     ]
   ],
   "captions": [
-    "`track` receives `Intro`; the test is false, so the search continues",
-    "The next pass checks `Orbit`",
-    "The next pass checks `Echo`",
-    "`Pulse` matches; `break` ends the search before `Outro`",
-    "Execution continues after the loop; `track` still refers to `Pulse`"
+    "`track` receives `Thriller`; the test is false, so the search continues",
+    "The next pass checks `Imagine`",
+    "The next pass checks `Yesterday`",
+    "`Respect` matches; `break` ends the search before `Hey Jude`",
+    "Execution continues after the loop; `track` still refers to `Respect`"
   ]
 }
 </script>
@@ -124,8 +124,8 @@ const run = {
 <DataStructuresRun :run="run" layout="pair">
 
 ```python {1-2,4|1-2,4|1-2,4|1-3|5}
-for track in ["Intro", "Orbit", "Echo", "Pulse", "Outro"]:
-    if track == "Pulse":
+for track in ["Thriller", "Imagine", "Yesterday", "Respect", "Hey Jude"]:
+    if track == "Respect":
         break
     print(f"Checked {track}")
 print("Search complete")

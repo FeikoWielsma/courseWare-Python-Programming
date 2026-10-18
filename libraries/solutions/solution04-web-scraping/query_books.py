@@ -1,4 +1,5 @@
 import sqlite3
+import sys
 from contextlib import closing
 from pathlib import Path
 
@@ -30,7 +31,7 @@ def build_if_missing() -> None:
     # rather than demanding that scrape_books.py was run first.
     if DB_PATH.exists():
         return
-    url, html = fetch_pages(PAGE_URLS[:1])[0]
+    url, html = fetch_pages(PAGE_URLS[:1], live="--live" in sys.argv)[0]
     books = parse_books(html, url)
     store(DB_PATH, books)
     print(f"Built {DB_PATH.name} from {url}, {len(books)} rows")

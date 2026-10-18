@@ -1,128 +1,84 @@
-# Exercise 2 : Command-line Programs
+# Exercise 2 : A Listening Log Tool
 
-In this exercise you take a script that reads one hard-coded log file and turn it into a small command-line tool called `logtool`, with two subcommands, generated help, and an exit status the shell can act on.
+Turn a fixed listening report into `logtool.py`, with `count` and `errors`
+subcommands. `data/listening.log` is fictional personal history. Each line has
+an ISO date, time, level, action and track title. Titles can contain spaces.
+`count` reports successful `INFO` plays and skips per title. `errors` selects
+lines at one level.
 
----
+Start from `exercises/starters/02-command-line-programs/`. Run from `libraries/`.
+The complete solution is in `solutions/solution02-command-line-programs/`.
+Use invented data, not files from work.
 
-### Step 1 : Take an argument
+### Step 1 : Accept a file
 
-Create a directory `exercise2` and a Python module `logtool.py` in it, and copy `data/cli-sample.log` into the same directory so that everything you need is in one place. Start from the script below, which is also shipped as `solutions/solution02-command-line-programs/logreport_start.py`, where the only difference is that it looks for the log in the course's `data/` directory rather than next to itself. It counts how many lines of the sample log carry each level, and the filename is written into the source :
+Run `solutions/solution02-command-line-programs/logreport_start.py` to see the
+fixed report. Give your own script an `ArgumentParser` with a positional
+`logfile` argument converted to `Path`. Read that path instead of a constant.
+Use `line.split(maxsplit=4)` to retain a title containing spaces.
 
-```python
-from collections import Counter
-from pathlib import Path
+:::hint
+The slides *ArgumentParser* and *Path Arguments* show positional arguments and
+`type=Path`. The fundamentals string demos show `split`; `maxsplit` limits how
+many splits are made. The starter supplies the line-reading code.
+:::
 
-LOGFILE = Path(__file__).parent / "cli-sample.log"
+### Step 2 : Add subcommands
 
+Register `count` and `errors` with `add_subparsers`. Attach each handler with
+`set_defaults`. Both receive a logfile path. Give `errors` a `--level` option
+with default `ERROR`.
 
-def count_levels(path: Path) -> Counter[str]:
-    return Counter(line.split()[2] for line in path.read_text(encoding="utf-8").splitlines())
+Implement `count` with a dictionary or `Counter` keyed by action and title.
+Print `PLAY` and `SKIP` counts for each title, ignoring other actions and
+non-INFO lines. Implement `errors` by printing matching lines.
 
+:::hint
+The slide *Subcommands* and demo `subcommands` show handler registration.
+The starter supplies the counting function, so the required work is the CLI.
+:::
 
-def main() -> None:
-    for level, count in count_levels(LOGFILE).most_common():
-        print(f"{level:<6}{count}")
+### Step 3 : Filter dates
 
+Add `--since` to both commands. Accept an ISO date such as `2026-10-13` or a
+fixed-width timestamp such as `2026-10-12 09:00:00`. Keep lines whose first
+19 characters are at least that value. ISO dates in this format sort in date
+order as strings. Keep the unfiltered lines when the option is absent.
 
-if __name__ == "__main__":
-    main()
-```
+:::hint
+The slide *Options and Flags* shows optional values. The fundamentals string
+and comparison slides show slices and `>=`.
+:::
 
-Run it once so that you know what its output looks like. Then give it an `ArgumentParser` with a single positional argument for the file to read, converted to a `Path` :
+### Step 4 : Report statuses
 
-```python
-import argparse
+Return 0 for a successful count or no matching errors, 1 when `errors` finds
+lines, and 2 when the file cannot be read. Print file errors on stderr.
+Use `raise SystemExit(main())` at the entry point. With no verb, show help.
 
-parser = argparse.ArgumentParser(description="Summarise a log file.")
-parser.add_argument("logfile", type=Path, help="the log file to read")
-args = parser.parse_args()
-```
-
-Use `args.logfile` instead of the `LOGFILE` constant, and run the script again, this time passing `cli-sample.log` on the command line. Then run it with `--help` and confirm that the help text you never wrote is there.
-
-### Step 2 : Two subcommands
-
-The tool is going to do two jobs, so it needs two verbs : `count`, which is the report you already have, and `errors`, which prints the lines at one level.
-
-Move the body of the current program into a function `cmd_count`, and write a second function `cmd_errors` next to it. Both take the parsed arguments and return an integer :
-
-```python
-def cmd_count(args: argparse.Namespace) -> int:
-    ...
-    return 0
-
-
-def cmd_errors(args: argparse.Namespace) -> int:
-    matches = [line for line in read_lines(args.logfile) if f" {args.level} " in line]
-    ...
-```
-
-Now register the two verbs with `add_subparsers`, and attach each function to its verb with `set_defaults`, so that no `if` statement over the verb name is needed :
-
-```python
-verbs = parser.add_subparsers(dest="command")
-
-counting = verbs.add_parser("count", help="count the lines per level")
-counting.set_defaults(handler=cmd_count)
-```
-
-Give the `errors` verb a `--level` option with a default of `ERROR`, so that `logtool errors --level WARN` works too. Both verbs need the `logfile` argument. You can add it to each subparser separately, or declare it once on a parent parser and pass `parents=[common]` to both, which is what the solution does.
-
-Calling the handler is then a single line :
-
-```python
-return args.handler(args)
-```
-
-Check that `logtool.py count`, `logtool.py errors` and `logtool.py errors --level WARN` all work, and that `logtool.py count --help` shows the help for that verb only.
-
-### Step 3 : An exit status that means something
-
-Give the program the standard entry point, so that the value it returns becomes the exit status of the process :
-
-```python
-def main(argv: list[str] | None = None) -> int:
-    ...
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
-```
-
-Use three statuses, following the usual convention :
-
-- `0` when the tool did its job and there is nothing to report
-- `1` from `errors` when it actually found lines at the requested level
-- `2` when the file cannot be read at all
-
-For the last one, wrap the call to the handler in a `try` block, catch `OSError`, and print the reason to **stderr** rather than stdout, because a message is not data :
-
-```python
-except OSError as error:
-    print(f"logtool: {error.strerror}: {args.logfile}", file=sys.stderr)
-    return 2
-```
-
-Now test it the way the shell would, running each command and asking for the status afterwards :
+Run these commands and inspect their exit statuses:
 
 ```bash
-uv run logtool.py errors cli-sample.log ; echo $?                 # 1, there are ERROR lines
-uv run logtool.py errors cli-sample.log --level FATAL ; echo $?   # 0, there are none
-uv run logtool.py count /no/such/file ; echo $?                   # 2, message on stderr
+uv run python work/logtool.py count data/listening.log
+uv run python work/logtool.py errors data/listening.log --level WARN
+uv run python work/logtool.py errors data/listening.log --level FATAL
+uv run python work/logtool.py count missing.log
 ```
 
-Finally, run the tool with no arguments at all. Decide what should happen, and make it happen deliberately : either print the help and return `0`, or let `add_subparsers(required=True)` refuse the call with status `2`.
+The statuses are 0, 1, 0 and 2 respectively.
 
-### Step 4 : Optional, make it a standalone command
+:::hint
+The slides *main and the Exit Status* and *Standard Output and Standard Error*
+show the entry point and diagnostic stream.
+:::
 
-Turn the file into a program that needs nothing but `uv` to run. Add a shebang and a PEP 723 metadata block as the very first lines, above the docstring :
+### If time permits
 
-```python
-#!/usr/bin/env -S uv run --script
-# /// script
-# requires-python = ">=3.12"
-# dependencies = []
-# ///
-```
+Accept `-` as the input path and read stdin. Add `--quiet` to suppress results
+while retaining the exit status. Add PEP 723 metadata to make dependencies
+explicit if adding a rich table.
 
-On Linux or macOS, `chmod +x logtool.py` and then run `./logtool.py count` directly. Then add `rich` to the `dependencies` list and use a `rich.table.Table` for the output of `count`, as demo 12 does. The dependency is installed the first time the script runs and cached afterwards, and the file is still one file.
+:::hint
+The demo `unix_citizen` shows stdin, quiet mode and grep-style statuses.
+The slide *Inline Script Metadata* shows a PEP 723 block.
+:::

@@ -1,5 +1,6 @@
 import re
 import sqlite3
+import sys
 from datetime import UTC, datetime
 from pathlib import Path
 from urllib.parse import urljoin
@@ -37,7 +38,12 @@ ON CONFLICT(url) DO UPDATE SET
 """
 
 # Fetch.
-soup = BeautifulSoup(requests.get(URL, timeout=10).text, "lxml")
+if "--live" in sys.argv:
+    html = requests.get(URL, timeout=10).text
+else:
+    fixture = Path(__file__).resolve().parents[2] / "data" / "books-fixture.html"
+    html = fixture.read_text(encoding="utf-8")
+soup = BeautifulSoup(html, "lxml")
 
 # Parse.
 category = soup.select_one("ul.breadcrumb li.active").get_text(strip=True)

@@ -21,7 +21,7 @@ footer: Variables and Data Types
 ```python
 duration = 222  # Track length in seconds
 size_mb = 8.5  # Photo file size
-title = "Orbit"  # Track title
+title = "Imagine"  # Track title
 ```
 - Uppercase names such as `MAX_VOLUME` mark values intended to stay constant
 
@@ -102,12 +102,12 @@ a = b = c = 1
 - Assignment of multiple objects to multiple variables :
 
 ```python
-a, b, c = 1, 2, "Orbit"
+a, b, c = 1, 2, "Imagine"
 ```
 
 - Two integer objects with values 1 and 2 :
   - Assigned to variables a and b
-- One string object with the value "Orbit" :
+- One string object with the value `"Imagine"` :
   - Assigned to the variable c
 
 > `demo03 · multipleassignment`
@@ -141,7 +141,7 @@ a, b, c = 1, 2, "Orbit"
 ```python
 seconds: int = 222
 size_mb: float = 8.5
-title: str = "Orbit"
+title: str = "Imagine"
 is_favourite: bool = True
 ```
 
@@ -190,7 +190,7 @@ print(int(8.9))  # 8, the fractional part is discarded
 - `bool` converts a value using its truth value :
 
 ```python
-print(bool("Orbit"))  # True
+print(bool("Imagine"))  # True
 print(bool(""))  # False
 print(bool(222))  # True
 print(bool(0))  # False
@@ -213,7 +213,7 @@ duration_text = "222"
 duration = int(duration_text)
 print(duration + 30)  # 252
 print(str(duration))  # 222
-print(repr(" Orbit "))  # ' Orbit '
+print(repr(" Imagine "))  # ' Imagine '
 ```
 
 - `str` produces display text; `repr` exposes quotes and whitespace
@@ -394,7 +394,7 @@ print(2**3**2)  # 512, ** groups from the right
 
 ```python
 filename = "IMG_0421.jpg"
-title = "Orbit"
+title = "Imagine"
 ```
 
 - Indexing selects one character; slicing selects a section :
@@ -505,21 +505,21 @@ print(r"C:\nowhere")
   - Fields can contain arithmetic and method calls
 
 ```python
-title = "Orbit"
+title = "Imagine"
 seconds = 222
 print(f"Now playing: {title.upper()}")
 print(f"With a 30-second intro: {seconds + 30} seconds")
 ```
 
 ```text
-Now playing: ORBIT
+Now playing: IMAGINE
 With a 30-second intro: 252 seconds
 ```
 
 - `!r` shows quotes and whitespace; `=` also shows the field's name :
 
 ```python
-print(f"{title!r}")  # 'Orbit', quotes remain visible
+print(f"{title!r}")  # 'Imagine', quotes remain visible
 print(f"{seconds = }")  # seconds = 222, useful during debugging
 ```
 
@@ -564,16 +564,16 @@ print("Photo {:05d}: {:6.2f} MB".format(photo_id, size_mb))
 
 ```python
 message = """Tonight's playlist
-1. Orbit
-2. Echo
+1. Imagine
+2. Yesterday
 Bring headphones."""
 print(message)
 ```
 
 ```text
 Tonight's playlist
-1. Orbit
-2. Echo
+1. Imagine
+2. Yesterday
 Bring headphones.
 ```
 
@@ -586,7 +586,7 @@ Bring headphones.
 
 # Built-in String Methods
 
-- String methods are called with dot notation : `"Orbit".upper()`
+- String methods are called with dot notation : `"Imagine".upper()`
   - A string never changes, so each method returns a new string or a value
 
 | Method | Description |

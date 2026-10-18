@@ -1,7 +1,7 @@
 def add_encore(tracks: list[str]) -> None:
-    tracks.append("Encore")
+    tracks.append("Let It Be")
     print(f"Inside: {tracks}")
 
-queue = ["Orbit", "Echo"]
+queue = ["Imagine", "Yesterday"]
 add_encore(queue)
 print(f"After call: {queue}")

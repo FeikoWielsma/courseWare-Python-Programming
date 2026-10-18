@@ -11,7 +11,7 @@ language: python
 
 - Every scraper is the same three steps, in the same order :
   - Fetch, parse, store
-- They stay separate on purpose :
+- Each stage has an independent responsibility :
   - Each step can be tested and re-run without the others
   - Only the middle step knows anything about HTML
 
@@ -35,13 +35,7 @@ graph LR
   - `headers`, to say which program is asking
 
 ```python
-response = requests.get(
-    "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html",
-    timeout=10,
-    headers={"User-Agent": "MyScraper/1.0 (you@example.com)"},
-)
-response.raise_for_status()
-print(response.status_code, len(response.text))
+response = requests.get(URL, timeout=10, headers={"User-Agent": "SpiralTrain-Day4/1.0"})
 ```
 
 > `demo01 · fetching_pages`
@@ -78,11 +72,11 @@ print(response.status_code, len(response.text))
   - The server declares the encoding, and a price of £51.77 proves it worked
 
 ```python
-from bs4 import BeautifulSoup
-
-html = requests.get(URL, timeout=10).text
 soup = BeautifulSoup(html, "lxml")
-print(soup.title.text)
+
+# Page titles are full of markup whitespace, so collapse it rather than
+# trusting what the page hands you.
+print(" ".join(soup.title.text.split()))
 ```
 
 > `demo02 · making_soup`
@@ -99,11 +93,14 @@ print(soup.title.text)
 - Searching a tag searches inside that tag only
 
 ```python
-pods = soup.find_all("article", class_="product_pod")
-for pod in pods:
-    title = pod.find("h3").find("a")["title"]
-    price = pod.find("p", class_="price_color").text
-    print(title, price)
+for article in soup.find_all("article", class_="product_pod"):
+    title = article.find("h3").find("a")["title"]
+    if title == "Sharp Objects":
+        price = article.find("p", class_="price_color").text
+        # The page spells the rating as a class name, not a number: markup is
+        # written for a browser, not for you.
+        stars = article.find("p", class_="star-rating")["class"][1]
+        print(f"{RATINGS[stars]}  {price:>8}  {title}")
 ```
 
 > `demo03 · finding_the_books`
@@ -138,9 +135,15 @@ print(stars.get("data-value"))     # None, the attribute is not there
   - `p.star-rating.Four` means both classes on one element
 
 ```python
-titles = soup.select("article.product_pod h3 a")
-crumb = soup.select_one("ul.breadcrumb li.active")
-images = soup.select("div.image_container > a > img[alt]")
+print(len(soup.select("article.product_pod h3 a")), "title links")
+print(soup.select("article.product_pod h3 a")[1]["title"])
+
+print(soup.select_one("ul.breadcrumb li.active").text.strip())
+
+# Two class names on one element: both, with no space between them.
+print(len(soup.select("p.star-rating.Four")), "books rated four")
+
+print(len(soup.select("div.image_container > a > img[alt]")), "thumbnails")
 ```
 
 > `demo04 · css_selectors`
@@ -158,9 +161,12 @@ images = soup.select("div.image_container > a > img[alt]")
 
 ```python
 price = soup.select_one("p.price_color")
+print(price.parent.name)
+
 pod = price.find_parent("article")
-availability = price.find_next_sibling("p")
-print(pod.select_one("h3 a")["title"], availability.get_text(strip=True))
+print(pod.select_one("h3 a")["title"])
+
+print(price.find_next_sibling("p").get_text(strip=True))
 ```
 
 > `demo05 · walking_the_tree`
@@ -264,11 +270,10 @@ CREATE TABLE IF NOT EXISTS books (
 - `executemany` sends the whole list in one call
 
 ```python
-INSERT = """
-INSERT INTO books (title, price_gbp, rating, url, last_seen)
-VALUES (:title, :price_gbp, :rating, :url, :seen_at)
-"""
-conn.executemany(INSERT, [book | {"seen_at": now} for book in books])
+conn = sqlite3.connect(DB)
+conn.executescript(SCHEMA)
+# Named placeholders take the dictionaries exactly as they already are.
+conn.executemany(INSERT, books)
 conn.commit()
 ```
 
@@ -281,7 +286,7 @@ conn.commit()
 
 - The database is not the only thing that reads the string :
   - A title containing an apostrophe ends the quoted value early
-  - Anything after it is executed as SQL
+  - The following text is parsed as SQL
 - One book on the page proves it :
 
 ```text
@@ -291,7 +296,7 @@ f"SELECT ... WHERE title = '{title}'"   sqlite3.OperationalError: near "s"
 "SELECT ... WHERE title = ?", (title,)  found 1 row
 ```
 
-- The parameterised form is also faster, because the query is reused
+- Parameters keep values separate from the SQL statement
 
 
 ---
@@ -381,9 +386,9 @@ print(rules.crawl_delay(AGENT))  # 5
   - So the later blocks work even if nothing was ever scraped
 
 ```python
-seed = Path("data/books-seed.sql").read_text(encoding="utf-8")
-conn.executescript(seed)
-conn.execute("SELECT title, price_gbp FROM books ORDER BY price_gbp DESC")
+conn = sqlite3.connect(DB)
+conn.executescript((DATA / "books-seed.sql").read_text(encoding="utf-8"))
+conn.commit()
 ```
 
 > `demo12 · rebuilding_from_seed`

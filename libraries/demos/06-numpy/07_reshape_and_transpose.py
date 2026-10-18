@@ -1,21 +1,13 @@
+from pathlib import Path
+
+import matplotlib.image as image
 import numpy as np
 
-readings = np.arange(12)
-print(readings)
+DATA = Path(__file__).resolve().parents[2] / "data"
+photo = image.imread(DATA / "photo.png")
 
-# The element count has to survive : 12 elements make 3 x 4 or 4 x 3.
-table = readings.reshape(3, 4)
-print(table)
-
-# -1 means "work the remaining dimension out for me".
-print(readings.reshape(-1, 2).shape)
-
-print(table.T)
-print(table.T.shape)
-
-# Neither call copied anything. Both are windows onto the same 12 numbers.
-print(np.shares_memory(table, readings))
-print(np.shares_memory(table.T, readings))
-
-readings[0] = 99
-print(table[0, 0])
+pixels = photo.reshape(-1, 3)
+print(pixels.shape)
+print(np.shares_memory(pixels, photo))
+print(photo.transpose(1, 0, 2).shape)
+print(pixels.T.shape)

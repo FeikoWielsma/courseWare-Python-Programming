@@ -3,6 +3,6 @@ def format_duration(seconds):
     remainder = seconds % 60
     return f"{minutes}:{remainder:02d}"
 
-label = format_duration(222)
-message = f"Orbit [{label}]"
+label = format_duration(125)
+message = f"Yesterday [{label}]"
 print(message)

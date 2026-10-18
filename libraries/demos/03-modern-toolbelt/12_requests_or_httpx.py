@@ -5,7 +5,7 @@ from rich.table import Table
 
 console = Console()
 
-PAYLOAD: dict[str, object] = {"host": "db01", "disk_pct": 73}
+PAYLOAD: dict[str, object] = {"title": "Imagine", "duration_s": 183}
 
 
 def fake_httpx(request: httpx.Request) -> httpx.Response:
@@ -21,12 +21,12 @@ def with_requests() -> dict[str, object]:
 
 def with_httpx() -> dict[str, object]:
     with httpx.Client(
-        base_url="https://inventory.internal",
+        base_url="https://player.example",
         transport=httpx.MockTransport(fake_httpx),
         headers={"user-agent": "day4-tour/1.0"},
         timeout=10.0,
     ) as client:
-        response = client.get("/hosts/db01")
+        response = client.get("/now-playing")
         response.raise_for_status()
         return response.json()
 

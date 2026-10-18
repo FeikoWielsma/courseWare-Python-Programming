@@ -15,7 +15,7 @@ def build_parser() -> argparse.ArgumentParser:
         "logfile",
         type=Path,
         nargs="?",
-        default=DATA / "cli-sample.log",
+        default=DATA / "listening.log",
         help="the file to search, or - for standard input",
     )
     parser.add_argument("-c", "--count", action="store_true", help="print the match count only")
@@ -49,4 +49,4 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main(sys.argv[1:] or ["sshd", "--count"]))
+    raise SystemExit(main(sys.argv[1:] or ["PLAY", "--count"]))

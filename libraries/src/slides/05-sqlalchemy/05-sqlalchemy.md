@@ -31,11 +31,10 @@ language: python
 - The query is a value you can build up, print and reuse
 
 ```python
-engine = create_engine("sqlite:///:memory:")
-with engine.begin() as connection:
-    found = connection.execute(
-        text("SELECT title FROM book WHERE price > :floor"), {"floor": 25}
-    )
+found = connection.execute(
+    text("SELECT title, price FROM book WHERE price > :floor"), {"floor": 25}
+)
+print("sqlalchemy :", found.all())
 ```
 
 > `demo01 · why_a_layer`
@@ -89,7 +88,7 @@ with engine.connect() as connection:
 - The parameter is sent separately from the statement :
   - The database never parses the value as SQL
 - Named, so there are no question marks to count
-- The same lesson as the scraping module, one layer up
+- The scraping module uses the same separation of SQL and values
 
 ```python
 statement = text("SELECT title FROM book WHERE rating >= :floor")
@@ -142,7 +141,7 @@ print(statement)
 
 with engine.connect() as connection:
     for title, price in connection.execute(statement):
-        print(title, price)
+        print(f"{title:<24} {price:>6.2f}")
 ```
 
 > `demo05 · core_insert_and_select`
@@ -176,13 +175,17 @@ class Book(Base):
 
 - A `Session` is a unit of work, not a connection :
   - Add objects to it, then commit once
-- Ids appear after the commit, because the database assigns them
+- Generated ids become available when inserts are flushed
 - The session tracks what it loaded :
   - Change an attribute and there is no `UPDATE` to write
+
+- `flush()` sends pending writes inside the current transaction
+- `commit()` makes the transaction permanent
 
 ```python
 with Session(engine) as session:
     session.add_all([first, second])
+    session.flush()
     session.commit()
 
     first.price_gbp = 41.99
@@ -190,6 +193,7 @@ with Session(engine) as session:
 ```
 
 > `demo07 · session_and_persistence`
+
 
 
 ---
@@ -202,11 +206,15 @@ with Session(engine) as session:
   - `Book.rating >= 4` is a fragment of a `WHERE` clause
 
 ```python
-found = session.scalars(select(Book).where(Book.rating >= 4)).all()
+for found in session.scalars(select(Book).where(Book.rating >= 4)):
+    print(found)
+```
 
-by_rating = select(Book.rating, func.count(), func.avg(Book.price_gbp)).group_by(
-    Book.rating
-)
+```python
+for rating, count, mean in session.execute(
+    select(Book.rating, func.count(), func.avg(Book.price_gbp)).group_by(Book.rating)
+):
+    print(f"{rating}* {count:>3} {mean:>8.2f}")
 ```
 
 > `demo08 · orm_queries`
@@ -246,9 +254,13 @@ session.add(mystery)
   - What the database does anyway
 
 ```python
-select(Book.title, Category.name).join(
-    Book.category
-)
+joined = select(Book.title, Category.name).join(Book.category)
+print(joined)
+for title, category in session.execute(joined):
+    print(f"{title:<18} {category}")
+
+for found in session.scalars(select(Book)):
+    print(f"{found.title:<18} {found.category.name}")
 ```
 
 </div>
@@ -259,10 +271,7 @@ select(Book.title, Category.name).join(
   - Issues a query per object
   - Easy to do by accident
 
-```python
-for book in session.scalars(select(Book)):
-    print(book.category.name)
-```
+
 
 </div>
 </div>

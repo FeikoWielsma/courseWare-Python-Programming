@@ -1,0 +1,362 @@
+[
+  {
+    "title": "Imagine",
+    "artist": "John Lennon",
+    "year": 1971,
+    "genre": "Rock",
+    "duration_s": 183,
+    "source": "https://music.apple.com/us/album/imagine-the-ultimate-mix/1527740882?i=1527741457&uo=4",
+    "edition": "Gimme Some Truth: The Ultimate Mixes (Deluxe Edition)"
+  },
+  {
+    "title": "Jealous Guy",
+    "artist": "John Lennon",
+    "year": 1971,
+    "genre": "Rock",
+    "duration_s": 258,
+    "source": "https://music.apple.com/us/album/jealous-guy/1440853752?i=1440853991&uo=4",
+    "edition": "Imagine"
+  },
+  {
+    "title": "Oh My Love",
+    "artist": "John Lennon",
+    "year": 1971,
+    "genre": "Rock",
+    "duration_s": 168,
+    "source": "https://music.apple.com/us/album/oh-my-love/1440853752?i=1440854013&uo=4",
+    "edition": "Imagine"
+  },
+  {
+    "title": "How?",
+    "artist": "John Lennon",
+    "year": 1971,
+    "genre": "Rock",
+    "duration_s": 227,
+    "source": "https://music.apple.com/us/album/how/1440853752?i=1440854182&uo=4",
+    "edition": "Imagine"
+  },
+  {
+    "title": "Yesterday",
+    "artist": "The Beatles",
+    "year": 1965,
+    "genre": "Rock",
+    "duration_s": 126,
+    "source": "https://music.apple.com/us/album/yesterday/1441164524?i=1441164805&uo=4",
+    "edition": "Help!"
+  },
+  {
+    "title": "Hey Jude",
+    "artist": "The Beatles",
+    "year": 1968,
+    "genre": "Rock",
+    "duration_s": 432,
+    "source": "https://music.apple.com/us/album/hey-jude/1441133100?i=1441133277&uo=4",
+    "edition": "The Beatles 1967-1970 (The Blue Album)"
+  },
+  {
+    "title": "Let It Be",
+    "artist": "The Beatles",
+    "year": 1970,
+    "genre": "Rock",
+    "duration_s": 244,
+    "source": "https://music.apple.com/us/album/let-it-be/1441164495?i=1441164738&uo=4",
+    "edition": "Let It Be"
+  },
+  {
+    "title": "Come Together",
+    "artist": "The Beatles",
+    "year": 1969,
+    "genre": "Rock",
+    "duration_s": 261,
+    "source": "https://music.apple.com/us/album/come-together-2019-mix/1474815798?i=1474815799&uo=4",
+    "edition": "Abbey Road (2019 Mix)"
+  },
+  {
+    "title": "Respect",
+    "artist": "Aretha Franklin",
+    "year": 1967,
+    "genre": "Soul",
+    "duration_s": 146,
+    "source": "https://music.apple.com/us/album/respect/878000342?i=878000348&uo=4",
+    "edition": "I Never Loved a Man the Way I Love You (Mono)"
+  },
+  {
+    "title": "Think",
+    "artist": "Aretha Franklin",
+    "year": 1968,
+    "genre": "Soul",
+    "duration_s": 140,
+    "source": "https://music.apple.com/us/album/think/933583586?i=933583587&uo=4",
+    "edition": "Aretha Now"
+  },
+  {
+    "title": "Chain of Fools",
+    "artist": "Aretha Franklin",
+    "year": 1967,
+    "genre": "Soul",
+    "duration_s": 164,
+    "source": "https://music.apple.com/us/album/chain-of-fools/266602438?i=266603137&uo=4",
+    "edition": "Soul Queen"
+  },
+  {
+    "title": "I Say a Little Prayer",
+    "artist": "Aretha Franklin",
+    "year": 1968,
+    "genre": "Soul",
+    "duration_s": 217,
+    "source": "https://music.apple.com/us/album/i-say-a-little-prayer/933578756?i=933582131&uo=4",
+    "edition": "30 Greatest Hits"
+  },
+  {
+    "title": "Toxic",
+    "artist": "Britney Spears",
+    "year": 2003,
+    "genre": "Pop",
+    "duration_s": 199,
+    "source": "https://music.apple.com/us/album/toxic/269969836?i=269969902&uo=4",
+    "edition": "Greatest Hits: My Prerogative"
+  },
+  {
+    "title": "Everytime",
+    "artist": "Britney Spears",
+    "year": 2003,
+    "genre": "Pop",
+    "duration_s": 207,
+    "source": "https://music.apple.com/us/album/everytime-hi-bias-radio-remix/269969836?i=269969945&uo=4",
+    "edition": "Greatest Hits: My Prerogative"
+  },
+  {
+    "title": "Oops!... I Did It Again",
+    "artist": "Britney Spears",
+    "year": 2000,
+    "genre": "Pop",
+    "duration_s": 211,
+    "source": "https://music.apple.com/us/album/oops-i-did-it-again/269969836?i=269969904&uo=4",
+    "edition": "Greatest Hits: My Prerogative"
+  },
+  {
+    "title": "...Baby One More Time",
+    "artist": "Britney Spears",
+    "year": 1998,
+    "genre": "Pop",
+    "duration_s": 211,
+    "source": "https://music.apple.com/us/album/baby-one-more-time/268284599?i=268284600&uo=4",
+    "edition": "...Baby One More Time"
+  },
+  {
+    "title": "Thriller",
+    "artist": "Michael Jackson",
+    "year": 1982,
+    "genre": "Pop",
+    "duration_s": 359,
+    "source": "https://music.apple.com/us/album/thriller/269572838?i=269573303&uo=4",
+    "edition": "Thriller"
+  },
+  {
+    "title": "Billie Jean",
+    "artist": "Michael Jackson",
+    "year": 1982,
+    "genre": "Pop",
+    "duration_s": 294,
+    "source": "https://music.apple.com/us/album/billie-jean/269572838?i=269573364&uo=4",
+    "edition": "Thriller"
+  },
+  {
+    "title": "Beat It",
+    "artist": "Michael Jackson",
+    "year": 1982,
+    "genre": "Pop",
+    "duration_s": 259,
+    "source": "https://music.apple.com/us/album/beat-it/269572838?i=269573341&uo=4",
+    "edition": "Thriller"
+  },
+  {
+    "title": "Human Nature",
+    "artist": "Michael Jackson",
+    "year": 1982,
+    "genre": "Pop",
+    "duration_s": 246,
+    "source": "https://music.apple.com/us/album/human-nature/269572838?i=269573405&uo=4",
+    "edition": "Thriller"
+  },
+  {
+    "title": "Bohemian Rhapsody",
+    "artist": "Queen",
+    "year": 1975,
+    "genre": "Rock",
+    "duration_s": 356,
+    "source": "https://music.apple.com/us/album/bohemian-rhapsody/6781080933?i=6781080934&uo=4",
+    "edition": "The Platinum Collection"
+  },
+  {
+    "title": "Somebody to Love",
+    "artist": "Queen",
+    "year": 1976,
+    "genre": "Rock",
+    "duration_s": 299,
+    "source": "https://music.apple.com/us/album/somebody-to-love/6781024048?i=6781024333&uo=4",
+    "edition": "A Day At The Races (Deluxe Edition)"
+  },
+  {
+    "title": "We Will Rock You",
+    "artist": "Queen",
+    "year": 1977,
+    "genre": "Rock",
+    "duration_s": 122,
+    "source": "https://music.apple.com/us/album/we-will-rock-you/6781080933?i=6781081101&uo=4",
+    "edition": "The Platinum Collection"
+  },
+  {
+    "title": "We Are the Champions",
+    "artist": "Queen",
+    "year": 1977,
+    "genre": "Rock",
+    "duration_s": 187,
+    "source": "https://music.apple.com/us/album/we-are-the-champions/6781080933?i=6781081102&uo=4",
+    "edition": "The Platinum Collection"
+  },
+  {
+    "title": "Jolene",
+    "artist": "Dolly Parton",
+    "year": 1973,
+    "genre": "Country",
+    "duration_s": 161,
+    "source": "https://music.apple.com/us/album/jolene-remastered/411939194?i=411940289&uo=4",
+    "edition": "The Essential Dolly Parton"
+  },
+  {
+    "title": "9 to 5",
+    "artist": "Dolly Parton",
+    "year": 1980,
+    "genre": "Country",
+    "duration_s": 181,
+    "source": "https://music.apple.com/us/album/9-to-5/282883573?i=282883590&uo=4",
+    "edition": "Ultimate Dolly Parton"
+  },
+  {
+    "title": "I Will Always Love You",
+    "artist": "Dolly Parton",
+    "year": 1974,
+    "genre": "Country",
+    "duration_s": 174,
+    "source": "https://music.apple.com/us/album/i-will-always-love-you/411939194?i=411940495&uo=4",
+    "edition": "The Essential Dolly Parton"
+  },
+  {
+    "title": "Coat of Many Colors",
+    "artist": "Dolly Parton",
+    "year": 1971,
+    "genre": "Country",
+    "duration_s": 184,
+    "source": "https://music.apple.com/us/album/coat-of-many-colors/282883573?i=282883577&uo=4",
+    "edition": "Ultimate Dolly Parton"
+  },
+  {
+    "title": "Wonderwall",
+    "artist": "Oasis",
+    "year": 1995,
+    "genre": "Rock",
+    "duration_s": 259,
+    "source": "https://music.apple.com/us/album/wonderwall/1517447039?i=1517447333&uo=4",
+    "edition": "(What's the Story) Morning Glory?"
+  },
+  {
+    "title": "Don't Look Back In Anger",
+    "artist": "Oasis",
+    "year": 1995,
+    "genre": "Rock",
+    "duration_s": 290,
+    "source": "https://music.apple.com/us/album/dont-look-back-in-anger-remastered/1525933483?i=1525933492&uo=4",
+    "edition": "(What's The Story) Morning Glory? [Deluxe Remastered Edition]"
+  },
+  {
+    "title": "Live Forever",
+    "artist": "Oasis",
+    "year": 1994,
+    "genre": "Rock",
+    "duration_s": 277,
+    "source": "https://music.apple.com/us/album/live-forever-remastered/1525936190?i=1525936196&uo=4",
+    "edition": "Definitely Maybe (Deluxe Edition Remastered)"
+  },
+  {
+    "title": "Champagne Supernova",
+    "artist": "Oasis",
+    "year": 1995,
+    "genre": "Rock",
+    "duration_s": 450,
+    "source": "https://music.apple.com/us/album/champagne-supernova-remastered/1525933483?i=1525933850&uo=4",
+    "edition": "(What's The Story) Morning Glory? [Deluxe Remastered Edition]"
+  },
+  {
+    "title": "Rolling in the Deep",
+    "artist": "Adele",
+    "year": 2010,
+    "genre": "Pop",
+    "duration_s": 229,
+    "source": "https://music.apple.com/us/album/rolling-in-the-deep/1544491232?i=1544491233&uo=4",
+    "edition": "21"
+  },
+  {
+    "title": "Someone Like You",
+    "artist": "Adele",
+    "year": 2011,
+    "genre": "Pop",
+    "duration_s": 286,
+    "source": "https://music.apple.com/us/album/someone-like-you/1544491232?i=1544491998&uo=4",
+    "edition": "21"
+  },
+  {
+    "title": "Set Fire to the Rain",
+    "artist": "Adele",
+    "year": 2011,
+    "genre": "Pop",
+    "duration_s": 243,
+    "source": "https://music.apple.com/us/album/set-fire-to-the-rain/1544491232?i=1544491988&uo=4",
+    "edition": "21"
+  },
+  {
+    "title": "Hello",
+    "artist": "Adele",
+    "year": 2015,
+    "genre": "Pop",
+    "duration_s": 296,
+    "source": "https://music.apple.com/us/album/hello/1544494115?i=1544494392&uo=4",
+    "edition": "25"
+  },
+  {
+    "title": "One More Time",
+    "artist": "Daft Punk",
+    "year": 2000,
+    "genre": "Electronic",
+    "duration_s": 321,
+    "source": "https://music.apple.com/us/album/one-more-time-radio-edit/697401639?i=697402070&uo=4",
+    "edition": "One More Time - Single"
+  },
+  {
+    "title": "Digital Love",
+    "artist": "Daft Punk",
+    "year": 2001,
+    "genre": "Electronic",
+    "duration_s": 302,
+    "source": "https://music.apple.com/us/album/digital-love/697194953?i=697195633&uo=4",
+    "edition": "Discovery"
+  },
+  {
+    "title": "Harder, Better, Faster, Stronger",
+    "artist": "Daft Punk",
+    "year": 2001,
+    "genre": "Electronic",
+    "duration_s": 225,
+    "source": "https://music.apple.com/us/album/harder-better-faster-stronger/697194953?i=697195787&uo=4",
+    "edition": "Discovery"
+  },
+  {
+    "title": "Get Lucky",
+    "artist": "Daft Punk",
+    "year": 2013,
+    "genre": "Electronic",
+    "duration_s": 370,
+    "source": "https://music.apple.com/us/album/get-lucky/617154241?i=617154366",
+    "edition": "Random Access Memories"
+  }
+]

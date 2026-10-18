@@ -1,11 +1,11 @@
 class Character:
-    """A game character, with nothing in it yet."""
+    """A World of Warcraft character, with nothing in it yet."""
 
     pass  # an empty block
 
 
-hero = Character()
-troll = Character()
+jaina = Character()
+hogger = Character()
 print(Character.__doc__)
-print(hero)
-print(troll)
+print(jaina)
+print(hogger)

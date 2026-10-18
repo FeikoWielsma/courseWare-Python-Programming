@@ -1,9 +1,9 @@
 photo_id = 421
 size_mb = 8.537
 print(f"Photo {photo_id:05d}: {size_mb:6.2f} MB")
-print(f"[{'Orbit':<10}]")  # [Orbit     ]
-print(f"[{'Orbit':^10}]")  # [  Orbit   ]
-print(f"[{'Orbit':>10}]")  # [     Orbit]
+print(f"[{'Imagine':<10}]")  # [Imagine   ]
+print(f"[{'Imagine':^10}]")  # [ Imagine  ]
+print(f"[{'Imagine':>10}]")  # [   Imagine]
 print(f"{1234567:,.0f} pixels")  # 1,234,567 pixels
 print(f"{0.25:.0%} complete")  # 25% complete
 

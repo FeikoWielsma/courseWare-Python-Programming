@@ -23,7 +23,7 @@ def count_levels(path: Path) -> Counter[str]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Summarise a log file as a table.")
-    parser.add_argument("logfile", type=Path, nargs="?", default=DATA / "cli-sample.log")
+    parser.add_argument("logfile", type=Path, nargs="?", default=DATA / "listening.log")
     args = parser.parse_args(argv)
 
     table = Table(title=f"Levels in {args.logfile.name}")

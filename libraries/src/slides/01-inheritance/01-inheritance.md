@@ -9,39 +9,33 @@ language: python
 
 # Inheritance
 
-- A first course builds one class at a time :
-  - A blueprint, its attributes, its methods, and `self`
-- Working code is rarely a single class :
-  - It is several classes doing one job on different data
-- This module is about the relationship between them :
-  - What they share, what each one changes, where to draw the line
-- The worked example is a scraper :
-  - One base class, two sites, and nothing written twice
-- The same design comes back in the web scraping module
-
+- A subclass inherits behaviour from a base class
+- Related objects can share an interface while supplying different methods
+- `Mage`, `Warrior` and `Priest` specialise `Character`
+- Health, mana and rage values here are simplified teaching data
 
 ---
 
 # Duplicated Code
 
-- A scraper for one site is a small class :
-  - Collect the rows, keep them, report what was found
-- A second site needs that class again :
-  - Only the parsing differs, because only the markup differs
-- Copying the file is the fastest thing to do :
+- Both classes initialise a name and health
+- A change to shared behaviour requires editing both implementations
+- A base class can hold that common behaviour
 
 ```python
-class BooksScraper:
-    def __init__(self, name: str) -> None: ...
-    def collect(self) -> None: ...
-    def parse(self) -> list[dict[str, str]]: ...   # the only site-specific part
-    def report(self) -> str: ...
+class Mage:
+    def __init__(self, name: str) -> None:
+        self.name: str = name
+        self.health: int = 100
+        self.mana: int = 100
 
-class QuotesScraper:            # the same file again, one method changed
-    ...
+
+class Warrior:
+    def __init__(self, name: str) -> None:
+        self.name: str = name
+        self.health: int = 100
+        self.rage: int = 0
 ```
-
-- Four of the five methods end up identical, character for character
 
 > `demo01 · duplication`
 
@@ -49,38 +43,30 @@ class QuotesScraper:            # the same file again, one method changed
 
 # Cost of Duplication
 
-- A bug fixed in one copy stays alive in the other :
-  - Nothing in the code records that the two files belong together
-- A new field means an edit in every copy :
-  - The number of copies only ever grows
-- A reader cannot tell the shared part from the deliberate difference :
-  - Both look the same on the page
-- The repair is to write the shared part once :
-  - And let each site supply only what is genuinely its own
-
+- Repeated logic can diverge when one copy changes
+- Inheritance puts shared behaviour in one implementation
+- Subclasses retain their specific state and methods
 
 ---
 
 # Base Classes and Subclasses
 
-- A class may name another class as its base :
-  - Written as `class BooksScraper(Scraper):`
-- The base class holds everything that is not site-specific
-- Each subclass supplies only the part that differs :
+- A subclass names its base in parentheses
+- The base implementation remains available through the subclass
+- An empty subclass can inherit the initialiser and methods unchanged
 
 ```python
-class Scraper:
+class Character:
     def __init__(self, name: str) -> None:
         self.name: str = name
-        self.rows: list[dict[str, str]] = []
-    def collect(self) -> None:
-        self.rows = self.parse()
-    def parse(self) -> list[dict[str, str]]:
-        return []
+        self.health: int = 100
 
-class BooksScraper(Scraper):
-    def parse(self) -> list[dict[str, str]]:
-        return [row.copy() for row in BOOK_ROWS]
+    def attack(self) -> str:
+        return f"{self.name} attacks"
+
+
+class Mage(Character):
+    pass
 ```
 
 > `demo02 · subclass`
@@ -89,111 +75,84 @@ class BooksScraper(Scraper):
 
 # Inherited Members
 
-- Every method the base class defines, without repeating it
-- Every attribute the base `__init__` creates, for the same reason
-- A subclass may add to that, replace part of it, or leave it alone
+- Inherited methods are found through the class hierarchy
+- The base initialiser creates attributes on the actual subclass instance
+- The object remains an instance of both its class and its base
 
 ```mermaid
 classDiagram
-    class Scraper {
-        +name
-        +rows
-        +collect()
-        +parse()
-        +report()
-    }
-    class BooksScraper {
-        +parse()
-    }
-    class QuotesScraper {
-        +parse()
-    }
-    Scraper <|-- BooksScraper
-    Scraper <|-- QuotesScraper
+  Character <|-- Mage
+  Character <|-- Warrior
+  Character <|-- Priest
 ```
-
 
 ---
 
 # Constructor Chaining
 
-- A subclass with attributes of its own needs its own `__init__` :
-  - The base initialiser still has to run
-- `super().__init__(...)` calls the version one level up :
-  - Call it first, before setting anything of your own
+- A subclass initialiser can call `super().__init__`
+- The base initialiser stores shared attributes on the same object
+- The subclass then adds its own attributes
 
 ```python
-class BooksScraper(Scraper):
-    def __init__(self, name: str, base_url: str) -> None:
-        super().__init__(name)          # name and rows exist after this line
-        self.base_url: str = base_url
+class Mage(Character):
+    def __init__(self, name: str, mana: int = 100) -> None:
+        super().__init__(name)
+        self.mana: int = mana
 ```
 
-- Leaving that line out is the most common mistake in the module :
-  - The object is built happily, then fails later with `AttributeError`
-
 > `demo03 · super_init`
-
 
 ---
 
 # Overriding Methods
 
-- A method on the subclass wins over the one on the base :
-  - Same name, different body, no declaration needed anywhere
-- Replacing a method throws the base version away :
+- Defining the same method name in a subclass overrides the base method
+- Method lookup starts at the instance's class and follows its method resolution order
+- `Mage.attack` is found before `Character.attack`
 
 ```python
-class Scraper:
-    def clean(self, value: str) -> str:
-        return value.strip()
+def attack(self) -> str:
+        return f"{self.name} casts Frostbolt"
 
-class BooksScraper(Scraper):
-    def clean(self, value: str) -> str:
-        return value.removeprefix("$")      # the strip() is gone
+jaina = Mage("Jaina")
+print(jaina.attack())
+print(Character.attack(jaina))
 ```
 
-- Given the raw value `"  $51.77  "` that override returns it unchanged :
-  - The leading spaces are still there when `removeprefix` looks
+> `demo04 · overriding`
 
 ---
 
 # Extending with super
 
-- `super()` reaches the base version from inside the override :
+- `super()` delegates according to the method resolution order
+- An initialiser can extend shared setup without copying it
+- Both initialisers receive the same `self` object
 
 ```python
-class BooksScraper(Scraper):
-    def clean(self, value: str) -> str:
-        return super().clean(value).removeprefix("$")
+class Mage(Character):
+    def __init__(self, name: str, mana: int = 100) -> None:
+        super().__init__(name)
+        self.mana: int = mana
 ```
-
-- The base class does its part, the subclass adds one step
-- Choose between the two deliberately :
-  - Replace when the inherited behaviour is wrong here
-  - Extend when it is right and merely incomplete
-- Overriding `__init__` is the same decision, and usually the extending one
-
-> `demo04 · overriding`
 
 
 ---
 
 # isinstance and issubclass
 
-- `isinstance(obj, Class)` asks whether an object is usable as that class :
-  - True for the class itself and for every subclass of it
-- `issubclass(Sub, Base)` asks the same question about two classes
-- `type(obj) is Class` is a stricter and usually wrong question :
-  - It refuses subclasses, which defeats the point of having them
+- `isinstance` includes inherited relationships
+- `issubclass` asks about classes rather than instances
+- Exact `type(...)` equality excludes subclass instances
 
 ```python
-isinstance(paged, BooksScraper)     # True, PagedBooksScraper inherits from it
-type(paged) is BooksScraper         # False, the type is not exactly that
-isinstance(value, (str, bytes))     # a tuple asks about several at once
+jaina = Mage("Jaina")
+print(isinstance(jaina, Mage))
+print(isinstance(jaina, Character))
+print(issubclass(Mage, Character))
+print(type(jaina) is Character)
 ```
-
-- Reach for it only where the code genuinely has to branch on type
 
 > `demo05 · relationships`
 
@@ -201,46 +160,33 @@ isinstance(value, (str, bytes))     # a tuple asks about several at once
 
 # str and repr
 
-- `__str__` is for the person reading the output :
-  - Used by `print()` and by `f"{value}"`
-- `__repr__` is for the person debugging :
-  - Used by the interpreter, and by every container
-- A list shows the `__repr__` of its elements, never the `__str__` :
-  - Which is why a list of objects prints hexadecimal addresses
+- `__str__` supplies a readable display value
+- `__repr__` supplies a debugging representation
+- Containers display their elements with `repr`
 
 ```python
-class Scraper:
-    def __str__(self) -> str:
-        return f"{self.name} with {len(self.rows)} rows"
+def __str__(self) -> str:
+        return self.name
+
     def __repr__(self) -> str:
-        return f"{type(self).__name__}(name={self.name!r}, rows={len(self.rows)})"
+        return f"{type(self).__name__}(name={self.name!r})"
 ```
 
-- Define both once on the base class and every subclass inherits them
-
 > `demo06 · str_and_repr`
-
 
 ---
 
 # Polymorphism
 
-- One list may hold objects of several classes at once :
-  - Provided they answer to the same methods
-- The loop calls the method and Python picks the version :
+- One loop can call the same method on different subclass instances
+- Each object supplies its own implementation
+- The caller does not need a branch for each class
 
 ```python
-def run_all(scrapers: list[Scraper]) -> int:
-    total = 0
-    for scraper in scrapers:
-        scraper.collect()            # a different parse() runs each time round
-        print(scraper.report())
-        total += len(scraper.rows)
-    return total
+raid: list[Character] = [Mage("Jaina"), Warrior("Varian"), Priest("Anduin")]
+for member in raid:
+    print(member.attack())
 ```
-
-- Adding a fourth site changes the list, and nothing else
-- This is polymorphism, and it is the reason the base class earns its place
 
 > `demo07 · polymorphism`
 
@@ -248,24 +194,21 @@ def run_all(scrapers: list[Scraper]) -> int:
 
 # Abstract Base Classes
 
-- A base `parse()` that returns an empty list is a promise nobody enforces :
-  - A subclass that forgets it scrapes nothing, silently
-- An abstract base class states the requirement and enforces it :
+- `ABC` and `abstractmethod` declare a required method
+- A concrete subclass must implement every abstract method
+- Abstract classes can also provide ordinary methods and initialisers
 
 ```python
-from abc import ABC, abstractmethod
-
-class Scraper(ABC):
+class Ability(ABC):
     @abstractmethod
-    def parse(self) -> list[dict[str, str]]:
-        """Return the rows found in one page of this site."""
+    def cast(self) -> str:
+        """Return the ability's action."""
 
-    def collect(self) -> None:          # concrete, and calls the abstract method
-        self.rows = self.parse()
+
+class Frostbolt(Ability):
+    def cast(self) -> str:
+        return "Frostbolt deals frost damage"
 ```
-
-- A subclass without `parse` cannot be created at all
-- Neither can the abstract class itself, which is the point of it
 
 > `demo08 · abstract_contract`
 
@@ -273,39 +216,33 @@ class Scraper(ABC):
 
 # Enforcing the Contract
 
-- The failure moves to the earliest moment it possibly can :
+- An incomplete subclass fails when it is instantiated
+- The error names the missing abstract method
+- A concrete subclass remains an ordinary Python class
 
-```text
-TypeError: Can't instantiate abstract class HalfFinishedScraper
-without an implementation for abstract method 'parse'
+```python
+try:
+    UnfinishedAbility()
+except TypeError as error:
+    print(f"TypeError: {error}")
 ```
-
-- The requirement is written down where the next reader will find it
-- The base class may still carry real shared code :
-  - Abstract methods and ordinary methods sit side by side
-- Use one when several classes must offer the same set of methods :
-  - Leave it out for a base class that already works on its own
 
 
 ---
 
 # Composition
 
-- Inheritance is a strong claim, so say it out loud before writing it :
-  - A `BooksScraper` is a `Scraper`, so it inherits
-  - A `BooksScraper` is not a `RowStore`, so it holds one instead
-- Holding another object as an attribute is composition :
+- A character has a mount and an inventory
+- Composition stores collaborating objects in attributes
+- Inheritance describes a kind of object; composition describes what it holds
 
 ```python
-class BooksScraper(Scraper):
-    def __init__(self, name: str, store: RowStore) -> None:
-        super().__init__(name)
-        self.store: RowStore = store
+class Character:
+    def __init__(self, name: str, mount: Mount) -> None:
+        self.name: str = name
+        self.mount: Mount = mount
+        self.inventory: Inventory = Inventory()
 ```
-
-- A wrong base class publishes methods nobody meant to offer :
-  - Inheriting from `dict` gives a scraper eleven public dictionary methods
-- Prefer composition where the choice is unclear, as it is easier to undo
 
 > `demo09 · composition`
 
@@ -313,43 +250,30 @@ class BooksScraper(Scraper):
 
 # Scraper Toolkit
 
-- The finished shape, in one file :
-  - An abstract `Scraper`, with `parse` as the contract
-  - Shared `clean`, `collect`, `row_count`, `__str__` and `__repr__`
-  - `BooksScraper` and `QuotesScraper`, one method each
-- The rows are canned, so nothing here touches the network
-- The web scraping module replaces `parse` with real HTML :
-  - Every other line of the file stays exactly as it is
+- An abstract scraper defines `parse` and shares collection behaviour
+- Books and quotes supply different parsers behind the same interface
+- This applied example uses local records and makes no network requests
+- The scraping module applies the same separation to HTML
 
 > `demo10 · scraper_toolkit`
-
 
 ---
 
 # Advanced Python Topics
 
-- The same topic, carried a long way further :
-  - Multiple inheritance, and the order Python searches the bases in
-  - Mixins, small classes that add one behaviour to many others
-  - `Protocol`, a contract a class satisfies without ever naming it
-- And the machinery underneath the classes :
-  - `__new__`, descriptors, metaclasses and `__slots__`
-- Everything above assumes exactly what this module has just covered
-- Nothing on this slide is needed for the rest of this course
+- Advanced Python extends this introduction :
+  - Multiple inheritance and mixins
+  - Protocols, descriptors and metaclasses
+- These mechanisms are not required for the remaining libraries modules
 
 ---
 
 # Summary : Inheritance
 
-- Inheritance exists to stop the same code being written twice :
-  - Shared behaviour in a base class, differences in the subclasses
-- A subclass inherits methods and the attributes the base `__init__` creates :
-  - `super().__init__(...)` runs that initialiser, and is easy to forget
-- Overriding replaces a method, and `super()` inside it extends instead
-- `__str__` is for output and `__repr__` is for debugging :
-  - Containers always show the second one
-- One loop over a list of related objects calls a different method each time
-- An abstract base class turns the promise into a rule the interpreter enforces
-- Composition, a plain attribute, is the answer whenever "is a" sounds wrong
+- Base classes share state and behaviour with subclasses
+- Overrides supply specialised implementations
+- `super` extends inherited behaviour on the same object
+- Polymorphic calls use the implementation supplied by each object
+- Abstract methods enforce a contract; composition stores collaborators
 
 > `exercise01 · Inheritance`

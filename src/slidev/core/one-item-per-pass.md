@@ -8,19 +8,19 @@ pills: ["demo07 · for"]
 
 <script setup>
 const run = {
-  "rows": [{"id": "files", "label": "files", "variable": "filename", "items": ["'cover.jpg'", "'stage.jpg'", "'crowd.jpg'"], "width": 168}],
+  "rows": [{"id": "playlist", "label": "playlist", "variable": "title", "items": ["'Imagine'", "'Yesterday'", "'Respect'"], "width": 168}],
   "states": [
-    {"cursor": null, "status": {"files": []}, "ended": []},
-    {"cursor": {"row": "files", "at": 0}, "status": {"files": ["ran"]}, "ended": []},
-    {"cursor": {"row": "files", "at": 1}, "status": {"files": ["ran", "ran"]}, "ended": []},
-    {"cursor": {"row": "files", "at": 2}, "status": {"files": ["ran", "ran", "ran"]}, "ended": []},
-    {"cursor": {"row": "files", "at": 2}, "status": {"files": ["ran", "ran", "ran"]}, "ended": ["files"]}
+    {"cursor": null, "status": {"playlist": []}, "ended": []},
+    {"cursor": {"row": "playlist", "at": 0}, "status": {"playlist": ["ran"]}, "ended": []},
+    {"cursor": {"row": "playlist", "at": 1}, "status": {"playlist": ["ran", "ran"]}, "ended": []},
+    {"cursor": {"row": "playlist", "at": 2}, "status": {"playlist": ["ran", "ran", "ran"]}, "ended": []},
+    {"cursor": {"row": "playlist", "at": 2}, "status": {"playlist": ["ran", "ran", "ran"]}, "ended": ["playlist"]}
   ],
-  "output": [[], ["Processing cover.jpg"], ["Processing stage.jpg"], ["Processing crowd.jpg"], ["All files processed"]],
+  "output": [[], ["Now playing: Imagine"], ["Now playing: Yesterday"], ["Now playing: Respect"], ["Playlist finished"]],
   "captions": [
-    "`files` refers to a list of three file names",
-    "`filename` receives the first item, then the block runs",
-    "The next pass binds `filename` to the next item",
+    "`playlist` refers to a list of three titles",
+    "`title` receives the first item, then the block runs",
+    "The next pass binds `title` to the next item",
     "The block runs once for each item, in order",
     "No items are left, so the loop ends and the unindented `print` runs"
   ]
@@ -30,10 +30,10 @@ const run = {
 <DataStructuresRun :run="run" layout="stack" output-width="300px">
 
 ```python {1|2-3|2-3|2-3|4}
-files = ["cover.jpg", "stage.jpg", "crowd.jpg"]
-for filename in files:
-    print(f"Processing {filename}")
-print("All files processed")
+playlist = ["Imagine", "Yesterday", "Respect"]
+for title in playlist:
+    print(f"Now playing: {title}")
+print("Playlist finished")
 ```
 
 <template #visual="{ step }">

@@ -31,7 +31,7 @@ checker reads exactly what is displayed.
 | `02-variables-and-data-types` | `Variables` | `binding-and-rebinding.md` | `02-variables-and-data-types-1-enhancement` | 8 | 7 | `02-variablesanddatatypes/01_variables.py` | side |
 | `02-variables-and-data-types` | `Multiple Assignment` | `several-names-one-object.md` | `02-variables-and-data-types-3-enhancement` | 6 | 5 | `02-variablesanddatatypes/03_multipleassignment.py` | side |
 | `04-control-flow-and-operators` | `while Loop` | `condition-before-each-pass.md` | `04-control-flow-and-operators-7-enhancement` | 7 | 6 | `04-controlflow/05_while.py` | side |
-| `04-control-flow-and-operators` | `Processing Each File` | `one-item-per-pass.md` | `04-control-flow-and-operators-10-enhancement` | 5 | 4 | `04-controlflow/07_for.py` | stack |
+| `04-control-flow-and-operators` | `Looping over a Playlist` | `one-item-per-pass.md` | `04-control-flow-and-operators-10-enhancement` | 5 | 4 | `04-controlflow/07_for.py` | stack |
 | `04-control-flow-and-operators` | `break and continue Statements` | `leaving-a-loop-with-break.md` | `04-control-flow-and-operators-13-enhancement` | 5 | 4 | `04-controlflow/09_breakandcontinue.py` | pair |
 | `05-functions` | `Passing Object References` | `parameter-shares-the-list.md` | `05-functions-5-enhancement` | 6 | 5 | `05-functions/02_objectreferences.py` | stack |
 | `05-functions` | `Overwriting References` | `rebinding-a-parameter.md` | `05-functions-6-enhancement` | 6 | 5 | `05-functions/03_overwritingreferences.py` | stack |
@@ -49,7 +49,7 @@ Add to `enrichments` in `build/slidev.config.ts` :
 { module: '02-variables-and-data-types', after: 'Variables', file: 'src/slidev/core/binding-and-rebinding.md' },
 { module: '02-variables-and-data-types', after: 'Multiple Assignment', file: 'src/slidev/core/several-names-one-object.md' },
 { module: '04-control-flow-and-operators', after: 'while Loop', file: 'src/slidev/core/condition-before-each-pass.md' },
-{ module: '04-control-flow-and-operators', after: 'Processing Each File', file: 'src/slidev/core/one-item-per-pass.md' },
+{ module: '04-control-flow-and-operators', after: 'Looping over a Playlist', file: 'src/slidev/core/one-item-per-pass.md' },
 { module: '04-control-flow-and-operators', after: 'break and continue Statements', file: 'src/slidev/core/leaving-a-loop-with-break.md' },
 { module: '05-functions', after: 'Passing Object References', file: 'src/slidev/core/parameter-shares-the-list.md' },
 { module: '05-functions', after: 'Overwriting References', file: 'src/slidev/core/rebinding-a-parameter.md' },
@@ -98,8 +98,8 @@ the local `x = 2` and the global `y = 2` are one object (`i2`).
   Elsewhere an object that loses its last name is drawn dashed for that one
   step, then omitted. Both are display choices; the names and the object a
   name refers to are exact in every state.
-- `one-item-per-pass` : in the last state `filename` still refers to
-  `'prices.csv'`, as in Python; the end slot lights because the loop ran out.
+- `one-item-per-pass` : in the last state `title` still refers to
+  `'Respect'`, as in Python; the end slot lights because the loop ran out.
 - `leaving-a-loop-with-break` : after `break`, `letter` still refers to
   `'i'`; the end slot stays unlit and `n`, `g` are marked `never`.
 - Function objects are shown as `function` objects with their name, so `def`

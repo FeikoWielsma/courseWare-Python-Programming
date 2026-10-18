@@ -194,7 +194,7 @@ def reverse_playlist(tracks: list[str]) -> list[str]:
     return reversed_tracks
 
 
-print(reverse_playlist(["Orbit", "Echo", "Pulse"]))
+print(reverse_playlist(["Imagine", "Yesterday", "Respect"]))
 ```
 
 - An incorrect slice such as `tracks[:-1]` makes this assertion fail

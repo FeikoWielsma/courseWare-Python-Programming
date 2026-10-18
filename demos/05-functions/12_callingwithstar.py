@@ -6,6 +6,6 @@ def show_playlist(name: str, *tracks: str, **details: str) -> None:
         print(f"{key}: {value}")
 
 
-tracks = ["Orbit", "Echo"]
-details = {"mood": "calm", "owner": "Nova"}
+tracks = ["Imagine", "Yesterday"]
+details = {"mood": "calm", "owner": "Sam"}
 show_playlist("Night drive", *tracks, **details)

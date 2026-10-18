@@ -1,20 +1,20 @@
-selection = ("Orbit", "Nova")
-print(selection)  # ('Orbit', 'Nova')
+selection = ("Imagine", "Toxic")
+print(selection)  # ('Imagine', 'Toxic')
 
 primary, backup = selection
 
-print(primary)  # 'Orbit'
-print(backup)  # 'Nova'
+print(primary)  # 'Imagine'
+print(backup)  # 'Toxic'
 
 primary, backup = backup, primary
 
-print(primary)  # 'Nova'
-print(backup)  # 'Orbit'
+print(primary)  # 'Toxic'
+print(backup)  # 'Imagine'
 
 rows = [(1,), (2,)]
 for (number,) in rows:
     print(number)  # 1, then 2
 
-records = [(1, ("Orbit", "Nova"))]
+records = [(1, ("Imagine", "John Lennon"))]
 for number, (title, artist) in records:
-    print(number, title, artist)  # 1 Orbit Nova
+    print(number, title, artist)  # 1 Imagine John Lennon

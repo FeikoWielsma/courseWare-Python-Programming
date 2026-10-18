@@ -14,9 +14,9 @@ const run = {
     {"writes": [{"text": "Photo ready", "newline": true}]},
     {"writes": [{"text": "Photo ready", "newline": true}, {"text": "Photos selected: 5", "newline": true}]},
     {"writes": [{"text": "Photo ready", "newline": true}, {"text": "Photos selected: 5", "newline": true}, {"text": "Playing ", "newline": false}]},
-    {"writes": [{"text": "Photo ready", "newline": true}, {"text": "Photos selected: 5", "newline": true}, {"text": "Playing ", "newline": false}, {"text": "Orbit", "newline": true}]}
+    {"writes": [{"text": "Photo ready", "newline": true}, {"text": "Photos selected: 5", "newline": true}, {"text": "Playing ", "newline": false}, {"text": "Imagine", "newline": true}]}
   ],
-  "output": [[], ["Photo ready"], [], ["Photos selected: 5"], [], ["Playing Orbit"]],
+  "output": [[], ["Photo ready"], [], ["Photos selected: 5"], [], ["Playing Imagine"]],
   "captions": [
     "`if True:` is true, so the indented block under it runs",
     "`print()` writes `Photo ready`, then ends the line with a newline",
@@ -40,7 +40,7 @@ photos = 5
 # This comment does not change the photo count.
 print("Photos selected:", photos)
 print("Playing", end=" ")
-print("Orbit")
+print("Imagine")
 ```
 
 <template #visual="{ step }">

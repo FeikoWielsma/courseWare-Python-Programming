@@ -1,5 +1,5 @@
-filename = input("Photo filename: ")
-if filename.lower().endswith(".jpg"):
-    print(f"Photo selected: {filename}")
+battery = 15
+if battery >= 20:
+    print("Camera ready")
 else:
-    print("Choose a JPG photo")
+    print("Charge the battery")

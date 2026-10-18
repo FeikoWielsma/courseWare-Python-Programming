@@ -4,16 +4,16 @@ import pandas as pd
 
 DATA = Path(__file__).resolve().parents[2] / "data"
 
-servers = pd.read_csv(DATA / "servers.csv")
+tracks = pd.read_csv(DATA / "tracks.csv", index_col="title")
 
-# One grouping column, one column to summarise, one summary function. The
-# grouping column becomes the index of the answer.
-print(servers.groupby("site")["cpu_cores"].sum())
-print(servers.groupby("role")["disk_gb"].mean().round(1))
-print(servers.groupby("site").size())
+print(tracks.groupby("genre")["plays"].sum())
+print(tracks.groupby("genre")["duration_s"].mean().round(1))
+print(tracks.groupby("genre").size())
+print(tracks.groupby("genre")["plays"].agg(["count", "sum", "mean", "max"]))
+print(tracks.groupby("genre").agg({"plays": "sum", "year": "min"}))
 
-# agg takes a list of functions and gives a column for each.
-print(servers.groupby("site")["memory_gb"].agg(["count", "sum", "mean", "max"]).round(1))
-
-# A dictionary applies a different summary to each column.
-print(servers.groupby("site").agg({"cpu_cores": "sum", "disk_gb": "max", "used_gb": "mean"}))
+# A small sample keeps every input row visible.
+sample = tracks.iloc[:3][["genre", "plays"]]
+groups = sample.groupby("genre")
+totals = groups["plays"].sum()
+print(totals)

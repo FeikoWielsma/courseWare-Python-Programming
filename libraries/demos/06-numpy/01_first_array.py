@@ -1,7 +1,6 @@
 import numpy as np
 
-# Four temperature readings, in Celsius.
-READINGS = [25.3, 24.8, 26.9, 23.9]
-
-array = np.array(READINGS)
-print(array * 100)
+times = np.arange(8) / 8000
+samples = np.sin(2 * np.pi * 440 * times)
+print(samples.round(3))
+print(samples * 0.5)

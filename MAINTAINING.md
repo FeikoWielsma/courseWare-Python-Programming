@@ -252,14 +252,50 @@ the old repository are not part of this import.
 
 ```bash
 bun run --cwd build libraries -- --skip-lint
+bun run --cwd build libraries:marp -- --skip-lint
+bun run --cwd build libraries:serve
+# Build both engines and a comparison portal:
+bun run --cwd build libraries -- --skip-lint --compare
 bun run --cwd build lint:libraries
 bun run --cwd build libraries -- --exercises
 uv sync --project libraries
 uv run ruff check libraries
+uv run --project libraries python libraries/build/check-demos.py
+uv run --project libraries python libraries/build/check-solutions.py
+uv run --project libraries python libraries/build/check-outputs.py
+uv run --project libraries python libraries/build/make-data.py --check
+uv run --project libraries python libraries/build/native_states.py --check
+# Run from libraries/ to audit its slides and handouts with the shared checker:
+cd libraries
+uv run python ../../Presentation-Template/build/tools/check-fences.py
 ```
 
 The course-local `build/libraries.ts` runs the shared template with `libraries/`
-as its working directory. Add new optional topics there; they do not enter the
+as its working directory. Slidev is the default, with its configuration in
+`libraries/build/slidev.config.ts`; `libraries:serve` starts native authoring on
+port 3030. `libraries:marp` retains named `-Marp.pdf` and `-Marp.html` fallbacks
+and copies the legacy standalone HTML alias. `--exercises` keeps the existing
+exercise builder. Add new optional topics there; they do not enter the
 fundamentals PDF, schedule, exercise site or Wordle exercise chain. CI builds and
-publishes both optional PDFs and HTML files and ships `libraries/` in the student
-bundle. Keep optional demo code linted by `libraries/ruff.toml`.
+publishes the Slidev PDF, Marp PDF/HTML, exercises PDF/HTML and
+`build/dist/PRG400-Python-Libraries-and-Tools-slides.zip`. It ships the public
+presentation as `libraries/slides/` in the student bundle, stripping the optional
+`src/` and `build/` directories. The slides ZIP contains the PDF and `slides/`,
+with no comparison or trainer sources. Keep optional demo code linted by
+`libraries/ruff.toml`. Each course launcher uses port 4188; stop the fundamentals
+launcher before starting the libraries launcher, or vice versa.
+
+The example checks use temporary course copies, compile the six interactive
+GUI demos, and run the remaining demos and solutions with a Python socket audit
+guard and a per-command timeout. Raw stdout, stderr and statuses are written to
+the ignored `libraries/build/demo-baseline/`. Quoted stdout is compared as an
+ordered excerpt with whitespace ignored; annotated reference fences and recorded
+benchmark timings are classified explicitly. Scraping uses the supplied first-page
+fixture by default; `--live` opts into the real site and optional second page.
+The migration baseline and findings are in `build/notes/libraries-review.md`.
+
+Music metadata and photo attribution are recorded in `libraries/data/SOURCES.md`.
+Rebuild the data with `make-data.py` without `--check`; it also regenerates the
+report files. Rebuild native slide states with `native_states.py` without
+`--check` after changing their demo excerpts. Both checks gate CI. The rewrite
+and verification record is `build/notes/libraries-slidev-phase2.md`.

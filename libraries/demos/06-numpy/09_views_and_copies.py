@@ -1,31 +1,16 @@
+from pathlib import Path
+
+import matplotlib.image as image
 import numpy as np
 
-readings = [0, 10, 20, 30, 40]
-window = readings[1:4]
-window[0] = 999
-print("list  :", readings)
+DATA = Path(__file__).resolve().parents[2] / "data"
+photo = image.imread(DATA / "photo.png")
 
-array = np.arange(10) * 10
-window = array[1:4]
-window[0] = 999
-print("array :", array)
-
-array = np.arange(10) * 10
-window = array[1:4].copy()
-window[0] = 999
-print("copy  :", array)
-
-# How to tell, without editing anything.
-array = np.arange(10) * 10
-view = array[1:4]
-detached = array[1:4].copy()
-print("view.base is array      :", view.base is array)
-print("detached.base is None   :", detached.base is None)
-print("view shares memory      :", np.shares_memory(view, array))
-print("detached shares memory  :", np.shares_memory(detached, array))
-
-# Fancy indexing, unlike slicing, always hands back a copy. Both look like
-# square brackets, which is exactly why this catches people out.
-picked = array[[1, 2, 3]]
-picked[0] = 999
-print(array)
+crop = photo[12:36, 16:48]
+detached = crop.copy()
+crop[0, 0] = [1.0, 0.0, 0.0]
+print(photo[12, 16])
+print(detached[0, 0])
+print(np.shares_memory(crop, photo))
+print(np.shares_memory(detached, photo))
+print(np.shares_memory(photo[[0, 1]], photo))

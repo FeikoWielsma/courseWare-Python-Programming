@@ -1,10 +1,10 @@
 ---
 layout: default
-title: Adding an Encore
+title: Adding an Let It Be
 pills: ["demo09 · objectreferences"]
 ---
 
-# Adding an Encore
+# Adding an Let It Be
 
 <script setup>
 const run = {
@@ -54,8 +54,8 @@ const run = {
         "original": {
           "type": "list",
           "items": [
-            "'Orbit'",
-            "'Echo'"
+            "'Imagine'",
+            "'Yesterday'"
           ]
         }
       },
@@ -81,8 +81,8 @@ const run = {
         "original": {
           "type": "list",
           "items": [
-            "'Orbit'",
-            "'Echo'"
+            "'Imagine'",
+            "'Yesterday'"
           ]
         }
       },
@@ -108,9 +108,9 @@ const run = {
         "original": {
           "type": "list",
           "items": [
-            "'Orbit'",
-            "'Echo'",
-            "'Encore'"
+            "'Imagine'",
+            "'Yesterday'",
+            "'Let It Be'"
           ]
         }
       },
@@ -140,9 +140,9 @@ const run = {
         "original": {
           "type": "list",
           "items": [
-            "'Orbit'",
-            "'Echo'",
-            "'Encore'"
+            "'Imagine'",
+            "'Yesterday'",
+            "'Let It Be'"
           ]
         }
       },
@@ -165,9 +165,9 @@ const run = {
         "original": {
           "type": "list",
           "items": [
-            "'Orbit'",
-            "'Echo'",
-            "'Encore'"
+            "'Imagine'",
+            "'Yesterday'",
+            "'Let It Be'"
           ]
         }
       },
@@ -182,17 +182,17 @@ const run = {
     [],
     [],
     [
-      "Inside: ['Orbit', 'Echo', 'Encore']"
+      "Inside: ['Imagine', 'Yesterday', 'Let It Be']"
     ],
     [
-      "After call: ['Orbit', 'Echo', 'Encore']"
+      "After call: ['Imagine', 'Yesterday', 'Let It Be']"
     ]
   ],
   "captions": [
     "`def` defines the task of adding the encore mix track",
     "`queue` refers to the original track list",
     "The parameter `tracks` refers to that same list",
-    "`append` adds `Encore` to the existing list",
+    "`append` adds `Let It Be` to the existing list",
     "The function prints the extended track list",
     "The caller sees the added track in `queue`"
   ]
@@ -203,10 +203,10 @@ const run = {
 
 ```python {1|5|6|2|3|7}
 def add_encore(tracks: list[str]) -> None:
-    tracks.append("Encore")
+    tracks.append("Let It Be")
     print(f"Inside: {tracks}")
 
-queue = ["Orbit", "Echo"]
+queue = ["Imagine", "Yesterday"]
 add_encore(queue)
 print(f"After call: {queue}")
 ```

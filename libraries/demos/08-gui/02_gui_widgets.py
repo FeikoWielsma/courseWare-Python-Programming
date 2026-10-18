@@ -1,35 +1,35 @@
-# INTERACTIVE : this demo opens a window and blocks until you close it
+# INTERACTIVE : opens a window until it is closed
 
 import tkinter as tk
 from tkinter import ttk
 
 root = tk.Tk()
-root.title("Widgets")
-root.geometry("420x180")
+root.title("Add a track")
+playlist: list[tuple[str, str]] = []
+ttk.Label(root, text="Title :").grid(row=0, column=0, padx=8, pady=8)
+entry = ttk.Entry(root, width=30)
+entry.grid(row=0, column=1, padx=8, pady=8)
+ttk.Label(root, text="Genre :").grid(row=1, column=0, padx=8)
+genre = ttk.Combobox(root, values=["Rock", "Pop", "Soul", "Country", "Electronic"],
+                     state="readonly")
+genre.set("Rock")
+genre.grid(row=1, column=1, padx=8)
+result = ttk.Label(root, text="No tracks added")
+result.grid(row=3, column=0, columnspan=2, pady=8)
 
-ttk.Label(root, text="Hostname :").grid(row=0, column=0, padx=8, pady=8, sticky="e")
 
-entry = ttk.Entry(root, width=24)
-entry.grid(row=0, column=1, padx=8, pady=8, sticky="w")
-entry.focus()
-
-result = ttk.Label(root, text="nothing yet", foreground="grey")
-result.grid(row=2, column=0, columnspan=2, padx=8, pady=12)
-
-
-def look_up() -> None:
-    name = entry.get().strip()
-    if not name:
-        result.configure(text="type a hostname first", foreground="red")
+def add_track() -> None:
+    title = entry.get().strip()
+    if not title:
+        result.configure(text="Enter a title first")
         return
-    result.configure(text=f"{name} is at rack 4, site AMS", foreground="black")
+    playlist.append((title, genre.get()))
+    result.configure(text=f"{title}: {genre.get()} ({len(playlist)} tracks)")
     entry.delete(0, tk.END)
 
 
-# command= takes the function itself, without parentheses.
-ttk.Button(root, text="Look up", command=look_up).grid(row=1, column=1, padx=8, pady=4, sticky="w")
-
-root.bind("<Return>", lambda _event: look_up())
+ttk.Button(root, text="Add", command=add_track).grid(row=2, column=1, pady=8)
+root.bind("<Return>", lambda _event: add_track())
 root.bind("<Escape>", lambda _event: root.destroy())
-
+entry.focus()
 root.mainloop()

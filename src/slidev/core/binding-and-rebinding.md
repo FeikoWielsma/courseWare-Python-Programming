@@ -15,12 +15,12 @@ const run = {
     {"names": {"names": {"first": "i10", "second": "i20"}}, "objects": {"i10": {"type": "int", "value": "10"}, "i20": {"type": "int", "value": "20"}}, "active": ["names.second"], "mark": {"object": "i20"}},
     {"names": {"names": {"first": "i10", "second": "i20", "combined": "i30"}}, "objects": {"i10": {"type": "int", "value": "10"}, "i20": {"type": "int", "value": "20"}, "i30": {"type": "int", "value": "30"}}, "active": ["names.first", "names.second", "names.combined"], "mark": {"object": "i30"}},
     {"names": {"names": {"first": "i10", "second": "i20", "combined": "i30"}}, "objects": {"i10": {"type": "int", "value": "10"}, "i20": {"type": "int", "value": "20"}, "i30": {"type": "int", "value": "30"}}, "active": ["names.combined"]},
-    {"names": {"names": {"first": "s1", "second": "i20", "combined": "i30"}}, "objects": {"i10": {"type": "int", "value": "10"}, "i20": {"type": "int", "value": "20"}, "i30": {"type": "int", "value": "30"}, "s1": {"type": "str", "value": "'Orbit '"}}, "active": ["names.first"], "mark": {"object": "s1"}},
-    {"names": {"names": {"first": "s1", "second": "s2", "combined": "i30"}}, "objects": {"i20": {"type": "int", "value": "20"}, "i30": {"type": "int", "value": "30"}, "s1": {"type": "str", "value": "'Orbit '"}, "s2": {"type": "str", "value": "'Echo'"}}, "active": ["names.second"], "mark": {"object": "s2"}},
-    {"names": {"names": {"first": "s1", "second": "s2", "combined": "s3"}}, "objects": {"i30": {"type": "int", "value": "30"}, "s1": {"type": "str", "value": "'Orbit '"}, "s2": {"type": "str", "value": "'Echo'"}, "s3": {"type": "str", "value": "'Orbit Echo'"}}, "active": ["names.first", "names.second", "names.combined"], "mark": {"object": "s3"}},
-    {"names": {"names": {"first": "s1", "second": "s2", "combined": "s3"}}, "objects": {"s1": {"type": "str", "value": "'Orbit '"}, "s2": {"type": "str", "value": "'Echo'"}, "s3": {"type": "str", "value": "'Orbit Echo'"}}, "active": ["names.combined"]}
+    {"names": {"names": {"first": "s1", "second": "i20", "combined": "i30"}}, "objects": {"i10": {"type": "int", "value": "10"}, "i20": {"type": "int", "value": "20"}, "i30": {"type": "int", "value": "30"}, "s1": {"type": "str", "value": "'Imagine '"}}, "active": ["names.first"], "mark": {"object": "s1"}},
+    {"names": {"names": {"first": "s1", "second": "s2", "combined": "i30"}}, "objects": {"i20": {"type": "int", "value": "20"}, "i30": {"type": "int", "value": "30"}, "s1": {"type": "str", "value": "'Imagine '"}, "s2": {"type": "str", "value": "'Yesterday'"}}, "active": ["names.second"], "mark": {"object": "s2"}},
+    {"names": {"names": {"first": "s1", "second": "s2", "combined": "s3"}}, "objects": {"i30": {"type": "int", "value": "30"}, "s1": {"type": "str", "value": "'Imagine '"}, "s2": {"type": "str", "value": "'Yesterday'"}, "s3": {"type": "str", "value": "'Imagine Yesterday'"}}, "active": ["names.first", "names.second", "names.combined"], "mark": {"object": "s3"}},
+    {"names": {"names": {"first": "s1", "second": "s2", "combined": "s3"}}, "objects": {"s1": {"type": "str", "value": "'Imagine '"}, "s2": {"type": "str", "value": "'Yesterday'"}, "s3": {"type": "str", "value": "'Imagine Yesterday'"}}, "active": ["names.combined"]}
   ],
-  "output": [[], [], [], ["30"], [], [], [], ["Orbit Echo"]],
+  "output": [[], [], [], ["30"], [], [], [], ["Imagine Yesterday"]],
   "captions": [
     "`first = 10` binds the name `first` to an `int` object",
     "Each assignment binds one more name",
@@ -41,8 +41,8 @@ first = 10
 second = 20
 combined = first + second
 print(combined)
-first = "Orbit "
-second = "Echo"
+first = "Imagine "
+second = "Yesterday"
 combined = first + second
 print(combined)
 ```

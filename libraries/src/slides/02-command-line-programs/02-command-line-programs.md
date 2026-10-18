@@ -9,265 +9,213 @@ language: python
 
 # Command-line Programs
 
-- A script does one job, to one file, with the settings typed into the source
-- A tool takes its settings from the command line :
-  - The same code serves every file, every level and every output format
-- Three things separate the two :
-  - It explains itself when asked
-  - It refuses a wrong command line clearly, instead of crashing later
-  - It reports success or failure in a way another program can read
-- Everything in this module is standard library, so it ships with Python
-- The end of the module is a checklist you can hold a script up against
-
+- A command-line tool accepts arguments and options
+- Standard output carries results; standard error carries diagnostics
+- Exit statuses let the shell distinguish success, matches and errors
+- A playlist report can share one interface across scripts and pipelines
 
 ---
 
 # sys.argv
 
-- Everything typed after the program name arrives in `sys.argv` :
-  - A plain list of strings, in the order they were given
-  - `sys.argv[0]` is the program itself, so the real arguments start at `1`
-- Nothing is converted, so a number arrives as text
+- `sys.argv[0]` is the script name
+- The remaining entries are strings supplied by the caller
+- Parsing and validation are separate from receiving those strings
 
 ```python
-import sys
+arguments = sys.argv[1:] or ["tracks.csv", "--genre", "Rock", "--limit", "3"]
+print(f"program: {Path(sys.argv[0]).name}")
+for position, value in enumerate(arguments, start=1):
+    print(f"argv[{position}] = {value!r}")
 
-print(sys.argv)          # ['tool.py', 'report', '--limit', '5']
-print(sys.argv[1:])      # ['report', '--limit', '5']
+line = "2026-10-12 08:00:00 INFO PLAY Imagine"
+print(line.split(maxsplit=4))
 ```
 
-- This is the whole interface between the shell and the program
-- Every argument library in Python is a layer over this one list
-
 > `demo01 · sys_argv`
-
 
 ---
 
 # Manual Argument Parsing
 
-- Reading the list yourself works, right up until it does not :
-  - An option whose value is missing walks off the end of the list
-  - A value that should be a number is still a string
-  - A mistyped option is silently taken for something else
-  - Nobody wrote `--help`, so there is none
-- Each of those is a few more lines of defensive code
+- Manual parsing must recognise every option and its values
+- Missing values, invalid conversions and unknown options need error handling
+- `argparse` supplies these checks and generated help
 
 ```python
-if item == "--limit":
-    index += 1
-    limit = int(argv[index])   # IndexError, or ValueError
+elif argv[index] == "--limit":
+            index += 1
+            limit = int(argv[index])
 ```
 
-- The handwritten version grows faster than the program it serves
-
 > `demo02 · argv_by_hand`
-
 
 ---
 
 # ArgumentParser
 
-- `argparse` inverts the work : you describe the command line, it does the rest
-- A positional argument is named and required by position
+- A positional argument is required unless configured otherwise
+- `type=int` converts its text before the program uses it
+- A duration in seconds can be formatted as minutes and seconds
 
 ```python
-import argparse
+def format_duration(seconds: int) -> str:
+    return f"{seconds // 60}:{seconds % 60:02d}"
 
-parser = argparse.ArgumentParser(description="Print the square of a number.")
-parser.add_argument("number", type=int, help="the number to square")
-args = parser.parse_args()
-
-print(args.number ** 2)
+parser = argparse.ArgumentParser(description="Format a track duration.")
+parser.add_argument("seconds", type=int, help="duration in seconds")
+args = parser.parse_args(sys.argv[1:] or ["183"])
+print(format_duration(args.seconds))
 ```
 
-- `type=` is a conversion, so `args.number` is an `int` and not `"12"`
-- `help=` is the text that appears under `--help`
-- The result is a namespace whose attributes are the argument names
-
 > `demo03 · first_parser`
-
 
 ---
 
 # Options and Flags
 
-- A name starting with a dash is optional, and gets a default
+- Dashed names define optional arguments
+- `default` supplies a value when an option is absent
+- `store_true` creates a flag; `count` counts repeated flags
+- `choices` rejects unsupported values
 
 ```python
-parser.add_argument("--dry-run", action="store_true")
+parser.add_argument("file", type=Path, nargs="?", default=DATA / "tracks.csv")
+parser.add_argument("--genre", choices=["Rock", "Pop", "Soul", "Country", "Electronic"])
+parser.add_argument("--limit", type=int, default=5)
 parser.add_argument("-v", "--verbose", action="count", default=0)
-parser.add_argument("--format", choices=["dec", "hex"], default="dec")
+parser.add_argument("--dry-run", action="store_true")
 ```
 
-- `action="store_true"` makes a flag, present or absent, no value
-- `action="count"` counts repeats, so `-vv` gives `2`
-- `choices=` rejects anything outside the list and advertises the options
-- `nargs="?"` makes a positional optional, with a default of its own
-- A dashed name becomes an underscored attribute : `--dry-run` is `args.dry_run`
-
 > `demo04 · options_and_flags`
-
 
 ---
 
 # Mutually Exclusive Options
 
-- Some options make no sense together, and the parser can say so
+- A mutually exclusive group accepts at most one member
+- Supplying both duration-order flags is a usage error
+- Parsing rejects the conflict with exit status 2
 
 ```python
-loudness = parser.add_mutually_exclusive_group()
-loudness.add_argument("-v", "--verbose", action="store_true")
-loudness.add_argument("-q", "--quiet", action="store_true")
+order = parser.add_mutually_exclusive_group()
+order.add_argument("--longest", action="store_true")
+order.add_argument("--shortest", action="store_true")
 ```
 
-- Passing both is refused before a single line of your code runs :
-  - The message names the conflict and the process exits with status `2`
-- This is validation you would otherwise write, forget, or get subtly wrong
-- The group is only about the command line, not about the values
-
 > `demo05 · mutually_exclusive`
-
 
 ---
 
 # Generated Help and Errors
 
-- `--help` is generated from the `add_argument` calls, never written by hand
+- `--help` describes declared arguments and options
+- A missing required value or invalid conversion writes a usage error to stderr
+- Help exits with status 0; usage errors exit with status 2
 
-```text
-usage: squares [-h] [-v] number
-
-positional arguments:
-  number         the number to square
-
-options:
-  -h, --help     show this help message and exit
-  -v, --verbose  explain the answer
+```python
+parser = argparse.ArgumentParser(prog="duration", description="Format seconds.")
+parser.add_argument("seconds", type=int)
 ```
 
-- A wrong command line prints a usage line to stderr and exits with status `2`
-- Both behaviours are free, and both match what every other tool does
-- `prog=`, `description=` and `epilog=` fill in the surrounding text
-
 > `demo06 · help_and_errors`
-
 
 ---
 
 # Subcommands
 
-- One program, several verbs, the shape of `git`, `apt` and `systemctl`
+- `add_subparsers` registers verbs such as `list`, `stats` and `top`
+- Each subparser owns its arguments
+- `set_defaults(handler=...)` attaches the implementation function
 
 ```python
 verbs = parser.add_subparsers(dest="command", required=True)
-
-add = verbs.add_parser("add", help="add a host")
-add.add_argument("host")
-add.set_defaults(handler=cmd_add)
+    listing = verbs.add_parser("list", help="list tracks")
+    listing.add_argument("--genre")
+    listing.add_argument("--limit", type=int, default=5)
+    listing.set_defaults(handler=cmd_list)
 ```
 
-- Each verb is a parser of its own, with its own arguments and its own help
-- `dest=` names the attribute holding the chosen verb
-- `required=True` refuses a call with no verb at all
-- `set_defaults(handler=...)` attaches the function that implements the verb
-
 > `demo07 · subcommands`
-
 
 ---
 
 # Path Arguments
 
-- `type=` accepts any callable, and `Path` is one
+- `type=Path` converts an argument into a path object
+- Conversion does not prove that a file exists or is readable
+- Open files after parsing, inside a context manager
 
 ```python
-from pathlib import Path
-
-parser.add_argument("logfile", type=Path)
+parser = argparse.ArgumentParser()
+parser.add_argument("file", type=Path, nargs="?", default=DATA / "tracks.csv")
 args = parser.parse_args()
-
-print(args.logfile.name, args.logfile.stat().st_size)
+if not args.file.is_file():
+    print(f"Missing file: {args.file}", file=sys.stderr)
+    raise SystemExit(2)
 ```
 
-- The argument arrives as a `Path`, ready to be read, joined or inspected
-- A converter of your own can validate at the same time :
-  - Return the converted value, or raise `argparse.ArgumentTypeError`
-  - The parser turns that into an ordinary usage error, at status `2`
-
 > `demo08 · paths`
-
 
 ---
 
 # FileType
 
-- `argparse.FileType` opens the file during parsing, and looks convenient
-- Python 3.14 deprecates it, with an unusually direct message :
+- `argparse.FileType` opens a file while parsing
+- It is pending deprecation in Python 3.14
+- A later parsing failure can leave the file open
+- A `Path` argument followed by `with path.open(...)` gives control over its lifetime
 
-```text
-FileType is deprecated. Simply open files after parsing arguments.
+```python
+with args.source.open(encoding="utf-8") as stream:
+    print(f"opened {args.source.name}, first line: {stream.readline().strip()}")
 ```
 
-- The reasons :
-  - The file is opened even when a later argument turns out to be wrong
-  - Nothing ever closes it
-- Take a `Path`, then open it yourself, in a `with` block
-- Handle the single dash yourself when you want to read standard input
-
 > `demo09 · filetype`
-
 
 ---
 
 # main and the Exit Status
 
-- Give the program one entry point that returns an integer
+- `raise SystemExit(main(...))` forwards a result to the shell
+- Status 0 means success; nonzero statuses describe other outcomes
+- This playlist tool returns 2 when its input cannot be read
 
 ```python
-def main(argv: list[str] | None = None) -> int:
-    args = build_parser().parse_args(argv)
-    ...
-    return 0
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+try:
+        rows = load(args.file)
+    except OSError as error:
+        print(f"playlist: {error}", file=sys.stderr)
+        return 2
 ```
 
-- `argv=None` means "take the real command line", and a list means "take this one"
-- That default makes the program callable from a test, or from another program
-- `SystemExit(0)` is success, and any other number is not
-- The convention : `0` fine, `1` ran but found trouble, `2` unusable
-
 > `demo10 · main_exit_codes`
-
 
 ---
 
 # Standard Output and Standard Error
 
-- Two streams, two purposes :
-  - `stdout` carries the result, the part another program will read
-  - `stderr` carries progress, warnings and reasons
+- Stdout carries results that another program can read
+- Stderr carries diagnostics without mixing them into the data
+- `BrokenPipeError` can occur when a downstream program stops reading
 
 ```python
-print(record)                              # data
-print("reading log", file=sys.stderr)      # everything else
+def emit(path: Path) -> None:
+    print(f"Reading {path.name}", file=sys.stderr)
+    for row in load(path):
+        print(row["title"])
+    print("Finished", file=sys.stderr)
 ```
 
-- Mixing them is what makes a tool unpleasant to use in a pipeline
-- `sys.stdout.isatty()` is `False` when the output is a pipe or a file :
-  - The usual signal to drop colour, banners and progress bars
-- A reader that stops early raises `BrokenPipeError`, which is normal, not a bug
-
 > `demo11 · stderr_and_pipes`
-
 
 ---
 
 # Inline Script Metadata
 
-- PEP 723 lets a single file declare what it needs, in a comment block
+- PEP 723 records script dependencies in a comment block
+- `uv run script.py` reads the metadata and prepares an environment
+- The script can remain one file
 
 ```python
 # /// script
@@ -276,63 +224,37 @@ print("reading log", file=sys.stderr)      # everything else
 # ///
 ```
 
-- `uv run script.py` reads that block, builds an environment and runs the file
-- No virtual environment to create, activate, remember or clean up
-- The file stays one file, so it can be mailed, pasted or dropped in `~/bin`
-- This is the current answer to "a small program that needs one library"
-
 > `demo12 · pep723_script`
-
 
 ---
 
 # Executable Scripts
 
-- Add a shebang above the metadata block and the file becomes a command :
+- A shebang selects the interpreter on systems that support it
+- A script still needs executable permission on Linux and macOS
+- On Windows, invoke the script through `uv run`
 
-```bash
+```python
 #!/usr/bin/env -S uv run --script
 ```
-
-- Then the usual two steps, and it runs from anywhere :
-
-```bash
-chmod +x logtool.py
-./logtool.py count /var/log/syslog
-```
-
-- `env -S` is what allows the extra arguments after the interpreter name
-- The environment is cached, so only the first run pays for the install
-- Pin the versions in `dependencies` and the script still works next year
-
 
 ---
 
 # Command-line Checklist
 
-- It accepts its input on the command line, with sensible defaults
-- It has `--help`, and the help is generated rather than maintained
-- It refuses a wrong command line clearly, and exits `2` when it does
-- It prints data on stdout and everything else on stderr
-- It exits `0` on success and non-zero when the answer is bad news
-- It reads standard input when the filename is a single dash
-- It has one `main(argv) -> int`, so it can be called as well as run
+- Provide generated help and validate arguments
+- Accept an input path or a documented stdin marker
+- Keep diagnostic messages on stderr
+- Use exit statuses consistently; handle missing files and broken pipes
 
 > `demo13 · unix_citizen`
-
 
 ---
 
 # Summary : Command-line Programs
 
-- `sys.argv` is the raw list of strings the shell handed over
-- `argparse` turns a description of the command line into a parser :
-  - Positionals, options, flags, `type=`, `choices=`, `default=` and `help=`
-  - The `--help` text and the usage errors come with it
-- `add_subparsers` gives one program several verbs, each with its own arguments
-- Take a `Path`, then open the file yourself inside a `with` block
-- `main(argv: list[str] | None = None) -> int` plus `SystemExit` gives real exit codes
-- Data goes to stdout, diagnostics go to stderr, and a broken pipe is normal
-- PEP 723 metadata plus `uv run` makes one file a complete program
-
-> `exercise02 · Command-line Programs`
+- Read arguments with `argparse`
+- Declare positionals, options, exclusive flags and subcommands
+- Convert paths while parsing; open files afterwards
+- Separate stdout, stderr and exit status
+- PEP 723 can declare dependencies beside the script

@@ -9,7 +9,7 @@ pills: ["demo02 · updatinglists"]
 <script setup>
 const run = {
   "name": "playlist",
-  "objects": {"p": "'Intro'", "c": "'Orbit'", "b": "'Echo'", "m": "'Remix'", "s": "'Outro'"},
+  "objects": {"p": "'Thriller'", "c": "'Imagine'", "b": "'Yesterday'", "m": "'Jolene'", "s": "'Hey Jude'"},
   "states": [
     {"items": ["p", "c", "b", "s"], "active": null},
     {"items": ["p", "c", "m", "s"], "active": "m", "tone": "change"},
@@ -18,7 +18,7 @@ const run = {
     {"items": ["c", "s"], "active": null},
     {"items": ["c", "s"], "active": null}
   ],
-  "output": [[], [], [], ["['Intro', 'Orbit', 'Outro']"], [], ["['Orbit', 'Outro']"]],
+  "output": [[], [], [], ["['Thriller', 'Imagine', 'Hey Jude']"], [], ["['Imagine', 'Hey Jude']"]],
   "captions": [
     "`playlist` holds four strings at indexes 0 to 3",
     "Assigning to an index replaces the item there; the length stays the same",
@@ -33,12 +33,12 @@ const run = {
 <DataStructuresRun :run="run" layout="rows">
 
 ```python {1|1-2|1-3|1-4|1-5|1-6}
-playlist = ["Intro", "Orbit", "Echo", "Outro"]
-playlist[2] = "Remix"
+playlist = ["Thriller", "Imagine", "Yesterday", "Hey Jude"]
+playlist[2] = "Jolene"
 del playlist[2]
-print(playlist)  # ['Intro', 'Orbit', 'Outro']
-playlist.remove("Intro")
-print(playlist)  # ['Orbit', 'Outro']
+print(playlist)  # ['Thriller', 'Imagine', 'Hey Jude']
+playlist.remove("Thriller")
+print(playlist)  # ['Imagine', 'Hey Jude']
 ```
 
 <template #visual="{ step }">

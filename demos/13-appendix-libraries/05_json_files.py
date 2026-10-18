@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-playlist = {"name": "Night drive", "tracks": ["Orbit", "Echo"], "cover": None}
+playlist = {"name": "Night drive", "tracks": ["Imagine", "Yesterday"], "cover": None}
 path = Path("playlist.json")
 
 with path.open("w", encoding="utf-8") as file:

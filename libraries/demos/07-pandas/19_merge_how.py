@@ -4,21 +4,25 @@ import pandas as pd
 
 DATA = Path(__file__).resolve().parents[2] / "data"
 
-servers = pd.read_csv(DATA / "servers.csv")
-sites = pd.read_csv(DATA / "sites.csv")
+tracks = pd.read_csv(DATA / "tracks.csv")
 
-# vpn01 sits at site BRU, which is not in sites.csv. Site GRQ is in sites.csv
-# but has no servers. Those two rows are what how= is about.
+artists = pd.read_csv(DATA / "artists.csv")
 for how in ("inner", "left", "right", "outer"):
-    merged = servers.merge(sites, on="site", how=how)
-    print(f"how={how:<6} rows={len(merged):>2}")
+    merged = tracks.merge(artists, on="artist", how=how)
+    print(f"{how}: {len(merged)} rows")
+outer = tracks.merge(artists, on="artist", how="outer", indicator=True)
+print(outer.loc[outer["_merge"] != "both", ["title", "artist", "_merge"]])
 
-left = servers.merge(sites, on="site", how="left")
-print(left[left["city"].isna()][["hostname", "site", "city", "tier"]])
-
-outer = servers.merge(sites, on="site", how="outer", indicator=True)
-print(outer[outer["_merge"] != "both"][["hostname", "site", "city", "_merge"]])
-
-# indicator=True is the fastest way to answer "did my join lose rows?", which
-# is the question worth asking every single time.
-print(outer["_merge"].value_counts())
+# A small join makes unmatched keys visible.
+tracks = pd.DataFrame({"title": ["Imagine", "Yesterday", "Respect"],
+                       "artist": ["John Lennon", "The Beatles", "Aretha Franklin"]})
+artists = pd.DataFrame({"artist": ["The Beatles", "Aretha Franklin", "Fleetwood Mac"],
+                        "country": ["UK", "USA", "UK"]})
+inner = tracks.merge(artists, on="artist", how="inner")
+print(len(inner))
+left = tracks.merge(artists, on="artist", how="left")
+print(len(left))
+right = tracks.merge(artists, on="artist", how="right")
+print(len(right))
+outer = tracks.merge(artists, on="artist", how="outer")
+print(len(outer))

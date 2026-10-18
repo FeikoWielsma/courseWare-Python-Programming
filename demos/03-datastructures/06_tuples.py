@@ -1,9 +1,9 @@
-track = ("Orbit", 222)
+track = ("Imagine", 183)
 dimensions = (1920, 1080)
-titles = "Orbit", "Echo"  # The comma creates a tuple.
+titles = "Imagine", "Yesterday"  # The comma creates a tuple.
 empty = ()
-single = ("Orbit",)  # A one-item tuple needs the comma.
+single = ("Imagine",)  # A one-item tuple needs the comma.
 print(track, dimensions, titles, empty, single)
-print(track[0])  # Orbit
-print(track[1])  # 222
+print(track[0])  # Imagine
+print(track[1])  # 183
 print(tuple())  # ()

@@ -1,18 +1,18 @@
-intro = 30
-orbit = 222
-echo = 185
+thriller = 357
+imagine = 183
+yesterday = 125
 
 total = (
-    intro + orbit + echo
+    thriller + imagine + yesterday
 )
-print(total)  # 437
+print(total)  # 665
 
 playlist = [
-    "Intro", "Orbit", "Echo",
+    "Thriller", "Imagine", "Yesterday",
 ]
 print(playlist)
 
 # A backslash also continues a line; parentheses are easier to maintain.
-same_total = intro + \
-    orbit + echo
+same_total = thriller + \
+    imagine + yesterday
 print(same_total)

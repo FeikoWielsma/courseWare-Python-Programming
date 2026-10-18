@@ -12,16 +12,16 @@ if __name__ == "__main__":
     logs = sorted(DATA.glob("*.log"))
     print(f"  ls *.log        -> Path.glob            {[p.name for p in logs]}")
 
-    text = (DATA / "cli-sample.log").read_text(encoding="utf-8")
+    text = (DATA / "listening.log").read_text(encoding="utf-8")
     print(f"  wc -l           -> str.splitlines       {len(text.splitlines())}")
 
     errors = [line for line in text.splitlines() if "ERROR" in line]
     print(f"  grep ERROR      -> a comprehension      {len(errors)} lines")
 
-    print(f"  basename        -> Path.name            {(DATA / 'cli-sample.log').name}")
-    print(f"  dirname         -> Path.parent          {(DATA / 'cli-sample.log').parent.name}")
-    print(f"  test -f         -> Path.exists          {(DATA / 'cli-sample.log').exists()}")
-    print(f"  du -sb          -> Path.stat            {(DATA / 'cli-sample.log').stat().st_size}")
+    print(f"  basename        -> Path.name            {(DATA / 'listening.log').name}")
+    print(f"  dirname         -> Path.parent          {(DATA / 'listening.log').parent.name}")
+    print(f"  test -f         -> Path.exists          {(DATA / 'listening.log').exists()}")
+    print(f"  du -sb          -> Path.stat            {(DATA / 'listening.log').stat().st_size}")
     print(f"  which           -> shutil.which         {bool(shutil.which('git'))}")
     print("  cp / mv / rm    -> shutil.copy, Path.rename, Path.unlink")
     print("  mkdir -p        -> Path.mkdir(parents=True, exist_ok=True)")

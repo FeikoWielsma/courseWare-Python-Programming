@@ -4,26 +4,18 @@ import numpy as np
 from numpy.typing import NDArray
 
 DATA: Path = Path(__file__).resolve().parents[2] / "data"
-CSV: Path = DATA / "server-load.csv"
-
-SERVERS: list[str] = ["web01", "web02", "web03", "db01", "cache01"]
+DAYS: list[str] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 
-def load_readings() -> NDArray[np.float64]:
-    return np.loadtxt(CSV, delimiter=",", skiprows=1, usecols=(1, 2, 3, 4, 5))
+def load_plays() -> NDArray[np.int64]:
+    return np.loadtxt(DATA / "plays-hourly.csv", delimiter=",", skiprows=1,
+                      usecols=range(1, 25), dtype=np.int64)
 
 
 def main() -> None:
-    load = load_readings()
-
-    print("file  :", CSV.name)
-    print("shape :", load.shape, " (24 hours by 5 servers)")
-    print("dtype :", load.dtype)
-    print("size  :", load.size, "readings in total")
-
-    print("\ncolumns :", ", ".join(SERVERS))
-    print("first two rows :")
-    print(load[:2])
+    plays = load_plays()
+    print(plays.shape, plays.dtype, plays.size)
+    print(plays[:2, :6])
 
 
 if __name__ == "__main__":

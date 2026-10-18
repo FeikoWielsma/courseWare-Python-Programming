@@ -95,15 +95,15 @@ print(sys.executable)
 ```python
 from timing import format_duration
 
-tracks = {"Orbit": 222, "Echo": 185}
+tracks = {"Imagine": 183, "Yesterday": 125}
 for title, seconds in tracks.items():
     label = format_duration(seconds)
     print(f"{title}: {label}")
 ```
 
 ```text
-Orbit: 3:42
-Echo: 3:05
+Imagine: 3:03
+Yesterday: 2:05
 ```
 
 - Updating the formatter in one module updates every caller

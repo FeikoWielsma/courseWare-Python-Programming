@@ -1,47 +1,22 @@
-RAW_PRICE: str = "  $51.77  "
-
-
-class Scraper:
+class Character:
     def __init__(self, name: str) -> None:
         self.name: str = name
+        self.health: int = 100
 
-    def clean(self, value: str) -> str:
-        return value.strip()
-
-    def describe(self) -> str:
-        return f"{type(self).__name__} for {self.name}"
+    def attack(self) -> str:
+        return f"{self.name} attacks"
 
 
-class BooksScraper(Scraper):
-    def clean(self, value: str) -> str:
-        return value.removeprefix("$")
+class Mage(Character):
+    def __init__(self, name: str, mana: int = 100) -> None:
+        super().__init__(name)
+        self.mana: int = mana
 
+    def attack(self) -> str:
+        return f"{self.name} casts Frostbolt"
 
-class CarefulBooksScraper(Scraper):
-    def clean(self, value: str) -> str:
-        return Scraper.clean(self, value).removeprefix("$")
-
-    def describe(self) -> str:
-        return f"{super().describe()}, currency aware"
-
-
-def main() -> None:
-    scrapers: list[Scraper] = [
-        Scraper("base"),
-        BooksScraper("replaces"),
-        CarefulBooksScraper("extends"),
-    ]
-
-    print(f"raw value from the page: {RAW_PRICE!r}\n")
-    for scraper in scrapers:
-        print(f"{scraper.name:<10} clean() -> {scraper.clean(RAW_PRICE)!r}")
-
-    # The replacing version never removed the pound sign, because the leading
-    # spaces were still there when removeprefix() looked at the first character.
-    print()
-    for scraper in scrapers:
-        print(scraper.describe())
-
-
-if __name__ == "__main__":
-    main()
+jaina = Mage("Jaina")
+print(jaina.attack())
+print(Character.attack(jaina))
+print([cls.__name__ for cls in Mage.__mro__])
+print(Mage.__str__ is object.__str__)

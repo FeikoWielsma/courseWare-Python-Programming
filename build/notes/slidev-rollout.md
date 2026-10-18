@@ -138,3 +138,22 @@ toolchain. Basic presenter/notes behavior and native authoring were checked in
 the integration log; multi-display drawing and every presenter control were
 not exhaustively exercised. Student builds strip notes; trainer builds remain
 separate. These are the concrete remaining limits, not pending authoring work.
+
+## Optional libraries migration
+
+The companion course now also defaults to Slidev, with a Marp fallback and its
+own student presentation ZIP. Its 168 pages preserve all 145 original fences;
+offline browser validation reports zero failures. The earlier statement that
+`libraries/` is outside the migration describes the fundamentals rollout only.
+Commands, comparison review and delivery evidence are in
+[the libraries Phase 1 record](libraries-slidev-phase1.md).
+
+Phase 2 replaces the inventory and employee examples with music, photos and WoW
+characters, while retaining the book dataset. Ten native additions have 55
+states checked against executed Python. The final deck has 179 Slidev pages;
+the Marp fallback has 169. Both build with no layout failures and lint is within
+budget. Phase 3 reviewed nine Slidev module sheets plus the preamble sheet, a Marp spot check,
+the exercise PDF and all 55 native click-export pages; tested reduced-motion
+behavior in Chromium; exercised all six interactive Tk demos under WSLg; and
+verified a fresh extraction of the 302-entry student ZIP. Details and exact
+commands are in [the Phase 3 delivery record](libraries-slidev-phase3.md).

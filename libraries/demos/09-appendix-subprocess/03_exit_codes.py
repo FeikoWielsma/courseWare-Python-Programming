@@ -2,7 +2,7 @@ import subprocess
 from pathlib import Path
 
 DATA = Path(__file__).resolve().parents[2] / "data"
-LOG = DATA / "cli-sample.log"
+LOG = DATA / "listening.log"
 
 if __name__ == "__main__":
     # grep exits 0 when it matched, 1 when it did not, 2 on a real error.

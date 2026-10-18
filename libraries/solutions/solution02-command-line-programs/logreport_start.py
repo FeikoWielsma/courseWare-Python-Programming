@@ -1,17 +1,17 @@
 from collections import Counter
 from pathlib import Path
 
-DATA = Path(__file__).resolve().parents[2] / "data"
-LOGFILE = DATA / "cli-sample.log"
-
-
-def count_levels(path: Path) -> Counter[str]:
-    return Counter(line.split()[2] for line in path.read_text(encoding="utf-8").splitlines())
+LOGFILE = Path(__file__).resolve().parents[2] / "data" / "listening.log"
 
 
 def main() -> None:
-    for level, count in count_levels(LOGFILE).most_common():
-        print(f"{level:<6}{count}")
+    counts: Counter[tuple[str, str]] = Counter()
+    for line in LOGFILE.read_text(encoding="utf-8").splitlines():
+        _day, _time, level, action, title = line.split(maxsplit=4)
+        if level == "INFO" and action in {"PLAY", "SKIP"}:
+            counts[action, title] += 1
+    for title in sorted({title for _action, title in counts}):
+        print(f"{title} PLAY={counts['PLAY', title]} SKIP={counts['SKIP', title]}")
 
 
 if __name__ == "__main__":

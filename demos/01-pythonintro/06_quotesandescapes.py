@@ -1,4 +1,4 @@
-title = "Orbit"
+title = "Imagine"
 filename = 'cover.jpg'
 caption = """Friday night
 Live at the observatory"""

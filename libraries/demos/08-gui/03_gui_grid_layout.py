@@ -3,7 +3,7 @@
 import tkinter as tk
 from tkinter import ttk
 
-FIELDS = ["Hostname", "Site", "Role", "Operating system", "Owner"]
+FIELDS = ["Title", "Artist", "Genre", "Duration", "Plays"]
 
 root = tk.Tk()
 root.title("grid layout")
@@ -35,7 +35,7 @@ ttk.Button(
     command=lambda: print({name: field.get() for name, field in entries.items()}),
 ).grid(row=0, column=1)
 
-entries["Hostname"].focus()
+entries["Title"].focus()
 root.bind("<Escape>", lambda _event: root.destroy())
 
 root.mainloop()

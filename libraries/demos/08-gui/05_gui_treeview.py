@@ -8,21 +8,19 @@ from tkinter import ttk
 DATA = Path(__file__).resolve().parents[2] / "data"
 
 COLUMNS = {
-    "hostname": 100,
-    "site": 60,
-    "role": 100,
-    "os": 110,
-    "cpu_cores": 70,
-    "memory_gb": 80,
-    "disk_gb": 80,
-    "used_gb": 80,
+    "title": 220,
+    "artist": 160,
+    "genre": 90,
+    "year": 70,
+    "duration_s": 90,
+    "plays": 70,
 }
 
-with (DATA / "servers.csv").open(encoding="utf-8", newline="") as handle:
+with (DATA / "tracks.csv").open(encoding="utf-8", newline="") as handle:
     rows = list(csv.DictReader(handle))
 
 root = tk.Tk()
-root.title("Server inventory")
+root.title("Playlist")
 root.geometry("820x360")
 root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
@@ -60,22 +58,19 @@ for column, width in COLUMNS.items():
         text=column.replace("_", " ").title(),
         command=lambda c=column: sort_by(c, False),
     )
-    tree.column(column, width=width, anchor="e" if column.endswith("_gb") else "w")
+    anchor = "e" if column in {"year", "duration_s", "plays"} else "w"
+    tree.column(column, width=width, anchor=anchor)
 
 # Tags let a whole row be styled, which is the Treeview version of the
 # colour-coded cell from the rich table in module 3.
-tree.tag_configure("full", background="#ffd6d6")
-tree.tag_configure("unknown", background="#eeeeee", foreground="#777777")
+tree.tag_configure("favourite", background="#dceeff")
+tree.tag_configure("never", background="#eeeeee")
 
 for row in rows:
-    if not row["used_gb"]:
-        tag = "unknown"
-    elif float(row["used_gb"]) / float(row["disk_gb"]) >= 0.80:
-        tag = "full"
-    else:
-        tag = ""
-    # values must be in the same order as the columns list.
-    tree.insert("", tk.END, values=[row[column] for column in COLUMNS], tags=(tag,))
+    tag = "never" if not row["last_played"] else ""
+    if int(row["plays"]) >= 50:
+        tag = "favourite"
+    tree.insert("", tk.END, values=[row[name] for name in COLUMNS], tags=(tag,))
 
 # A Treeview does not scroll itself; it is wired to a Scrollbar by hand.
 scroll = ttk.Scrollbar(root, orient="vertical", command=tree.yview)

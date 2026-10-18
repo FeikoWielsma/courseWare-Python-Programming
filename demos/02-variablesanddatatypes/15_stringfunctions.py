@@ -9,11 +9,11 @@ print(clean.find("0421"))  # 4
 print(clean.find("holiday"))  # -1
 print(clean.count("_"))  # 1
 print(len(clean))  # 12
-print("Orbit".isalpha())  # True
+print("Imagine".isalpha())  # True
 print("Beyoncé".isascii())  # False
 
-playlist_text = "Orbit, Echo, Pulse"
+playlist_text = "Imagine, Yesterday, Respect"
 titles = playlist_text.split(", ")
-print(titles)  # ['Orbit', 'Echo', 'Pulse']
-print(" / ".join(titles))  # Orbit / Echo / Pulse
-print("Orbit\nEcho".splitlines())  # ['Orbit', 'Echo']
+print(titles)  # ['Imagine', 'Yesterday', 'Respect']
+print(" / ".join(titles))  # Imagine / Yesterday / Respect
+print("Imagine\nYesterday".splitlines())  # ['Imagine', 'Yesterday']

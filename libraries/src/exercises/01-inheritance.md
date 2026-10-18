@@ -1,136 +1,85 @@
-# Exercise 1 : Inheritance and Class Design
+# Exercise 1 : A Guild Roster
 
-A fundamentals course ends with an `Employee` class much like the one below. In this exercise you keep that class and grow a family of employees around it, so that a payroll run works the same whether a person is paid by the hour, by the month, or by the hour plus a bonus. Inheritance is the only new idea here; everything else is ordinary class work.
+Build a roster whose members share character state but supply different attacks.
+Health, mana and rage are simplified teaching values, not a model of the game.
+Start from `exercises/starters/01-inheritance/` and run from `libraries/`.
+The final solution is in `solutions/solution01-inheritance/`.
 
-Work in a folder of your own, for example `work/01-inheritance/`. The reference solution is in `solutions/solution01-inheritance/`.
+### Step 1 : Define a character
 
----
+Create `characters.py` with a plain `Character` class. Store `name` and an
+initial `health` of 100. Add `attack() -> str` returning a description.
+Construct a character and print its attributes and attack.
 
-### Step 1 : The employee you already have
+:::hint
+The slides *Base Classes and Subclasses* and *Inherited Members* show the
+shared attributes and method on `Character`.
+:::
 
-Create `employee.py` and put a plain `Employee` class in it, with a name, an ID and a `calc_salary` method that returns zero. Nothing here is new :
+### Step 2 : Add specialisations
 
-```python
-class Employee:
-    def __init__(self, name: str, employee_id: int) -> None:
-        self.name: str = name
-        self.employee_id: int = employee_id
+Create `Mage(Character)` with `mana`, and `Warrior(Character)` with `rage`.
+Call `super().__init__(name)` in each initialiser. Override `attack` so a mage
+casts Frostbolt and a warrior uses Heroic Strike. Add `Priest(Character)` with
+a Smite attack; it can inherit the base initialiser unchanged.
 
-    def calc_salary(self) -> float:
-        return 0.0
-```
+:::hint
+The slides *Constructor Chaining* and *Overriding Methods* show `super` and
+method replacement. Demo `polymorphism` includes all three subclasses.
+:::
 
-Add a `main` function that builds one employee and prints the name, the ID and the salary, and call it from the usual guard :
+### Step 3 : Give objects a display
 
-```python
-if __name__ == "__main__":
-    main()
-```
+Implement `__str__` and `__repr__` on `Character`. Print one mage directly,
+then a list containing it. Check which method each display uses.
+Also compare `isinstance(mage, Character)` with `type(mage) is Character`.
 
-Run it with `uv run employee.py`. One line of output is the whole goal of this step; it proves the file is where you think it is and that `uv` is working.
+:::hint
+The slides *str and repr* and *isinstance and issubclass* show these operations.
+:::
 
-### Step 2 : An employee paid by the hour
+### Step 4 : Build the roster
 
-Add a second class in the same file. `WageEmployee` is a kind of `Employee`, so it names `Employee` as its base class, adds an hourly wage and a number of hours, and replaces `calc_salary` with a version that multiplies the two :
+Create `guild.py`. A `Guild` holds a `list[Character]`. Give it `recruit` to add
+a member and `report` to return the members' attack descriptions. The report
+must call `member.attack()` without checking a member's subclass.
+Recruit Jaina as a mage, Varian as a warrior and Anduin as a priest, then print
+the report.
 
-```python
-class WageEmployee(Employee):
-    def __init__(self, name: str, employee_id: int, wage: float, hours: float) -> None:
-        super().__init__(name, employee_id)
-        self.wage: float = wage
-        self.hours: float = hours
-```
+:::hint
+The slide *Polymorphism* shows one loop calling each object's implementation.
+*Composition* shows one object holding other objects.
+:::
 
-Write `calc_salary` yourself. Then create a `WageEmployee`, print its `name`, and notice that you never wrote a `name` attribute in this class.
+### Step 5 : Enforce the interface
 
-Now delete the `super().__init__(...)` line, run the program again, and read the error carefully. Put the line back. That error is the single most common mistake with inheritance, and it is worth recognising once on purpose.
+Make `Character` an abstract base class with abstract `attack`. Keep its
+initialiser and display methods concrete. Try constructing `Character` and an
+unfinished subclass, then remove those failing calls. Confirm that all three
+complete subclasses still work with the roster.
 
-### Step 3 : Two more kinds of employee
+:::hint
+The slides *Abstract Base Classes* and *Enforcing the Contract* show `ABC`,
+`abstractmethod` and the construction error for an incomplete subclass.
+:::
 
-Add `ManagerEmployee`, which is also a kind of `Employee` but is paid a fixed amount each month. Its `calc_salary` returns that amount.
+### Step 6 : Add belongings
 
-Then add `ProgrammerEmployee`. A programmer is paid like a wage employee and gets a bonus on top, so its base class is `WageEmployee` rather than `Employee`. Its `calc_salary` should reuse the version it inherits rather than repeating the multiplication :
+Add `Mount` and `Inventory`. A character has an inventory and may have a mount;
+it does not inherit from either class. Give Jaina a Gryphon and a Healing Potion.
+Print the mount name and inventory contents through the character attributes.
 
-```python
-class ProgrammerEmployee(WageEmployee):
-    def calc_salary(self) -> float:
-        base = super().calc_salary()
-        return base + ...
-```
+:::hint
+The slide *Composition* and demo `composition` show collaborator attributes.
+:::
 
-Give it `lines` and `bugs` attributes and decide for yourself what the bonus is worth. Something like one euro a line, minus twenty a bug, is fine.
+### If time permits
 
-Print the salary of one of each class.
+Count mages with `isinstance`. Add another concrete character class without
+changing `Guild.report`. Give the inventory a method to add an item instead of
+appending to its list from the caller.
 
-### Step 4 : Printing an employee properly
-
-Put `__str__` and `__repr__` on `Employee` only, and check that all four classes get them :
-
-```python
-    def __str__(self) -> str:
-        return f"{self.name} (#{self.employee_id})"
-
-    def __repr__(self) -> str:
-        return f"{type(self).__name__}(name={self.name!r}, id={self.employee_id})"
-```
-
-Use `type(self).__name__` rather than writing the class name as text, so that a `ManagerEmployee` says so. Print one employee directly, then print a list of employees, and note which of the two methods each case used.
-
-### Step 5 : One loop over all of them
-
-Create `company.py` next to `employee.py`, import the classes from it, and build a list holding one of each :
-
-```python
-from employee import Employee, ManagerEmployee, ProgrammerEmployee, WageEmployee
-```
-
-Write a `payroll` function that takes a `list[Employee]`, loops over it, prints each employee with the salary, and returns the total :
-
-```python
-def payroll(staff: list[Employee]) -> float:
-    ...
-```
-
-The body must not mention `WageEmployee`, `ManagerEmployee` or `ProgrammerEmployee` anywhere. Each call to `calc_salary` finds the right version on its own, and that is polymorphism.
-
-### Step 6 : Asking what an employee is
-
-Add a function that counts how many of the staff are managers, using `isinstance` rather than comparing `type(...)` with a class. Print the count.
-
-Then check `isinstance(a_programmer, WageEmployee)` and explain to yourself why it is true. Check `issubclass(ProgrammerEmployee, Employee)` as well.
-
-### Step 7 : Turning the base class into a contract
-
-Right now nothing stops someone writing a new kind of employee and forgetting `calc_salary`; the payroll would silently pay them zero. Make that impossible by turning `Employee` into an abstract base class :
-
-```python
-from abc import ABC, abstractmethod
-
-
-class Employee(ABC):
-    @abstractmethod
-    def calc_salary(self) -> float:
-        """Every kind of employee has to say how it is paid."""
-```
-
-Keep `__init__`, `__str__` and `__repr__` concrete; only `calc_salary` becomes abstract. Then try to create a plain `Employee(...)` and read the `TypeError`. Write a `SalesEmployee` that inherits from `Employee` but supplies no `calc_salary`, try to construct one, and confirm the failure happens at construction rather than at payroll time.
-
-Remove `SalesEmployee` again, or finish it, whichever you prefer.
-
-### Step 8 : Optional, a company that has employees
-
-A `Company` is not a kind of employee, so it must not inherit from one. It holds a list of them instead, which is composition :
-
-```python
-class Company:
-    def __init__(self, name: str) -> None:
-        self.name: str = name
-        self.staff: list[Employee] = []
-
-    def hire(self, employee: Employee) -> None:
-        ...
-```
-
-Give it `hire`, `fire` and a `payroll` method that reuses the function from Step 5. Then add a `breakdown` method that reports the total per class, using `type(employee).__name__` as the key of a dictionary.
-
-Say both relationships out loud as a check on the design : a programmer *is a* wage employee, and a company *has* employees.
+:::hint
+The slides *isinstance and issubclass* and *Polymorphism* show how these changes
+keep the roster independent of specific subclasses.
+:::

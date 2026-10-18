@@ -1,10 +1,10 @@
-queue = ["Orbit", "Echo", "Echo", "Intro", "Pulse"]
-print(queue.count("Echo"))  # 2
+queue = ["Imagine", "Yesterday", "Yesterday", "Thriller", "Respect"]
+print(queue.count("Yesterday"))  # 2
 queue.insert(0, "Warm-up")
-queue.append("Encore")
+queue.append("Let It Be")
 print(queue)
-print(queue.index("Pulse"))  # 5
-queue.remove("Echo")  # Only the first matching item is removed.
+print(queue.index("Respect"))  # 5
+queue.remove("Yesterday")  # Only the first matching item is removed.
 print(queue)
 queue.reverse()
 print(queue)

@@ -1,18 +1,19 @@
-durations = {"Orbit": 222, "Echo": 185, "Pulse": 204}
-print(durations)  # {'Orbit': 222, 'Echo': 185, 'Pulse': 204}
+durations = {"Imagine": 183, "Yesterday": 125, "Respect": 149}
+print(durations)  # {'Imagine': 183, 'Yesterday': 125, 'Respect': 149}
 
-durations["Nova"] = 196
-durations["Intro"] = 90
-print(durations)  # {'Orbit': 222, 'Echo': 185, 'Pulse': 204, 'Nova': 196, 'Intro': 90}
+durations["Toxic"] = 199
+durations["Thriller"] = 357
+print(durations)
+# {'Imagine': 183, 'Yesterday': 125, 'Respect': 149, 'Toxic': 199, 'Thriller': 357}
 
-print(durations["Echo"])  # 185
-print(durations["Intro"])  # 90
+print(durations["Yesterday"])  # 125
+print(durations["Thriller"])  # 357
 
-durations["Pulse"] = 210
-print(durations["Pulse"])  # 210
+durations["Respect"] = 147
+print(durations["Respect"])  # 147
 
-del durations["Orbit"]
-# print(durations["Orbit"])  # KeyError
+del durations["Imagine"]
+# print(durations["Imagine"])  # KeyError
 
 durations.clear()  # remove all entries in dict
 print(durations)  # {}

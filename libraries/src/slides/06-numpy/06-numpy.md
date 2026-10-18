@@ -9,426 +9,331 @@ language: python
 
 # NumPy Arrays
 
-- NumPy adds one thing to Python, the array :
-  - A fixed-size block of numbers, all of the same type
-- Everything else in the library exists to build or work on that array :
-  - Arithmetic, statistics, sorting, reshaping, reading and writing
-- An operation applies to the whole array at once :
-  - No loop is written, and no loop runs in Python
-- It is the foundation the rest of the numeric stack sits on :
-  - Pandas, SciPy, scikit-learn and matplotlib all speak arrays
-- The usual import, and it is always spelled this way :
+- An array holds values of one dtype in a regular shape
+- Arithmetic applies to every element without a Python loop
+- `np.sin` can compute samples of an audio tone
 
 ```python
-import numpy as np
-
-celsius = np.array([25.3, 24.8, 26.9, 23.9])
-print(celsius * 9 / 5 + 32)          # every reading converted
+times = np.arange(8) / 8000
+samples = np.sin(2 * np.pi * 440 * times)
+print(samples.round(3))
+print(samples * 0.5)
 ```
 
 > `demo01 · first_array`
-
 
 ---
 
 # Memory Use
 
-- A Python list of numbers is a list of pointers :
-  - Each pointer leads to a separate integer object with its own header
-- A NumPy array is one contiguous block of raw numbers :
-  - No per-element object, no per-element pointer
-- The difference is not marginal :
+- A Python list holds references to Python objects
+- A numeric array stores the numbers in a contiguous buffer
+- `nbytes` measures the array buffer; `getsizeof` measures Python objects
 
-```text
-1,000,000 integers
-  as a Python list :   36,000,056 bytes
-  as a NumPy array :    8,000,000 bytes
+```python
+count = 60 * 44100
+samples = [math.sin(2 * math.pi * 440 * i / 44100) for i in range(count)]
+tone = np.array(samples)
+list_bytes = sys.getsizeof(samples) + sum(sys.getsizeof(x) for x in samples)
+print(f"list: {list_bytes:,} bytes")
+print(f"array: {tone.nbytes:,} bytes")
 ```
 
-- One Python integer costs 28 bytes, one array element costs 8
-- Contiguous also means the processor can prefetch it :
-  - Which is the reason the next slide comes out the way it does
-
 > `demo02 · memory_footprint`
-
 
 ---
 
 # Speed
 
-- Multiply two sequences together and total the result, the Python way :
+- NumPy evaluates array arithmetic in compiled code
+- A Python loop evaluates one sample at a time
+- Compare equivalent results before comparing elapsed time
 
 ```python
-total = 0.0
-for i in range(COUNT):
-    total += left_list[i] * right_list[i]
+count = 60 * 44100
+start = time.perf_counter()
+samples = [math.sin(2 * math.pi * 440 * i / 44100) for i in range(count)]
+print(f"Python: {time.perf_counter() - start:.3f} s")
+start = time.perf_counter()
+times = np.arange(count) / 44100
+tone = np.sin(2 * np.pi * 440 * times)
+print(f"NumPy: {time.perf_counter() - start:.3f} s")
+print(np.allclose(samples, tone))
 ```
-
-- The same arithmetic with arrays is `float((left * right).sum())`
-- Two million multiplications, timed :
-
-```text
-Python loop      0.086 s
-NumPy arrays     0.008 s
-```
-
-- The loop still happens, in compiled C rather than in Python
 
 > `demo03 · speed_comparison`
-
 
 ---
 
 # Creating Arrays
 
-- From data you already have :
-  - `np.array([3, 1, 4])`, `np.array([[1, 2], [3, 4]])`
-- From a rule, when the values are regular :
-  - `np.arange(0, 10, 2)` steps like `range`, and stops one short
-  - `np.linspace(0.0, 1.0, 5)` asks for a count, and includes both ends
-- From a shape, when the values come later :
-  - `np.zeros((2, 4))`, `np.ones(3, dtype=int)`, `np.full(4, 7.5)`
-- A shape is a tuple, so a two-dimensional shape needs the inner brackets :
+- `array` converts an existing sequence
+- `arange` selects a step; `linspace` selects a sample count
+- `zeros`, `ones` and `full` fill a given shape
 
 ```python
-np.zeros(3)            # shape (3,)
-np.zeros((3, 1))       # shape (3, 1), a column
+print(np.array([183, 126, 146]))
+print(np.arange(0, 8, 2))
+print(np.linspace(0.0, 1.0, 5))
+print(np.zeros((2, 4)))
+print(np.ones(3, dtype=int))
+print(np.full(3, 0.5))
 ```
 
 > `demo04 · making_arrays`
-
 
 ---
 
 # Array Data Types
 
-- Every array has a single element type, its `dtype` :
-  - Chosen once when the array is created, and fixed for its lifetime
-- NumPy picks the narrowest type that holds everything given :
+- `dtype` determines the representation of each element
+- Request a dtype at construction or convert with `astype`
+- Integer conversions discard fractional parts; narrow integers have limits
 
 ```python
-np.array([1, 2, 3]).dtype        # int64
-np.array([1.0, 2, 3]).dtype      # float64, one float promotes the lot
+samples = np.array([0.1, 0.5, -0.4], dtype=np.float32)
+print(samples.dtype)
+print(samples.astype(np.int16))
+print(np.iinfo(np.int16).min, np.iinfo(np.int16).max)
+counts = np.array([183, 126, 146], dtype=np.int64)
+print(counts.dtype, counts.itemsize)
 ```
-
-- Ask for a type and it is enforced, not negotiated :
-
-```python
-np.array([1.7, 2.9, -3.4], dtype=np.int32)   # [ 1  2 -3], truncated
-```
-
-- The common types are `int32`, `int64`, `float32`, `float64` and `bool`
-- `astype` converts, and always makes a new array
 
 > `demo05 · dtypes`
-
 
 ---
 
 # Shape and Dimensions
 
-- `shape` is a tuple giving the size along each dimension :
-  - `ndim` is how many dimensions, `size` is the total element count
-- Shape reads outermost first, so a table is rows then columns :
+- An RGB image has height, width and colour-channel dimensions
+- `.shape` gives each dimension's length; `.ndim` counts dimensions
+- `.size` counts all elements
 
 ```python
-table = np.array([[3.4, 8.7, 9.9],
-                  [1.1, -7.8, -0.7]])
-print(table.ndim)      # 2
-print(table.shape)     # (2, 3), two rows of three columns
-print(table.size)      # 6, the product of the shape
+print(photo.shape)
+print(photo.ndim)
+print(photo.size)
+print(photo[0, 0].shape)
 ```
-
-- One dimension is a row of values, two is a table, three is a stack of tables
-- Almost every NumPy error message is about a shape :
-  - Reading the two shapes in the message is usually the whole diagnosis
 
 > `demo06 · shape_and_ndim`
 
-
 ---
 
-# Reshape and Transpose
+# Reshaping and Transposing
 
-- `reshape` gives the same numbers a different shape :
-  - The element count has to come out the same
-- `-1` means work the remaining dimension out for me :
-
-```python
-readings = np.arange(12)
-table = readings.reshape(3, 4)      # 3 rows of 4
-print(readings.reshape(-1, 2).shape)  # (6, 2)
-```
-
-- `.T` transposes, turning rows into columns :
+- `reshape` changes dimensions while preserving the element count
+- `-1` asks NumPy to calculate one dimension
+- `transpose` rearranges axes; `.T` reverses them
 
 ```python
-print(table.T.shape)                # (4, 3)
+pixels = photo.reshape(-1, 3)
+print(pixels.shape)
+print(np.shares_memory(pixels, photo))
+print(photo.transpose(1, 0, 2).shape)
+print(pixels.T.shape)
 ```
-
-- Neither call moves a single number :
-  - Both hand back another way of looking at the same block of memory
 
 > `demo07 · reshape_and_transpose`
-
 
 ---
 
 # Indexing and Slicing
 
-- Indexing works as it does on a list :
-  - `row[0]`, `row[-1]`, `row[2:5]`, `row[::2]`, and the stop is excluded
-- In two dimensions the indices go inside one pair of brackets :
+- Give one index or slice per dimension, separated by commas
+- A slice excludes its stop position
+- A negative step reverses an axis
 
 ```python
-table[1, 2]        # row 1, column 2, a single value
-table[0]           # a whole row
-table[:, 1]        # a whole column, the colon means "all of them"
-table[1:, 2:]      # a sub-table, from row 1 and column 2 on
+print(photo[24, 32])
+crop = photo[12:36, 16:48]
+print(crop.shape)
+flipped = photo[::-1]
+print(np.array_equal(flipped[0], photo[-1]))
+print(photo[:, :, 0].shape)
 ```
-
-- A slice can also go on the left of an assignment :
-
-```python
-table[0] = 0       # the whole first row, in one statement
-```
-
-- The colon means every position along that dimension
 
 > `demo08 · indexing_and_slicing`
-
 
 ---
 
 # Views and Copies
 
-- Slicing a list gives a copy, slicing an array gives a view :
-  - A view is a window onto the original numbers, not a duplicate of them
+- Basic slicing returns a view of the same buffer
+- Writing through a view also changes the original
+- `.copy()` makes an independent buffer; advanced indexing also copies
 
 ```python
-readings = np.arange(10) * 10
-window = readings[1:4]
-window[0] = 999
-print(readings)     # [0 999 20 30 ...], the original changed
+crop = photo[12:36, 16:48]
+detached = crop.copy()
+crop[0, 0] = [1.0, 0.0, 0.0]
+print(photo[12, 16])
+print(detached[0, 0])
+print(np.shares_memory(crop, photo))
+print(np.shares_memory(detached, photo))
+print(np.shares_memory(photo[[0, 1]], photo))
 ```
-
-- `.copy()` is the explicit way to detach, and the only reliable one :
-
-```python
-window = readings[1:4].copy()      # now edits stay local
-```
-
-- Two ways to check which one is in your hands :
-  - `np.shares_memory(window, readings)` and `window.base`
-- Indexing with a list of positions copies, slicing does not
 
 > `demo09 · views_and_copies`
-
 
 ---
 
 # Vectorised Arithmetic
 
-- An operator between an array and a number applies to every element :
+- A scalar applies to every element
+- Matching shapes combine element by element
+- Functions such as `sqrt`, `sin` and `log10` also accept arrays
 
 ```python
-traffic = np.array([1_200, 3_400, 900, 15_800])
-print(traffic / 1024)          # every value in kilobytes
+times = np.arange(8) / 8000
+tone = np.sin(2 * np.pi * 440 * times)
+quiet = tone * 0.5
+print(quiet.round(3))
+print(np.sqrt(tone ** 2).round(3))
+print((tone - quiet).round(3))
 ```
-
-- An operator between two arrays of the same shape works elementwise :
-
-```python
-limits = np.array([2_000, 2_000, 2_000, 10_000])
-print(limits - traffic)        # headroom, per interface
-```
-
-- The named functions behave the same way over the whole array :
-  - `np.sqrt`, `np.log10`, `np.abs`, `np.round`, and the rest
-- A comparison is arithmetic too, and returns an array of `True` and `False`
-- This is the habit to build : say what to compute, not how to iterate
 
 > `demo10 · vectorised_arithmetic`
-
 
 ---
 
 # Boolean Masking
 
-- A comparison over an array gives a mask, which is itself an array :
+- A comparison creates an array of booleans
+- Indexing with a mask keeps matching values
+- `&` and `|` combine conditions; each comparison needs parentheses
 
 ```python
-latency = np.array([12.1, 9.8, 210.5, 11.2, 480.0])
-mask = latency > 100.0         # [False False True False True]
+tone = np.array([0.0, 0.2, 0.9, -0.8, 0.0, -0.1])
+silent = np.abs(tone) < 0.05
+print(tone[silent])
+print(silent.sum(), silent.any(), silent.all())
+print(np.nonzero(silent)[0])
+print(tone[(tone > -0.5) & (tone < 0.5)])
 ```
-
-- Indexing with the mask keeps the elements where it is `True` :
-
-```python
-print(latency[mask])           # [210.5 480. ]
-print(mask.sum())              # 2, because True counts as one
-```
-
-- Conditions combine with `&` and `|`, and each one needs its own brackets :
-
-```python
-(latency > 12.0) & (latency < 100.0)
-```
-
-- The mask also works on the left of an assignment
 
 > `demo11 · boolean_masking`
-
 
 ---
 
 # np.where
 
-- `np.where` is an if-else evaluated for every element at once :
+- `where(condition, yes, no)` chooses a value for each element
+- Each branch can be an array or a scalar
+- Nesting a second `where` supports three outcomes
 
 ```python
-disk = np.array([41, 88, 96, 12, 73, 91])
-print(np.where(disk > 90, 0, 90 - disk))    # headroom, floored at zero
-print(np.where(disk > 90, "FULL", "ok"))    # a label per reading
+tone = np.array([-0.9, -0.2, 0.0, 0.4, 0.9])
+clipped = np.where(tone > 0.5, 0.5, np.where(tone < -0.5, -0.5, tone))
+print(clipped)
+print(np.where(np.abs(tone) < 0.05, "silence", "sound"))
+print(np.where(tone > 0.5)[0])
 ```
-
-- Either branch can be an array or a single value, in any combination
-- Nesting gives more than two outcomes, and three is the readable limit :
-
-```python
-np.where(disk > 90, "critical", np.where(disk > 70, "warning", "fine"))
-```
-
-- With a single argument it answers "where", giving positions :
-  - `np.where(disk > 90)` and `np.nonzero(disk > 90)` are the same call
-- `np.clip(disk, 0, 90)` is the common case, already named
 
 > `demo12 · np_where`
-
 
 ---
 
 # Broadcasting
 
-- Broadcasting lets arrays of different shapes work together :
-  - Line the shapes up from the right, then compare them
-- Two dimensions are compatible when they are equal, or when one is `1` :
-  - A size-one dimension is stretched, and nothing is copied to do it
-
-```text
-   (3, 4)  with  (4,)     ->  (3, 4)   one row applied to every row
-   (3, 1)  with  (4,)     ->  (3, 4)   a column against a row
-   (3, 4)  with  (3,)     ->  refused, nothing lines up
-```
-
-- Reshaping to `(3, 1)` is how a per-row value is applied to whole rows :
+- Shapes align from the right
+- Dimensions must be equal or one of them must be `1`
+- Three channel factors apply to every pixel in an RGB photo
 
 ```python
-load - baseline.reshape(3, 1)      # each server minus its own baseline
+factors = np.array([1.1, 1.0, 0.9])
+corrected = np.clip(photo * factors, 0.0, 1.0)
+print(photo.shape, factors.shape, corrected.shape)
+print(np.broadcast_shapes((48, 64, 3), (3,)))
+print(np.broadcast_shapes((3, 1), (4,)))
 ```
 
 > `demo13 · broadcasting`
-
 
 ---
 
 # Aggregations
 
-- A reduction turns a whole array into one number :
+- Reductions produce totals, averages or extreme values
+- `argmax` gives a position; `unravel_index` converts it to coordinates
+- Median and percentiles describe the distribution
 
 ```python
-print(latency.sum(), latency.mean())
-print(latency.min(), latency.max(), latency.std())
+print(plays.sum(), plays.mean().round(2))
+print(plays.min(), plays.max(), plays.std().round(2))
+print(np.median(plays), np.percentile(plays, 95))
+day, hour = np.unravel_index(np.argmax(plays), plays.shape)
+print(f"peak: day {day}, hour {hour:02d}")
 ```
 
-- `argmin` and `argmax` give the position rather than the value :
-  - Which probe, which hour, which server, and usually the useful answer
-- Boolean reductions answer yes or no across the array :
-  - `mask.any()`, `mask.all()`, and `mask.sum()` for the count
-- A mean is a poor summary of anything skewed :
-  - `np.median` and `np.percentile(latency, 95)` say more, and lie less
-- Every reduction exists as a method and as a function, either is fine
-
 > `demo14 · aggregations`
-
 
 ---
 
 # axis Argument
 
-- Every reduction takes an `axis`, and it names the dimension that disappears
-- With no `axis` at all, every dimension goes and one number comes back :
+- `axis` names the dimension removed by the reduction
+- A days-by-hours grid reduces to hours with `axis=0`
+- `axis=1` removes the hours and leaves a value per day
+- `keepdims=True` retains the reduced dimension with length one
 
-```text
-LOAD = [[  1,   2,   3,   4],      axis 0 runs down the rows
-        [ 10,  20,  30,  40],      axis 1 runs along the columns
-        [100, 200, 300, 400]]      shape (3, 4)
-
-LOAD.sum()        ->  1110                 shape ()
-LOAD.sum(axis=0)  ->  [111 222 333 444]    shape (4,), one per column
-LOAD.sum(axis=1)  ->  [  10  100 1000]     shape (3,), one per row
+```python
+plays = np.array([[1, 2, 3, 4], [2, 0, 1, 3], [0, 1, 2, 1]])
+print(plays.sum())
+print(plays.sum(axis=0))
+print(plays.sum(axis=1))
+print(plays.sum(axis=1, keepdims=True).shape)
 ```
 
-- `axis=0` removes the rows, so a per-column answer survives
-- `keepdims=True` leaves the collapsed dimension as size one, ready to broadcast
-
 > `demo15 · the_axis_argument`
-
 
 ---
 
 # Random Numbers
 
-- Make a generator, then ask it for what is needed :
+- `default_rng(seed)` produces reproducible pseudorandom draws
+- `choice` samples existing values; `permutation` returns a shuffled copy
+- `shuffle` changes its input in place
 
 ```python
-rng = np.random.default_rng(seed=42)
-
-print(rng.random(4))                  # uniform, 0 to 1
-print(rng.integers(1, 7, size=8))     # eight dice
-print(rng.normal(100.0, 15.0, 4))     # mean 100, deviation 15
+rng = np.random.default_rng(7)
+titles = np.array(["Imagine", "Yesterday", "Respect", "Toxic"])
+print(rng.permutation(titles))
+print(rng.choice(titles, size=2, replace=False))
+print(rng.integers(0, 10, size=4))
+print(rng.random(3).round(2))
+print(rng.normal(0.0, 0.1, size=3).round(2))
+rng.shuffle(titles)
+print(titles)
 ```
 
-- Every call takes a `size`, and a shape works as well as a count
-- `rng.choice` samples from data already in hand, with or without replacement
-- A seed makes the run repeatable, which is what a demo or a test needs
-- The older `np.random.seed` and `np.random.rand` still exist :
-  - They share one hidden global generator, and are not what to write now
-
 > `demo16 · random_numbers`
-
 
 ---
 
 # Reading a CSV
 
-- `np.loadtxt` reads a rectangle of numbers, and wants it to be tidy :
+- `loadtxt` reads regular numeric data
+- `skiprows` excludes the header; `usecols` excludes the day labels
+- `savetxt` writes an array back to a file
 
 ```python
-load = np.loadtxt(CSV, delimiter=",", skiprows=1, usecols=(1, 2, 3, 4, 5))
-print(load.shape)                  # (24, 5), hours by servers
-print(load.mean(axis=0))           # mean per server
+print(plays.shape)
+print(plays.sum(axis=0))
+print(plays.sum(axis=1))
+print(int(np.argmax(plays.sum(axis=0))))
+np.savetxt(DATA / "plays-hourly-mean.csv", plays.mean(axis=0),
+           delimiter=",", fmt="%.2f")
 ```
 
-- `skiprows` steps over a header, `usecols` drops columns that are not numbers
-- `np.savetxt` writes one back out, and `np.save` stores the exact bytes
-- `np.genfromtxt` copes with gaps and missing values, at some cost in speed
-- When the columns have names and different types, this stops being the tool :
-  - That is a table rather than an array, and the next module reads it properly
-
 > `demo17 · csv_into_array`
-
 
 ---
 
 # Summary : NumPy
 
-- Reach for it when the data is a rectangle of numbers of one type :
-  - Measurements, samples, pixels, matrices, counters over time
-- Three habits to carry forward :
-  - Say what to compute, rather than how to loop over it
-  - Print `.shape` whenever something is not behaving
-  - Write `.copy()` when a slice is about to be modified
-- Reach for Pandas instead when the columns have names and types
-- The rest of the numeric stack is built on this one object :
-  - SciPy, scikit-learn, matplotlib and Pandas all take arrays and give them back
+- Arrays have a dtype and a regular shape
+- Slices usually share memory; copies own independent buffers
+- Arithmetic, masks and `where` operate on whole arrays
+- Broadcasting aligns compatible dimensions from the right
+- Reductions remove the selected axes; seeded generators repeat their draws

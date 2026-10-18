@@ -117,7 +117,7 @@ start - timedelta(days=1)    # 2026-08-14
 ```python
 import json
 
-playlist = {"name": "Night drive", "tracks": ["Orbit", "Echo"], "cover": None}
+playlist = {"name": "Night drive", "tracks": ["Imagine", "Yesterday"], "cover": None}
 text = json.dumps(playlist, indent=2, sort_keys=True)
 restored = json.loads(text)
 ```
@@ -127,8 +127,8 @@ restored = json.loads(text)
   "cover": null,
   "name": "Night drive",
   "tracks": [
-    "Orbit",
-    "Echo"
+    "Imagine",
+    "Yesterday"
   ]
 }
 ```
@@ -148,7 +148,7 @@ restored = json.loads(text)
 import json
 from pathlib import Path
 
-playlist = {"name": "Night drive", "tracks": ["Orbit", "Echo"], "cover": None}
+playlist = {"name": "Night drive", "tracks": ["Imagine", "Yesterday"], "cover": None}
 path = Path("playlist.json")
 
 with path.open("w", encoding="utf-8") as file:
@@ -215,11 +215,11 @@ r"^IMG_\d{4}\.jpg$"   # a photo filename like IMG_0421.jpg
 ```python
 import re
 
-text = "Playing Orbit (222s), Echo (185s)"
+text = "Playing Imagine (183s), Yesterday (125s)"
 print(re.match(r"Playing", text) is not None)  # True
-print(re.match(r"Echo", text) is not None)  # False
-print(re.search(r"Echo", text) is not None)  # True
-print(re.findall(r"\d+", text))  # ['222', '185']
+print(re.match(r"Yesterday", text) is not None)  # False
+print(re.search(r"Yesterday", text) is not None)  # True
+print(re.findall(r"\d+", text))  # ['183', '125']
 print(re.fullmatch(r"IMG_\d{4}\.jpg", "IMG_0421.jpg") is not None)  # True
 print(re.fullmatch(r"IMG_\d{4}\.jpg", "notes.txt") is not None)  # False
 ```
@@ -238,11 +238,11 @@ print(re.fullmatch(r"IMG_\d{4}\.jpg", "notes.txt") is not None)  # False
 ```python
 import re
 
-line = "12:30 PLAY Orbit"
+line = "12:30 PLAY Imagine"
 match = re.search(r"(\d{2}):(\d{2}) (\w+) (.*)", line)
 if match is not None:
-    print(match.group(0))  # 12:30 PLAY Orbit
-    print(match.groups())  # ('12', '30', 'PLAY', 'Orbit')
+    print(match.group(0))  # 12:30 PLAY Imagine
+    print(match.groups())  # ('12', '30', 'PLAY', 'Imagine')
 ```
 
 - Named groups identify captured values without counting positions :
@@ -251,7 +251,7 @@ if match is not None:
 named = re.search(r"(?P<action>PLAY|SKIP) (?P<title>.*)", line)
 if named is not None:
     print(named.group("action"))  # PLAY
-    print(named.group("title"))  # Orbit
+    print(named.group("title"))  # Imagine
 ```
 
 > `demo07 · regex_groups`

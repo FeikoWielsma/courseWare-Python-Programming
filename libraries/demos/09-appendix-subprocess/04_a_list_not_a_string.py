@@ -10,7 +10,7 @@ if __name__ == "__main__":
     # way this goes wrong in real life.
     with tempfile.TemporaryDirectory() as workspace:
         awkward = Path(workspace) / "last week.log"
-        shutil.copy(DATA / "cli-sample.log", awkward)
+        shutil.copy(DATA / "listening.log", awkward)
 
         # A list hands the arguments to the program directly. No shell starts,
         # so nothing splits on the space.

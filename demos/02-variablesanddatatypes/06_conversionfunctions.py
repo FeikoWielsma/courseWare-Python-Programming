@@ -2,7 +2,7 @@ duration_text = "222"
 duration = int(duration_text)
 print(duration + 30)  # 252
 print(str(duration))  # 222
-print(repr(" Orbit "))  # ' Orbit '
+print(repr(" Imagine "))  # ' Imagine '
 
 print(chr(65))  # A
 print(ord("A"))  # 65

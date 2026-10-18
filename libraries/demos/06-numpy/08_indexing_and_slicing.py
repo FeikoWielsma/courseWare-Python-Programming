@@ -1,22 +1,14 @@
+from pathlib import Path
+
+import matplotlib.image as image
 import numpy as np
 
-row = np.arange(10) * 10
-print(row)
-print(row[0])
-print(row[-1])
-print(row[2:5])
-print(row[::2])
-print(row[::-1])
+DATA = Path(__file__).resolve().parents[2] / "data"
+photo = image.imread(DATA / "photo.png")
 
-table = np.arange(12).reshape(3, 4)
-print(table)
-
-# One index per dimension, inside one pair of brackets, separated by commas.
-print(table[1, 2])
-print(table[0])
-print(table[:, 1])
-print(table[1:, 2:])
-
-# A whole row can be assigned in one statement.
-table[0] = 999
-print(table)
+print(photo[24, 32])
+crop = photo[12:36, 16:48]
+print(crop.shape)
+flipped = photo[::-1]
+print(np.array_equal(flipped[0], photo[-1]))
+print(photo[:, :, 0].shape)

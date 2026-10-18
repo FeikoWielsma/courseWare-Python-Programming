@@ -10,13 +10,13 @@ pills: ["demo03 · optional"]
 const run = {
   "dict": {
     "name": "durations", "type": "dict[str, int]", "x": 0, "y": 0,
-    "rows": [{"id": "orbit", "key": "'Orbit'", "value": "222"}, {"id": "echo", "key": "'Echo'", "value": "185"}]
+    "rows": [{"id": "imagine", "key": "'Imagine'", "value": "183"}, {"id": "echo", "key": "'Yesterday'", "value": "125"}]
   },
   "returns": {"x": 330, "y": 0, "label": "returns int | None", "lanes": [{"id": "int", "type": "int"}, {"id": "none", "type": "None"}]},
   "names": [{"id": "title", "x": 0, "y": 196}, {"id": "seconds", "x": 610, "y": 99}],
   "chips": [
-    {"id": "title", "text": "'Comet'"},
-    {"id": "probe", "text": "'Comet'", "enter": "title"},
+    {"id": "title", "text": "'Wonderwall'"},
+    {"id": "probe", "text": "'Wonderwall'", "enter": "title"},
     {"id": "result", "text": "None", "enter": "missing-value"}
   ],
   "places": {
@@ -39,8 +39,8 @@ const run = {
   "captions": [
     "The definition binds `find_duration`; its annotation allows two kinds of result, an `int` or `None`",
     "`durations` maps each track title to its length in seconds",
-    "The call passes `'Comet'` as `title`, and the same dictionary as `durations`",
-    "`.get(title)` finds no `'Comet'` key, so it returns `None`, the second kind of result",
+    "The call passes `'Wonderwall'` as `title`, and the same dictionary as `durations`",
+    "`.get(title)` finds no `'Wonderwall'` key, so it returns `None`, the second kind of result",
     "The call has ended; `seconds` refers to `None`, not to a number of seconds",
     "The guard tests for `None` before the value is used as a duration",
     "The `None` branch reports the missing track; the `else` branch would receive an `int`"
@@ -55,8 +55,8 @@ def find_duration(title: str, durations: dict[str, int]) -> int | None:
     return durations.get(title)
 
 
-durations = {"Orbit": 222, "Echo": 185}
-seconds = find_duration("Comet", durations)
+durations = {"Imagine": 183, "Yesterday": 125}
+seconds = find_duration("Wonderwall", durations)
 if seconds is None:
     print("Track not found")
 else:

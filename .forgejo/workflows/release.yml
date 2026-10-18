@@ -116,6 +116,18 @@ jobs:
         shell: bash
         run: uv run ruff check .
 
+      - name: Check optional libraries examples
+        shell: bash
+        run: |
+          uv sync --project libraries --frozen
+          uv run --project libraries python libraries/build/make-data.py --check
+          uv run --project libraries python libraries/build/check-demos.py
+          uv run --project libraries python libraries/build/check-solutions.py
+          uv run --project libraries python libraries/build/check-outputs.py
+          uv run --project libraries python libraries/build/native_states.py --check
+          cd libraries
+          uv run python ../../Presentation-Template/build/tools/check-fences.py
+
       # The shared Slidev lockfile uses Bun's version 2 format. The CI image
       # currently carries Bun 1.2, which cannot read it.
       - name: Install Bun 1.4 for Slidev
@@ -150,6 +162,7 @@ jobs:
           bun run build -- --exercises --force
           bun run site
           bun run libraries -- --skip-lint --force
+          bun run libraries:marp -- --skip-lint --force
           bun run lint:libraries
           bun run libraries -- --exercises --force
 
@@ -207,6 +220,7 @@ jobs:
 
           # Optional topics have their own project and PDFs. Only teaching
           # sources and runtime files travel; caches and authoring sources do not.
+          cp -r libraries/build/slidev/dist/student "${BUNDLE}/libraries/slides"
           rm -rf "${BUNDLE}/libraries/build" "${BUNDLE}/libraries/src"
 
           # Strip build and editor droppings that travelled along with the copies.

@@ -24,7 +24,7 @@ export default {
     '10-python-database-access-4',
     '10-python-database-access-5',
     '10-python-database-access-6',
-    '11-python-classes-9',
+    '11-python-classes-10',
     '13-appendix-libraries-1',
   ],
   enrichments: [
@@ -40,7 +40,7 @@ export default {
     { module: '03-data-structures', after: 'Set Operations', file: 'src/slidev/data-structures/set-operations.md' },
     { module: '03-data-structures', after: 'Accessing Values in Dictionary', file: 'src/slidev/data-structures/updating-a-dictionary.md' },
     { module: '04-control-flow-and-operators', after: 'while Loop', file: 'src/slidev/core/condition-before-each-pass.md' },
-    { module: '04-control-flow-and-operators', after: 'Processing Each File', file: 'src/slidev/core/one-item-per-pass.md' },
+    { module: '04-control-flow-and-operators', after: 'Looping over a Playlist', file: 'src/slidev/core/one-item-per-pass.md' },
     { module: '04-control-flow-and-operators', after: 'break and continue Statements', file: 'src/slidev/core/leaving-a-loop-with-break.md' },
     { module: '05-functions', after: 'Passing Object References', file: 'src/slidev/core/parameter-shares-the-list.md' },
     { module: '05-functions', after: 'Overwriting References', file: 'src/slidev/core/rebinding-a-parameter.md' },

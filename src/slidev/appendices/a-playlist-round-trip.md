@@ -12,13 +12,13 @@ const run = {
   "rows": {
     "playlist": [
       {"id": "name", "key": "'name'", "value": "'Night drive'"},
-      {"id": "tracks", "key": "'tracks'", "items": ["'Orbit'", "'Echo'"]},
+      {"id": "tracks", "key": "'tracks'", "items": ["'Imagine'", "'Yesterday'"]},
       {"id": "cover", "key": "'cover'", "value": "None"}
     ],
     "restored": [
       {"id": "cover", "key": "'cover'", "value": "None", "from": "cover"},
       {"id": "name", "key": "'name'", "value": "'Night drive'", "from": "name"},
-      {"id": "tracks", "key": "'tracks'", "items": ["'Orbit'", "'Echo'"], "from": "tracks"}
+      {"id": "tracks", "key": "'tracks'", "items": ["'Imagine'", "'Yesterday'"], "from": "tracks"}
     ]
   },
   "text": {
@@ -28,8 +28,8 @@ const run = {
       {"id": "cover", "text": "  \"cover\": null,", "hi": "null", "from": "playlist.cover"},
       {"id": "name", "text": "  \"name\": \"Night drive\",", "from": "playlist.name"},
       {"id": "tracks", "text": "  \"tracks\": [", "from": "playlist.tracks"},
-      {"id": "orbit", "text": "    \"Orbit\",", "from": "playlist.tracks.0"},
-      {"id": "echo", "text": "    \"Echo\"", "from": "playlist.tracks.1"},
+      {"id": "imagine", "text": "    \"Imagine\",", "from": "playlist.tracks.0"},
+      {"id": "echo", "text": "    \"Yesterday\"", "from": "playlist.tracks.1"},
       {"id": "tracks-end", "text": "  ]", "from": "playlist.tracks"},
       {"id": "close", "text": "}"}
     ]
@@ -48,7 +48,7 @@ const run = {
     [],
     [],
     [],
-    ["{", "  \"cover\": null,", "  \"name\": \"Night drive\",", "  \"tracks\": [", "    \"Orbit\",", "    \"Echo\"", "  ]", "}"],
+    ["{", "  \"cover\": null,", "  \"name\": \"Night drive\",", "  \"tracks\": [", "    \"Imagine\",", "    \"Yesterday\"", "  ]", "}"],
     ["True"]
   ],
   "captions": [
@@ -66,7 +66,7 @@ const run = {
 ```python {1-3|4|5|6|7}
 import json
 
-playlist = {"name": "Night drive", "tracks": ["Orbit", "Echo"], "cover": None}
+playlist = {"name": "Night drive", "tracks": ["Imagine", "Yesterday"], "cover": None}
 text = json.dumps(playlist, indent=2, sort_keys=True)
 restored = json.loads(text)
 print(text)

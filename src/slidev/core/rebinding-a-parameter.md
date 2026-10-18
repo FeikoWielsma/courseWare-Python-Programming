@@ -55,8 +55,8 @@ const run = {
         "original": {
           "type": "list",
           "items": [
-            "'Orbit'",
-            "'Echo'"
+            "'Imagine'",
+            "'Yesterday'"
           ]
         }
       },
@@ -82,8 +82,8 @@ const run = {
         "original": {
           "type": "list",
           "items": [
-            "'Orbit'",
-            "'Echo'"
+            "'Imagine'",
+            "'Yesterday'"
           ]
         }
       },
@@ -109,16 +109,16 @@ const run = {
         "original": {
           "type": "list",
           "items": [
-            "'Orbit'",
-            "'Echo'"
+            "'Imagine'",
+            "'Yesterday'"
           ]
         },
         "new": {
           "type": "list",
           "items": [
-            "'Orbit'",
-            "'Echo'",
-            "'Encore'"
+            "'Imagine'",
+            "'Yesterday'",
+            "'Let It Be'"
           ]
         }
       },
@@ -148,16 +148,16 @@ const run = {
         "original": {
           "type": "list",
           "items": [
-            "'Orbit'",
-            "'Echo'"
+            "'Imagine'",
+            "'Yesterday'"
           ]
         },
         "new": {
           "type": "list",
           "items": [
-            "'Orbit'",
-            "'Echo'",
-            "'Encore'"
+            "'Imagine'",
+            "'Yesterday'",
+            "'Let It Be'"
           ]
         }
       },
@@ -181,16 +181,16 @@ const run = {
         "original": {
           "type": "list",
           "items": [
-            "'Orbit'",
-            "'Echo'"
+            "'Imagine'",
+            "'Yesterday'"
           ]
         },
         "new": {
           "type": "list",
           "items": [
-            "'Orbit'",
-            "'Echo'",
-            "'Encore'"
+            "'Imagine'",
+            "'Yesterday'",
+            "'Let It Be'"
           ]
         }
       },
@@ -214,16 +214,16 @@ const run = {
         "original": {
           "type": "list",
           "items": [
-            "'Orbit'",
-            "'Echo'"
+            "'Imagine'",
+            "'Yesterday'"
           ]
         },
         "new": {
           "type": "list",
           "items": [
-            "'Orbit'",
-            "'Echo'",
-            "'Encore'"
+            "'Imagine'",
+            "'Yesterday'",
+            "'Let It Be'"
           ]
         }
       },
@@ -247,16 +247,16 @@ const run = {
         "original": {
           "type": "list",
           "items": [
-            "'Orbit'",
-            "'Echo'"
+            "'Imagine'",
+            "'Yesterday'"
           ]
         },
         "new": {
           "type": "list",
           "items": [
-            "'Orbit'",
-            "'Echo'",
-            "'Encore'"
+            "'Imagine'",
+            "'Yesterday'",
+            "'Let It Be'"
           ]
         }
       },
@@ -273,10 +273,10 @@ const run = {
     [],
     [],
     [
-      "Original: ['Orbit', 'Echo']"
+      "Original: ['Imagine', 'Yesterday']"
     ],
     [
-      "Encore mix: ['Orbit', 'Echo', 'Encore']"
+      "With encore: ['Imagine', 'Yesterday', 'Let It Be']"
     ]
   ],
   "captions": [
@@ -287,7 +287,7 @@ const run = {
     "`return` passes the new list back to the caller",
     "`extended` receives the new list; `queue` keeps the original",
     "The original list still contains only `id` and `total`",
-    "The encore mix uses the new list including `Encore`"
+    "The encore mix uses the new list including `Let It Be`"
   ]
 }
 </script>
@@ -296,13 +296,13 @@ const run = {
 
 ```python {1|5|6|2|3|6|7|8}
 def with_encore(tracks: list[str]) -> list[str]:
-    tracks = tracks + ["Encore"]
+    tracks = tracks + ["Let It Be"]
     return tracks
 
-queue = ["Orbit", "Echo"]
+queue = ["Imagine", "Yesterday"]
 extended = with_encore(queue)
 print(f"Original: {queue}")
-print(f"Encore mix: {extended}")
+print(f"With encore: {extended}")
 ```
 
 <template #visual="{ step }">

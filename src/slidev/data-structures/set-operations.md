@@ -10,20 +10,20 @@ pills: ["demo09 · setsandfrozensets"]
 const run = {
   "sets": {
     "left": {
-      "name": "day_one",
+      "name": "physics",
       "members": [
-        "Nova",
-        "Echo",
-        "Pulse",
-        "Orbit"
+        "Einstein",
+        "Bohr",
+        "Curie",
+        "Fermi"
       ]
     },
     "right": {
-      "name": "day_two",
+      "name": "chemistry",
       "members": [
-        "Pulse",
-        "Muse",
-        "Vega"
+        "Curie",
+        "Rutherford",
+        "Pauling"
       ]
     }
   },
@@ -33,44 +33,44 @@ const run = {
       "result": null
     },
     {
-      "expr": "\"Pulse\" in day_two",
-      "test": "Pulse",
-      "within": "day_two",
+      "expr": "\"Curie\" in chemistry",
+      "test": "Curie",
+      "within": "chemistry",
       "result": null
     },
     {
-      "expr": "day_one | day_two",
+      "expr": "physics | chemistry",
       "result": [
-        "Echo",
-        "Muse",
-        "Nova",
-        "Orbit",
-        "Pulse",
-        "Vega"
+        "Bohr",
+        "Curie",
+        "Einstein",
+        "Fermi",
+        "Pauling",
+        "Rutherford"
       ]
     },
     {
-      "expr": "day_one & day_two",
+      "expr": "physics & chemistry",
       "result": [
-        "Pulse"
+        "Curie"
       ]
     },
     {
-      "expr": "day_one - day_two",
+      "expr": "physics - chemistry",
       "result": [
-        "Echo",
-        "Nova",
-        "Orbit"
+        "Bohr",
+        "Einstein",
+        "Fermi"
       ]
     },
     {
-      "expr": "day_one ^ day_two",
+      "expr": "physics ^ chemistry",
       "result": [
-        "Echo",
-        "Muse",
-        "Nova",
-        "Orbit",
-        "Vega"
+        "Bohr",
+        "Einstein",
+        "Fermi",
+        "Pauling",
+        "Rutherford"
       ]
     }
   ],
@@ -80,24 +80,24 @@ const run = {
       "True"
     ],
     [
-      "['Echo', 'Muse', 'Nova', 'Orbit', 'Pulse', 'Vega']"
+      "['Bohr', 'Curie', 'Einstein', 'Fermi', 'Pauling', 'Rutherford']"
     ],
     [
-      "['Pulse']"
+      "['Curie']"
     ],
     [
-      "['Echo', 'Nova', 'Orbit']"
+      "['Bohr', 'Einstein', 'Fermi']"
     ],
     [
-      "['Echo', 'Muse', 'Nova', 'Orbit', 'Vega']"
+      "['Bohr', 'Einstein', 'Fermi', 'Pauling', 'Rutherford']"
     ]
   ],
   "captions": [
-    "`day_one` and `day_two` have one name in common",
+    "`physics` and `chemistry` have one name in common : Curie",
     "`in` tests whether a value is a member of the set",
     "`|` gives every name in either set, each once",
     "`&` keeps the names that are in both sets",
-    "`-` keeps the names in `day_one` that are not in `day_two`",
+    "`-` keeps the names in `physics` that are not in `chemistry`",
     "`^` keeps the names that are in exactly one of the two sets"
   ]
 }
@@ -106,13 +106,13 @@ const run = {
 <DataStructuresRun :run="run" layout="stack" output-width="680px">
 
 ```python {1-2|1-3|1-4|1-5|1-6|1-7}
-day_one = {"Nova", "Echo", "Pulse", "Orbit"}
-day_two = {"Pulse", "Muse", "Vega"}
-print("Pulse" in day_two)  # True
-print(sorted(day_one | day_two))  # union, in either set
-print(sorted(day_one & day_two))  # intersection, in both
-print(sorted(day_one - day_two))  # difference, in day_one only
-print(sorted(day_one ^ day_two))  # in one of the two, not both
+physics = {"Einstein", "Bohr", "Curie", "Fermi"}
+chemistry = {"Curie", "Rutherford", "Pauling"}
+print("Curie" in chemistry)  # True
+print(sorted(physics | chemistry))  # union, in either set
+print(sorted(physics & chemistry))  # intersection, in both
+print(sorted(physics - chemistry))  # difference, in physics only
+print(sorted(physics ^ chemistry))  # in one of the two, not both
 ```
 
 <template #visual="{ step }">

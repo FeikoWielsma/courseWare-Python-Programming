@@ -1,6 +1,6 @@
 seconds: int = 222
 size_mb: float = 8.5
-title: str = "Orbit"
+title: str = "Imagine"
 is_favourite: bool = True
 
 
@@ -17,4 +17,4 @@ def print_playlist(name: str, tracks: list[str]) -> None:
 
 
 print(format_duration(seconds))
-print_playlist("Night drive", [title, "Echo"])
+print_playlist("Night drive", [title, "Yesterday"])

@@ -79,14 +79,18 @@ Camera check complete
   - `else` has no condition of its own
 
 ```python
-filename = input("Photo filename: ")
-if filename.lower().endswith(".jpg"):
-    print(f"Photo selected: {filename}")
+battery = 15
+if battery >= 20:
+    print("Camera ready")
 else:
-    print("Choose a JPG photo")
+    print("Charge the battery")
 ```
 
-- `cover.jpg` selects a photo; `notes.txt` asks for a different file
+```text
+Charge the battery
+```
+
+- With `battery = 80`, the first block runs instead
 - An optional `else` comes last
 
 > `demo02 · else`
@@ -196,8 +200,8 @@ while True:
 
 ```mermaid
 flowchart LR
-  A[start] --> B{next file?}
-  B -- Yes --> C[assign filename]
+  A[start] --> B{next item?}
+  B -- Yes --> C[assign it to the loop variable]
   C --> D[run the block]
   D --> B
   B -- No --> E[after the loop]
@@ -208,23 +212,34 @@ flowchart LR
 
 ---
 
-# Processing Each File
+# Looping over a Playlist
 
-- `filename` takes each name from `files` in turn.
+- `title` takes each item from `playlist` in turn.
 - The unindented `print` runs once, after the loop.
 
 ```python
-files = ["cover.jpg", "stage.jpg", "crowd.jpg"]
-for filename in files:
-    print(f"Processing {filename}")
-print("All files processed")
+playlist = ["Imagine", "Yesterday", "Respect"]
+for title in playlist:
+    print(f"Now playing: {title}")
+print("Playlist finished")
 ```
 
 ```text
-Processing cover.jpg
-Processing stage.jpg
-Processing crowd.jpg
-All files processed
+Now playing: Imagine
+Now playing: Yesterday
+Now playing: Respect
+Playlist finished
+```
+
+- Any iterable works the same way; a string gives one character per pass :
+
+```python
+for letter in "ABBA":
+    print(letter, end=" ")
+```
+
+```text
+A B B A
 ```
 
 > `demo07 · for`
@@ -236,9 +251,9 @@ All files processed
 - A sequence can be walked by index, using `len()` and `range()` :
 
 ```python
-planets = ["venus", "mars", "jupiter"]
-for index in range(len(planets)):
-    print("Current planet :", planets[index])
+playlist = ["Imagine", "Yesterday", "Respect"]
+for index in range(len(playlist)):
+    print("Now playing :", playlist[index])
 ```
 
 - This works, and is what a loop over positions looks like in many languages :
@@ -250,8 +265,8 @@ for index in range(len(planets)):
 - When the element is all you need, iterate the sequence itself :
 
 ```python
-for planet in planets:
-    print("Current planet :", planet)
+for title in playlist:
+    print("Now playing :", title)
 ```
 
 ---
@@ -261,22 +276,22 @@ for planet in planets:
 - When the index is genuinely needed, `enumerate` yields both :
 
 ```python
-for index, planet in enumerate(planets):
-    print(index, planet)
+for index, title in enumerate(playlist):
+    print(index, title)
 ```
 
 ```text
-0 venus
-1 mars
-2 jupiter
+0 Imagine
+1 Yesterday
+2 Respect
 ```
 
 - The two can never fall out of step, because they come from one call
 - Counting starts at zero unless a `start` is given :
 
 ```python
-for number, planet in enumerate(planets, start=1):
-    print(number, planet)
+for number, title in enumerate(playlist, start=1):
+    print(number, title)
 ```
 
 - The pattern generalises :
@@ -303,14 +318,14 @@ for filename in ["cover.jpg", "notes.txt", "stage.jpg"]:
 - `break` ends the loop immediately when the requested track is found :
 
 ```python
-for track in ["Intro", "Orbit", "Echo", "Pulse", "Outro"]:
-    if track == "Pulse":
+for track in ["Thriller", "Imagine", "Yesterday", "Respect", "Hey Jude"]:
+    if track == "Respect":
         break
     print(f"Checked {track}")
 print("Search complete")
 ```
 
-- The final message runs after the search; `Outro` is never checked
+- The final message runs after the search; `Hey Jude` is never checked
 
 > `demo09 · breakandcontinue`
 
@@ -322,8 +337,8 @@ print("Search complete")
   - The `else` block runs when the loop finishes without `break`
 
 ```python
-requested = "Comet"
-playlist = ["Orbit", "Echo", "Pulse"]
+requested = "Wonderwall"
+playlist = ["Imagine", "Yesterday", "Respect"]
 for track in playlist:
     if track == requested:
         print(f"Found {requested}")
@@ -333,10 +348,10 @@ else:
 ```
 
 ```text
-Comet is not in the playlist
+Wonderwall is not in the playlist
 ```
 
-- With `requested = "Echo"`, `break` skips the `else` block
+- With `requested = "Yesterday"`, `break` skips the `else` block
 - A `while` loop can also have `else`; it runs when the condition becomes false
 
 > `demo10 · for_else`

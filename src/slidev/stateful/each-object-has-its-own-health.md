@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Each Object Has Its Own Health
-pills: ["demo02 · character"]
+pills: ["demo03 · character"]
 ---
 
 # Each Object Has Its Own Health
@@ -9,19 +9,19 @@ pills: ["demo02 · character"]
 <script setup>
 const run = {
   "boxes": [
-    {"id": "hero", "label": "hero", "tag": "Character object", "x": 0, "y": 0, "width": 230},
-    {"id": "troll", "label": "troll", "tag": "Character object", "x": 260, "y": 0, "width": 230},
+    {"id": "jaina", "label": "jaina", "tag": "Character object", "x": 0, "y": 0, "width": 230},
+    {"id": "hogger", "label": "hogger", "tag": "Character object", "x": 260, "y": 0, "width": 230},
     {"id": "character", "label": "Character", "tag": "class", "x": 0, "y": 160, "width": 300}
   ],
-  "links": [{"from": "hero", "to": "character"}, {"from": "troll", "to": "character"}],
+  "links": [{"from": "jaina", "to": "character"}, {"from": "hogger", "to": "character"}],
   "states": [
-    {"attrs": {"character": {"__init__": "function", "take_damage": "function", "heal": "function", "show_status": "function"}, "hero": {"name": "'Aria'", "health": "100"}}, "mark": [{"box": "hero", "attr": "name"}, {"box": "hero", "attr": "health"}], "active": ["hero"]},
-    {"attrs": {"character": {"__init__": "function", "take_damage": "function", "heal": "function", "show_status": "function"}, "hero": {"name": "'Aria'", "health": "100"}, "troll": {"name": "'Grok'", "health": "60"}}, "mark": [{"box": "troll", "attr": "name"}, {"box": "troll", "attr": "health"}], "active": ["troll"]},
-    {"attrs": {"character": {"__init__": "function", "take_damage": "function", "heal": "function", "show_status": "function"}, "hero": {"name": "'Aria'", "health": "100"}, "troll": {"name": "'Grok'", "health": "35"}}, "read": [{"box": "character", "attr": "take_damage", "via": "troll"}], "mark": [{"box": "troll", "attr": "health", "tone": "change"}], "note": {"box": "character", "attr": "take_damage", "text": "self is troll, 60 - 25 = 35"}, "active": ["troll", "character"]},
-    {"attrs": {"character": {"__init__": "function", "take_damage": "function", "heal": "function", "show_status": "function"}, "hero": {"name": "'Aria'", "health": "90"}, "troll": {"name": "'Grok'", "health": "35"}}, "read": [{"box": "character", "attr": "take_damage", "via": "hero"}], "mark": [{"box": "hero", "attr": "health", "tone": "change"}], "note": {"box": "character", "attr": "take_damage", "text": "self is hero, 100 - 10 = 90"}, "active": ["hero", "character"]},
-    {"attrs": {"character": {"__init__": "function", "take_damage": "function", "heal": "function", "show_status": "function"}, "hero": {"name": "'Aria'", "health": "95"}, "troll": {"name": "'Grok'", "health": "35"}}, "read": [{"box": "character", "attr": "heal", "via": "hero"}], "mark": [{"box": "hero", "attr": "health", "tone": "change"}], "note": {"box": "character", "attr": "heal", "text": "self is hero, min(95, 100) = 95"}, "active": ["hero", "character"]},
-    {"attrs": {"character": {"__init__": "function", "take_damage": "function", "heal": "function", "show_status": "function"}, "hero": {"name": "'Aria'", "health": "95"}, "troll": {"name": "'Grok'", "health": "35"}}, "read": [{"box": "character", "attr": "show_status", "via": "hero"}, {"box": "hero", "attr": "name"}, {"box": "hero", "attr": "health"}], "note": {"box": "character", "attr": "show_status", "text": "self is hero"}, "active": ["hero", "character"]},
-    {"attrs": {"character": {"__init__": "function", "take_damage": "function", "heal": "function", "show_status": "function"}, "hero": {"name": "'Aria'", "health": "95"}, "troll": {"name": "'Grok'", "health": "35"}}, "read": [{"box": "character", "attr": "show_status", "via": "troll"}, {"box": "troll", "attr": "name"}, {"box": "troll", "attr": "health"}], "note": {"box": "character", "attr": "show_status", "text": "self is troll"}, "active": ["troll", "character"]}
+    {"attrs": {"character": {"__init__": "function", "take_damage": "function", "heal": "function", "show_status": "function"}, "jaina": {"name": "'Jaina'", "health": "100"}}, "mark": [{"box": "jaina", "attr": "name"}, {"box": "jaina", "attr": "health"}], "active": ["jaina"]},
+    {"attrs": {"character": {"__init__": "function", "take_damage": "function", "heal": "function", "show_status": "function"}, "jaina": {"name": "'Jaina'", "health": "100"}, "hogger": {"name": "'Hogger'", "health": "60"}}, "mark": [{"box": "hogger", "attr": "name"}, {"box": "hogger", "attr": "health"}], "active": ["hogger"]},
+    {"attrs": {"character": {"__init__": "function", "take_damage": "function", "heal": "function", "show_status": "function"}, "jaina": {"name": "'Jaina'", "health": "100"}, "hogger": {"name": "'Hogger'", "health": "35"}}, "read": [{"box": "character", "attr": "take_damage", "via": "hogger"}], "mark": [{"box": "hogger", "attr": "health", "tone": "change"}], "note": {"box": "character", "attr": "take_damage", "text": "self is hogger, 60 - 25 = 35"}, "active": ["hogger", "character"]},
+    {"attrs": {"character": {"__init__": "function", "take_damage": "function", "heal": "function", "show_status": "function"}, "jaina": {"name": "'Jaina'", "health": "90"}, "hogger": {"name": "'Hogger'", "health": "35"}}, "read": [{"box": "character", "attr": "take_damage", "via": "jaina"}], "mark": [{"box": "jaina", "attr": "health", "tone": "change"}], "note": {"box": "character", "attr": "take_damage", "text": "self is jaina, 100 - 10 = 90"}, "active": ["jaina", "character"]},
+    {"attrs": {"character": {"__init__": "function", "take_damage": "function", "heal": "function", "show_status": "function"}, "jaina": {"name": "'Jaina'", "health": "95"}, "hogger": {"name": "'Hogger'", "health": "35"}}, "read": [{"box": "character", "attr": "heal", "via": "jaina"}], "mark": [{"box": "jaina", "attr": "health", "tone": "change"}], "note": {"box": "character", "attr": "heal", "text": "self is jaina, min(95, 100) = 95"}, "active": ["jaina", "character"]},
+    {"attrs": {"character": {"__init__": "function", "take_damage": "function", "heal": "function", "show_status": "function"}, "jaina": {"name": "'Jaina'", "health": "95"}, "hogger": {"name": "'Hogger'", "health": "35"}}, "read": [{"box": "character", "attr": "show_status", "via": "jaina"}, {"box": "jaina", "attr": "name"}, {"box": "jaina", "attr": "health"}], "note": {"box": "character", "attr": "show_status", "text": "self is jaina"}, "active": ["jaina", "character"]},
+    {"attrs": {"character": {"__init__": "function", "take_damage": "function", "heal": "function", "show_status": "function"}, "jaina": {"name": "'Jaina'", "health": "95"}, "hogger": {"name": "'Hogger'", "health": "35"}}, "read": [{"box": "character", "attr": "show_status", "via": "hogger"}, {"box": "hogger", "attr": "name"}, {"box": "hogger", "attr": "health"}], "note": {"box": "character", "attr": "show_status", "text": "self is hogger"}, "active": ["hogger", "character"]}
   ],
   "output": [
     [],
@@ -29,17 +29,17 @@ const run = {
     [],
     [],
     [],
-    ["Aria : 95 health"],
-    ["Grok : 35 health"]
+    ["Jaina : 95 health"],
+    ["Hogger : 35 health"]
   ],
   "captions": [
     "Calling `Character` makes an object; `__init__` stores its own `name` and `health` on it",
     "A second object, with a `health` of its own",
-    "`take_damage` is found on the class; Python passes `troll` as `self`, so only the troll's health drops",
-    "The same method with `hero` as `self` changes the hero's health; the troll keeps 35",
+    "`take_damage` is found on the class; Python passes `hogger` as `self`, so only Hogger's health drops",
+    "The same method with `jaina` as `self` changes Jaina's health; Hogger keeps 35",
     "`heal` adds 5 and keeps the result at most 100",
-    "`show_status` reads `self.name` and `self.health` of the hero",
-    "The same method on `troll` prints the troll's own values"
+    "`show_status` reads `self.name` and `self.health` of Jaina",
+    "The same method on `hogger` prints Hogger's own values"
   ]
 }
 </script>
@@ -47,15 +47,15 @@ const run = {
 <DataStructuresRun :run="run" layout="side">
 
 ```python {1|2|4|5|6|8|9}
-hero = Character("Aria", 100)
-troll = Character("Grok", 60)
+jaina = Character("Jaina", 100)
+hogger = Character("Hogger", 60)
 
-troll.take_damage(25)
-hero.take_damage(10)
-hero.heal(5)
+hogger.take_damage(25)
+jaina.take_damage(10)
+jaina.heal(5)
 
-hero.show_status()
-troll.show_status()
+jaina.show_status()
+hogger.show_status()
 ```
 
 <template #visual="{ step }">

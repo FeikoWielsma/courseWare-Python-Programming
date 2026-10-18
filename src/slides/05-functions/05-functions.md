@@ -74,13 +74,13 @@ def format_duration(seconds):
     remainder = seconds % 60
     return f"{minutes}:{remainder:02d}"
 
-label = format_duration(222)
-message = f"Orbit [{label}]"
+label = format_duration(125)
+message = f"Yesterday [{label}]"
 print(message)
 ```
 
 ```text
-Orbit [3:42]
+Yesterday [2:05]
 ```
 
 - `return` ends the current call and passes its value back
@@ -102,13 +102,13 @@ def print_playlist(name, tracks):
         print(f"{number}. {title}")
 
 
-print_playlist("Night drive", ["Orbit", "Echo"])
+print_playlist("Night drive", ["Imagine", "Yesterday"])
 ```
 
 ```text
 Playlist: Night drive
-1. Orbit
-2. Echo
+1. Imagine
+2. Yesterday
 ```
 
 - Reaching the end of a function returns `None`
@@ -251,17 +251,17 @@ print(format_duration(222, separator="m "))
 
 ```python
 def add_encore(tracks: list[str]) -> None:
-    tracks.append("Encore")
+    tracks.append("Let It Be")
     print(f"Inside: {tracks}")
 
-queue = ["Orbit", "Echo"]
+queue = ["Imagine", "Yesterday"]
 add_encore(queue)
 print(f"After call: {queue}")
 ```
 
 ```text
-Inside: ['Orbit', 'Echo', 'Encore']
-After call: ['Orbit', 'Echo', 'Encore']
+Inside: ['Imagine', 'Yesterday', 'Let It Be']
+After call: ['Imagine', 'Yesterday', 'Let It Be']
 ```
 
 - `append` changes the existing list, so the caller sees the encore
@@ -273,23 +273,23 @@ After call: ['Orbit', 'Echo', 'Encore']
 # Overwriting References
 
 - A function can create an encore mix while keeping the original queue :
-  - `tracks + ["Encore"]` creates a new list
+  - `tracks + ["Let It Be"]` creates a new list
   - Assigning to `tracks` changes only the local name
 
 ```python
 def with_encore(tracks: list[str]) -> list[str]:
-    tracks = tracks + ["Encore"]
+    tracks = tracks + ["Let It Be"]
     return tracks
 
-queue = ["Orbit", "Echo"]
+queue = ["Imagine", "Yesterday"]
 extended = with_encore(queue)
 print(f"Original: {queue}")
-print(f"Encore mix: {extended}")
+print(f"With encore: {extended}")
 ```
 
 ```text
-Original: ['Orbit', 'Echo']
-Encore mix: ['Orbit', 'Echo', 'Encore']
+Original: ['Imagine', 'Yesterday']
+With encore: ['Imagine', 'Yesterday', 'Let It Be']
 ```
 
 - The caller stores the returned list in `extended`; `queue` keeps its original list
@@ -304,8 +304,8 @@ Encore mix: ['Orbit', 'Echo', 'Encore']
 
 | Operation inside the function | Effect |
 | --- | --- |
-| `tracks.append("Encore")` | Adds to the list the caller already holds |
-| `tracks = tracks + ["Encore"]` | Binds the local name to a new list |
+| `tracks.append("Let It Be")` | Adds to the list the caller already holds |
+| `tracks = tracks + ["Let It Be"]` | Binds the local name to a new list |
 | `return tracks` | Passes that new list back to the caller |
 
 - Mutate a shared queue when every caller should see the change
@@ -328,7 +328,7 @@ def show_playlist(name: str, *tracks: str, **details: str) -> None:
         print(f"{key}: {value}")
 
 
-show_playlist("Night drive", "Orbit", "Echo", mood="calm", owner="Nova")
+show_playlist("Night drive", "Imagine", "Yesterday", mood="calm", owner="Sam")
 ```
 
 - At a call, `*values` unpacks a sequence and `**options` unpacks a dictionary
@@ -347,13 +347,13 @@ show_playlist("Night drive", "Orbit", "Echo", mood="calm", owner="Nova")
   - `track[1]` selects its duration in seconds
 
 ```python
-tracks = [("Orbit", 222), ("Echo", 185), ("Pulse", 204)]
+tracks = [("Imagine", 183), ("Yesterday", 125), ("Respect", 149)]
 by_length = sorted(tracks, key=lambda track: track[1])
 print(by_length)
 ```
 
 ```text
-[('Echo', 185), ('Pulse', 204), ('Orbit', 222)]
+[('Yesterday', 125), ('Respect', 149), ('Imagine', 183)]
 ```
 
 - The value after the colon is returned automatically
@@ -378,15 +378,15 @@ def shout_title(title: str) -> str:
 
 
 formatters = {"clean": clean_title, "shout": shout_title}
-print(formatters["clean"]("  Orbit  "))
+print(formatters["clean"]("  Imagine  "))
 for name, format_title in formatters.items():
-    print(name, format_title("Echo"))
+    print(name, format_title("Yesterday"))
 ```
 
 ```text
-Orbit
-clean Echo
-shout ECHO
+Imagine
+clean Yesterday
+shout YESTERDAY
 ```
 
 - A dictionary mapping keys to functions is a dispatch table

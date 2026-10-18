@@ -10,7 +10,7 @@ from collections import Counter
 from pathlib import Path
 
 DATA = Path(__file__).resolve().parents[2] / "data"
-DEFAULT_LOG = DATA / "cli-sample.log"
+DEFAULT_LOG = DATA / "listening.log"
 
 OK = 0  # the job was done and there is nothing to report
 FOUND = 1  # the job was done and the answer is "yes, there are errors"
@@ -23,16 +23,25 @@ def read_lines(path: Path) -> list[str]:
     return path.read_text(encoding="utf-8").splitlines()
 
 
+def selected_lines(args: argparse.Namespace) -> list[str]:
+    lines = read_lines(args.logfile)
+    return [line for line in lines if args.since is None or line[:19] >= args.since]
+
+
 def cmd_count(args: argparse.Namespace) -> int:
-    counts = Counter(line.split()[2] for line in read_lines(args.logfile))
+    counts: Counter[tuple[str, str]] = Counter()
+    for line in selected_lines(args):
+        _day, _time, level, action, title = line.split(maxsplit=4)
+        if level == "INFO" and action in {"PLAY", "SKIP"}:
+            counts[action, title] += 1
     if not args.quiet:
-        for level, count in counts.most_common():
-            print(f"{level:<6}{count}")
+        for title in sorted({title for _action, title in counts}):
+            print(f"{title} PLAY={counts['PLAY', title]} SKIP={counts['SKIP', title]}")
     return OK
 
 
 def cmd_errors(args: argparse.Namespace) -> int:
-    matches = [line for line in read_lines(args.logfile) if f" {args.level} " in line]
+    matches = [line for line in selected_lines(args) if f" {args.level} " in line]
     if not args.quiet:
         for line in matches:
             print(line)
@@ -40,7 +49,9 @@ def cmd_errors(args: argparse.Namespace) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="logtool", description="Summarise and search a log file.")
+    parser = argparse.ArgumentParser(
+        prog="logtool", description="Summarise and search a listening log."
+    )
     # Options shared by both verbs are declared once, on a parent parser.
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument(
@@ -50,11 +61,12 @@ def build_parser() -> argparse.ArgumentParser:
         default=DEFAULT_LOG,
         help="the log file to read, or - for standard input",
     )
+    common.add_argument("--since", help="keep events at or after an ISO date or timestamp")
     common.add_argument("-q", "--quiet", action="store_true", help="set the status, print nothing")
 
     verbs = parser.add_subparsers(dest="command", metavar="COMMAND")
 
-    counting = verbs.add_parser("count", parents=[common], help="count the lines per level")
+    counting = verbs.add_parser("count", parents=[common], help="count plays and skips per title")
     counting.set_defaults(handler=cmd_count)
 
     errors = verbs.add_parser("errors", parents=[common], help="show the lines at one level")

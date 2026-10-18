@@ -400,21 +400,21 @@ print("Photos selected:", photos)
 - Parentheses allow a calculation to continue across lines :
 
 ```python
-intro = 30
-orbit = 222
-echo = 185
+thriller = 357
+imagine = 183
+yesterday = 125
 
 total = (
-    intro + orbit + echo
+    thriller + imagine + yesterday
 )
-print(total)  # 437
+print(total)  # 665
 ```
 
 - Lists, dictionaries and calls can also span lines inside their brackets :
 
 ```python
 playlist = [
-    "Intro", "Orbit", "Echo",
+    "Thriller", "Imagine", "Yesterday",
 ]
 print(playlist)
 ```
@@ -434,7 +434,7 @@ print(playlist)
   - Triple quotes allow the text to span lines
 
 ```python
-title = "Orbit"
+title = "Imagine"
 filename = 'cover.jpg'
 caption = """Friday night
 Live at the observatory"""

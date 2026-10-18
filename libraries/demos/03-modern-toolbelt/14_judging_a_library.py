@@ -81,3 +81,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+print(metadata.distribution("rich").version)

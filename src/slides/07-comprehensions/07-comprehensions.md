@@ -119,13 +119,13 @@ def format_duration(seconds: int) -> str:
     return f"{minutes}:{remainder:02d}"
 
 
-tracks = [("Orbit", 222), ("Echo", 185), ("Pulse", 204)]
+tracks = [("Imagine", 183), ("Yesterday", 125), ("Respect", 149)]
 labels = [f"{title} [{format_duration(seconds)}]" for title, seconds in tracks]
 print(labels)
 ```
 
 ```text
-['Orbit [3:42]', 'Echo [3:05]', 'Pulse [3:24]']
+['Imagine [3:03]', 'Yesterday [2:05]', 'Respect [2:29]']
 ```
 
 > `demo04 · comprehension_features`
@@ -139,8 +139,8 @@ print(labels)
   - `strict=True` raises `ValueError` if their lengths differ
 
 ```python
-titles = ["Orbit", "Echo", "Pulse"]
-lengths = [222, 185, 204]
+titles = ["Imagine", "Yesterday", "Respect"]
+lengths = [183, 125, 149]
 pairs = list(zip(titles, lengths))
 print(pairs)
 checked = list(zip(titles, lengths, strict=True))
@@ -148,8 +148,8 @@ print(checked)
 ```
 
 ```text
-[('Orbit', 222), ('Echo', 185), ('Pulse', 204)]
-[('Orbit', 222), ('Echo', 185), ('Pulse', 204)]
+[('Imagine', 183), ('Yesterday', 125), ('Respect', 149)]
+[('Imagine', 183), ('Yesterday', 125), ('Respect', 149)]
 ```
 
 > `demo05 · zip_function`
@@ -161,14 +161,14 @@ print(checked)
 - `dict` builds a lookup from pairs of keys and values :
 
 ```python
-titles = ["Orbit", "Echo", "Pulse"]
-lengths = [222, 185, 204]
+titles = ["Imagine", "Yesterday", "Respect"]
+lengths = [183, 125, 149]
 durations = dict(zip(titles, lengths))
 print(durations)
 ```
 
 ```text
-{'Orbit': 222, 'Echo': 185, 'Pulse': 204}
+{'Imagine': 183, 'Yesterday': 125, 'Respect': 149}
 ```
 
 > `demo06 · dictionary_with_zip`
@@ -181,11 +181,11 @@ print(durations)
 - An optional `if` keeps only matching tracks :
 
 ```python
-durations = {"Orbit": 222, "Echo": 185, "Pulse": 204}
-short_tracks = {title: seconds for title, seconds in durations.items() if seconds < 200}
-print(short_tracks)  # {'Echo': 185}
-minutes = {title: round(seconds / 60, 1) for title, seconds in durations.items()}
-print(minutes)  # {'Orbit': 3.7, 'Echo': 3.1, 'Pulse': 3.4}
+durations = {"Imagine": 183, "Yesterday": 125, "Respect": 149}
+short_tracks = {title: seconds for title, seconds in durations.items() if seconds < 150}
+print(short_tracks)  # {'Yesterday': 125, 'Respect': 149}
+minutes = {title: round(seconds / 60, 2) for title, seconds in durations.items()}
+print(minutes)  # {'Imagine': 3.05, 'Yesterday': 2.08, 'Respect': 2.48}
 ```
 
 > `demo07 · dictionary_comprehension`
@@ -202,13 +202,13 @@ albums = ["Night drive", "Warm-up"]
 play_counts = dict.fromkeys(albums, 0)
 print(play_counts)
 playlists: dict[str, list[str]] = {name: [] for name in albums}
-playlists["Night drive"].append("Orbit")
+playlists["Night drive"].append("Imagine")
 print(playlists)
 ```
 
 ```text
 {'Night drive': 0, 'Warm-up': 0}
-{'Night drive': ['Orbit'], 'Warm-up': []}
+{'Night drive': ['Imagine'], 'Warm-up': []}
 ```
 
 - `dict.fromkeys(albums, [])` would make every album share one list
@@ -223,9 +223,9 @@ print(playlists)
   - Titles that differ only in spacing and case can become one value
 
 ```python
-titles = [" Orbit ", "Echo", "orbit", "Pulse "]
+titles = [" Imagine ", "Yesterday", "imagine", "Respect "]
 unique = {title.strip().lower() for title in titles}
-print(sorted(unique))  # ['echo', 'orbit', 'pulse']
+print(sorted(unique))  # ['imagine', 'respect', 'yesterday']
 
 files = ["cover.jpg", "notes.txt", "cover.jpg", "stage.jpg"]
 unique_photos = {name for name in files if name.endswith(".jpg")}
@@ -265,10 +265,10 @@ print(any([]), all([]))  # False True
   - Track titles can be sorted alphabetically or by title length
 
 ```python
-titles = ["Afterglow", "Echo", "Orbit"]
-print(sorted(titles))  # ['Afterglow', 'Echo', 'Orbit']
-print(sorted(titles, key=len))  # ['Echo', 'Orbit', 'Afterglow']
-print(min(titles, key=len), max(titles, key=len))  # Echo Afterglow
+titles = ["Bohemian Rhapsody", "Yesterday", "Imagine"]
+print(sorted(titles))  # ['Bohemian Rhapsody', 'Imagine', 'Yesterday']
+print(sorted(titles, key=len))  # ['Imagine', 'Yesterday', 'Bohemian Rhapsody']
+print(min(titles, key=len), max(titles, key=len))  # Imagine Bohemian Rhapsody
 ```
 
 - `sorted` returns a new list; `list.sort` changes a list in place
@@ -331,10 +331,10 @@ print(comprehended)  # ['cover.jpg', 'stage.jpg']
 ```python
 from functools import reduce
 
-lengths = [222, 185, 204]
+lengths = [183, 125, 149]
 total = reduce(lambda running, seconds: running + seconds, lengths)
-print(total)  # 611
-print(sum(lengths))  # 611
+print(total)  # 457
+print(sum(lengths))  # 457
 ```
 
 - Prefer `sum` when it names the operation directly

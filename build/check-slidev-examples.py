@@ -39,8 +39,8 @@ def main() -> None:
     displayed = json.loads(match[1])
     assert [state["li2"] for state in states] == displayed
     _, states = snapshots("tuple-unpacking.md", "08_destructurewithtuples.py")
-    assert (states[-1]["primary"], states[-1]["backup"]) == ("Nova", "Orbit")
-    assert states[-1]["__captured_output__"] == "Nova\nOrbit\n"
+    assert (states[-1]["primary"], states[-1]["backup"]) == ("Toxic", "Imagine")
+    assert states[-1]["__captured_output__"] == "Toxic\nImagine\n"
     print(
         f"Slidev examples: {len(displayed)} list states and {len(states)} tuple states "
         "match their demos."

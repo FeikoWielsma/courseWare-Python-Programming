@@ -30,8 +30,11 @@ appendix: true
 ```python
 finished = subprocess.run(["git", "--version"], check=False)
 
-print(finished.args)
-print(finished.returncode)
+print()
+print("type       :", type(finished).__name__)
+print("args       :", finished.args)
+print("returncode :", finished.returncode)
+print("stdout     :", finished.stdout)
 ```
 
 > `demo01 · running_a_command`
@@ -48,10 +51,15 @@ print(finished.returncode)
 
 ```python
 finished = subprocess.run(
-    ["wc", "-l", str(log)], capture_output=True, text=True, check=True
+    ["wc", "-l", str(DATA / "listening.log")],
+    capture_output=True,
+    text=True,
+    check=True,
 )
 
-count = int(finished.stdout.split()[0])
+print("stdout repr :", repr(finished.stdout))
+print("stripped    :", finished.stdout.strip())
+print("stderr      :", repr(finished.stderr))
 ```
 
 > `demo02 · capturing_output`
@@ -67,9 +75,11 @@ count = int(finished.stdout.split()[0])
 - `check=True` raises `CalledProcessError` when it is not
 
 ```python
-found = subprocess.run(["grep", "-c", "ERROR", str(log)],
-                       capture_output=True, text=True, check=False)
-print(found.returncode, found.stdout.strip())
+for pattern in ("ERROR", "NOTHING-MATCHES-THIS"):
+    found = subprocess.run(
+        ["grep", "-c", pattern, str(LOG)], capture_output=True, text=True, check=False
+    )
+    print(f"{pattern:<22} returncode={found.returncode}  matched={found.stdout.strip()}")
 ```
 
 > `demo03 · exit_codes`
@@ -86,9 +96,10 @@ print(found.returncode, found.stdout.strip())
   - Punctuation becomes syntax
 
 ```python
-subprocess.run(["wc", "-l", str(awkward)])          # correct
-
-subprocess.run(f"wc -l {awkward}", shell=True)      # splits on the space
+listed = subprocess.run(
+    ["wc", "-l", str(awkward)], capture_output=True, text=True, check=False
+)
+print(f"as a list  : rc={listed.returncode}  {listed.stdout.strip()}")
 ```
 
 > `demo04 · a_list_not_a_string`
@@ -104,10 +115,12 @@ subprocess.run(f"wc -l {awkward}", shell=True)      # splits on the space
 - Clearer than a pipeline string, with nothing for a shell to misread
 
 ```python
-levels = subprocess.run(["grep", "-o", "-E", "INFO|WARN|ERROR", str(log)],
-                        capture_output=True, text=True, check=True)
-counted = subprocess.run(["uniq", "-c"], input=levels.stdout,
-                         capture_output=True, text=True, check=True)
+tallied = subprocess.run(
+    ["sort"], input=levels.stdout, capture_output=True, text=True, check=True
+)
+summary = subprocess.run(
+    ["uniq", "-c"], input=tallied.stdout, capture_output=True, text=True, check=True
+)
 ```
 
 > `demo05 · input_and_pipes`
@@ -124,9 +137,12 @@ counted = subprocess.run(["uniq", "-c"], input=levels.stdout,
 
 ```python
 try:
-    subprocess.run(slow_command, timeout=1.5, check=True)
+    subprocess.run(slow, timeout=1.5, check=True)
 except subprocess.TimeoutExpired as error:
-    print("gave up after", error.timeout, "seconds")
+    print("raised   :", type(error).__name__)
+    print("command  : a sleep of 30 seconds")
+    print("waited   :", error.timeout, "seconds")
+    print("running behind you.")
 ```
 
 > `demo06 · timeouts`
@@ -145,7 +161,7 @@ except subprocess.TimeoutExpired as error:
 ```python
 environment = os.environ.copy()
 environment["GREETING"] = "set for the child only"
-subprocess.run(command, env=environment, check=True)
+subprocess.run([sys.executable, "-c", CHILD], env=environment, check=True)
 ```
 
 > `demo07 · environment`
@@ -161,8 +177,9 @@ subprocess.run(command, env=environment, check=True)
   - Failing immediately with a clear message beats failing halfway through
 
 ```python
-if shutil.which("rsync") is None:
-    sys.exit("rsync is not installed")
+for program in ("git", "grep", "definitely-not-installed"):
+    location = shutil.which(program)
+    print(f"{program:<26} {location or '-- not on PATH'}")
 ```
 
 > `demo08 · finding_the_program`
@@ -178,10 +195,15 @@ if shutil.which("rsync") is None:
 - Use it for anything long enough that silence looks like a hang
 
 ```python
-with subprocess.Popen(command, stdout=subprocess.PIPE,
-                      text=True, bufsize=1) as process:
+with subprocess.Popen(
+    [sys.executable, "-c", CHILD],
+    stdout=subprocess.PIPE,
+    text=True,
+    bufsize=1,
+) as process:
+    # Iterating the pipe yields lines as the child flushes them.
     for line in process.stdout:
-        print("received :", line.rstrip())
+        print("  received :", line.rstrip())
 ```
 
 > `demo09 · streaming_output`

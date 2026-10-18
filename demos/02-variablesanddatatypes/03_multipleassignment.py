@@ -10,5 +10,5 @@ d = 1
 print(d)
 print(id(d))
 
-a, b, c = 1, 2, "Orbit"
+a, b, c = 1, 2, "Imagine"
 print(a, b, c)

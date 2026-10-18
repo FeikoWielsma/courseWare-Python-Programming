@@ -7,7 +7,7 @@ print(previous, duration)  # 222 185
 del previous
 print(duration)  # 185
 
-selection = "Orbit"
+selection = "Imagine"
 print(type(selection))
 print(id(selection))
 selection = 8.5

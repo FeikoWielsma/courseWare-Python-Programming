@@ -11,4 +11,4 @@ def print_playlist(name: str, tracks: list[str]) -> None:
 
 
 print(format_duration(222))
-print_playlist("Night drive", ["Orbit", "Echo"])
+print_playlist("Night drive", ["Imagine", "Yesterday"])

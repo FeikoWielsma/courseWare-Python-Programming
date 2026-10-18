@@ -2,7 +2,7 @@ import subprocess
 from pathlib import Path
 
 DATA = Path(__file__).resolve().parents[2] / "data"
-LOG = DATA / "cli-sample.log"
+LOG = DATA / "listening.log"
 
 if __name__ == "__main__":
     # input= writes to the child's stdin and closes it. No shell involved.

@@ -1,6 +1,6 @@
 from functools import reduce
 
-lengths = [222, 185, 204]
+lengths = [183, 125, 149]
 total = reduce(lambda running, seconds: running + seconds, lengths)
-print(total)  # 611
-print(sum(lengths))  # 611
+print(total)  # 457
+print(sum(lengths))  # 457

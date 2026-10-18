@@ -9,6 +9,9 @@ working with databases, NumPy and pandas for data work, or GUI toolkits for desk
 programs. The inheritance module previews Advanced Python and can be skipped.
 The web-scraping and SQLAlchemy modules share the book dataset; SQLAlchemy can
 rebuild the database from the supplied seed without running the scraper first.
+The data modules share a music listening history; NumPy also uses a photo and a
+generated audio tone. Play counts are fictional. Song editions and the photo
+source are recorded in [data/SOURCES.md](data/SOURCES.md).
 
 This folder has its own Python project. Run the commands below from `libraries/`.
 
@@ -23,14 +26,23 @@ demo runs offline.
 
 ## What is in this bundle
 
-- **`PRG400-Python-Libraries-and-Tools.pdf`** : the slides. The same deck is also
-  available as `.html` if you prefer reading in a browser.
+- **`PRG400-Python-Libraries-and-Tools.pdf`** : the Slidev slides, with every
+  reveal visible for reading and printing.
+- **`slides/`** : the animated presentation. From this folder, run
+  `python slides/serve.py`, then open `http://localhost:4188/slidev/`.
+  Arrow keys and the mouse wheel advance or reverse reveals.
+- **`PRG400-Python-Libraries-and-Tools-slides.zip`** : a separate release download
+  containing the presentation, Python launcher and PDF. Extract it before use.
+- **`PRG400-Python-Libraries-and-Tools-Marp.pdf`** and **`.html`** : the Marp
+  fallback. The original `PRG400-Python-Libraries-and-Tools.html` link also opens
+  this standalone fallback.
 - **`PRG400-Python-Libraries-and-Tools-Exercises.pdf`** : the exercises, one per module.
 - **`demos/`** : the runnable example programs shown on the slides, one folder
   per module. A slide that shows a demo names it at the bottom, for example
   `demo09 · views_and_copies`, which is the file
   `demos/06-numpy/09_views_and_copies.py`.
 - **`solutions/`** : reference solutions for the exercises.
+- **`exercises/starters/`** : starting files to copy into your own work folder.
 - **`data/`** : the CSV, HTML, spreadsheet and database files the demos read.
 - **`reference/`** : background reading and bonus examples, none of it required.
 
@@ -45,7 +57,7 @@ The modules :
 | `demos/05-sqlalchemy/` | Databases without writing every query by hand |
 | `demos/06-numpy/` | Arrays of numbers |
 | `demos/07-pandas/` | Tables of anything |
-| `demos/08-gui/` | Desktop windows with tkinter |
+| `demos/08-gui/` | Desktop windows with tkinter; interactive demos, no exercise handout or solution |
 | `demos/09-appendix-subprocess/` | Running other programs |
 
 ## Setting up
@@ -96,6 +108,10 @@ python -c "import tkinter; print(tkinter.TkVersion)"
 
 ## Running a demo
 
+The web-scraping demos and solutions use `data/books-fixture.html` by default.
+Pass `--live` to fetch the real site instead. The scraping solution's offline
+run covers the first page; `--live` also includes the optional second page.
+
 Every demo is a plain script that runs on its own and prints its results. Run
 one by giving its path :
 
@@ -121,9 +137,11 @@ says so in a comment at the top of the file.
 
 ## The exercises
 
-Each module has an exercise in the exercises PDF and a solution under
-`solutions/`. Work in a folder of your own, for example `work/01-inheritance/`,
-so your code stays separate from the material.
+Each module except the interactive GUI module has an exercise in the exercises
+PDF, starting files under `exercises/starters/`, and a solution under
+`solutions/`. Copy the starter into a folder of your own, for example
+`work/01-inheritance/`, so your code stays separate from the material. Run it
+from `libraries/` so the supplied `data/` paths resolve.
 
 The solutions are complete programs rather than fragments, so they can be run
 and read alongside the exercise text.

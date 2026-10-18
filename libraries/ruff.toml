@@ -42,6 +42,8 @@ ignore = [
 ]
 
 [lint.per-file-ignores]
+# Exercise scaffolds supply imports that students use while completing the steps.
+"exercises/starters/**/*.py" = ["F401"]
 # Every entry here names the lesson it protects. Before silencing a new
 # finding, check whether the code is teaching the pattern deliberately.
 

@@ -34,8 +34,9 @@ demos, and thirteen exercises that build one Wordle game. Modules 01 to 11 were 
   annotations when you touch a demo, and keep its slide fence identical to it.
   The first Functions examples deliberately teach calls and results before
   introducing annotations; preserve that progression.
-- **Teaching examples** use music and photos, game characters for Classes and
-  a film watchlist for SQLite. For example rewrites, read
+- **Teaching examples** use music and photos, World of Warcraft characters for Classes and
+  a film watchlist for SQLite. Libraries modules use music and photos for data, WoW for
+  inheritance, and books.toscrape.com for scraping and SQLAlchemy. For example rewrites, read
   `build/notes/engaging-examples.md`; the Wordle exercise contracts stay separate.
 - **All code is PEP 8 named and Pythonic**, in slides, demos, exercises and
   solutions alike. Where an unpythonic form is the lesson (the `%` formatting

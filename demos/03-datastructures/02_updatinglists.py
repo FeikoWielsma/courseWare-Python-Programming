@@ -1,19 +1,19 @@
-playlist = ["Intro", "Orbit", "Echo", "Outro"]
+playlist = ["Thriller", "Imagine", "Yesterday", "Hey Jude"]
 
 print("Value available at index 2 : ")
 print(playlist[2])
-playlist[2] = "Remix"
+playlist[2] = "Jolene"
 print("New value available at index 2 : ")
 print(playlist[2])
 
 print(playlist)
 del playlist[2]
 print("After deleting value at index 2 : ")
-print(playlist)  # ['Intro', 'Orbit', 'Outro']
+print(playlist)  # ['Thriller', 'Imagine', 'Hey Jude']
 
-playlist.remove("Intro")
-print("After deleting value 'Intro' ")
-print(playlist)  # ['Orbit', 'Outro']
+playlist.remove("Thriller")
+print("After deleting value 'Thriller' ")
+print(playlist)  # ['Imagine', 'Hey Jude']
 
 li2 = [1, 2, 3]
 li2.append(4)

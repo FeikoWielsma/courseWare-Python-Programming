@@ -9,369 +9,293 @@ language: python
 
 # Pandas
 
-- `pandas` is the library for tables of data :
-  - Rows and columns, where the columns have names and different types
-- The thing it replaces is a spreadsheet, or a pile of parsing code :
-  - A CSV, a sheet of a workbook, a query result, all become the same object
-- Built on top of NumPy :
-  - Each column is an array, so a column operation runs at array speed
-- The working loop is short :
-  - Read a file, look at it, filter it, summarise it, write it out again
-- Two objects carry the whole library :
-  - `Series`, one column · `DataFrame`, a table of them
+- `pandas` works with labelled tables :
+  - `Series` represents a column; `DataFrame` represents a table
+- CSV files, spreadsheets and query results share the same operations
+- Column operations use NumPy arrays and other array implementations
+- A typical report reads, inspects, filters, summarises and exports data
 
 ```python
 import pandas as pd
 ```
 
-
 ---
 
 # Series
 
-- A `Series` is a one-dimensional array with an index attached :
-  - The index is a label per row, not a row number
-- The two halves are reachable separately :
-  - `.index` gives the labels, `.to_numpy()` gives the values
-- Arithmetic and comparison apply to the whole column at once
+- A `Series` has one index label per value
+- Arithmetic and comparisons apply to every value
+- `.index` gives the labels; `.to_numpy()` gives the values
 
 ```python
-free_gb = pd.Series([55.5, 48.8, 550.0], index=["web01", "web02", "db01"])
-free_gb["db01"]          # 550.0, looked up by label
-free_gb / 1024           # every element, no loop
-free_gb > 100            # a Series of True and False
+durations = pd.Series([183, 126, 146],
+                      index=["Imagine", "Yesterday", "Respect"])
+print(durations["Imagine"])
+print(durations / 60)
+print(durations > 180)
+print(durations.index.tolist())
+print(durations.to_numpy())
 ```
 
 > `demo01 · series_basics`
-
 
 ---
 
 # DataFrame
 
-- A `DataFrame` is a dictionary of `Series` that all share one index :
-  - Each column has a name and its own type
-- Built from a dictionary, a list of dictionaries, or read from a file
-- `.shape`, `.columns` and `.index` are the three facts to check first
+- A `DataFrame` has named columns with independent types
+- A dictionary supplies one list per column
+- `.shape` gives rows and columns; `.columns` gives their names
 
 ```python
-servers = pd.DataFrame({
-    "hostname": ["web01", "web02", "db01"],
-    "site": ["AMS", "AMS", "AMS"],
-    "cpu_cores": [4, 4, 16],
+tracks = pd.DataFrame({
+    "title": ["Imagine", "Yesterday", "Respect"],
+    "artist": ["John Lennon", "The Beatles", "Aretha Franklin"],
+    "duration_s": [183, 126, 146],
 })
-servers.shape            # (3, 3), rows by columns
-servers["cpu_cores"]     # one column, which is a Series
+print(tracks)
+print(tracks.shape)
+print(tracks["duration_s"])
 ```
 
 > `demo02 · dataframe_basics`
-
 
 ---
 
 # The Index
 
-- The index is the row's name, and it travels with the row :
-  - Filtering, sorting and joining all keep it
-- `set_index` promotes a column to be the index
+- `set_index` promotes a column to row labels
+- Filtering and sorting retain the labels
+- Arithmetic aligns matching labels even when their positions differ
 
 ```python
-by_host = servers.set_index("hostname")
-by_host.loc["db01"]      # a row fetched by name
-```
-
-- Operations align on the label, not on the position :
-  - Two Series in different orders still line up correctly
-
-```python
-quota = pd.Series([500, 2000], index=["web01", "db01"])
-used = pd.Series([1450.0, 64.5], index=["db01", "web01"])
-quota - used             # matched by name, not by row
+by_title = tracks.set_index("title")
+print(by_title.loc["Imagine", ["artist", "duration_s"]])
+durations = pd.Series([183, 126], index=["Imagine", "Yesterday"])
+limits = pd.Series([180, 240], index=["Yesterday", "Imagine"])
+print(limits - durations)
 ```
 
 > `demo03 · the_index`
-
 
 ---
 
 # Reading a CSV
 
-- `read_csv` takes a path and returns a `DataFrame` :
-  - Column types are inferred from the file, not declared
-- The keywords that rescue somebody else's export :
-  - `sep=` a different delimiter · `index_col=` which column is the key
-  - `usecols=` only the columns wanted · `na_values=` what counts as empty
-  - `skiprows=` junk at the top · `header=None` no header row at all
+- `read_csv` infers column types from the file
+- Useful options select a delimiter, columns and row labels :
+  - `sep=`, `usecols=`, `index_col=`
+- `parse_dates=` converts named date columns; `na_values=` adds missing-value markers
 
 ```python
-servers = pd.read_csv(DATA / "servers.csv")
-print(servers.head(2))
-
-servers = pd.read_csv(DATA / "servers.csv", index_col="hostname")
-print(servers.head(2))
+tracks = pd.read_csv(DATA / "tracks.csv", index_col="title",
+                     parse_dates=["last_played"])
+print(tracks[["artist", "duration_s", "last_played"]].head(3))
 ```
 
 > `demo04 · read_csv`
-
 
 ---
 
 # Reading a Spreadsheet
 
-- `read_excel` is the same idea for a workbook :
-  - Needs `openpyxl` installed, which the lockfile already pins
-- A workbook has sheets, so one more argument is needed :
-  - `sheet_name="servers"` by name, `0` by position, `None` for all of them
+- `read_excel` reads a sheet into a `DataFrame`
+- `sheet_name=` selects the sheet by name or position
+- `ExcelFile(...).sheet_names` lists the available sheets
 
 ```python
-pd.ExcelFile("data/servers.xlsx").sheet_names   # ['servers', 'sites']
-
-servers = pd.read_excel("data/servers.xlsx", sheet_name="servers")
-every = pd.read_excel("data/servers.xlsx", sheet_name=None)   # a dict
+tracks = pd.read_excel(DATA / "tracks.xlsx", sheet_name="tracks")
+print(pd.ExcelFile(DATA / "tracks.xlsx").sheet_names)
+print(tracks[["title", "genre", "plays"]].head(3))
 ```
 
-- Reading every sheet gives a dictionary keyed by sheet name
-
 > `demo05 · read_excel`
-
 
 ---
 
 # head and tail
 
-- `head()` and `tail()` show the ends of the table :
-  - Five rows by default, or as many as asked for
-- They return a `DataFrame`, so they chain and print like any other
-- `sample()` is the honest third option :
-  - The head of a file is often sorted, and a sorted head is not typical
+- `head(n)` and `tail(n)` select rows at either end
+- `sample(n, random_state=...)` gives a reproducible sample
+- A sample can reveal values that the first rows do not contain
 
 ```python
-servers.head()           # first five rows
-servers.head(2)          # first two
-servers.tail(3)          # last three
-servers.sample(3, random_state=0)   # three at random, reproducibly
+print(tracks[["genre", "plays"]].head(2))
+print(tracks[["genre", "plays"]].tail(2))
+print(tracks[["genre", "plays"]].sample(3, random_state=0))
 ```
 
 > `demo06 · head_and_tail`
-
 
 ---
 
 # info and describe
 
-- `info()` describes the structure :
-  - Row count, column names, type of each, and how many values are present
-- `describe()` summarises the numbers :
-  - Count, mean, standard deviation, minimum, quartiles, maximum
+- `info()` reports names, dtypes and non-missing counts
+- `describe()` summarises numeric columns :
+  - Count, mean, standard deviation, quartiles and range
+- Date parsing changes a text column into a datetime dtype
 
-```text
- #   Column        Non-Null Count  Dtype
----  ------        --------------  -----
- 6   disk_gb       14 non-null     int64
- 7   used_gb       13 non-null     float64
- 8   last_patched  12 non-null     str
+```python
+tracks.info()
+print(tracks[["duration_s", "plays"]].describe().round(1))
 ```
 
-- The non-null counts are the fastest missing-data check there is :
-  - Any column short of the row count has holes in it
-
 > `demo07 · info_and_describe`
-
 
 ---
 
 # Selecting Columns
 
-- One name in square brackets gives a `Series` :
-  - `servers["memory_gb"]`
-- A list of names gives a `DataFrame`, in the order given :
-  - `servers[["site", "role", "memory_gb"]]`
-- The double brackets are a list inside a selection, not special syntax
+- A column name selects a `Series`
+- A list of column names selects a `DataFrame`
+- The list also determines the report column order
 
 ```python
-servers["memory_gb"]                  # a Series
-servers[["memory_gb"]]                # a DataFrame with one column
-servers[["role", "site", "disk_gb"]]  # three columns, reordered
+print(tracks["plays"].head(3))
+print(tracks[["plays"]].head(3))
+print(tracks[["genre", "artist", "duration_s"]].head(3))
 ```
 
-- Selecting with a list is also how a report gets its column order
-
 > `demo08 · selecting_columns`
-
 
 ---
 
 # loc
 
-- `loc[rows, columns]`, both given as labels :
-  - A single label, a list of labels, or a slice of labels
+- `loc[rows, columns]` selects by labels :
+  - One label, a list of labels, or a label slice
+- Label slices include both ends
 
 ```python
-servers.loc["db01", "memory_gb"]              # one cell
-servers.loc["db01"]                           # one row, as a Series
-servers.loc["db01", ["site", "role"]]         # one row, chosen columns
-servers.loc[:, ["site", "role"]]              # every row, two columns
-servers.loc["web01":"db01", "site":"os"]      # a module
+print(tracks.loc["Imagine", "duration_s"])
+print(tracks.loc["Imagine", ["artist", "genre"]])
+print(tracks.loc["Imagine":"Respect", "year":"plays"])
+print(tracks.loc[:, ["genre", "plays"]].head(3))
 ```
 
-- A label slice includes both ends, unlike every other slice in Python
-
 > `demo09 · loc_by_label`
-
 
 ---
 
 # iloc
 
-- `iloc[rows, columns]`, both given as integers :
-  - The labels are ignored entirely, as if the table were a list of lists
+- `iloc[rows, columns]` selects by integer positions
+- Integer slices exclude the stop position
+- Moving rows changes what an integer position selects
 
 ```python
-servers.iloc[0, 4]        # first row, fifth column
-servers.iloc[:3, :4]      # first three rows, first four columns
-servers.iloc[-2:, :4]     # last two rows
-servers.iloc[[0, 5, 2], [0, 1]]   # lists of positions, in that order
+print(tracks.iloc[0, 3])
+print(tracks.iloc[:3, :2])
+print(tracks.iloc[-2:, :2])
+print(tracks.iloc[[0, 5, 2], [0, 1]])
 ```
 
-- An integer slice stops before its end, exactly like a list slice
-- The same cell, two ways : `loc["db01", "memory_gb"]` is `iloc[2, 4]`
-
 > `demo10 · iloc_by_position`
-
 
 ---
 
 # loc and iloc
 
-<div class="two-col">
-<div>
+- `loc` uses labels and includes the slice endpoint
+- `iloc` uses zero-based positions and excludes the endpoint
+- Both put rows before columns
+- Plain `frame[...]` selects columns; a boolean mask selects rows
 
-`loc`, by label
-
-- Takes the row and column names
-- Slices include both ends
-- Survives a re-sort of the table
-- What you want most of the time
-
-</div>
-<div>
-
-`iloc`, by position
-
-- Takes integers, counting from zero
-- Slices stop before the end
-- Changes meaning when rows move
-- For "the first" and "the last"
-
-</div>
-</div>
-
-- Both take a comma : rows first, then columns
-- Plain `[]` is neither : it selects columns on a frame
-
+```python
+print(tracks.loc["Imagine", "duration_s"])
+print(tracks.iloc[0, 3])
+```
 
 ---
 
 # Filtering Rows
 
-- A comparison on a column gives one `True` or `False` per row :
-  - That is an ordinary value, and it can be given a name
-- Indexing the frame with that mask keeps only the matching rows
+- A column comparison produces a boolean `Series`
+- Indexing with that mask keeps rows where it is `True`
+- Summing a mask counts matching rows
 
 ```python
-big = servers["memory_gb"] >= 64      # a Series of booleans
-servers[big]                          # the rows where it is True
-
-servers[servers["disk_gb"] > 1000]    # usually written in one line
-servers[servers["role"] == "web"]     # text compares just as well
+popular = tracks["plays"] >= 50
+print(tracks[popular][["genre", "plays"]].head(4))
+print(int(popular.sum()))
+print(tracks[tracks["genre"] == "Soul"][["plays"]])
 ```
 
-- A mask sums to a count, because `True` is one and `False` is zero
-
 > `demo11 · boolean_filter`
-
 
 ---
 
 # Combining Filters
 
-- `&` for and, `|` for or, `~` for not :
-  - Not the words `and`, `or` and `not`, which want one answer, not a column
-- Every comparison needs its own parentheses, because `&` binds tighter
+- `&`, `|` and `~` combine boolean masks
+- Each comparison needs parentheses
+- `isin` checks membership; `between` checks an inclusive interval
 
 ```python
-servers[(servers["cpu_cores"] >= 8) & (servers["disk_gb"] >= 2000)]
-servers[(servers["role"] == "database") | (servers["role"] == "build")]
-servers[~servers["site"].isin(["AMS", "RTM"])]
+mask = (tracks["plays"] >= 50) & (tracks["duration_s"] < 240)
+print(tracks[mask][["duration_s", "plays"]].head(4))
+print(tracks[tracks["genre"].isin(["Soul", "Country"])][["genre"]].head(4))
+print(tracks[tracks["year"].between(1980, 1999)][["year"]].head(4))
+print(tracks[~tracks["genre"].isin(["Rock", "Pop"])][["genre"]].head(4))
 ```
 
-- Two shorthands :
-  - `.isin([...])` replaces a chain of ors
-  - `.between(low, high)` replaces two comparisons, and includes both ends
-
 > `demo12 · combining_filters`
-
 
 ---
 
 # Adding a Column
 
-- Assigning to a name that does not exist creates the column :
-  - A scalar is broadcast to every row
-  - A `Series` is computed element by element, aligned on the index
+- Assigning a new column name creates the column
+- A scalar applies to every row; a computed `Series` aligns by index
+- `assign` returns a new frame; `drop(columns=...)` removes columns
 
 ```python
-servers["managed"] = True
-servers["free_gb"] = servers["disk_gb"] - servers["used_gb"]
-servers["used_pct"] = (servers["used_gb"] / servers["disk_gb"] * 100).round(1)
+tracks["available"] = True
+tracks["listened_s"] = tracks["duration_s"] * tracks["plays"]
+report = tracks.assign(minutes=tracks["listened_s"] / 60)
+print(report[["plays", "minutes"]].head(3).round(1))
+print(tracks.drop(columns=["available"]).columns.tolist())
 ```
 
-- `assign` does the same but returns a new frame, so it chains
-- `drop(columns=[...])` removes columns and also returns a new frame
-
 > `demo13 · adding_columns`
-
 
 ---
 
 # Deriving a Column
 
-- Three ways to compute a column from another :
-  - `.str` gives every string method, applied down the column
-  - `.map(dictionary)` translates codes into labels
-  - `np.where(condition, yes, no)` is a vectorised if-else
+- `.str` applies string operations down a column
+- `.map(dictionary)` translates values to labels
+- `np.where` chooses between values for each row
 
 ```python
-servers["distro"] = servers["os"].str.split().str[0]
-servers["tier"] = servers["role"].map({"web": "front line", "db": "critical"})
-servers["alert"] = np.where(servers["used_pct"] > 75, "FULL", "ok")
+tracks["initial"] = tracks["artist"].str.upper().str[:1]
+tracks["style"] = tracks["genre"].map({"Rock": "guitar", "Pop": "vocal"})
+tracks["status"] = np.where(tracks["plays"] > 50, "favourite", "occasional")
+tracks.loc[tracks["last_played"].isna(), "status"] = "never"
+print(tracks[["initial", "style", "status"]].head(6))
 ```
 
-- A missing value never compares true, so it lands in the `no` branch :
-  - Which quietly turns "never measured" into "fine"
-
 > `demo14 · deriving_columns`
-
 
 ---
 
 # Sorting
 
-- `sort_values` takes a column name, or a list of them :
-  - `ascending=` takes one boolean, or one per column
-- It returns a new frame, the original is untouched
+- `sort_values` takes one column or a list of columns
+- `ascending` accepts one boolean or a boolean per column
+- `nlargest` and `nsmallest` select extreme rows; `sort_index` orders labels
 
 ```python
-servers.sort_values("disk_gb", ascending=False)
-servers.sort_values(["site", "disk_gb"], ascending=[True, False])
-servers.nlargest(3, "used_gb")     # sort plus head, saying what it means
-servers.sort_index()               # back into label order
+print(tracks.sort_values("plays", ascending=False)[["plays"]].head(3))
+print(tracks.sort_values(["genre", "plays"], ascending=[True, False])
+      [["genre", "plays"]].head(4))
+print(tracks.nlargest(3, "plays")[["plays"]])
+print(tracks.nsmallest(2, "duration_s")[["duration_s"]])
+print(tracks.sort_index()[["plays"]].head(2))
 ```
 
-- `nlargest` and `nsmallest` read better than a sort followed by a head
-
 > `demo15 · sort_values`
-
 
 ---
 
@@ -379,225 +303,195 @@ servers.sort_index()               # back into label order
 
 ```mermaid
 flowchart LR
-  A[servers table] --> B[split by site]
-  B --> C1[AMS rows]
-  B --> C2[RTM rows]
-  B --> C3[EIN rows]
-  C1 --> D[apply a summary]
-  C2 --> D
-  C3 --> D
-  D --> E[one row per site]
+  A[tracks table] --> B[split by genre]
+  B --> C[Rock rows]
+  B --> D[Pop rows]
+  B --> E[Soul rows]
+  C --> F[apply a summary]
+  D --> F
+  E --> F
+  F --> G[one row per genre]
 ```
 
-- One row per distinct value of the grouping column comes back
-
+- Each distinct grouping value produces one summary row
 
 ---
 
 # groupby Aggregation
 
-- `groupby("column")`, then a column to summarise, then a summary
+- Select the grouping column, then the values and summary
+- `agg` accepts a list of summaries or a dictionary per column
+- The group label becomes the result index
 
 ```python
-servers.groupby("site")["cpu_cores"].sum()
-servers.groupby("role")["disk_gb"].mean().round(1)
-servers.groupby("site").size()                    # how many per group
+print(tracks.groupby("genre")["plays"].sum())
+print(tracks.groupby("genre")["duration_s"].mean().round(1))
+print(tracks.groupby("genre").size())
+print(tracks.groupby("genre")["plays"].agg(["count", "sum", "mean", "max"]))
+print(tracks.groupby("genre").agg({"plays": "sum", "year": "min"}))
 ```
-
-- `agg` takes a list of functions, or a dictionary per column
-
-```python
-servers.groupby("site")["memory_gb"].agg(["count", "sum", "mean", "max"])
-servers.groupby("site").agg({"cpu_cores": "sum", "disk_gb": "max"})
-```
-
-- The grouping column becomes the index of the answer
 
 > `demo16 · groupby_agg`
-
 
 ---
 
 # Named Aggregation
 
-- Named aggregation gives each output column the name the report wants :
-  - Keyword is the new column, value is `(column, summary)`
-- `reset_index()` turns the grouping key back into an ordinary column
+- Each keyword names a result column
+- Its value is `(source_column, summary)`
+- `reset_index()` restores grouping labels as ordinary columns
 
 ```python
-per_site = (
-    servers.groupby("site")
-    .agg(servers=("hostname", "count"),
-         total_cores=("cpu_cores", "sum"),
-         mean_used_gb=("used_gb", "mean"))
-    .round(1)
-    .reset_index()
-)
+per_genre = tracks.groupby("genre").agg(
+    titles=("artist", "count"),
+    total_plays=("plays", "sum"),
+    mean_duration=("duration_s", "mean"),
+).round(1).reset_index()
+print(per_genre)
+tracks["decade"] = tracks["year"] // 10 * 10
+print(tracks.groupby(["genre", "decade"])["plays"].sum())
 ```
 
-- Grouping by two keys is the same call with a list of column names
-
 > `demo17 · groupby_named_agg`
-
 
 ---
 
 # merge
 
-- `merge` combines two frames on a shared key column :
-  - `on=` names a column that exists in both
-  - `left_on=` and `right_on=` when the two sides call it different things
+- `merge` combines frames on a shared key
+- `on` names the shared column
+- `left_on` and `right_on` support different key names
 
 ```python
-servers = pd.read_csv("data/servers.csv")   # has a site code
-sites = pd.read_csv("data/sites.csv")       # explains what the code means
-
-joined = servers.merge(sites, on="site")
-joined.groupby("city").size()               # only possible after the join
+artists = pd.read_csv(DATA / "artists.csv")
+joined = tracks.merge(artists, on="artist")
+print(joined[["title", "artist", "country"]].head(3))
+print(joined.groupby("country")["plays"].sum())
 ```
 
-- The result is an ordinary frame, so it filters, sorts and groups
-
 > `demo18 · merge_on_key`
-
 
 ---
 
 # Join Types
 
-- `how=` decides what happens to rows that match nothing :
-  - `inner`, the default, keeps only rows present on both sides
-  - `left` keeps every row of the left frame, filling gaps with `NaN`
-  - `right` does the mirror image, `outer` keeps everything
+- `inner` keeps matching keys; `left` keeps every left row
+- `right` keeps every right row; `outer` keeps both sides
+- `indicator=True` records `both`, `left_only` or `right_only`
 
 ```python
-servers.merge(sites, on="site", how="left")
-servers.merge(sites, on="site", how="outer", indicator=True)
+artists = pd.read_csv(DATA / "artists.csv")
+for how in ("inner", "left", "right", "outer"):
+    merged = tracks.merge(artists, on="artist", how=how)
+    print(f"{how}: {len(merged)} rows")
+outer = tracks.merge(artists, on="artist", how="outer", indicator=True)
+print(outer.loc[outer["_merge"] != "both", ["title", "artist", "_merge"]])
 ```
 
-- `indicator=True` adds a `_merge` column saying where each row came from :
-  - `both`, `left_only`, `right_only`
-- It answers whether the join lost rows
-
 > `demo19 · merge_how`
-
 
 ---
 
 # Missing Values
 
-- An empty field becomes `NaN`, and `NaN` is not equal to anything
-- `isna()` gives a mask of the same shape, and a mask sums to a count
+- `isna` recognises missing values; summing its mask counts them
+- `dropna(subset=...)` removes rows missing selected columns
+- `fillna` replaces missing values explicitly
+- Summaries generally skip missing values
 
 ```python
-servers.isna().sum()                       # holes per column
-servers[servers.isna().any(axis=1)]        # the rows with any hole
-servers.dropna()                           # drop any row with any hole
-servers.dropna(subset=["used_gb"])         # only rows missing that column
-servers.fillna({"used_gb": 0.0, "last_patched": "never"})
+print(tracks.isna().sum())
+print(tracks.loc[tracks["last_played"].isna(), ["artist", "last_played"]])
+print(len(tracks.dropna(subset=["last_played"])))
+filled = tracks.fillna({"last_played": "never"})
+print(filled.loc["Hey Jude", "last_played"])
 ```
 
-- Summaries skip `NaN` silently, so a mean is a mean of what was there
-
 > `demo20 · missing_data`
-
 
 ---
 
 # read_sql
 
-- `read_sql` runs a query and returns the result set as a `DataFrame` :
-  - Takes any DB-API connection, `sqlite3` included
-- Values go in as parameters, never by string formatting
+- `read_sql` returns a query result as a `DataFrame`
+- A `sqlite3` connection can read the scraping module's books database
+- Query parameters keep values separate from SQL
 
 ```python
-import sqlite3
-
-conn = sqlite3.connect("data/books.db")
-books = pd.read_sql("SELECT * FROM books", conn)
-dear = pd.read_sql("SELECT * FROM books WHERE price_gbp > ?",
-                   conn, params=(45.0,))
-conn.close()
+query = "SELECT title, price_gbp, rating FROM books WHERE price_gbp > ? ORDER BY price_gbp DESC"
+print(pd.read_sql(query, conn, params=(45.0,)).to_string())
 ```
 
-- Push the work the database is good at into the query, then stop
-
 > `demo21 · read_sql`
-
 
 ---
 
 # to_sql
 
-- `to_sql` writes a frame into a table, creating it if it is not there :
-  - `if_exists=` is `fail` by default, or `replace`, or `append`
-  - `index=False` keeps the frame's row labels out of the table
+- `to_sql` writes a frame to a database table
+- `if_exists` selects `fail`, `replace` or `append`
+- `index=False` excludes row labels from the stored table
 
 ```python
-conn = sqlite3.connect("data/pandas-demo.db")
-servers.to_sql("servers", conn, if_exists="replace", index=False)
+conn = sqlite3.connect(DATA / "pandas-demo.db")
+books = pd.read_csv(DATA / "books-sample.csv")
+summary = books.groupby("rating", as_index=False)["price_gbp"].mean()
+summary.to_sql("rating_summary", conn, if_exists="replace", index=False)
 conn.commit()
-print(pd.read_sql("PRAGMA table_info(servers)", conn))
+print(pd.read_sql("SELECT * FROM rating_summary", conn))
 conn.close()
 ```
 
-- The round trip is the point : summarise in pandas, store the result back
-- Column types are chosen by pandas from the dtypes
-
 > `demo22 · to_sql`
-
 
 ---
 
 # Writing Files
 
-- `to_csv` and `to_excel` are the mirror of the readers :
-  - `index=False` unless the index is real data somebody wants
-- `ExcelWriter` puts several frames into one workbook, a sheet each
+- `to_csv` and `to_excel` export frames
+- `index=False` excludes row labels when they are not report data
+- `ExcelWriter` writes several sheets into one workbook
 
 ```python
-report.to_csv("data/servers-report.csv", index=False)
-report.to_csv("data/servers-report.tsv", sep="\t", index=False)
-
-with pd.ExcelWriter("data/report.xlsx", engine="openpyxl") as workbook:
-    report.to_excel(workbook, sheet_name="servers", index=False)
-    per_site.to_excel(workbook, sheet_name="per site", index=False)
+report = tracks.reset_index().sort_values("plays", ascending=False)
+report.to_csv(DATA / "tracks-report.csv", index=False)
+report.to_csv(DATA / "tracks-report.tsv", sep="\t", index=False)
+per_genre = tracks.groupby("genre", as_index=False)["plays"].sum()
+with pd.ExcelWriter(DATA / "tracks-report.xlsx", engine="openpyxl") as workbook:
+    report.to_excel(workbook, sheet_name="tracks", index=False)
+    per_genre.to_excel(workbook, sheet_name="per genre", index=False)
+print(pd.ExcelFile(DATA / "tracks-report.xlsx").sheet_names)
 ```
 
 > `demo23 · writing_files`
-
 
 ---
 
 # Plotting
 
-- Any frame or column can draw itself with `.plot()` :
-  - `kind=` is `line`, `bar`, `barh`, `hist`, `scatter`, `box`
-- Choose the non-interactive backend first, and the script writes a file
+- `.plot(kind=...)` draws a frame or column
+- The `Agg` backend writes files without opening a window
+- `get_figure().savefig(...)` saves the resulting chart
 
 ```python
-import matplotlib
-matplotlib.use("Agg")          # before pyplot, so no window is opened
-
-per_site = servers.groupby("site")[["used_gb", "free_gb"]].sum()
-axes = per_site.plot(kind="barh", stacked=True)
-axes.get_figure().savefig("data/servers-plot.png", dpi=120)
+tracks["decade"] = tracks["year"] // 10 * 10
+per_decade = tracks.groupby("decade")["plays"].sum()
+axes = per_decade.plot(kind="bar", title="Fictional plays by decade")
+axes.set_ylabel("plays")
+axes.get_figure().tight_layout()
+axes.get_figure().savefig(DATA / "tracks-plot.png", dpi=120)
+plt.close(axes.get_figure())
+print(per_decade)
 ```
 
-- Good enough to look at, and rarely good enough to publish
-
 > `demo24 · plot_to_file`
-
 
 ---
 
 # Summary : Pandas
 
-- `Series` is a column with labels, `DataFrame` is a table of them :
-  - The index is a name per row, and everything aligns on it
-- Read with `read_csv`, `read_excel`, `read_sql`, write with the `to_` pair
-- Look before working : `head`, `tail`, `info`, `describe`
-- Address with `loc` by label and `iloc` by position, rows before columns
-- Filter with a boolean mask, combined with `&`, `|` and `~`
-- Summarise with `groupby().agg()`, combine tables with `merge`
-- Handle holes deliberately : `isna`, `dropna(subset=)`, `fillna`
+- `Series` and `DataFrame` attach labels to data
+- Read CSV, Excel and SQL; inspect structure and missing values
+- Select by label with `loc` or by position with `iloc`
+- Filter with masks; derive columns with array operations
+- Summarise groups, join lookup tables and export reports

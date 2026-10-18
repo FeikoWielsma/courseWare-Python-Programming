@@ -1,4 +1,8 @@
-files = ["cover.jpg", "stage.jpg", "crowd.jpg"]
-for filename in files:
-    print(f"Processing {filename}")
-print("All files processed")
+playlist = ["Imagine", "Yesterday", "Respect"]
+for title in playlist:
+    print(f"Now playing: {title}")
+print("Playlist finished")
+
+for letter in "ABBA":
+    print(letter, end=" ")
+print()

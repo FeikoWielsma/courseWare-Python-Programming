@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 
 root = tk.Tk()
-root.title("Events")
+root.title("Playlist events")
 root.geometry("520x320")
 root.columnconfigure(0, weight=1)
 root.rowconfigure(1, weight=1)

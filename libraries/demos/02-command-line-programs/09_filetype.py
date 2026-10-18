@@ -4,7 +4,7 @@ import warnings
 from pathlib import Path
 
 DATA = Path(__file__).resolve().parents[2] / "data"
-SAMPLE = DATA / "cli-sample.log"
+SAMPLE = DATA / "tracks.csv"
 
 
 def with_filetype(argv: list[str]) -> None:

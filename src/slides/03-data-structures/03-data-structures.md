@@ -42,7 +42,7 @@ footer: Data Structures
 - Lists respond to all sequence operations usable on strings :
 
 ```python
-list1 = ["Intro", "Orbit", "Echo", "Pulse", "Outro"]
+list1 = ["Thriller", "Imagine", "Yesterday", "Respect", "Hey Jude"]
 print(list1)  # Prints complete list
 print(list1[0])  # Prints first element of the list
 print(list1[1:3])  # Prints the 2nd and 3rd elements
@@ -104,10 +104,10 @@ print(list1[::-1])  # Prints complete list in reverse order
 
 
 ```python
-playlist = ["Intro", "Orbit", "Echo", "Outro"]
+playlist = ["Thriller", "Imagine", "Yesterday", "Hey Jude"]
 print("Value available at index 2 : ")
 print(playlist[2])
-playlist[2] = "Remix"
+playlist[2] = "Jolene"
 print("New value available at index 2 : ")
 print(playlist[2])
 ```
@@ -136,18 +136,18 @@ print(list2)  # [99, 1, 2, 3, 4, 5]
 - Use `del` statement if you know index of element to remove :
 
 ```python
-playlist = ["Intro", "Orbit", "Echo", "Outro"]
+playlist = ["Thriller", "Imagine", "Yesterday", "Hey Jude"]
 del playlist[2]
 print("After deleting value at index 2 : ")
-print(playlist)  # ['Intro', 'Orbit', 'Outro']
+print(playlist)  # ['Thriller', 'Imagine', 'Hey Jude']
 ```
 
 - Use `remove()` if want to remove element by value :
 
 ```python
-playlist.remove("Intro")
-print("After deleting value 'Intro' ")
-print(playlist)  # ['Orbit', 'Outro']
+playlist.remove("Thriller")
+print("After deleting value 'Thriller' ")
+print(playlist)  # ['Imagine', 'Hey Jude']
 ```
 
 - List itself can also be removed with `del` :
@@ -252,11 +252,11 @@ print(history)  # ['Library', 'Album', 'Track', 'Queue']
   - Photo dimensions similarly pair width and height
 
 ```python
-track = ("Orbit", 222)
+track = ("Imagine", 183)
 dimensions = (1920, 1080)
-titles = "Orbit", "Echo"  # The comma creates a tuple.
+titles = "Imagine", "Yesterday"  # The comma creates a tuple.
 empty = ()
-single = ("Orbit",)  # A one-item tuple needs the comma.
+single = ("Imagine",)  # A one-item tuple needs the comma.
 ```
 
 - Items cannot be replaced, inserted or removed from an existing tuple
@@ -272,9 +272,9 @@ single = ("Orbit",)  # A one-item tuple needs the comma.
 - Positions in this track record hold the title, artist and duration :
 
 ```python
-track = ("Orbit", "Nova", 222)
-print(track[0])  # Orbit
-print(track[1:])  # ('Nova', 222)
+track = ("Imagine", "John Lennon", 183)
+print(track[0])  # Imagine
+print(track[1:])  # ('John Lennon', 183)
 print(len(track))  # 3
 # track[2] = 240  # TypeError: tuple items cannot be assigned.
 ```
@@ -283,8 +283,8 @@ print(len(track))  # 3
 
 ```python
 long_mix = track[:2] + (240,)
-print(long_mix)  # ('Orbit', 'Nova', 240)
-print(track)  # ('Orbit', 'Nova', 222)
+print(long_mix)  # ('Imagine', 'John Lennon', 240)
+print(track)  # ('Imagine', 'John Lennon', 183)
 ```
 
 - The original tuple remains unchanged
@@ -299,16 +299,16 @@ print(track)  # ('Orbit', 'Nova', 222)
 - A slice can create a shorter tuple :
 
 ```python
-titles = ("Orbit", "Echo", "Pulse")
+titles = ("Imagine", "Yesterday", "Respect")
 shorter = titles[:-1]
-print(shorter)  # ('Orbit', 'Echo')
+print(shorter)  # ('Imagine', 'Yesterday')
 ```
 
 - `del` removes a name binding, not items from a tuple :
 
 ```python
 del titles
-print(shorter)  # ('Orbit', 'Echo')
+print(shorter)  # ('Imagine', 'Yesterday')
 ```
 
 - Other names keep their objects available after a binding is removed
@@ -329,11 +329,11 @@ print(shorter)  # ('Orbit', 'Echo')
 - Tuple can be destructured and contents assigned to variables :
 
 ```python
-selection = ("Orbit", "Nova")
-print(selection)  # ('Orbit', 'Nova')
+selection = ("Imagine", "Toxic")
+print(selection)  # ('Imagine', 'Toxic')
 primary, backup = selection
-print(primary)  # 'Orbit'
-print(backup)  # 'Nova'
+print(primary)  # 'Imagine'
+print(backup)  # 'Toxic'
 ```
 
 > `demo08 · destructurewithtuples`
@@ -350,9 +350,9 @@ rows = [(1,), (2,)]
 for (number,) in rows:
     print(number)  # 1, then 2
 
-records = [(1, ("Orbit", "Nova"))]
+records = [(1, ("Imagine", "John Lennon"))]
 for number, (title, artist) in records:
-    print(number, title, artist)  # 1 Orbit Nova
+    print(number, title, artist)  # 1 Imagine John Lennon
 ```
 
 ---
@@ -378,13 +378,13 @@ for number, (title, artist) in records:
   - Repeated artist names or track requests become single members
 
 ```python
-artists = {"Nova", "Nova", "Echo"}  # Duplicate names become one member.
-print(sorted(artists))  # ['Echo', 'Nova']
-requests = ["Echo", "Echo", "Pulse", "Pulse"]
+artists = {"Queen", "Queen", "ABBA"}  # Duplicate names become one member.
+print(sorted(artists))  # ['ABBA', 'Queen']
+requests = ["Yesterday", "Yesterday", "Respect", "Respect"]
 unique = set(requests)
-unique.add("Orbit")
-print(sorted(unique))  # ['Echo', 'Orbit', 'Pulse']
-print("Pulse" in unique)  # True
+unique.add("Imagine")
+print(sorted(unique))  # ['Imagine', 'Respect', 'Yesterday']
+print("Respect" in unique)  # True
 ```
 
 - Sets have no sequence order; `sorted` gives predictable printed output
@@ -397,24 +397,24 @@ print("Pulse" in unique)  # True
 
 # Set Operations
 
-- Two festival lineups show which artists play either day or both days :
+- Two fields of science show who worked in either field or in both :
 
 ```python
-day_one = {"Nova", "Echo", "Pulse", "Orbit"}
-day_two = {"Pulse", "Muse", "Vega"}
-print("Pulse" in day_two)  # True
-print(sorted(day_one | day_two))  # union, in either set
-print(sorted(day_one & day_two))  # intersection, in both
-print(sorted(day_one - day_two))  # difference, in day_one only
-print(sorted(day_one ^ day_two))  # in one of the two, not both
+physics = {"Einstein", "Bohr", "Curie", "Fermi"}
+chemistry = {"Curie", "Rutherford", "Pauling"}
+print("Curie" in chemistry)  # True
+print(sorted(physics | chemistry))  # union, in either set
+print(sorted(physics & chemistry))  # intersection, in both
+print(sorted(physics - chemistry))  # difference, in physics only
+print(sorted(physics ^ chemistry))  # in one of the two, not both
 ```
 
 ```text
 True
-['Echo', 'Muse', 'Nova', 'Orbit', 'Pulse', 'Vega']
-['Pulse']
-['Echo', 'Nova', 'Orbit']
-['Echo', 'Muse', 'Nova', 'Orbit', 'Vega']
+['Bohr', 'Curie', 'Einstein', 'Fermi', 'Pauling', 'Rutherford']
+['Curie']
+['Bohr', 'Einstein', 'Fermi']
+['Bohr', 'Einstein', 'Fermi', 'Pauling', 'Rutherford']
 ```
 
 - A set has no order, so `sorted()` turns it into a list to print it predictably
@@ -431,20 +431,20 @@ True
   - Values can be any arbitrary Python object
 - Dictionaries are hash tables :
   - Looking up a key is fast, however large the dictionary
-  - Consist of key-value pairs separated by commas
 - Dictionaries are enclosed by curly braces `{ }` :
 
 ```python
-durations = {"Orbit": 222, "Echo": 185, "Pulse": 204}
-print(durations)  # {'Orbit': 222, 'Echo': 185, 'Pulse': 204}
+durations = {"Imagine": 183, "Yesterday": 125, "Respect": 149}
+print(durations)  # {'Imagine': 183, 'Yesterday': 125, 'Respect': 149}
 ```
 
 - Values can be assigned and accessed using square brackets `[]` :
 
 ```python
-durations["Nova"] = 196
-durations["Intro"] = 90
-print(durations)  # {'Orbit': 222, 'Echo': 185, 'Pulse': 204, 'Nova': 196, 'Intro': 90}
+durations["Toxic"] = 199
+durations["Thriller"] = 357
+print(durations)
+# {'Imagine': 183, 'Yesterday': 125, 'Respect': 149, 'Toxic': 199, 'Thriller': 357}
 ```
 
 - Dictionaries remember insertion order :
@@ -460,22 +460,22 @@ print(durations)  # {'Orbit': 222, 'Echo': 185, 'Pulse': 204, 'Nova': 196, 'Intr
 - Use square brackets along with the key to obtain its value :
 
 ```python
-print(durations["Echo"])  # 185
-print(durations["Intro"])  # 90
+print(durations["Yesterday"])  # 125
+print(durations["Thriller"])  # 357
 ```
 
 - Dictionary can be updated by modifying an existing entry :
 
 ```python
-durations["Pulse"] = 210
-print(durations["Pulse"])  # 210
+durations["Respect"] = 147
+print(durations["Respect"])  # 147
 ```
 
 - Dictionary entry can be deleted :
 
 ```python
-del durations["Orbit"]
-print(durations["Orbit"])  # KeyError
+del durations["Imagine"]
+print(durations["Imagine"])  # KeyError
 ```
 
 - Entire contents of dictionary is cleared with `clear()` :
@@ -494,14 +494,14 @@ print(durations["Orbit"])  # KeyError
 - Values can be any object; assigning an equal key replaces its value
 
 ```python
-track_lengths = {("Orbit", "Nova"): 222}
-print(track_lengths[("Orbit", "Nova")])  # 222
+track_lengths = {("Imagine", "John Lennon"): 183}
+print(track_lengths[("Imagine", "John Lennon")])  # 183
 ```
 
 - An immutable tuple can contain an unhashable list :
 
 ```python
-hash(("Orbit", []))  # TypeError: unhashable type: 'list'
+hash(("Imagine", []))  # TypeError: unhashable type: 'list'
 ```
 
 ---
@@ -513,7 +513,7 @@ hash(("Orbit", []))  # TypeError: unhashable type: 'list'
 ```python
 scores: list[int] = [10, 20, 30]
 names: set[str] = {"Alice", "Bob"}
-track_lengths: dict[str, int] = {"Orbit": 222, "Echo": 185}
+track_lengths: dict[str, int] = {"Imagine": 183, "Yesterday": 125}
 ```
 
 - A dictionary takes two types, the key first and then the value
@@ -521,7 +521,7 @@ track_lengths: dict[str, int] = {"Orbit": 222, "Echo": 185}
 
 ```python
 point: tuple[int, int] = (3, 4)
-track: tuple[str, int] = ("Orbit", 222)
+track: tuple[str, int] = ("Imagine", 183)
 ```
 
 - An ellipsis means any number of one type :

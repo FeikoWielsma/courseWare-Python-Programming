@@ -2,11 +2,23 @@
 
 In this exercise you build the three steps of a scraper against a real site : you fetch a page from `books.toscrape.com`, parse the twenty books out of the markup, write them into a SQLite database with parameterised inserts, and query the result back. The site exists to be scraped, so you are welcome there as long as you are polite about it.
 
-Work in a file of your own, for example `scrape_books.py`, and run it with `uv run scrape_books.py` from the repository root. The reference answer is in `solutions/solution04-web-scraping/`.
+Work in a file of your own, for example `scrape_books.py`, and run it with `uv run scrape_books.py` from the repository root. The solution is in `solutions/solution04-web-scraping/`.
+
+The supplied solution runs offline against `data/books-fixture.html`, which
+contains the first page. Pass `--live` to fetch the site and include the optional
+second page. Without internet access, load the fixture with
+`Path("data/books-fixture.html").read_text(encoding="utf-8")` in Step 1 and
+continue with the same parsing and database steps.
+
+Start from `exercises/starters/04-web-scraping/`. Run from `libraries/`, so relative data paths resolve.
 
 ---
 
 ### Step 1 : Prove the fetch and the parser work
+
+:::hint
+The slide *Fetching a Page* shows the operation used in this step.
+:::
 
 Fetch the page and make a soup from it. Always pass a `timeout`, because `requests` has no default and a server that goes quiet would hang your script for ever :
 
@@ -26,6 +38,10 @@ If the title comes out full of newlines, tidy it with `" ".join(soup.title.text.
 ---
 
 ### Step 2 : One book
+
+:::hint
+The slide *Text and Attributes* shows the operation used in this step.
+:::
 
 Take the first `article.product_pod` and pull three fields out of it :
 
@@ -47,6 +63,10 @@ Note that the price text carries a currency sign and the rating is a word rather
 
 ### Step 3 : All twenty, as records
 
+:::hint
+The slide *Extracting Records* shows the operation used in this step.
+:::
+
 Write a function that does step 2 for every book on the page and returns a list of dictionaries, one per book :
 
 ```python
@@ -65,6 +85,10 @@ Print the first three records and the number of records. After this function ret
 ---
 
 ### Step 4 : Into the database
+
+:::hint
+The slide *Parameterised Inserts* shows the operation used in this step.
+:::
 
 Create `data/exercise-books.db` if it is not there, with one table. Give `url` a `UNIQUE` constraint, because one page is one book :
 
@@ -96,6 +120,10 @@ Remember that `sqlite3` does not commit for you. Print how many rows the table h
 
 ### Step 5 : Query it back
 
+:::hint
+The slide *SQL Injection* shows the operation used in this step.
+:::
+
 With the data in a table, the questions are ordinary SQL. Answer three of them and print the results :
 
 - the five most expensive books, title and price
@@ -114,6 +142,10 @@ Setting `conn.row_factory = sqlite3.Row` before the query lets you write `row["r
 
 ### Step 6 : Run it twice
 
+:::hint
+The slide *Upsert* shows the operation used in this step.
+:::
+
 Run your script a second time. If it fails with `sqlite3.IntegrityError` on the unique url, that is the constraint doing its job.
 
 Make the script safe to re-run by turning the insert into an upsert :
@@ -130,6 +162,10 @@ Run it twice more and confirm the row count stays at twenty while `last_seen` mo
 ---
 
 ### Step 7 : Optional, the second page, politely
+
+:::hint
+The slide *robots.txt and Rate Limiting* shows the operation used in this step.
+:::
 
 The Mystery category has a second page of twelve more books :
 

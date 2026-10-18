@@ -9,14 +9,11 @@ language: python
 
 # GUI Toolkits
 
-- Everything so far has printed to a terminal :
-  - Which is the right answer more often than people admit
-- Sometimes the audience is not you :
-  - A colleague who will not type a command
-  - A tool that has to be handed over and used unattended
+- A graphical interface accepts input through widgets
+- An event loop dispatches keyboard, mouse and window events
 - Python has a graphical toolkit in the standard library :
-  - `tkinter`, which is always present and never has to be installed
-- The goal here is recognition, not a finished application
+  - `tkinter`, with installation depending on the Python distribution
+- A playlist form can add tracks and display saved data
 
 
 ---
@@ -53,8 +50,7 @@ python -c "import tkinter; print(tkinter.TkVersion)"
 
 ```python
 root = tk.Tk()
-root.title("A window")
-root.geometry("420x220")
+root.title("Playlist")
 root.mainloop()
 ```
 
@@ -73,8 +69,8 @@ root.mainloop()
 - `command=` takes the function itself, without parentheses
 
 ```python
-entry = ttk.Entry(root, width=24)
-button = ttk.Button(root, text="Look up", command=look_up)
+entry = ttk.Entry(root, width=30)
+entry.grid(row=0, column=1, padx=8, pady=8)
 ```
 
 > `demo02 · gui_widgets`
@@ -88,17 +84,35 @@ button = ttk.Button(root, text="Look up", command=look_up)
   - `entry.get()` reads what the user typed
   - `label.configure(text=...)` writes it back
 - `configure()` sets any option after construction
-- The callback is an ordinary method :
+- The callback is an ordinary function :
   - It runs when the event happens, not when it is registered
 
 ```python
-def look_up() -> None:
-    name = entry.get().strip()
-    if not name:
-        result.configure(text="type a hostname first")
+def add_track() -> None:
+    title = entry.get().strip()
+    if not title:
+        result.configure(text="Enter a title first")
         return
-    result.configure(text=f"{name} resolved")
+    playlist.append((title, genre.get()))
+    result.configure(text=f"{title}: {genre.get()} ({len(playlist)} tracks)")
+    entry.delete(0, tk.END)
 ```
+
+
+---
+
+# Choosing a Genre
+
+- `Combobox` combines a text field with a list of choices
+- `state="readonly"` limits input to those choices
+- `set` selects a value; `get` reads it
+
+```python
+genre = ttk.Combobox(root, values=["Rock", "Pop", "Soul", "Country", "Electronic"],
+                     state="readonly")
+genre.set("Rock")
+```
+
 
 
 ---
@@ -114,9 +128,10 @@ def look_up() -> None:
   - Weight is a share of the spare space, not a yes or no
 
 ```python
-label.grid(row=row, column=0, sticky="e", padx=(0, 8), pady=4)
+ttk.Label(form, text=f"{field} :").grid(row=row, column=0, sticky="e", padx=(0, 8), pady=4)
+entry = ttk.Entry(form)
 entry.grid(row=row, column=1, sticky="ew", pady=4)
-form.columnconfigure(1, weight=1)
+entries[field] = entry
 ```
 
 > `demo03 · gui_grid_layout`
@@ -154,9 +169,9 @@ canvas.bind("<Configure>", lambda event: report("resized", event))
   - Most internal tools are a table of something with a filter above it
 
 ```python
-tree = ttk.Treeview(root, columns=list(COLUMNS), show="headings")
+tree = ttk.Treeview(root, columns=list(COLUMNS), show="headings", selectmode="browse")
 for row in rows:
-    tree.insert("", "end", values=[row[name] for name in COLUMNS])
+    tree.insert("", tk.END, values=[row[name] for name in COLUMNS], tags=(tag,))
 ```
 
 > `demo05 · gui_treeview`
@@ -172,11 +187,16 @@ for row in rows:
   - Exactly as in the scraping module
 
 ```python
-sql = f"SELECT {', '.join(COLUMNS)} FROM servers"
+sql = f"SELECT {', '.join(COLUMNS)} FROM tracks"
+parameters: tuple[str, ...] = ()
 if term:
-    sql += " WHERE site LIKE ? OR role LIKE ? OR hostname LIKE ?"
+    sql += " WHERE artist LIKE ? OR genre LIKE ? OR title LIKE ?"
     parameters = (f"%{term}%",) * 3
-return connection.execute(sql, parameters).fetchall()
+sql += " ORDER BY title"
+connection = sqlite3.connect(DB)
+found = connection.execute(sql, parameters).fetchall()
+connection.close()
+return found
 ```
 
 > `demo06 · gui_treeview_sqlite`
@@ -234,7 +254,7 @@ return connection.execute(sql, parameters).fetchall()
 
 - A GUI inverts the shape of a program :
   - Build the widgets, then hand control to an event loop
-- `tkinter` is in the standard library and always available :
+- `tkinter` is the standard-library binding to Tcl/Tk :
   - `python3-tk` on Debian and Ubuntu
 - Three widgets and one geometry manager cover most forms :
   - `Label`, `Entry`, `Button`, placed with `grid`

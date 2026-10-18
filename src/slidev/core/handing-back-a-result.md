@@ -59,7 +59,7 @@ const run = {
         },
         "seconds": {
           "type": "int",
-          "value": "222"
+          "value": "125"
         }
       },
       "active": [
@@ -83,11 +83,11 @@ const run = {
         },
         "seconds": {
           "type": "int",
-          "value": "222"
+          "value": "125"
         },
         "minutes": {
           "type": "int",
-          "value": "3"
+          "value": "2"
         }
       },
       "active": [
@@ -112,15 +112,15 @@ const run = {
         },
         "seconds": {
           "type": "int",
-          "value": "222"
+          "value": "125"
         },
         "minutes": {
           "type": "int",
-          "value": "3"
+          "value": "2"
         },
         "remainder": {
           "type": "int",
-          "value": "42"
+          "value": "5"
         }
       },
       "active": [
@@ -146,19 +146,19 @@ const run = {
         },
         "seconds": {
           "type": "int",
-          "value": "222"
+          "value": "125"
         },
         "minutes": {
           "type": "int",
-          "value": "3"
+          "value": "2"
         },
         "remainder": {
           "type": "int",
-          "value": "42"
+          "value": "5"
         },
         "label": {
           "type": "str",
-          "value": "'3:42'"
+          "value": "'2:05'"
         }
       },
       "active": [
@@ -179,7 +179,7 @@ const run = {
         },
         "label": {
           "type": "str",
-          "value": "'3:42'"
+          "value": "'2:05'"
         }
       },
       "active": [
@@ -201,11 +201,11 @@ const run = {
         },
         "label": {
           "type": "str",
-          "value": "'3:42'"
+          "value": "'2:05'"
         },
         "message": {
           "type": "str",
-          "value": "'Orbit [3:42]'"
+          "value": "'Yesterday [2:05]'"
         }
       },
       "active": [
@@ -227,11 +227,11 @@ const run = {
         },
         "label": {
           "type": "str",
-          "value": "'3:42'"
+          "value": "'2:05'"
         },
         "message": {
           "type": "str",
-          "value": "'Orbit [3:42]'"
+          "value": "'Yesterday [2:05]'"
         }
       },
       "active": [
@@ -248,15 +248,15 @@ const run = {
     [],
     [],
     [
-      "Orbit [3:42]"
+      "Yesterday [2:05]"
     ]
   ],
   "captions": [
     "The definition binds the name `format_duration`",
-    "The call supplies a track length of `222` seconds",
-    "`222 // 60` gives `3` complete minutes",
-    "`222 % 60` gives `42` remaining seconds",
-    "The formatted string `3:42` is returned to the caller",
+    "The call supplies a track length of `125` seconds",
+    "`125 // 60` gives `2` complete minutes",
+    "`125 % 60` gives `5` remaining seconds",
+    "The formatted string `2:05`, seconds padded to two digits, is returned to the caller",
     "The caller stores the returned string in `label`",
     "The caller uses `label` to build a track description",
     "The message is printed; the function binding and caller variables remain"
@@ -272,8 +272,8 @@ def format_duration(seconds):
     remainder = seconds % 60
     return f"{minutes}:{remainder:02d}"
 
-label = format_duration(222)
-message = f"Orbit [{label}]"
+label = format_duration(125)
+message = f"Yesterday [{label}]"
 print(message)
 ```
 

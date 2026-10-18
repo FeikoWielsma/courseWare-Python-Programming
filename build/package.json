@@ -17,6 +17,8 @@
     "lint": "bun run ../../Presentation-Template/build/lint-slides.ts",
     "site": "bun run site.config.ts",
     "libraries": "bun run libraries.ts",
+    "libraries:marp": "bun run libraries.ts --marp",
+    "libraries:serve": "bun run libraries.ts --serve",
     "lint:libraries": "bun run libraries.ts --lint"
   }
 }

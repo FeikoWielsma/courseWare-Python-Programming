@@ -6,8 +6,8 @@ def parse_seconds(value: str | int) -> int:
     return int(value)
 
 
-durations = {"Orbit": 222, "Echo": 185}
-seconds = find_duration("Comet", durations)
+durations = {"Imagine": 183, "Yesterday": 125}
+seconds = find_duration("Wonderwall", durations)
 if seconds is None:
     print("Track not found")
 else:

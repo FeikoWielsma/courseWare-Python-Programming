@@ -4,12 +4,7 @@ import pandas as pd
 
 DATA = Path(__file__).resolve().parents[2] / "data"
 
-servers = pd.read_csv(DATA / "servers.csv", parse_dates=["last_patched"])
+tracks = pd.read_csv(DATA / "tracks.csv", parse_dates=["last_played"])
 
-servers.info()
-
-# print(servers.describe().round(1).to_string())
-print(servers.describe(include="str").to_string())
-
-# # The non-null counts in info() are the fastest missing-data check there is.
-# print(servers.isna().sum())
+tracks.info()
+print(tracks[["duration_s", "plays"]].describe().round(1))

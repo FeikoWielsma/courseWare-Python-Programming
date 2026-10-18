@@ -2,9 +2,15 @@
 
 In this exercise you point SQLAlchemy at the database the scraping module filled in, describe its table as a Python class, and then build a small catalogue of your own with a relationship in it. Everything you write goes into `data/exercise-library.db`, so the scraped `data/books.db` is only ever read and cannot be damaged.
 
+Start from `exercises/starters/05-sqlalchemy/`. Run from `libraries/`, so relative data paths resolve.
+
 ---
 
 ### Step 1 : Connect to something that already exists
+
+:::hint
+The slide *Engine and URL* shows the operation used in this step.
+:::
 
 Make a file `library.py`. Create an engine pointing at the scraped database and ask it what is in there. This step exists to prove the environment works :
 
@@ -25,6 +31,10 @@ You should see `['books']`. Now print the column names of that table, and then t
 ---
 
 ### Step 2 : Describe the table as a class
+
+:::hint
+The slide *Declarative Models* shows the operation used in this step.
+:::
 
 Reflection is convenient, but it gives you tuples. Write a `Book` model that matches the table you just inspected, so that queries hand back objects instead :
 
@@ -49,6 +59,10 @@ You do not need `create_all()` here; the table already exists and your class is 
 
 ### Step 3 : Ask it questions
 
+:::hint
+The slide *Session* shows the operation used in this step.
+:::
+
 Using `select()` and the session, answer each of these. Print the answer with a line saying what it is :
 
 - Every book rated 5, ordered by price, most expensive first.
@@ -60,6 +74,10 @@ For the last one you want `func.count()` and `func.avg()`, and `group_by`. Compa
 ---
 
 ### Step 4 : Your own database, with two tables
+
+:::hint
+The slide *ORM Queries* shows the operation used in this step.
+:::
 
 Now build something of your own in `data/exercise-library.db`. Two models :
 
@@ -83,6 +101,10 @@ Call `Base.metadata.create_all(engine)` against the new database, then create tw
 
 ### Step 5 : Read it back both ways
 
+:::hint
+The slide *Relationships* shows the operation used in this step.
+:::
+
 Print every shelf with the titles on it, using the relationship attribute. Then print the same information again as a single query with an explicit `join`.
 
 Both should produce the same lines. Satisfy yourself about which one issued how many queries; passing `echo=True` to `create_engine` will show you every statement as it is sent, which is the quickest way to see the difference.
@@ -90,6 +112,10 @@ Both should produce the same lines. Satisfy yourself about which one issued how 
 ---
 
 ### Step 6 : Change something
+
+:::hint
+The slide *Relationships* shows the operation used in this step.
+:::
 
 Move one volume from one shelf to the other by assigning to its `shelf` attribute, then commit. Print both shelves again to confirm it moved.
 

@@ -2,9 +2,8 @@
 
 The course itself uses **tkinter**, because it ships with Python and therefore
 cannot fail to install at half past four in the afternoon. These four files are
-the other two answers to the same question, written against the same
-`data/servers.csv` as `demos/08-gui/05_gui_treeview.py`, so that they can be
-read side by side.
+the other two answers to the same question, written against the retained `data/servers.csv` inventory. The live tkinter demos now use the
+playlist dataset; these optional inventory variants remain background examples.
 
 Nothing here is needed to complete the course. None of it is installed by
 `uv sync`, and none of it is checked by the course's `ruff` or `compileall`

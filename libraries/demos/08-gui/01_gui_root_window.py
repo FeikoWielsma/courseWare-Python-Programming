@@ -3,7 +3,7 @@
 import tkinter as tk
 
 root = tk.Tk()
-root.title("A window")
+root.title("Playlist")
 
 # "widthxheight+x+y" in pixels. Leave the position off and the window manager
 # decides where to put it.
@@ -12,13 +12,13 @@ root.title("A window")
 
 message = tk.Label(
     root,
-    text="This window is doing nothing.\nThat is the point.\n\nPress Escape to close.",
+    text="Playlist editor\n\nPress Escape to close.",
     font=("TkDefaultFont", 12),
     justify="center",
 )
 message.pack(expand=True)
 
-# root.bind("<Escape>", lambda _event: root.destroy())
+root.bind("<Escape>", lambda _event: root.destroy())
 
 print("before mainloop()")
 root.mainloop()

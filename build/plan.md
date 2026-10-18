@@ -531,3 +531,5 @@ producing `PRG400-Python-Libraries-and-Tools.pdf` and the matching exercises PDF
 New library material belongs there. It does not extend the required Wordle path
 or change the four-day fundamentals schedule. The inheritance module is a
 skippable preview of Advanced Python; all nine topics are trainer-selected.
+The Slidev migration and delivery review are complete; see
+[`notes/libraries-slidev-phase3.md`](notes/libraries-slidev-phase3.md).

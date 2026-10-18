@@ -1,5 +1,6 @@
 import re
 import sqlite3
+import sys
 import time
 from contextlib import closing
 from datetime import UTC, datetime
@@ -47,7 +48,15 @@ ON CONFLICT(url) DO UPDATE SET
 type Book = dict[str, str | float | int]
 
 
-def fetch_pages(urls: list[str], delay: float = 2.0) -> list[tuple[str, str]]:
+def fetch_pages(
+    urls: list[str], delay: float = 2.0, *, live: bool = False,
+) -> list[tuple[str, str]]:
+    if not live:
+        # The supplied fixture covers the first page, not the optional second page.
+        if not urls:
+            return []
+        html = (DATA / "books-fixture.html").read_text(encoding="utf-8")
+        return [(urls[0], html)]
     # One Session reuses the connection and carries the User-Agent on every
     # request, so the site's access log says who you are.
     session = requests.Session()
@@ -97,7 +106,8 @@ def store(db_path: Path, books: list[Book]) -> int:
 
 def main() -> int:
     books: list[Book] = []
-    for url, html in fetch_pages(PAGE_URLS):
+    live = "--live" in sys.argv
+    for url, html in fetch_pages(PAGE_URLS if live else PAGE_URLS[:1], live=live):
         found = parse_books(html, url)
         print(f"Parsed {len(found):>3} books from {url}")
         books.extend(found)

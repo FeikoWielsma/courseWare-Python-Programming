@@ -3,8 +3,8 @@ for filename in ["cover.jpg", "notes.txt", "stage.jpg"]:
         continue
     print(f"Photo: {filename}")
 
-for track in ["Intro", "Orbit", "Echo", "Pulse", "Outro"]:
-    if track == "Pulse":
+for track in ["Thriller", "Imagine", "Yesterday", "Respect", "Hey Jude"]:
+    if track == "Respect":
         break
     print(f"Checked {track}")
 print("Search complete")

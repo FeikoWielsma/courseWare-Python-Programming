@@ -14,10 +14,10 @@ const run = {
     {"names": {"names": {"a": "one", "b": "one", "c": "one"}}, "objects": {"one": {"type": "int", "value": "1"}}, "active": ["names.a", "names.b", "names.c"]},
     {"names": {"names": {"a": "eleven", "b": "one", "c": "one"}}, "objects": {"one": {"type": "int", "value": "1"}, "eleven": {"type": "int", "value": "11"}}, "active": ["names.a"], "mark": {"object": "eleven"}},
     {"names": {"names": {"a": "eleven", "b": "one", "c": "one"}}, "objects": {"one": {"type": "int", "value": "1"}, "eleven": {"type": "int", "value": "11"}}, "active": ["names.a", "names.b", "names.c"]},
-    {"names": {"names": {"a": "one", "b": "two", "c": "Orbit"}}, "objects": {"one": {"type": "int", "value": "1"}, "eleven": {"type": "int", "value": "11"}, "two": {"type": "int", "value": "2"}, "Orbit": {"type": "str", "value": "'Orbit'"}}, "active": ["names.a", "names.b", "names.c"], "mark": [{"object": "two"}, {"object": "Orbit"}]},
-    {"names": {"names": {"a": "one", "b": "two", "c": "Orbit"}}, "objects": {"one": {"type": "int", "value": "1"}, "two": {"type": "int", "value": "2"}, "Orbit": {"type": "str", "value": "'Orbit'"}}, "active": ["names.a", "names.b", "names.c"]}
+    {"names": {"names": {"a": "one", "b": "two", "c": "Imagine"}}, "objects": {"one": {"type": "int", "value": "1"}, "eleven": {"type": "int", "value": "11"}, "two": {"type": "int", "value": "2"}, "Imagine": {"type": "str", "value": "'Imagine'"}}, "active": ["names.a", "names.b", "names.c"], "mark": [{"object": "two"}, {"object": "Imagine"}]},
+    {"names": {"names": {"a": "one", "b": "two", "c": "Imagine"}}, "objects": {"one": {"type": "int", "value": "1"}, "two": {"type": "int", "value": "2"}, "Imagine": {"type": "str", "value": "'Imagine'"}}, "active": ["names.a", "names.b", "names.c"]}
   ],
-  "output": [[], ["1 1 1"], [], ["11 1 1"], [], ["1 2 Orbit"]],
+  "output": [[], ["1 1 1"], [], ["11 1 1"], [], ["1 2 Imagine"]],
   "captions": [
     "`a = b = c = 1` binds three names to one `int` object",
     "All three names show `1`, because they refer to the same object",
@@ -36,7 +36,7 @@ a = b = c = 1
 print(a, b, c)
 a = 11
 print(a, b, c)
-a, b, c = 1, 2, "Orbit"
+a, b, c = 1, 2, "Imagine"
 print(a, b, c)
 ```
 

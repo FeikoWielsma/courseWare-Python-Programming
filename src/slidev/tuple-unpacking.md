@@ -8,26 +8,26 @@ pills: ["demo08 · destructurewithtuples"]
 
 ````md magic-move {duration:650, lines:true}
 ```python
-selection = ("Orbit", "Nova")
+selection = ("Imagine", "Toxic")
 ```
 ```python
-selection = ("Orbit", "Nova")
+selection = ("Imagine", "Toxic")
 primary, backup = selection
 ```
 ```python
-selection = ("Orbit", "Nova")
+selection = ("Imagine", "Toxic")
 primary, backup = selection
 primary, backup = backup, primary
-print(primary)  # 'Nova'
-print(backup)  # 'Orbit'
+print(primary)  # 'Toxic'
+print(backup)  # 'Imagine'
 ```
 ````
 
 <div primary-click="3" class="course-step">
 
 ```text
-Nova
-Orbit
+Toxic
+Imagine
 ```
 
 </div>
