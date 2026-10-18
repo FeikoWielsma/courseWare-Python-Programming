@@ -105,3 +105,25 @@ comparison files entered it. The packaged `serve.py` then served the copied app,
 and all 33 pilot states passed against that delivery origin. The explicit Marp
 route independently built its 239-page PDF and HTML. No ordinary script,
 release workflow or student README default has been switched yet.
+
+## Approved rollout and shared-build regression
+
+The trainer approved the pilot style for the remaining modules. Opus authors do
+animation implementation and basic output/syntax checks; Luna/coordinator own
+detailed verification. One Opus author runs at a time to conserve quota. The
+middle package was cancelled during inspection and remains queued.
+
+Built two unrelated courses with the production template, then the Slidev
+feature worktree, using `build/build.ts --skip-lint --no-html --force --out
+build/dist/slidev-regression-{before,after}.pdf`. Python `pypdf` extracted text
+from every page and compared exact strings, without whitespace normalization:
+
+| Course | Production pages | Feature pages | Pages with changed text |
+| --- | --- | --- | --- |
+| GitLab CI/CD | 161 | 161 | 0 |
+| C# Programming | 273 | 273 | 0 |
+
+All four PDF builds passed. JSON evidence is in ignored
+`build/slidev/shared-regression.json`. Production checkout and both unrelated
+course source trees remain unchanged. This satisfies the documented shared
+before/after PDF comparison gate; no production merge or push was performed.
