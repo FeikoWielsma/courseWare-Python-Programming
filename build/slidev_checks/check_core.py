@@ -14,7 +14,6 @@ import argparse
 import contextlib
 import io
 import json
-import os
 import re
 import shutil
 import subprocess
@@ -695,8 +694,10 @@ console.log('Browser state results written.');
 
 
 def browser_plan(slides: list[Slide], origin: str) -> int:
-    shared = os.environ.get("PRESENTATION_TEMPLATE_DIR")
-    template = Path(shared) if shared else ROOT.parent / "Presentation-Template"
+    template = Path(subprocess.run(
+        [shutil.which("bun") or "bun", str(ROOT / "build/toolchain.ts"), "--path"],
+        stdout=subprocess.PIPE, text=True, check=True,
+    ).stdout.strip())
     manifest_path = ROOT / ".courseware/fundamentals/student/manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     native = {

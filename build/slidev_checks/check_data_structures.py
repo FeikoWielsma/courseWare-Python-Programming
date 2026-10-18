@@ -28,7 +28,6 @@ import ast
 import contextlib
 import io
 import json
-import os
 import re
 import shutil
 import subprocess
@@ -402,8 +401,10 @@ console.log(JSON.stringify(results));
 
 def check_browser(slides: list[Slide], origin: str) -> int:
     """Compare each rendered click state with the Python state."""
-    shared = os.environ.get("PRESENTATION_TEMPLATE_DIR")
-    template = Path(shared) if shared else ROOT.parent / "Presentation-Template"
+    template = Path(subprocess.run(
+        [shutil.which("bun") or "bun", str(ROOT / "build/toolchain.ts"), "--path"],
+        stdout=subprocess.PIPE, text=True, check=True,
+    ).stdout.strip())
     page_map = ROOT / ".courseware/fundamentals/student/manifest.json"
     manifest = json.loads(page_map.read_text(encoding="utf-8"))
     native = [page for page in manifest["pages"] if page["kind"] == "enrichment"]

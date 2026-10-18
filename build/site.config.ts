@@ -3,6 +3,7 @@ import { spawnSync } from 'child_process';
 import questions from './site/quiz.json';
 import { wordlePlugin } from './site/plugin.ts';
 import { presentationPage } from './site/presentation.ts';
+import { templateDir } from './toolchain.ts';
 
 // Shared exercise site. The coordinator supplies course content and quiz questions separately.
 export default {
@@ -44,7 +45,6 @@ export default {
 
 // A script entry point keeps the wiring to two files and works with Windows Bun shims.
 if (import.meta.main) {
-  const template = process.env.PRESENTATION_TEMPLATE_DIR ?? path.resolve(import.meta.dirname, '../../Presentation-Template');
-  const result = spawnSync(process.execPath, ['run', path.join(template, 'build/site/build-site.ts'), ...process.argv.slice(2)], { stdio: 'inherit' });
+  const result = spawnSync(process.execPath, ['run', path.join(templateDir(), 'build/site/build-site.ts'), ...process.argv.slice(2)], { stdio: 'inherit' });
   process.exitCode = result.status ?? 1;
 }

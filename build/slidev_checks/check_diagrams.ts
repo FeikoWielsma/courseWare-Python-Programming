@@ -3,6 +3,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
+import { templateDir } from '../toolchain.ts';
 
 type DiagramApi = {
   DIAGRAM_RENDERER: string;
@@ -31,8 +32,7 @@ function normalized(value: string): string {
 
 async function main() {
   const root = path.resolve(process.cwd());
-  const shared = process.env.PRESENTATION_TEMPLATE_DIR;
-  if (!shared) fail('Set PRESENTATION_TEMPLATE_DIR to the Slidev-capable Presentation-Template worktree.');
+  const shared = templateDir();
   const diagramsUrl = pathToFileURL(path.join(shared, 'build/src/diagrams.ts')).href;
   const { DIAGRAM_RENDERER, diagramCacheFile, diagramHash, embedDiagram } = await import(diagramsUrl) as DiagramApi;
   const { parseModule } = await import(pathToFileURL(path.join(shared, 'build/src/parser.ts')).href);
