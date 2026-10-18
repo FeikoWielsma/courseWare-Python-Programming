@@ -166,3 +166,10 @@ state checks, reverse/reduced-motion and selected exports. The sole Opus task
 modules 09/10/11 and appendices 12/13 remain queued. Named Marp fallback and
 animation/delivery check scripts are now available; ordinary default build and
 release routing still wait for full acceptance.
+
+Release workflow changes are staged on this feature branch: install the isolated
+Slidev dependencies, run animation/delivery gates, build the named Marp fallback,
+copy the public `student/` allowlist as `slides/`, and publish the animated zip,
+default PDF and explicit fallback. They depend on the final ordinary-build switch
+and on merging the shared feature into template main first; the workflow reports
+that prerequisite explicitly. No remote workflow or publishing step was run.
