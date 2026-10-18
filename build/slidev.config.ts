@@ -51,5 +51,12 @@ export default {
     { module: '07-comprehensions', after: 'Flattening a List of Lists', file: 'src/slidev/middle/two-for-clauses.md' },
     { module: '08-exception-handling', after: 'Typed Exception Handling', file: 'src/slidev/middle/first-matching-handler.md' },
     { module: '08-exception-handling', after: 'Example try-finally', file: 'src/slidev/middle/finally-while-propagating.md' },
+    { module: '09-python-io', after: 'Using with', file: 'src/slidev/stateful/closing-when-with-ends.md' },
+    { module: '09-python-io', after: 'File Positions', file: 'src/slidev/stateful/moving-the-file-position.md' },
+    { module: '10-python-database-access', after: 'Last inserted row id', file: 'src/slidev/stateful/inserts-wait-for-the-commit.md' },
+    { module: '10-python-database-access', after: 'Fetching Rows', file: 'src/slidev/stateful/one-row-per-fetch.md' },
+    { module: '11-python-classes', after: 'Creating and Using Objects', file: 'src/slidev/stateful/each-object-has-its-own-health.md' },
+    { module: '11-python-classes', after: 'Class Attributes and Instance Attributes', file: 'src/slidev/stateful/object-first-then-class.md' },
+    { module: '11-python-classes', after: 'A Computed Attribute', file: 'src/slidev/stateful/computed-on-every-read.md' },
   ],
 };

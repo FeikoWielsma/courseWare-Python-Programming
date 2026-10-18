@@ -105,9 +105,8 @@ ignore = [
 # becomes; the map half is the form being recognised.
 "demos/07_comprehensions/demo13_syntactic_sugar.py" = ["C417"]
 
-# The IO chapter opens files without a context manager on purpose, so that the
-# slide that introduces `with` has something to improve on, and it spells out
-# the mode on every call because file modes are what the chapter is about.
+# The IO chapter teaches with first, then manual close so older code can be
+# recognised. Modes remain explicit because file modes are part of the lesson.
 "demos/09-python-io/**" = ["SIM115", "UP015"]
 
 

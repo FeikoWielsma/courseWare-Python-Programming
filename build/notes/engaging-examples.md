@@ -67,3 +67,28 @@ browser/PDF audits or nested agents. The coordinator uses existing checks and
 targeted rendered review. No further Luna rounds. No pushes, publishing or
 shared-production merge. The one-use quota timer was deleted at manual resumption
 so it cannot launch a duplicate author.
+
+## Implementation log
+
+- Coordinator source/native rewrite saved in `46dfeb5`: modules 01-08 and both
+  appendix sources. Ninety-three changed main demos compile; 92 execute with
+  their intended success or deliberate exception. The continuous-input demo
+  compiles but is not left running. Existing core checks pass 68 states; Data
+  Structures passes 33 states, plus five legacy list and three tuple snapshots.
+  All six middle programs match their demos and displayed output. Seven pytest
+  cases pass; the deliberately broken formatter produces the quoted `1:0`
+  versus `1:00` failure. Mypy produces the two intended type errors.
+- Opus stateful `9af38f8` integrated: 09-11 canonical examples and seven native
+  additions, 52 states. IO now introduces with before manual close; film watchlist
+  and game-character examples replace Cars/Friends and Employee/Square.
+- An app-owned automatic resumption of the old quota-limited task briefly
+  overlapped r2, finished as `e5e6aa3` and was reused by r2. Old resumptions were
+  cancelled; no further old run is queued. Only one new author runs at a time.
+- Shared `82f5134` fixes UnoCSS treating duration labels such as `[3:42]` as
+  invalid arbitrary CSS declarations. A focused regression test and shared
+  typecheck pass. Shared production remains unchanged.
+- First full build found seven overflow observations on five canonical pages.
+  Added explicit compact layouts for four collection slides and shortened the
+  formatting slide's duplicated output. Rebuild/render checks follow integration.
+- Appendix canonical examples are ready for one final Opus animation package.
+  No further Luna review rounds or new exhaustive check infrastructure.
