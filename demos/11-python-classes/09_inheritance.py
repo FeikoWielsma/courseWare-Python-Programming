@@ -1,24 +1,24 @@
-class Employee:
-    def __init__(self, name: str, salary: float) -> None:
+class Character:
+    def __init__(self, name: str, health: int) -> None:
         self.name = name
-        self.salary = salary
+        self.health = health
 
     def describe(self) -> str:
-        return f"{self.name} earns {self.salary}"
+        return f"{self.name} has {self.health} health"
 
 
-class Manager(Employee):
-    def __init__(self, name: str, salary: float, team: list[str]) -> None:
-        super().__init__(name, salary)  # the Employee part
-        self.team = team  # what a Manager adds
+class Wizard(Character):
+    def __init__(self, name: str, health: int, spells: list[str]) -> None:
+        super().__init__(name, health)  # the Character part
+        self.spells = spells  # what a Wizard adds
 
-    def describe(self) -> str:  # replaces Employee.describe
-        return f"{super().describe()} and leads {len(self.team)} people"
+    def describe(self) -> str:  # replaces Character.describe
+        return f"{super().describe()} and knows {len(self.spells)} spells"
 
 
-emp = Employee("Werner", 5000)
-boss = Manager("Marie", 6000, ["Albert", "Werner"])
-print(emp.describe())
-print(boss.describe())
-print(boss.name)  # inherited from Employee.__init__
-print(isinstance(boss, Employee))
+knight = Character("Brom", 100)
+mage = Wizard("Lumi", 70, ["fireball", "heal"])
+print(knight.describe())
+print(mage.describe())
+print(mage.name)  # set by Character.__init__
+print(isinstance(mage, Character))

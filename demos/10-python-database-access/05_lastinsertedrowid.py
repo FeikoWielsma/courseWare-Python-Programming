@@ -4,13 +4,12 @@ con = sqlite3.connect(":memory:")  # a database that lives only while the progra
 
 with con:
     cur = con.cursor()
-    cur.execute("CREATE TABLE Friends(Id INTEGER PRIMARY KEY, Name TEXT)")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Tom')")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Rebecca')")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Jim')")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Robert')")
+    cur.execute("CREATE TABLE films(id INTEGER PRIMARY KEY, title TEXT)")
+    cur.execute("INSERT INTO films(title) VALUES('Spirited Away')")
+    cur.execute("INSERT INTO films(title) VALUES('Arrival')")
+    cur.execute("INSERT INTO films(title) VALUES('Paddington 2')")
 
-    lid = cur.lastrowid
-    print(f"The last Id of the inserted row is {lid}")
+    film_id = cur.lastrowid
+    print(f"Paddington 2 was added with id {film_id}")
 
 con.close()

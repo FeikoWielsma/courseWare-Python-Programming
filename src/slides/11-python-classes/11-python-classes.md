@@ -30,16 +30,16 @@ footer: Python Classes
 
 <table>
 <thead>
-<tr><th></th><th>Car Class</th><th>Object Car A</th><th>Object Car B</th></tr>
+<tr><th></th><th>Character Class</th><th>Object Character A</th><th>Object Character B</th></tr>
 </thead>
 <tbody>
-<tr><td rowspan="4">Instance<br/>Variables</td><td>Plate Number</td><td>ABC 111</td><td>XYX 123</td></tr>
-<tr><td>Color</td><td>Blue</td><td>Red</td></tr>
-<tr><td>Manufacturer</td><td>Mitsubishi</td><td>Toyota</td></tr>
-<tr><td>Current Speed</td><td>50 km/h</td><td>100 km/h</td></tr>
-<tr><td rowspan="3">Instance<br/>Methods</td><td colspan="3">Accelerate Method</td></tr>
-<tr><td colspan="3">Turn Method</td></tr>
-<tr><td colspan="3">Brake Method</td></tr>
+<tr><td rowspan="4">Instance<br/>Variables</td><td>Name</td><td>Aria</td><td>Grok</td></tr>
+<tr><td>Role</td><td>Archer</td><td>Troll</td></tr>
+<tr><td>Health</td><td>95</td><td>35</td></tr>
+<tr><td>Position</td><td>(4, 7)</td><td>(5, 7)</td></tr>
+<tr><td rowspan="3">Instance<br/>Methods</td><td colspan="3">Move Method</td></tr>
+<tr><td colspan="3">Take Damage Method</td></tr>
+<tr><td colspan="3">Heal Method</td></tr>
 </tbody>
 </table>
 
@@ -52,23 +52,23 @@ footer: Python Classes
   - The indented block below it is the body of the class
 
 ```python
-class Person:
-    """A person, with nothing in it yet."""
+class Character:
+    """A game character, with nothing in it yet."""
 
     pass  # an empty block
 ```
 
 - The string on the first line of the body is the documentation string :
-  - It can be read as `Person.__doc__`
+  - It can be read as `Character.__doc__`
 - Calling the class creates an object :
 
 ```python
-p1 = Person()
-print(p1)
+hero = Character()
+print(hero)
 ```
 
 ```text
-<__main__.Person object at 0x000001CECE9D8D70>
+<__main__.Character object at 0x0000024A00FD8D70>
 ```
 
 > `demo01 · simplestclass`
@@ -78,25 +78,25 @@ print(p1)
 # Example Creating Classes and Objects
 
 ```python
-class Employee:
-    """Common base class for all employees."""
-    emp_count = 0
-    def __init__(self, name: str, salary: float) -> None:
+class Character:
+    """A character in a game, with its own health."""
+    def __init__(self, name: str, health: int) -> None:
         self.name = name
-        self.salary = salary
-        Employee.emp_count += 1
-    def display_count(self) -> None:
-        print(f"Total Employee {Employee.emp_count}")
-    def display_employee(self) -> None:
-        print(f"Name : {self.name}, Salary: {self.salary}")
+        self.health = health
+    def take_damage(self, amount: int) -> None:
+        self.health = max(self.health - amount, 0)
+    def heal(self, amount: int) -> None:
+        self.health = min(self.health + amount, 100)
+    def show_status(self) -> None:
+        print(f"{self.name} : {self.health} health")
 ```
 
 - To create an instance of a class :
   - Call the class by its name and pass the arguments that `__init__` accepts
-- Create an object of the `Employee` class :
+- Create an object of the `Character` class :
 
 ```python
-emp1 = Employee("Albert", 2000)
+hero = Character("Aria", 100)
 ```
 
 ---
@@ -106,15 +106,13 @@ emp1 = Employee("Albert", 2000)
 - `__init__()` :
   - The initialization method, often called the constructor
   - Called by Python when you create a new instance of this class
-  - Sets the instance attributes, here `self.name` and `self.salary`
+  - Sets the instance attributes, here `self.name` and `self.health`
 - Instance methods :
   - Declared like normal functions, but the first parameter of each method is `self`
   - You do not pass `self` when you call a method, since Python adds it
 - `self` is a reference to the instance :
-  - Instance attributes are read and written as `self.name`
-  - `self` is visible and explicit in every method definition
-- `emp_count` :
-  - A class attribute, shared by all instances, read as `Employee.emp_count`
+  - Instance attributes are read and written as `self.health`
+  - `hero.take_damage(10)` changes the health of `hero` and of no other character
 - Python frees objects for you when nothing refers to them any more :
   - `__del__` exists and you rarely need it
 
@@ -125,29 +123,31 @@ emp1 = Employee("Albert", 2000)
 - Creating objects :
 
 ```python
-# This would create first object of Employee class
-emp1 = Employee("Albert", 2000)
-# This would create second object of Employee class
-emp2 = Employee("Werner", 5000)
+hero = Character("Aria", 100)
+troll = Character("Grok", 60)
 ```
 
 - Access the object's methods and attributes using the dot operator :
 
 ```python
-emp1.display_employee()
-emp2.display_employee()
-print(f"Total Employee {Employee.emp_count}")
+troll.take_damage(25)
+hero.take_damage(10)
+hero.heal(5)
+
+hero.show_status()
+troll.show_status()
 ```
 
 - Result :
 
 ```text
-Name : Albert, Salary: 2000
-Name : Werner, Salary: 5000
-Total Employee 2
+Aria : 95 health
+Grok : 35 health
 ```
 
-> `demo02 · employee`
+- Each object keeps its own `health`; the methods are shared
+
+> `demo02 · character`
 
 ---
 
@@ -156,27 +156,27 @@ Total Employee 2
 - In Python you can add, remove, or modify attributes at any time :
 
 ```python
-emp1.age = 7  # Add an 'age' attribute
-emp1.age = 8  # Modify 'age' attribute
-del emp1.age  # Delete 'age' attribute
+hero.shield = 10  # Add a 'shield' attribute
+hero.shield = 15  # Modify 'shield' attribute
+del hero.shield  # Delete 'shield' attribute
 ```
 
 - Four functions do the same with an attribute name held in a string :
   - Useful when the name is only known while the program runs
 
 ```python
-attr = "age"  # an attribute name held in a variable
-print(hasattr(emp1, attr))  # True if the attribute exists
-setattr(emp1, attr, 8)  # Set or create the attribute
-print(getattr(emp1, attr))  # Returns the value of the attribute
-delattr(emp1, attr)  # Delete the attribute
-print(getattr(emp1, attr, "no age"))  # The default, because the attribute is gone
+attr = "shield"  # an attribute name held in a variable
+print(hasattr(hero, attr))  # True if the attribute exists
+setattr(hero, attr, 15)  # Set or create the attribute
+print(getattr(hero, attr))  # Returns the value of the attribute
+delattr(hero, attr)  # Delete the attribute
+print(getattr(hero, attr, "no shield"))  # The default, because the attribute is gone
 ```
 
 ```text
 False
-8
-no age
+15
+no shield
 ```
 
 ---
@@ -184,24 +184,24 @@ no age
 # Class Attributes and Instance Attributes
 
 ```python
-class Car:
-    wheels = 4  # class attribute, one value shared by every car
-    def __init__(self, plate: str) -> None:
-        self.plate = plate  # instance attribute, one value per car
+class Character:
+    max_health = 100  # class attribute, one value shared by every character
+    def __init__(self, name: str) -> None:
+        self.name = name  # instance attribute, one value per character
 
-a = Car("ABC 111")
-b = Car("XYX 123")
-print(a.plate, b.plate)  # ABC 111 XYX 123
-print(a.wheels, b.wheels)  # 4 4
-Car.wheels = 6  # changes the shared value
-print(a.wheels, b.wheels)  # 6 6
-a.wheels = 3  # creates an instance attribute on a only
-print(a.wheels, b.wheels, Car.wheels)  # 3 6 6
+hero = Character("Aria")
+mage = Character("Lumi")
+print(hero.name, mage.name)  # Aria Lumi
+print(hero.max_health, mage.max_health)  # 100 100
+Character.max_health = 120  # changes the shared value
+print(hero.max_health, mage.max_health)  # 120 120
+hero.max_health = 150  # creates an instance attribute on hero only
+print(hero.max_health, mage.max_health, Character.max_health)  # 150 120 120
 ```
 
 - A class attribute is assigned in the class body; an instance attribute on `self`
-- Reading `a.wheels` looks on the object first, then on the class
-- Assigning `a.wheels` always writes to the object, so change shared data on the class
+- Reading `hero.max_health` looks on the object first, then on the class
+- Assigning `hero.max_health` writes to the object; change shared data on the class
 - Methods that need no instance exist as well, `@staticmethod` and `@classmethod` :
   - They are covered in the Advanced Python course
 
@@ -212,25 +212,25 @@ print(a.wheels, b.wheels, Car.wheels)  # 3 6 6
 # `__str__` and `__repr__`
 
 ```python
-class Car:
-    def __init__(self, plate: str, color: str) -> None:
-        self.plate = plate
-        self.color = color
+class Character:
+    def __init__(self, name: str, health: int) -> None:
+        self.name = name
+        self.health = health
     def __repr__(self) -> str:
-        return f"Car({self.plate!r}, {self.color!r})"
+        return f"Character({self.name!r}, {self.health!r})"
     def __str__(self) -> str:
-        return f"{self.color} car {self.plate}"
+        return f"{self.name} ({self.health} health)"
 
-car = Car("ABC 111", "Blue")
-print(car)  # str(), for people
-print(repr(car))  # repr(), for developers
-print([car])  # a list shows the repr() of its items
+hero = Character("Aria", 100)
+print(hero)  # str(), for people
+print(repr(hero))  # repr(), for developers
+print([hero])  # a list shows the repr() of its items
 ```
 
 ```text
-Blue car ABC 111
-Car('ABC 111', 'Blue')
-[Car('ABC 111', 'Blue')]
+Aria (100 health)
+Character('Aria', 100)
+[Character('Aria', 100)]
 ```
 
 - `__str__` is used by `print()`, `str()` and f-strings
@@ -248,19 +248,20 @@ Car('ABC 111', 'Blue')
   - No methods are written to get or set it
 
 ```python
-class Square:
-    def __init__(self, length: float) -> None:
-        self.length = length
+class Character:
+    def __init__(self, name: str, health: int) -> None:
+        self.name = name
+        self.health = health
 
-sq = Square(5)
-print(sq.length)  # read it
-sq.length = 6  # write it
-print(sq.length)
+hero = Character("Aria", 100)
+print(hero.health)  # read it
+hero.health = 80  # write it
+print(hero.health)
 ```
 
 ```text
-5
-6
+100
+80
 ```
 
 > `demo05 · publicattributes`
@@ -269,29 +270,30 @@ print(sq.length)
 
 # A Computed Attribute
 
-- The area of a square depends on its length :
-  - As a method, `def area(self)`, it is called as `sq.area()`
-  - With `@property` above the `def`, it is read as `sq.area`, like an attribute
+- Whether a character is alive depends on its health :
+  - As a method, `def is_alive(self)`, it is called as `hero.is_alive()`
+  - With `@property` above the `def`, it is read as `hero.is_alive`, like an attribute
 
 ```python
-class Square:
-    def __init__(self, length: float) -> None:
-        self.length = length
+class Character:
+    def __init__(self, name: str, health: int) -> None:
+        self.name = name
+        self.health = health
     @property
-    def area(self) -> float:
-        return self.length * self.length
+    def is_alive(self) -> bool:
+        return self.health > 0
 
-sq = Square(5)
-print(sq.area)  # no parentheses
-sq.length = 6
-print(sq.area)  # always current
-sq.area = 50  # read-only : there is no setter
+hero = Character("Aria", 30)
+print(hero.is_alive)  # no parentheses
+hero.health = 0
+print(hero.is_alive)  # always current
+hero.is_alive = True  # read-only : there is no setter
 ```
 
 ```text
-25
-36
-AttributeError: property 'area' of 'Square' object has no setter
+True
+False
+AttributeError: property 'is_alive' of 'Character' object has no setter
 ```
 
 > `demo06 · computedproperty`
@@ -300,26 +302,27 @@ AttributeError: property 'area' of 'Square' object has no setter
 
 # When a Plain Attribute Is Not Enough
 
-- The `Square` so far accepts any length, `sq.length = -3` included
-- The fix makes `length` a property whose setter checks the value :
+- The `Character` so far accepts any health, `hero.health = -20` included
+- The fix makes `health` a property whose setter checks the value :
 
 ```python
-class Square:
-    def __init__(self, length: float) -> None:
-        self.length = length  # goes through the setter below
+class Character:
+    def __init__(self, name: str, health: int) -> None:
+        self.name = name
+        self.health = health  # goes through the setter below
     @property
-    def length(self) -> float:
-        return self._length
-    @length.setter
-    def length(self, value: float) -> None:
-        if value < 0:
-            raise ValueError(f"length must not be negative, got {value}")
-        self._length = value
+    def health(self) -> int:
+        return self._health
+    @health.setter
+    def health(self, value: int) -> None:
+        if not 0 <= value <= 100:
+            raise ValueError(f"health must be between 0 and 100, got {value}")
+        self._health = value
 ```
 
-- The value is stored in `self._length`, the property's own storage
+- The value is stored in `self._health`, the property's own storage
 - The code that uses the class does not change :
-  - `sq.length = 6` still works, and `sq.length = -3` now raises `ValueError`
+  - `hero.health = 0` still works, and `hero.health = -20` now raises `ValueError`
 
 > `demo07 · validatingsetter`
 
@@ -331,13 +334,13 @@ class Square:
   - Do not write getter and setter methods in advance
 - Turn it into a property the day it needs a rule :
   - A check on the value, or a value computed from other attributes
-  - The calling code keeps writing `sq.length`, so nothing else changes
+  - The calling code keeps writing `hero.health`, so nothing else changes
 - The property keeps its value in an attribute with a leading underscore :
-  - `_length` is internal to the class, by convention
+  - `_health` is internal to the class, by convention
 
 ```mermaid
 flowchart LR
-  A[calling code] -->|sq.length = 6| B[length property<br/>checks the value] --> C[self._length]
+  A[calling code] -->|hero.health = 80| B[health property<br/>checks the value] --> C[self._health]
 ```
 
 ---
@@ -345,27 +348,27 @@ flowchart LR
 # Internal Attributes
 
 - Python has no keyword that makes an attribute private :
-  - A leading underscore, `_balance`, means internal, by convention
+  - A leading underscore, `_gold`, means internal, by convention
   - Code outside the class can reach it, and is expected not to
-- Two leading underscores, `__pin`, make Python rename the attribute to `_Account__pin`
+- Two leading underscores, `__save_key`, make Python rename the attribute to `_Character__save_key`
 
 ```python
-class Account:
-    def __init__(self, owner: str) -> None:
-        self.owner = owner  # public
-        self._balance = 0  # internal, by convention
-        self.__pin = "1234"  # name mangled to _Account__pin
+class Character:
+    def __init__(self, name: str) -> None:
+        self.name = name  # public
+        self._gold = 0  # internal, by convention
+        self.__save_key = "7f3a"  # name mangled to _Character__save_key
 
-acc = Account("Albert")
-print(acc.owner)
-print(acc._balance)  # works, but the underscore says: not for you
-print(acc._Account__pin)  # the mangled name still works
+hero = Character("Aria")
+print(hero.name)
+print(hero._gold)  # works, but the underscore says: not for you
+print(hero._Character__save_key)  # the mangled name still works
 ```
 
 ```text
-Albert
+Aria
 0
-1234
+7f3a
 ```
 
 > `demo08 · internalattributes`
@@ -375,25 +378,25 @@ Albert
 # A Class Can Extend Another
 
 ```python
-class Employee:
-    def __init__(self, name: str, salary: float) -> None:
+class Character:
+    def __init__(self, name: str, health: int) -> None:
         self.name = name
-        self.salary = salary
+        self.health = health
     def describe(self) -> str:
-        return f"{self.name} earns {self.salary}"
+        return f"{self.name} has {self.health} health"
 
-class Manager(Employee):
-    def __init__(self, name: str, salary: float, team: list[str]) -> None:
-        super().__init__(name, salary)  # the Employee part
-        self.team = team  # what a Manager adds
-    def describe(self) -> str:  # replaces Employee.describe
-        return f"{super().describe()} and leads {len(self.team)} people"
+class Wizard(Character):
+    def __init__(self, name: str, health: int, spells: list[str]) -> None:
+        super().__init__(name, health)  # the Character part
+        self.spells = spells  # what a Wizard adds
+    def describe(self) -> str:  # replaces Character.describe
+        return f"{super().describe()} and knows {len(self.spells)} spells"
 ```
 
-- `Manager` inherits every method of `Employee`, adds to it and may replace methods
-- `super().__init__(...)` runs the `Employee` initialization, so `name` and `salary` are set
-- `Manager("Marie", 6000, ["Albert", "Werner"]).describe()` returns :
-  - `Marie earns 6000 and leads 2 people`
+- `Wizard` inherits every method of `Character`, adds to it and may replace methods
+- `super().__init__(...)` runs the `Character` initialization, so `name` and `health` are set
+- `Wizard("Lumi", 70, ["fireball", "heal"]).describe()` returns :
+  - `Lumi has 70 health and knows 2 spells`
 - Inheritance in depth is covered in the Advanced Python course
 
 > `demo09 · inheritance`
@@ -408,7 +411,7 @@ class Manager(Employee):
   - Each object has its own state and identity, instance methods have a `self` parameter
 - The initialization method is named `__init__()` :
   - Called by Python when the class is called to create an object
-- Class attributes are shared by all instances, instance attributes belong to one object
+- Instance attributes belong to one object, class attributes are shared by all instances
 - `__str__` and `__repr__` decide how an object is printed
 - Attributes are public; a property adds a rule without changing the calling code :
   - Start with a plain attribute, turn it into a property the day it needs a rule

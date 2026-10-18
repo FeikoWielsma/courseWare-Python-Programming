@@ -1,11 +1,11 @@
-class Person:
-    """A person, with nothing in it yet."""
+class Character:
+    """A game character, with nothing in it yet."""
 
     pass  # an empty block
 
 
-p1 = Person()
-p2 = Person()
-print(Person.__doc__)
-print(p1)
-print(p2)
+hero = Character()
+troll = Character()
+print(Character.__doc__)
+print(hero)
+print(troll)

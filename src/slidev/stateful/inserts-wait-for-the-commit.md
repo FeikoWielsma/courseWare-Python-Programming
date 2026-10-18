@@ -8,22 +8,21 @@ pills: ["demo05 · lastinsertedrowid"]
 
 <script setup>
 const run = {
-  "names": [{"id": "con", "x": 0, "y": 22, "width": 330}, {"id": "cur", "x": 0, "y": 84, "width": 330}, {"id": "lid", "x": 0, "y": 146, "width": 120}],
-  "table": {"x": 470, "y": 0, "label": "table Friends", "columns": [{"text": "Id", "width": 52}, {"text": "Name", "width": 132}]},
+  "names": [{"id": "con", "x": 0, "y": 22, "width": 300}, {"id": "cur", "x": 0, "y": 84, "width": 300}, {"id": "film_id", "x": 0, "y": 146, "width": 120}],
+  "table": {"x": 470, "y": 0, "label": "table films", "columns": [{"text": "id", "width": 52}, {"text": "title", "width": 200}]},
   "rows": [
-    {"id": "f1", "cells": ["1", "'Tom'"]},
-    {"id": "f2", "cells": ["2", "'Rebecca'"]},
-    {"id": "f3", "cells": ["3", "'Jim'"]},
-    {"id": "f4", "cells": ["4", "'Robert'"]}
+    {"id": "f1", "cells": ["1", "'Spirited Away'"]},
+    {"id": "f2", "cells": ["2", "'Arrival'"]},
+    {"id": "f3", "cells": ["3", "'Paddington 2'"]}
   ],
   "states": [
     {"names": {"con": "Connection, :memory:"}, "table": false, "rows": {}, "active": ["con"]},
     {"names": {"con": "Connection, :memory:", "cur": "Cursor"}, "table": true, "rows": {}, "active": ["cur"]},
     {"names": {"con": "Connection, :memory:", "cur": "Cursor, lastrowid 1"}, "badges": {"con": "transaction open"}, "table": true, "rows": {"f1": "pending"}, "active": ["cur"]},
-    {"names": {"con": "Connection, :memory:", "cur": "Cursor, lastrowid 4"}, "badges": {"con": "transaction open"}, "table": true, "rows": {"f1": "pending", "f2": "pending", "f3": "pending", "f4": "pending"}, "active": ["cur"]},
-    {"names": {"con": "Connection, :memory:", "cur": "Cursor, lastrowid 4", "lid": "4"}, "badges": {"con": "transaction open"}, "table": true, "rows": {"f1": "pending", "f2": "pending", "f3": "pending", "f4": "pending"}, "active": ["cur", "lid"]},
-    {"names": {"con": "Connection, :memory:", "cur": "Cursor, lastrowid 4", "lid": "4"}, "badges": {"con": "transaction open"}, "table": true, "rows": {"f1": "pending", "f2": "pending", "f3": "pending", "f4": "pending"}, "active": ["lid"]},
-    {"names": {"con": "Connection, :memory:", "cur": "Cursor, lastrowid 4", "lid": "4"}, "table": true, "rows": {"f1": "committed", "f2": "committed", "f3": "committed", "f4": "committed"}, "active": ["con"]}
+    {"names": {"con": "Connection, :memory:", "cur": "Cursor, lastrowid 3"}, "badges": {"con": "transaction open"}, "table": true, "rows": {"f1": "pending", "f2": "pending", "f3": "pending"}, "active": ["cur"]},
+    {"names": {"con": "Connection, :memory:", "cur": "Cursor, lastrowid 3", "film_id": "3"}, "badges": {"con": "transaction open"}, "table": true, "rows": {"f1": "pending", "f2": "pending", "f3": "pending"}, "active": ["cur", "film_id"]},
+    {"names": {"con": "Connection, :memory:", "cur": "Cursor, lastrowid 3", "film_id": "3"}, "badges": {"con": "transaction open"}, "table": true, "rows": {"f1": "pending", "f2": "pending", "f3": "pending"}, "active": ["film_id"]},
+    {"names": {"con": "Connection, :memory:", "cur": "Cursor, lastrowid 3", "film_id": "3"}, "table": true, "rows": {"f1": "committed", "f2": "committed", "f3": "committed"}, "active": ["con"]}
   ],
   "output": [
     [],
@@ -31,38 +30,37 @@ const run = {
     [],
     [],
     [],
-    ["The last Id of the inserted row is 4"],
+    ["Paddington 2 was added with id 3"],
     []
   ],
   "captions": [
     "`\":memory:\"` opens a new, empty database that exists only while the program runs",
-    "Inside the block, the cursor creates the empty `Friends` table",
-    "The first `INSERT` adds a row; SQLite gives the `INTEGER PRIMARY KEY` column the value 1",
-    "Three more rows; each change belongs to the open transaction, not committed yet",
-    "`lastrowid` is the `Id` of the row the cursor inserted last",
+    "Inside the block, the cursor creates the empty `films` table",
+    "The first `INSERT` leaves out `id`; SQLite gives the `INTEGER PRIMARY KEY` column the value 1",
+    "Two more films, numbered 2 and 3; each change belongs to the open transaction, not committed yet",
+    "`lastrowid` is the `id` SQLite generated for the row the cursor inserted last",
     "The f-string prints it",
-    "The block ends without an exception, so `with con` commits : the four rows are saved"
+    "The block ends without an exception, so `with con` commits : the three films are saved"
   ]
 }
 </script>
 
 <DataStructuresRun :run="run" layout="stack" output-width="300px">
 
-```python {1-2|3-5|6|7-9|10|11|3}
+```python {1-2|3-5|6|7-8|9|10|3}
 import sqlite3
 con = sqlite3.connect(":memory:")
 with con:
     cur = con.cursor()
-    cur.execute("CREATE TABLE Friends(Id INTEGER PRIMARY KEY, Name TEXT)")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Tom')")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Rebecca')")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Jim')")
-    cur.execute("INSERT INTO Friends(Name) VALUES ('Robert')")
-    lid = cur.lastrowid
-    print(f"The last Id of the inserted row is {lid}")
+    cur.execute("CREATE TABLE films(id INTEGER PRIMARY KEY, title TEXT)")
+    cur.execute("INSERT INTO films(title) VALUES('Spirited Away')")
+    cur.execute("INSERT INTO films(title) VALUES('Arrival')")
+    cur.execute("INSERT INTO films(title) VALUES('Paddington 2')")
+    film_id = cur.lastrowid
+    print(f"Paddington 2 was added with id {film_id}")
 ```
 
 <template #visual="{ step }">
-<StatefulRecords :run="run" :step="step" />
+<StatefulRecords :run="run" :step="step" :label-width="96" />
 </template>
 </DataStructuresRun>

@@ -8,40 +8,40 @@ pills: ["demo03 · classattributes"]
 
 <script setup>
 const run = {
-  "boxes": [{"id": "a", "label": "a", "tag": "Car object", "x": 0, "y": 0, "width": 210}, {"id": "car", "label": "Car", "tag": "class", "x": 290, "y": 0, "width": 210}, {"id": "b", "label": "b", "tag": "Car object", "x": 580, "y": 0, "width": 190}],
-  "links": [{"from": "a", "to": "car"}, {"from": "b", "to": "car"}],
+  "boxes": [{"id": "hero", "label": "hero", "tag": "Character object", "x": 0, "y": 0, "width": 215}, {"id": "character", "label": "Character", "tag": "class", "x": 280, "y": 0, "width": 215}, {"id": "mage", "label": "mage", "tag": "Character object", "x": 560, "y": 0, "width": 215}],
+  "links": [{"from": "hero", "to": "character"}, {"from": "mage", "to": "character"}],
   "states": [
-    {"attrs": {"car": {"wheels": "4", "__init__": "function"}}, "mark": [{"box": "car", "attr": "wheels"}, {"box": "car", "attr": "__init__"}], "active": ["car"]},
-    {"attrs": {"car": {"wheels": "4", "__init__": "function"}, "a": {"plate": "'ABC 111'"}}, "mark": [{"box": "a", "attr": "plate"}], "active": ["a"]},
-    {"attrs": {"car": {"wheels": "4", "__init__": "function"}, "a": {"plate": "'ABC 111'"}, "b": {"plate": "'XYX 123'"}}, "mark": [{"box": "b", "attr": "plate"}], "active": ["b"]},
-    {"attrs": {"car": {"wheels": "4", "__init__": "function"}, "a": {"plate": "'ABC 111'"}, "b": {"plate": "'XYX 123'"}}, "read": [{"box": "a", "attr": "plate"}, {"box": "b", "attr": "plate"}], "active": ["a", "b"]},
-    {"attrs": {"car": {"wheels": "4", "__init__": "function"}, "a": {"plate": "'ABC 111'"}, "b": {"plate": "'XYX 123'"}}, "read": [{"box": "car", "attr": "wheels", "via": "a"}, {"box": "car", "attr": "wheels", "via": "b"}], "active": ["a", "b", "car"]},
-    {"attrs": {"car": {"wheels": "6", "__init__": "function"}, "a": {"plate": "'ABC 111'"}, "b": {"plate": "'XYX 123'"}}, "mark": [{"box": "car", "attr": "wheels", "tone": "change"}], "active": ["car"]},
-    {"attrs": {"car": {"wheels": "6", "__init__": "function"}, "a": {"plate": "'ABC 111'"}, "b": {"plate": "'XYX 123'"}}, "read": [{"box": "car", "attr": "wheels", "via": "a"}, {"box": "car", "attr": "wheels", "via": "b"}], "active": ["a", "b", "car"]},
-    {"attrs": {"car": {"wheels": "6", "__init__": "function"}, "a": {"plate": "'ABC 111'", "wheels": "3"}, "b": {"plate": "'XYX 123'"}}, "mark": [{"box": "a", "attr": "wheels"}], "active": ["a"]},
-    {"attrs": {"car": {"wheels": "6", "__init__": "function"}, "a": {"plate": "'ABC 111'", "wheels": "3"}, "b": {"plate": "'XYX 123'"}}, "read": [{"box": "a", "attr": "wheels"}, {"box": "car", "attr": "wheels", "via": "b"}, {"box": "car", "attr": "wheels"}], "active": ["a", "b", "car"]}
+    {"attrs": {"character": {"max_health": "100", "__init__": "function"}}, "mark": [{"box": "character", "attr": "max_health"}, {"box": "character", "attr": "__init__"}], "active": ["character"]},
+    {"attrs": {"character": {"max_health": "100", "__init__": "function"}, "hero": {"name": "'Aria'"}}, "mark": [{"box": "hero", "attr": "name"}], "active": ["hero"]},
+    {"attrs": {"character": {"max_health": "100", "__init__": "function"}, "hero": {"name": "'Aria'"}, "mage": {"name": "'Lumi'"}}, "mark": [{"box": "mage", "attr": "name"}], "active": ["mage"]},
+    {"attrs": {"character": {"max_health": "100", "__init__": "function"}, "hero": {"name": "'Aria'"}, "mage": {"name": "'Lumi'"}}, "read": [{"box": "hero", "attr": "name"}, {"box": "mage", "attr": "name"}], "active": ["hero", "mage"]},
+    {"attrs": {"character": {"max_health": "100", "__init__": "function"}, "hero": {"name": "'Aria'"}, "mage": {"name": "'Lumi'"}}, "read": [{"box": "character", "attr": "max_health", "via": "hero"}, {"box": "character", "attr": "max_health", "via": "mage"}], "active": ["hero", "mage", "character"]},
+    {"attrs": {"character": {"max_health": "120", "__init__": "function"}, "hero": {"name": "'Aria'"}, "mage": {"name": "'Lumi'"}}, "mark": [{"box": "character", "attr": "max_health", "tone": "change"}], "active": ["character"]},
+    {"attrs": {"character": {"max_health": "120", "__init__": "function"}, "hero": {"name": "'Aria'"}, "mage": {"name": "'Lumi'"}}, "read": [{"box": "character", "attr": "max_health", "via": "hero"}, {"box": "character", "attr": "max_health", "via": "mage"}], "active": ["hero", "mage", "character"]},
+    {"attrs": {"character": {"max_health": "120", "__init__": "function"}, "hero": {"name": "'Aria'", "max_health": "150"}, "mage": {"name": "'Lumi'"}}, "mark": [{"box": "hero", "attr": "max_health"}], "active": ["hero"]},
+    {"attrs": {"character": {"max_health": "120", "__init__": "function"}, "hero": {"name": "'Aria'", "max_health": "150"}, "mage": {"name": "'Lumi'"}}, "read": [{"box": "hero", "attr": "max_health"}, {"box": "character", "attr": "max_health", "via": "mage"}, {"box": "character", "attr": "max_health"}], "active": ["hero", "mage", "character"]}
   ],
   "output": [
     [],
     [],
     [],
-    ["ABC 111 XYX 123"],
-    ["4 4"],
+    ["Aria Lumi"],
+    ["100 100"],
     [],
-    ["6 6"],
+    ["120 120"],
     [],
-    ["3 6 6"]
+    ["150 120 120"]
   ],
   "captions": [
-    "The class body runs once : the class `Car` holds `wheels` and the function `__init__`",
-    "Calling `Car` makes an object, and `__init__` stores `plate` on it",
-    "A second object, with its own `plate`",
-    "Each object has its own `plate`",
-    "Neither object has `wheels`, so Python looks on the class and finds 4 for both",
-    "`Car.wheels = 6` changes the one value both objects share",
-    "Both lookups reach the class again and find 6",
-    "Assigning `a.wheels` creates an attribute on `a`; the class is not changed",
-    "`a.wheels` is found on `a` first; `b.wheels` and `Car.wheels` still read the class"
+    "The class body runs once : the class `Character` holds `max_health` and the function `__init__`",
+    "Calling `Character` makes an object, and `__init__` stores `name` on it",
+    "A second object, with its own `name`",
+    "Each object has its own `name`",
+    "Neither object has `max_health`, so Python looks on the class and finds 100 for both",
+    "`Character.max_health = 120` changes the one value both characters share",
+    "Both lookups reach the class again and find 120",
+    "Assigning `hero.max_health` creates an attribute on `hero`; the class is not changed",
+    "`hero.max_health` is found on `hero` first; `mage.max_health` and `Character.max_health` still read the class"
   ]
 }
 </script>
@@ -49,19 +49,19 @@ const run = {
 <DataStructuresRun :run="run" layout="stack" output-width="300px">
 
 ```python {1-3|6|7|8|9|10|11|12|13}
-class Car:
-    wheels = 4  # class attribute, one value shared by every car
-    def __init__(self, plate: str) -> None:
-        self.plate = plate  # instance attribute, one value per car
+class Character:
+    max_health = 100  # class attribute, one value shared by every character
+    def __init__(self, name: str) -> None:
+        self.name = name  # instance attribute, one value per character
 
-a = Car("ABC 111")
-b = Car("XYX 123")
-print(a.plate, b.plate)  # ABC 111 XYX 123
-print(a.wheels, b.wheels)  # 4 4
-Car.wheels = 6  # changes the shared value
-print(a.wheels, b.wheels)  # 6 6
-a.wheels = 3  # creates an instance attribute on a only
-print(a.wheels, b.wheels, Car.wheels)  # 3 6 6
+hero = Character("Aria")
+mage = Character("Lumi")
+print(hero.name, mage.name)  # Aria Lumi
+print(hero.max_health, mage.max_health)  # 100 100
+Character.max_health = 120  # changes the shared value
+print(hero.max_health, mage.max_health)  # 120 120
+hero.max_health = 150  # creates an instance attribute on hero only
+print(hero.max_health, mage.max_health, Character.max_health)  # 150 120 120
 ```
 
 <template #visual="{ step }">

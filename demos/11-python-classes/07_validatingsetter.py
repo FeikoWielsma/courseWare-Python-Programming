@@ -1,34 +1,35 @@
-class Square:
-    def __init__(self, length: float) -> None:
-        self.length = length  # goes through the setter below
+class Character:
+    def __init__(self, name: str, health: int) -> None:
+        self.name = name
+        self.health = health  # goes through the setter below
 
     @property
-    def length(self) -> float:
-        return self._length
+    def health(self) -> int:
+        return self._health
 
-    @length.setter
-    def length(self, value: float) -> None:
-        if value < 0:
-            raise ValueError(f"length must not be negative, got {value}")
-        self._length = value
+    @health.setter
+    def health(self, value: int) -> None:
+        if not 0 <= value <= 100:
+            raise ValueError(f"health must be between 0 and 100, got {value}")
+        self._health = value
 
     @property
-    def area(self) -> float:
-        return self.length * self.length
+    def is_alive(self) -> bool:
+        return self.health > 0
 
 
 # The same calling code as in 06_computedproperty.py
-sq = Square(5)
-print(sq.area)
-sq.length = 6
-print(sq.area)
+hero = Character("Aria", 30)
+print(hero.is_alive)
+hero.health = 0
+print(hero.is_alive)
 
 try:
-    sq.length = -3  # accepted by the plain attribute, refused now
+    hero.health = -20  # accepted by the plain attribute, refused now
 except ValueError as e:
     print(e)
 
 try:
-    Square(-1)  # __init__ uses the setter too
+    Character("Brom", 500)  # __init__ uses the setter too
 except ValueError as e:
     print(e)

@@ -1,11 +1,11 @@
 import sqlite3
 
-# Reads the Cars table; run 03_insertingdata.py or 04_preparedstatements.py first.
-con = sqlite3.connect("cars.db")
+# Reads the films table; run 03_insertingdata.py or 04_preparedstatements.py first.
+con = sqlite3.connect("watchlist.db")
 
 with con:
     cur = con.cursor()
-    cur.execute("SELECT * FROM Cars")
+    cur.execute("SELECT id, title, year FROM films")
 
     rows = cur.fetchall()
 

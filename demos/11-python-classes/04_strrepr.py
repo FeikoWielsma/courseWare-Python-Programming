@@ -1,17 +1,17 @@
-class Car:
-    def __init__(self, plate: str, color: str) -> None:
-        self.plate = plate
-        self.color = color
+class Character:
+    def __init__(self, name: str, health: int) -> None:
+        self.name = name
+        self.health = health
 
     def __repr__(self) -> str:
-        return f"Car({self.plate!r}, {self.color!r})"
+        return f"Character({self.name!r}, {self.health!r})"
 
     def __str__(self) -> str:
-        return f"{self.color} car {self.plate}"
+        return f"{self.name} ({self.health} health)"
 
 
-car = Car("ABC 111", "Blue")
-print(car)  # str(), for people
-print(f"I drive a {car}")  # str() again
-print(repr(car))  # repr(), for developers
-print([car])  # a list shows the repr() of its items
+hero = Character("Aria", 100)
+print(hero)  # str(), for people
+print(f"Player one is {hero}")  # str() again
+print(repr(hero))  # repr(), for developers
+print([hero])  # a list shows the repr() of its items
