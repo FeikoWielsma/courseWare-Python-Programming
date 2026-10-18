@@ -404,7 +404,8 @@ def check_browser(slides: list[Slide], origin: str) -> int:
     """Compare each rendered click state with the Python state."""
     shared = os.environ.get("PRESENTATION_TEMPLATE_DIR")
     template = Path(shared) if shared else ROOT.parent / "Presentation-Template"
-    manifest = json.loads((ROOT / ".courseware/fundamentals/student/manifest.json").read_text(encoding="utf-8"))
+    page_map = ROOT / ".courseware/fundamentals/student/manifest.json"
+    manifest = json.loads(page_map.read_text(encoding="utf-8"))
     native = [page for page in manifest["pages"] if page["kind"] == "enrichment"]
     pages = {page["title"]: page["sourceId"] for page in native}
     plan = []
