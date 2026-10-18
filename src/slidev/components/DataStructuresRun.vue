@@ -18,8 +18,10 @@ const { $clicks } = useSlideContext()
 const step = computed(() => Math.max(0, Math.min($clicks.value, props.run.output.length - 1)))
 // Reserve room for every line the run prints, so nothing below it moves.
 const reserved = computed(() => `${30 + 23 * props.run.output.flat().length}px`)
-const lines = computed(() => props.run.output.slice(0, step.value + 1).flatMap((group, index) =>
-  group.map((text, n) => ({ text, key: `${index}-${n}`, fresh: index === step.value && index > 0 }))))
+// Hidden future output participates in layout, including wrapped error messages.
+// Otherwise an auto-sized code column can move the visual when output appears.
+const lines = computed(() => props.run.output.flatMap((group, index) =>
+  group.map((text, n) => ({ text, key: `${index}-${n}`, shown: index <= step.value, fresh: index === step.value && index > 0 }))))
 // Captions mark inline code with backticks, as the slides do.
 const caption = computed(() => (props.run.captions?.[step.value] || '').split('`').map((text, i) => ({ text, code: i % 2 === 1 })))
 </script>
@@ -30,7 +32,7 @@ const caption = computed(() => (props.run.captions?.[step.value] || '').split('`
     <section class="ds-output" aria-label="Program output" :style="{ minHeight: reserved }">
       <header>Output</header>
       <ol>
-        <li v-for="line in lines" :key="line.key" :class="{ fresh: line.fresh }" data-ds-output>{{ line.text }}</li>
+        <li v-for="line in lines" :key="line.key" :class="{ fresh: line.fresh }" :style="{ visibility: line.shown ? 'visible' : 'hidden' }" :aria-hidden="!line.shown" :data-ds-output="line.shown ? '' : undefined">{{ line.text }}</li>
       </ol>
     </section>
     <div class="ds-visual"><slot name="visual" :step="step" /></div>

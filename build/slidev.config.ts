@@ -58,5 +58,7 @@ export default {
     { module: '11-python-classes', after: 'Creating and Using Objects', file: 'src/slidev/stateful/each-object-has-its-own-health.md' },
     { module: '11-python-classes', after: 'Class Attributes and Instance Attributes', file: 'src/slidev/stateful/object-first-then-class.md' },
     { module: '11-python-classes', after: 'A Computed Attribute', file: 'src/slidev/stateful/computed-on-every-read.md' },
+    { module: '12-appendix-type-hinting', after: 'Optional Values', file: 'src/slidev/appendices/a-lookup-that-may-find-nothing.md' },
+    { module: '13-appendix-libraries', after: 'The json Module', file: 'src/slidev/appendices/a-playlist-round-trip.md' },
   ],
 };

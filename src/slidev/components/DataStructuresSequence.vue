@@ -23,7 +23,7 @@ const ids = computed(() => Object.keys(props.run.objects))
 const slot = (index) => props.orientation === 'row'
   ? { x: left + index * (props.cellWidth - 2), y: 28 }
   : { x: left, y: 24 + (capacity.value - 1 - index) * (cellHeight - 2) }
-const returnedSlot = computed(() => ({ x: left + props.cellWidth + 150, y: 24 }))
+const returnedSlot = computed(() => ({ x: left + props.cellWidth + (props.orientation === 'stack' ? 24 : 150), y: 24 }))
 
 function placement(id) {
   const states = props.run.states
@@ -64,11 +64,11 @@ const wellHeight = computed(() => capacity.value * (cellHeight - 2) + 2)
       <span v-for="i in capacity" :key="`i${i}`" class="index" :class="{ shown: i <= state.items.length }" :style="{ left: `${slot(i - 1).x}px`, width: `${cellWidth}px` }">{{ i - 1 }}</span>
     </template>
     <template v-else>
-      <span class="name" :style="{ top: `${24 + wellHeight / 2 - cellHeight / 2}px`, left: '0px', height: `${cellHeight}px` }">{{ run.name }}</span>
+      <span class="name" :style="{ top: '0px', left: `${left}px`, height: '24px' }">{{ run.name }}</span>
       <div class="well" :style="{ left: `${left - 8}px`, width: `${cellWidth + 16}px`, height: `${wellHeight + 8}px` }" />
       <span v-for="i in capacity" :key="`i${i}`" class="index side" :class="{ shown: i <= state.items.length }" :style="{ top: `${slot(i - 1).y}px`, left: `${left - 48}px`, height: `${cellHeight}px` }">{{ i - 1 }}</span>
       <span class="top-mark" :class="{ shown: top }" :style="{ transform: `translateY(${top ? top.y : 24}px)`, left: `${left + cellWidth + 14}px`, height: `${cellHeight}px` }">&#8592; top</span>
-      <span class="returned-label" :class="{ shown: state.returned }" :style="{ left: `${returnedSlot.x}px`, top: `${returnedSlot.y + cellHeight + 6}px` }">returned</span>
+      <span class="returned-label" :class="{ shown: state.returned }" :style="{ left: `${returnedSlot.x}px`, top: '0px' }">returned</span>
     </template>
     <div
       v-for="cell in cells" :key="cell.id" class="cell" :class="[cell.status, cell.tone]" :style="cell.style"
