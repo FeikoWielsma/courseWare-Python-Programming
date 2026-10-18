@@ -584,3 +584,9 @@ course; the workflow checks for that toolchain and stops if it is missing.
 Implementation details, commands and limits: `build/notes/libraries-review.md`.
 Phase 1 evidence: `build/notes/libraries-slidev-phase1.md`.
 Phase 2 evidence: `build/notes/libraries-slidev-phase2.md`.
+
+## Proposed toolchain simplification (2026-10-18)
+
+Implementation has not started. The proposal, migration order, constraints and
+subagent brief are in
+[`build/notes/courseware-toolchain-simplification.md`](notes/courseware-toolchain-simplification.md).
