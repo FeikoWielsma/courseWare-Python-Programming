@@ -8,7 +8,8 @@
 // step only moves cells, markers and states. Moving back replays the step.
 //
 // run.file : { name }, the file on disk
-// run.cells : ['o', 'n', ...], every character or byte the file ever holds
+// run.cells : ['o', 'n', ...], every character or byte the file ever holds;
+//   a newline shows as \n
 // run.handles : [{ id, mode }], one lane each, top to bottom
 // state.disk : how many of run.cells are on disk (null : no file yet)
 // state.buffer : { handle, count } | null, the cells after state.disk that
@@ -81,7 +82,10 @@ function nearest(i) {
 const cells = computed(() => props.run.cells.map((text, i) => {
   const at = placeIn(state.value, i)
   const read = Boolean(state.value.read) && i >= state.value.read.from && i < state.value.read.to
-  return { key: i, text, where: at ? at.where : 'none', read, left: x0.value + i * props.cellWidth, top: (at || nearest(i)).top }
+  // A newline is shown as Python writes it, whether the run holds the
+  // character itself or its two-character escape.
+  const shown = text === '\n' || text === '\\n' ? '\\n' : text
+  return { key: i, text: shown, where: at ? at.where : 'none', read, left: x0.value + i * props.cellWidth, top: (at || nearest(i)).top }
 }))
 </script>
 

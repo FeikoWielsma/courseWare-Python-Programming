@@ -8,8 +8,8 @@ pills: ["demo09 · fetchone"]
 
 <script setup>
 const run = {
-  "names": [{"id": "con", "x": 0, "y": 0, "width": 290}, {"id": "cur", "x": 0, "y": 62, "width": 290}, {"id": "row", "x": 0, "y": 160, "width": 290}],
-  "table": {"x": 400, "y": 0, "label": "result of SELECT * FROM Cars", "columns": [{"text": "Id", "width": 44}, {"text": "Name", "width": 148}, {"text": "Price", "width": 98}]},
+  "names": [{"id": "con", "x": 0, "y": 0, "width": 230}, {"id": "cur", "x": 0, "y": 62, "width": 230}, {"id": "row", "x": 291, "y": 382, "width": 302}],
+  "table": {"x": 350, "y": 0, "label": "result of SELECT * FROM Cars", "columns": [{"text": "Id", "width": 44}, {"text": "Name", "width": 150}, {"text": "Price", "width": 100}]},
   "rows": [
     {"id": "r1", "cells": ["1", "'Audi'", "52642"]},
     {"id": "r2", "cells": ["2", "'Mercedes'", "57127"]},
@@ -43,7 +43,7 @@ const run = {
   "captions": [
     "`connect` opens `cars.db` and returns a connection object",
     "`execute` runs the query; the cursor holds its result and stands before the first row",
-    "`fetchone()` hands over the next row, a tuple, and the cursor moves past it",
+    "`fetchone()` hands over the next row, a tuple, to `row`; the cursor moves past it",
     "`row` is not `None`, so the loop prints its three columns",
     "The next pass fetches the second row; nothing refers to the first one any more",
     "The loop repeats for rows 3 to 8, one `fetchone()` each",
