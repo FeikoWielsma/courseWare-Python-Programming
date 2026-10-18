@@ -27,6 +27,36 @@ Design : `courseware-toolchain-simplification.md`, sequence steps 1-2.
 - `renderer: 'marp'` (default) forwards to `build.ts` unchanged, for courses without Slidev.
 - No exercise-source field : `build.ts --exercises` already discovers them from the deck folder.
 
-## Left
+- Stricter than before : a stray positional argument (`bun run libraries -- nope`) is now an error;
+  previously it was forwarded and ignored.
 
-- Verification builds and baseline comparison (below).
+## Verification (2026-10-18)
+
+`PRESENTATION_TEMPLATE_DIR=C:/Git/courseWare/_worktrees/presentation-template-cli`, logs in
+`C:/Git/courseWare/_baselines/t3/`, fingerprints in `_baselines/t3/fp/` compared with
+`uv run --with pypdf python fingerprint.py compare python/<name>.json t3/fp/<name>.json`.
+
+| Command | Result |
+|---|---|
+| `build -- --skip-lint` | exit 0; 276 pages, identical text on every page; ZIP 420 entries, same names apart from Vite content hashes |
+| `libraries -- --skip-lint --force` | exit 0; 179 pages, identical text; ZIP 302 entries, same names apart from hashes |
+| `build:marp -- --force` | exit 0; 243 pages, identical text; `-Marp.html` written |
+| `build -- --exercises --force` | exit 0; 135 pages, identical text |
+| `libraries:marp -- --skip-lint --force` | exit 0; `-Marp.pdf/.html` and the plain `.html` alias (byte-identical copy) |
+| `libraries -- --exercises --force` | exit 0 (no baseline) |
+| `lint`, `lint:libraries` | exit 0, "All slides within budget." |
+| `slidev -- --with-clicks --range 109` | exit 0, 8 click-state pages, `course-slidev-clicks-109.pdf` |
+| `build -- --range 3-4` | exit 0, 2 pages, `course-slidev-3-4.pdf`; root PDF and ZIP untouched |
+| `slidev:check` | exit 0, 276 pages, 0 failures |
+| `build -- --prepare` without the variable | clear error naming `PRESENTATION_TEMPLATE_DIR` |
+
+Template : `bun run --cwd build typecheck` clean, `bun run --cwd build test` 7 pass,
+`bun run --cwd build smoke` SMOKE PASS, `bun test` in `build/slidev` 14 pass.
+Not run : `--serve` / `--dev` servers, `check:delivery`, other courses (none call the new entry).
+
+## Left for stage 3
+
+- The entry is the place to write the artifact manifest : it already knows deck, variant
+  (normal, Marp, exercises, range, clicks), the PDF target and the archive path.
+- Range and click exports still share `build/slidev/dist` with the normal build (they rebuild the
+  app there); separate output folders are stage 3.
