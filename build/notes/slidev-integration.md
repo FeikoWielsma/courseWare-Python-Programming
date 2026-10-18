@@ -88,3 +88,20 @@ The rendered gallery, recording and PDFs were prepared for the trainer's style
 review before any remaining-module authors were started. The review is the
 prototype checkpoint in the shared orchestration guide. Release packaging work
 can proceed independently while that preference is pending.
+
+## Delivery preparation before the default switch
+
+Prepared `build/course.ts`, deliberately not yet wired to the ordinary package
+scripts. It builds/checks the public Slidev deck, preserves exercise routing,
+provides explicit Marp routing and custom PDF output, and uses the shared
+student-package helper. `--serve` selects source watching. Trainer builds remain
+an explicit separate command so they cannot enter student packaging.
+
+The portable package allowlists the built app, local licences, launcher and
+instructions. Its zip contains `slides/` plus the course PDF. A custom-output
+probe built the 247-page PDF and a 13.6 MiB zip; all 5,716 zip entries matched
+their source hashes, CRC checks passed, and no Markdown, source manifest or Marp
+comparison files entered it. The packaged `serve.py` then served the copied app,
+and all 33 pilot states passed against that delivery origin. The explicit Marp
+route independently built its 239-page PDF and HTML. No ordinary script,
+release workflow or student README default has been switched yet.

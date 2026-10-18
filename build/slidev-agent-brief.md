@@ -40,6 +40,9 @@ when a delegated worktree starts from an earlier commit.
   component, and verify provenance against the cited demo. Report any example
   that needs a different verification method. Existing global checker integration
   belongs to the coordinator.
+- The check accepts `--browser <origin>` to verify every rendered state against
+  the executed data, plus forward/reverse clicks and frame containment. The Data
+  Structures package is the working reference. Static mode remains the default.
 
 ## Verify and hand back
 
