@@ -28,7 +28,7 @@ const props = defineProps({
   labelWidth: { type: Number, default: 56 },
 })
 const boxHeight = 46
-const rowHeight = 40
+const rowHeight = 38
 const tableLabel = 22
 const tableHead = 30
 const state = computed(() => props.run.states[props.step])
