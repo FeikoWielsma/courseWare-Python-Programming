@@ -5,20 +5,23 @@ on:
     branches:
       - master
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Build, check and verify, then report what the release would change. Publishes and syncs nothing.
+        type: boolean
+        default: false
+      sync_tag:
+        description: Build nothing; only synchronise the student repositories from this published release (e.g. build-1a2b3c4).
+        required: false
+        default: ''
 
 concurrency:
   group: ${{ github.workflow }}
-  cancel-in-progress: true
-
-env:
-  SLIDES_PDF: PRG400-Python-Programming.pdf
-  MARP_PDF: PRG400-Python-Programming-Marp.pdf
-  MARP_HTML: PRG400-Python-Programming-Marp.html
-  EXERCISES_PDF: PRG400-Python-Programming-Exercises.pdf
-  EXERCISES_HTML: PRG400-Python-Programming-Exercises.html
+  cancel-in-progress: false
 
 jobs:
   build:
+    if: ${{ !inputs.sync_tag }}
     runs-on: docker-build
     container:
       image: git.feikowielsma.nl/feiko/courseware-ci-image:latest
@@ -26,18 +29,26 @@ jobs:
       - name: Checkout
         uses: https://github.com/actions/checkout@v4
 
-      # The CI image carries bun, node and Chrome but no Python, so uv is
-      # installed here and brings its own interpreter. These checks run before
-      # the decks are built : if the courseware code is broken there is no
-      # point publishing it, and nothing should reach the student repository.
+      - name: Install Bun 1.4 for Slidev
+        shell: bash
+        run: |
+          curl -fsSL https://bun.sh/install | bash -s "bun-v1.4.1"
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+          "$HOME/.bun/bin/bun" --version
+
+      - name: Fetch the pinned Presentation-Template
+        shell: bash
+        env:
+          PRESENTATION_TEMPLATE_REPOSITORY: ${{ github.server_url }}/SpiralTrain/Presentation-Template.git
+        run: |
+          echo "TEMPLATE=$(bun run build/toolchain.ts --path)" >> "$GITHUB_ENV"
+
       - name: Install uv
         shell: bash
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.local/bin" >> "${GITHUB_PATH}"
 
-      # The lockfile and pyproject.toml must agree, or `uv sync --frozen`
-      # below is installing something other than what the project declares.
       - name: Check the lockfile is current
         shell: bash
         run: |
@@ -48,70 +59,30 @@ jobs:
         shell: bash
         run: uv sync --frozen
 
-      # Gating. Every file that ships in the student bundle must at least parse
-      # as Python 3, the demos/*/extra/ directories included.
       - name: Check the Python compiles
         shell: bash
-        run: |
-          uv run python -m compileall -q \
-            demos/01-pythonintro \
-            demos/02-variablesanddatatypes \
-            demos/03-datastructures \
-            demos/04-controlflow \
-            demos/05-functions \
-            demos/06-modules \
-            demos/07_comprehensions \
-            demos/08-exceptionhandling \
-            demos/09-python-io \
-            demos/10-python-database-access \
-            demos/11-python-classes \
-            demos/12-appendix-type-hinting \
-            demos/13-appendix-libraries \
-            solutions \
-            libraries/demos \
-            libraries/solutions
+        run: uv run python -m compileall -q demos solutions libraries/demos libraries/solutions
 
-      - name: Checkout Presentation Template
-        run: |
-          git clone --depth=1 "${GITHUB_SERVER_URL}/SpiralTrain/Presentation-Template.git" \
-            "$(dirname $(pwd))/Presentation-Template"
-
-      # Gating. Extracts every ```python fence from the slides and the exercise
-      # guides and checks it for the defects the PDF conversion leaves behind :
-      # a footer glued onto a line of code, a Python 2 print statement, a smart
-      # quote or ellipsis sitting inside code.
       - name: Check the slide code fences
         shell: bash
-        run: uv run python ../Presentation-Template/build/tools/check-fences.py
+        run: uv run python "$TEMPLATE/build/tools/check-fences.py"
 
       - name: Check exercise slide references
         shell: bash
-        run: uv run python ../Presentation-Template/build/tools/check-slide-references.py
+        run: uv run python "$TEMPLATE/build/tools/check-slide-references.py"
 
-      # Gating. Each exercise starter is the previous exercise's solution plus
-      # that exercise's handouts. They are generated, never edited, and this
-      # fails when someone changed a solution without regenerating them.
       - name: Check the exercise starters are current
         shell: bash
-        run: uv run python ../Presentation-Template/build/tools/make-starters.py --check
+        run: uv run python "$TEMPLATE/build/tools/make-starters.py" --check
 
-      # Gating. Every Wordle solution stage passes its tests (and mypy from
-      # Exercise 12), and a scripted game with a fixed secret prints exactly
-      # the stored transcript in build/transcripts/.
       - name: Check the exercise solutions
         shell: bash
         run: uv run python build/check-solutions.py
 
-      # Gating. Every quiz question with code is run, so the answer marked
-      # correct is what Python 3.14 actually prints.
       - name: Check the quiz
         shell: bash
         run: uv run python build/site/check-quiz.py
 
-      # Gating. The repository is at zero findings inside the ruff.toml scope,
-      # and every per-file-ignore there names the lesson it protects. A new
-      # finding is either a defect or a deliberate teaching pattern that wants
-      # an ignore with a reason; neither should reach the student silently.
       - name: Check the style
         shell: bash
         run: uv run ruff check .
@@ -126,31 +97,11 @@ jobs:
           uv run --project libraries python libraries/build/check-outputs.py
           uv run --project libraries python libraries/build/native_states.py --check
           cd libraries
-          uv run python ../../Presentation-Template/build/tools/check-fences.py
-
-      # The shared Slidev lockfile uses Bun's version 2 format. The CI image
-      # currently carries Bun 1.2, which cannot read it.
-      - name: Install Bun 1.4 for Slidev
-        shell: bash
-        run: |
-          curl -fsSL https://bun.sh/install | bash -s "bun-v1.4.1"
-          bun --version
-
-      - name: Install template dependencies
-        shell: bash
-        run: |
-          # Merge the shared Slidev feature before this course's cutover.
-          test -f ../Presentation-Template/build/slidev/delivery.ts || {
-            echo "Presentation-Template must include the Slidev delivery toolchain."
-            exit 1
-          }
-          bun install --cwd ../Presentation-Template/build --frozen-lockfile
-          bun install --cwd ../Presentation-Template/build/slidev --frozen-lockfile
+          uv run python "$TEMPLATE/build/tools/check-fences.py"
 
       - name: Build slides and exercises
         shell: bash
         env:
-          PRESENTATION_TEMPLATE_DIR: ${{ github.workspace }}/../Presentation-Template
           CHROME_PATH: /usr/bin/google-chrome-stable
           MARP_EXTRA_ARGS: --chrome-arg=--no-sandbox --chrome-arg=--disable-dev-shm-usage
         run: |
@@ -165,219 +116,96 @@ jobs:
           bun run libraries:marp -- --skip-lint --force
           bun run lint:libraries
           bun run libraries -- --exercises --force
-          bun run "${PRESENTATION_TEMPLATE_DIR}/build/courseware.ts" verify fundamentals
-          bun run "${PRESENTATION_TEMPLATE_DIR}/build/courseware.ts" verify libraries
+          bun run verify -- fundamentals
+          bun run verify -- libraries
 
-      - name: Assemble student bundle
+      - name: Assemble and verify the student bundle
         shell: bash
         run: |
-          # An allowlist, not a copy-then-prune. Naming what goes in means a
-          # folder added later cannot leak into a student's clone by accident.
-          # reference/ ships whole: it is curated background reading and every
-          # part of it is meant to reach the student.
-          BUNDLE=/tmp/student-bundle
-          rm -rf "${BUNDLE}"
-          mkdir -p "${BUNDLE}/demos"
+          bun run --cwd build bundle
+          bun run --cwd build verify -- --bundle
 
-          cp "${SLIDES_PDF}" "${MARP_PDF}" "${MARP_HTML}" "${EXERCISES_PDF}" "${EXERCISES_HTML}" "${BUNDLE}/"
-          # Only the public allowlisted presentation enters student delivery.
-          cp -r .courseware/fundamentals/student/slides "${BUNDLE}/slides"
+          bun run --cwd build release -- --prepare
 
-          # One demo folder per module, exactly the folders the slides reference.
-          for item in \
-            01-pythonintro \
-            02-variablesanddatatypes \
-            03-datastructures \
-            04-controlflow \
-            05-functions \
-            06-modules \
-            07_comprehensions \
-            08-exceptionhandling \
-            09-python-io \
-            10-python-database-access \
-            11-python-classes \
-            12-appendix-type-hinting \
-            13-appendix-libraries
-          do
-            cp -r "demos/${item}" "${BUNDLE}/demos/"
-          done
+      - name: Save the reviewed upload set for independent publishing retries
+        uses: https://github.com/actions/upload-artifact@v3
+        with:
+          name: release-${{ github.sha }}
+          path: .courseware/release/upload.zip
+          if-no-files-found: error
+          retention-days: 30
 
-          # ruff.toml travels with the bundle so the Ruff extension the setup
-          # exercise installs sees the same rules the courseware is written
-          # against. The bundle keeps this layout, so its relative paths still
-          # resolve. No pyproject.toml, though: the student creates that one.
-          # .devcontainer/ is the GitHub Codespaces setup for online students,
-          # used by the GitHub copy of the student repository (see below).
-          # The offline exercise site : one page per exercise with hints and
-          # click-to-reveal solutions, a quiz, and the slides. It opens from
-          # disk, so students double-click site/index.html.
-          cp -r build/site/dist "${BUNDLE}/site"
+  publish:
+    needs: build
+    runs-on: docker-build
+    container:
+      image: git.feikowielsma.nl/feiko/courseware-ci-image:latest
+    steps:
+      - name: Checkout
+        uses: https://github.com/actions/checkout@v4
 
-          for item in solutions exercises appendices reference libraries README.md ruff.toml .devcontainer; do
-            if [ -e "${item}" ]; then
-              cp -r "${item}" "${BUNDLE}/"
-            fi
-          done
-
-
-          # Optional topics have their own project and PDFs. Only teaching
-          # sources and runtime files travel; caches and authoring sources do not.
-          cp -r .courseware/libraries/student/slides "${BUNDLE}/libraries/slides"
-          rm -rf "${BUNDLE}/libraries/build" "${BUNDLE}/libraries/src"
-
-          # Strip build and editor droppings that travelled along with the copies.
-          find "${BUNDLE}" -type d \( \
-              -name '__pycache__' -o -name '.mypy_cache' -o -name '.ruff_cache' \
-              -o -name '.pytest_cache' -o -name '.venv' -o -name '.idea' \
-              -o -name '.vscode' -o -name '.metadata' \
-            \) -prune -exec rm -rf {} +
-          find "${BUNDLE}" -type f \( \
-              -name '*.pyc' -o -name 'Thumbs.db' -o -name 'Desktop.ini' -o -name '.DS_Store' \
-            \) -delete
-
-          echo "Bundle size: $(du -sh "${BUNDLE}" | cut -f1)"
-
-      - name: Package student zip
+      - name: Install Bun 1.4 for Slidev
         shell: bash
         run: |
-          mkdir -p build/dist
-          ZIP="$(pwd)/build/dist/Python-Programming-student.zip"
-          cd /tmp/student-bundle
-          zip -rq "${ZIP}" .
-          echo "Packaged $(du -h "${ZIP}" | cut -f1)"
+          curl -fsSL https://bun.sh/install | bash -s "bun-v1.4.1"
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+          "$HOME/.bun/bin/bun" --version
 
-      - name: Publish latest release
+      - name: Fetch the pinned Presentation-Template
+        shell: bash
+        env:
+          PRESENTATION_TEMPLATE_REPOSITORY: ${{ github.server_url }}/SpiralTrain/Presentation-Template.git
+        run: |
+          echo "TEMPLATE=$(bun run build/toolchain.ts --path)" >> "$GITHUB_ENV"
+
+      - name: Restore the reviewed upload set
+        uses: https://github.com/actions/download-artifact@v3
+        with:
+          name: release-${{ github.sha }}
+          path: .courseware/release
+
+      - name: Publish manifest assets
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRY_RUN: ${{ inputs.dry_run }}
         run: |
-          SHORT_SHA=$(echo "${GITHUB_SHA}" | head -c7)
-          API="${GITHUB_SERVER_URL}/api/v1/repos/${GITHUB_REPOSITORY}"
+          args=(--from .courseware/release/upload.zip)
+          if [[ "$DRY_RUN" == "true" ]]; then args+=(--dry-run); fi
+          bun run --cwd build release -- "${args[@]}"
 
-          # Delete existing latest release and tag so we can recreate them
-          EXISTING=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" "${API}/releases/tags/latest")
-          EXISTING_ID=$(echo "${EXISTING}" | bun -e "const fs = require('fs'); try { const d = JSON.parse(fs.readFileSync(0, 'utf-8')); console.log(d.id || ''); } catch (e) { console.log(''); }" 2>/dev/null)
-          if [ -n "${EXISTING_ID}" ]; then
-            curl -sf -X DELETE -H "Authorization: token ${GITHUB_TOKEN}" "${API}/releases/${EXISTING_ID}"
-          fi
-          TAG_STATUS=$(curl -s -o /dev/null -w '%{http_code}' \
-            -H "Authorization: token ${GITHUB_TOKEN}" "${API}/tags/latest")
-          if [ "${TAG_STATUS}" = "200" ]; then
-            curl -sf -X DELETE -H "Authorization: token ${GITHUB_TOKEN}" "${API}/tags/latest"
-          elif [ "${TAG_STATUS}" != "404" ]; then
-            echo "Cannot inspect latest tag: HTTP ${TAG_STATUS}"
-            exit 1
-          fi
+  sync:
+    needs: [build, publish]
+    if: ${{ !cancelled() && !inputs.dry_run && (needs.publish.result == 'success' || inputs.sync_tag) }}
+    runs-on: docker-build
+    container:
+      image: git.feikowielsma.nl/feiko/courseware-ci-image:latest
+    steps:
+      - name: Checkout
+        uses: https://github.com/actions/checkout@v4
 
-          # Create fresh latest release
-          RELEASE=$(curl -sf -X POST \
-            -H "Authorization: token ${GITHUB_TOKEN}" \
-            -H "Content-Type: application/json" \
-            -d "{\"tag_name\":\"latest\",\"target_commitish\":\"${GITHUB_SHA}\",\"name\":\"Latest build\",\"body\":\"Built from commit \`${SHORT_SHA}\`\",\"prerelease\":true}" \
-            "${API}/releases")
+      - name: Install Bun 1.4 for Slidev
+        shell: bash
+        run: |
+          curl -fsSL https://bun.sh/install | bash -s "bun-v1.4.1"
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+          "$HOME/.bun/bin/bun" --version
 
-          RELEASE_ID=$(echo "${RELEASE}" | bun -e "const fs = require('fs'); console.log(JSON.parse(fs.readFileSync(0, 'utf-8')).id);")
-
-          TAG_SHA=$(curl -sf -H "Authorization: token ${GITHUB_TOKEN}" "${API}/tags/latest" \
-            | bun -e "const fs = require('fs'); console.log(JSON.parse(fs.readFileSync(0, 'utf-8')).commit.sha);")
-          if [ "${TAG_SHA}" != "${GITHUB_SHA}" ]; then
-            echo "Release tag points at ${TAG_SHA}, expected ${GITHUB_SHA}"
-            exit 1
-          fi
-
-          for asset in "${SLIDES_PDF}" "${MARP_PDF}" "${MARP_HTML}" "${EXERCISES_PDF}" "${EXERCISES_HTML}" libraries/PRG400-Python-Libraries-and-Tools*.pdf libraries/PRG400-Python-Libraries-and-Tools*.html; do
-            echo "Uploading ${asset}..."
-            curl -sf -X POST \
-              -H "Authorization: token ${GITHUB_TOKEN}" \
-              -F "attachment=@${asset}" \
-              "${API}/releases/${RELEASE_ID}/assets"
-          done
-
-          find build/dist -maxdepth 1 -name "*.zip" | while read -r asset; do
-            echo "Uploading ${asset}..."
-            curl -sf -X POST \
-              -H "Authorization: token ${GITHUB_TOKEN}" \
-              -F "attachment=@${asset}" \
-              "${API}/releases/${RELEASE_ID}/assets"
-          done
-
-      - name: Push to student repository
+      - name: Fetch the pinned Presentation-Template
         shell: bash
         env:
+          PRESENTATION_TEMPLATE_REPOSITORY: ${{ github.server_url }}/SpiralTrain/Presentation-Template.git
+        run: |
+          echo "TEMPLATE=$(bun run build/toolchain.ts --path)" >> "$GITHUB_ENV"
+
+      - name: Synchronise the student repository and its GitHub mirror
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           STUDENT_REPO_SSH_KEY: ${{ secrets.STUDENT_REPO_SSH_KEY }}
-        run: |
-          if [ -z "${STUDENT_REPO_SSH_KEY}" ]; then
-            echo "STUDENT_REPO_SSH_KEY secret is not set, skipping push to student repo."
-            exit 0
-          fi
-
-          mkdir -p ~/.ssh
-          echo "${STUDENT_REPO_SSH_KEY}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p 222 git.feikowielsma.nl >> ~/.ssh/known_hosts 2>/dev/null
-
-          STUDENT_REPO_URL="ssh://git@git.feikowielsma.nl:222/SpiralTrain/Python-Programming-Student.git"
-          TARGET=/tmp/Python-Programming-Student
-          rm -rf "${TARGET}"
-          git clone "${STUDENT_REPO_URL}" "${TARGET}"
-
-          # Clear existing contents (except .git) so removals propagate
-          find "${TARGET}" -mindepth 1 -maxdepth 1 ! -name ".git" -exec rm -rf {} +
-
-          cp -r /tmp/student-bundle/. "${TARGET}/"
-
-          # A .gitignore tailored to a student workspace, so their own scratch
-          # work does not show up as changes when they pull.
-          (
-            echo '# System and Python temp files'
-            echo 'Thumbs.db'
-            echo 'Desktop.ini'
-            echo '.DS_Store'
-            echo '**/__pycache__/'
-            echo '**/*.py[cod]'
-            echo '**/*$py.class'
-            echo '**/.venv/'
-            echo '**/venv/'
-            echo '**/env/'
-            echo '**/.mypy_cache/'
-            echo '**/.ruff_cache/'
-            echo '**/.pytest_cache/'
-            echo ''
-            echo '# Custom course work folders created by the student'
-            echo '/course-work/'
-            echo '/my-project/'
-          ) > "${TARGET}/.gitignore"
-
-          cd "${TARGET}"
-          git config user.name "Forgejo CI/CD"
-          git config user.email "ci@feikowielsma.nl"
-          # An empty student repo has no HEAD yet, so create the branch first.
-          git checkout -B main
-          git add -A
-
-          if [ -z "$(git status --porcelain)" ]; then
-            echo "No changes to push to the student repository."
-          else
-            git commit -m "Update student materials from master commit ${GITHUB_SHA::7}"
-            git push origin main
-          fi
-
-      - name: Mirror student repository to GitHub
-        shell: bash
-        env:
           STUDENT_MIRROR_DEPLOY_KEY: ${{ secrets.STUDENT_MIRROR_DEPLOY_KEY }}
+          SYNC_TAG: ${{ inputs.sync_tag }}
         run: |
-          # Codespaces only runs on GitHub, so online students work from a copy
-          # of the student repository there. It shares the Forgejo history, so
-          # a plain push keeps a student's own `git pull` working.
-          if [ -z "${STUDENT_MIRROR_DEPLOY_KEY}" ]; then
-            echo "STUDENT_MIRROR_DEPLOY_KEY secret is not set, skipping the GitHub mirror."
-            exit 0
-          fi
-
-          echo "${STUDENT_MIRROR_DEPLOY_KEY}" > ~/.ssh/github_student
-          chmod 600 ~/.ssh/github_student
-          ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
-
-          cd /tmp/Python-Programming-Student
-          GIT_SSH_COMMAND="ssh -i ~/.ssh/github_student -o IdentitiesOnly=yes"             git push git@github.com:FeikoWielsma/Python-Programming-Student.git main
+          args=(--release)
+          if [[ -n "$SYNC_TAG" ]]; then args+=("$SYNC_TAG"); fi
+          bun run --cwd build sync-student -- "${args[@]}"
