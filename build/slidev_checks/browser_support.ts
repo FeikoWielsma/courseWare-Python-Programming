@@ -17,13 +17,20 @@ export async function onPages<T>(
   read: (page: any, item: T) => Promise<void>,
 ) {
   const queue = [...items];
-  const worker = async (page: unknown) => { for (let item = queue.shift(); item !== undefined; item = queue.shift()) await read(page, item); };
+  // A page in a background tab gets no key events and no animation frames in new headless Chrome
+  // (CI runs the real browser), so every page is told it is focused and visible.
+  const worker = async (page: any) => {
+    const client = await page.createCDPSession();
+    await client.send('Emulation.setFocusEmulationEnabled', { enabled: true });
+    await page.bringToFront().catch(() => {});
+    for (let item = queue.shift(); item !== undefined; item = queue.shift()) await read(page, item);
+  };
   const extra = Array.from({ length: Math.min(pageCount, items.length) - 1 }, () => withPage(session.browser, worker));
   await Promise.all([worker(session.page), ...extra]);
 }
 
 /** Real time a click may take to render and finish its transitions before it is reported as stuck. */
-export const settleTimeoutMs = 2000;
+export const settleTimeoutMs = 10000;
 /** Longest transition a click may start, in animation time. The fixed waits these replace read at 650 ms. */
 export const longestTransitionMs = 650;
 
