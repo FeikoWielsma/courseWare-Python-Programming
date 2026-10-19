@@ -28,6 +28,7 @@ export default {
     '13-appendix-libraries-1',
   ],
   enrichments: [
+    { module: '01-python-intro', after: 'Changing a Program', file: 'src/slidev/intro/edit-save-run.md' },
     { module: '14-appendix-python-tooling', after: 'Lines and Indentation', file: 'src/slidev/core/blocks-and-line-endings.md' },
     { module: '02-variables-and-data-types', after: 'Variables', file: 'src/slidev/core/binding-and-rebinding.md' },
     { module: '02-variables-and-data-types', after: 'Multiple Assignment', file: 'src/slidev/core/several-names-one-object.md' },

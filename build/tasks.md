@@ -685,3 +685,12 @@ Open:
       offline exercise pages were inspected. Evidence: `notes/progression-audit.md`.
 
 The previously listed scaffolding work for Exercises 10 to 13 stays deferred.
+
+## Chapter 1 background and visuals (2026-10-19)
+
+- [x] Restore Python history, features and application areas after the practical opening.
+- [x] Add a history timeline, folder diagram and toolchain comparison table.
+- [x] Add and verify a native edit-save-run walkthrough, including unsaved changes.
+- [x] Check source gates, lint, browser states and a chapter PDF export.
+
+Evidence and full-deck validation limits: [chapter 1 review](notes/chapter1-background.md).
