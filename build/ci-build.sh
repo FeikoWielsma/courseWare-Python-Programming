@@ -3,9 +3,10 @@
 # with TEMPLATE set to the Presentation-Template folder (bun run build/toolchain.ts --path) and both
 # uv projects synced. Every command is gating. Independent groups run side by side, each stopping at
 # its first failure; the script fails when any group fails, and prints every group's log in full.
-#   1. Python gates (fundamentals, libraries) and deck builds (fundamentals, libraries + site) at once
-#   2. check:delivery alone: its wheel probe times gestures in tens of milliseconds
-#   3. the manifest checks
+#   1. Python gates (fundamentals, libraries) and deck builds (fundamentals, libraries) at once
+#   2. the exercise site, which embeds the completed fundamentals Marp artifact
+#   3. check:delivery alone: its wheel probe times gestures in tens of milliseconds
+#   4. the manifest checks
 set -uo pipefail
 : "${TEMPLATE:?Set TEMPLATE to the Presentation-Template folder}"
 cd "$(dirname "$0")/.."
@@ -56,7 +57,6 @@ deck_libraries() {
   step bun run libraries:marp -- --skip-lint --force
   step bun run lint:libraries
   step bun run libraries -- --exercises --force
-  step bun run site
 }
 
 delivery() {
@@ -88,5 +88,7 @@ together() {
 }
 
 together gates_fundamentals gates_libraries deck_fundamentals deck_libraries || exit 1
+# The site embeds the fundamentals Marp artifact, so both deck groups must finish first.
+step bun run --cwd build site
 together delivery || exit 1
 together manifests || exit 1

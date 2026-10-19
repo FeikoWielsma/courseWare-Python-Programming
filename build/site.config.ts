@@ -1,6 +1,7 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import { spawnSync } from 'child_process';
+import { pathToFileURL } from 'node:url';
 import questions from './site/quiz.json';
 import { wordlePlugin } from './site/plugin.ts';
 import { presentationPage } from './site/presentation.ts';
@@ -51,7 +52,9 @@ if (import.meta.main) {
   if (process.exitCode === 0) {
     const siteDir = path.join(import.meta.dirname, 'site/dist');
     const courseDir = path.resolve(import.meta.dirname, '..');
-    const marpHtml = fs.readFileSync(path.join(courseDir, 'PRG400-Python-Programming-Marp.html'), 'utf8');
+    const { readManifest, deliverable } = await import(pathToFileURL(path.join(templateDir(), 'build/artifacts.ts')).href);
+    const marpManifest = readManifest(path.join(courseDir, '.courseware/fundamentals/marp'));
+    const marpHtml = fs.readFileSync(path.resolve(courseDir, deliverable(marpManifest, 'html').path), 'utf8');
     const embeddedDeck = marpHtml.replace(/<div class="bespoke-marp-note"[^>]*>[\s\S]*?<\/div>/g, '');
     fs.writeFileSync(path.join(siteDir, 'slides-marp.html'), embeddedDeck);
     const shortcutDir = path.join(import.meta.dirname, 'site/student-shortcut');
