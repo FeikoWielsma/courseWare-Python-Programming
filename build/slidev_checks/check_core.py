@@ -558,13 +558,17 @@ await withBrowser({ origin }, session => onPages(session, withPage, plan, async 
       const visible = el => parseFloat(getComputedStyle(el).opacity || '1') > .5;
       const box = el => el.getBoundingClientRect();
       const body = box(frame.querySelector('.course-body'));
-      const overflow = [...frame.querySelectorAll('.ds-run *')].filter(el => {
+      const overflowElements = [...frame.querySelectorAll('.ds-run *')].filter(el => {
         const r = box(el);
         return visible(el) && r.width && (
           r.left < body.left - 2 || r.right > body.right + 2 ||
           r.top < body.top - 2 || r.bottom > body.bottom + 2
         );
-      }).length;
+      }).map(el => ({
+        tag: el.tagName, class: el.getAttribute('class'),
+        rect: box(el).toJSON(), body: body.toJSON(),
+      }));
+      const overflow = overflowElements.length;
       const run = frame.querySelector('.ds-run');
       const activeLines = [...frame.querySelectorAll('.ds-code .slidev-code .line')]
         .flatMap((line, index) => (
@@ -576,6 +580,7 @@ await withBrowser({ origin }, session => onPages(session, withPage, plan, async 
         output: [...frame.querySelectorAll('[data-ds-output]')].map(x => x.textContent.trim()),
         activeLines,
         overflow,
+        overflowElements,
       };
       const names = frame.querySelector('[data-core-step]');
       if (names?.classList.contains('core-names')) {
@@ -660,7 +665,8 @@ await withBrowser({ origin }, session => onPages(session, withPage, plan, async 
       await new Promise(resolve=>setTimeout(resolve,300));
       const middle=await read(item.route,k,false,false);
       if (middle.step !== k || middle.overflow) {
-        throw new Error(`${item.route}: ${direction} transition frame overflow or wrong state`);
+        throw new Error(`${item.route}: ${direction} transition frame overflow or wrong state: `
+          + JSON.stringify(middle));
       }
       await animationRate(page, fast);
     };

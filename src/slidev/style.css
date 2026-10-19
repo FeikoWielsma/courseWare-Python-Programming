@@ -13,3 +13,11 @@
 .course-frame[data-source-id="08-exception-handling-1"] .course-step + .course-step {
   margin-top: 3px;
 }
+
+/* Reserve room for the caption below the rebinding diagram in every click state. */
+.course-frame[data-source-id="05-functions-12-enhancement"] {
+  --slidev-code-line-height: 1.35;
+}
+.course-frame[data-source-id="05-functions-12-enhancement"] .ds-run {
+  row-gap: 8px;
+}
