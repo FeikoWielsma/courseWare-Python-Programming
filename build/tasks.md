@@ -585,8 +585,23 @@ Implementation details, commands and limits: `build/notes/libraries-review.md`.
 Phase 1 evidence: `build/notes/libraries-slidev-phase1.md`.
 Phase 2 evidence: `build/notes/libraries-slidev-phase2.md`.
 
-## Proposed toolchain simplification (2026-10-18)
+## Toolchain simplification (2026-10-18 to 2026-10-19)
 
-Implementation has not started. The proposal, migration order, constraints and
-subagent brief are in
-[`build/notes/courseware-toolchain-simplification.md`](notes/courseware-toolchain-simplification.md).
+Design: [`build/notes/courseware-toolchain-simplification.md`](notes/courseware-toolchain-simplification.md).
+
+Done:
+- [x] Stage 1: Add one shared orchestration entry point (`build/courseware.ts`) and declarative deck configuration (`courseware.config.ts`) with thin adapters. [`build/notes/toolchain-stage1.md`](notes/toolchain-stage1.md)
+- [x] Stage 2: Inventory commands, deliverables, and CI workflows; capture pre-migration baselines and cross-course fingerprints. [`build/notes/toolchain-inventory.md`](notes/toolchain-inventory.md), [`build/notes/toolchain-baseline.md`](notes/toolchain-baseline.md)
+- [x] Stage 3: Separate variant output directories (`.courseware/<deck>/<variant>/`), artifact manifest schema (`artifacts.json`), and content verification. [`build/notes/toolchain-stage3.md`](notes/toolchain-stage3.md)
+- [x] Stage 4: Pin toolchain resolution via `build/toolchain.json`, bootstrap caching, and explicit development override guard. [`build/notes/toolchain-pin.md`](notes/toolchain-pin.md)
+- [x] Stage 5: Extract manifest-driven release assembly, independent publish job, and student/mirror synchronization jobs in CI. [`build/notes/toolchain-release.md`](notes/toolchain-release.md)
+- [x] Stage 6: Consolidate browser and server lifecycle management into shared module (`build/browser.ts`) for course delivery checks. [`build/notes/toolchain-browser6.md`](notes/toolchain-browser6.md), [`build/notes/toolchain-browser-survey.md`](notes/toolchain-browser-survey.md)
+- [x] Stage 7: Update single operating guide in `MAINTAINING.md`, classify historical documentation, and align repo instructions. [`build/notes/toolchain-docs.md`](notes/toolchain-docs.md)
+
+Open:
+- [ ] Push and merge template CLI/release branch to Presentation-Template `main` and re-pin `build/toolchain.json` to merged commit.
+- [ ] Verify draft-release and asset promotion behaviour on real Forgejo server before enabling production publishing.
+- [ ] Resolve Marp HTML trainer-notes leak in shared renderer (waived via `waiveMarpHtmlNotes: true` in `courseware.config.ts`).
+- [ ] Migrate `dev.ts` authoring output from `build/slidev/authoring/` into `.courseware/`.
+- [ ] Migrate other courses to `courseware.config.ts` and `build/toolchain.ts` when wanted.
+- [ ] Evaluate shared machine-wide toolchain cache option vs per-checkout cache.

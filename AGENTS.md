@@ -13,8 +13,8 @@ Read first, in this order :
 Changes to the shared build are made in `../Presentation-Template` itself, from a
 worktree, and must keep the other courses building. See its `AGENTS.md`.
 
-For Slidev migration, Marp parity, presentation comparisons or Slidev theme,
-navigation and export work, read `build/notes/slidev-handoff.md` before editing.
+For historical Slidev migration records, Marp parity audits, and previous work
+package reports, consult [`build/notes/README.md`](build/notes/README.md).
 
 ---
 
@@ -93,7 +93,13 @@ bun run --cwd build build -- --skip-lint     # slides; then lint separately :
 bun run --cwd build lint
 bun run --cwd build build -- --exercises     # exercises PDF
 bun run --cwd build site                     # offline exercise site
+bun run --cwd build verify -- fundamentals   # gating in CI: manifest check
+bun run --cwd build verify -- libraries      # gating in CI
 ```
+
+Builds run the shared `courseware.ts` from the Presentation-Template commit
+pinned in `build/toolchain.json`. `PRESENTATION_TEMPLATE_DIR` is the development
+override. Run `bun run --cwd build toolchain` to inspect the pin.
 
 `ruff` is configured in `ruff.toml`, not `pyproject.toml`, because the student bundle
 ships `ruff.toml` and no `pyproject.toml`. Do not "fix" a finding where the
@@ -102,6 +108,6 @@ comment naming the lesson.
 
 ## Releasing
 
-`.forgejo/workflows/release.yml` runs on every push to `master`. **A new demo folder
-means two edits there** : the `compileall` list and the bundle `for item in` list.
-The bundle is an allowlist. `MAINTAINING.md` has the rest.
+`.forgejo/workflows/release.yml` runs on every push to `master`. A new demo folder
+needs one edit: add it to `bundle.include` in `courseware.config.ts`. The bundle
+is an allowlist. `MAINTAINING.md` has the rest.
