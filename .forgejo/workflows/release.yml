@@ -77,7 +77,19 @@ jobs:
         env:
           CHROME_PATH: /usr/bin/google-chrome-stable
           MARP_EXTRA_ARGS: --chrome-arg=--no-sandbox --chrome-arg=--disable-dev-shm-usage
-        run: bash build/ci-build.sh
+        run: |
+          set -o pipefail
+          mkdir -p .courseware/ci
+          bash build/ci-build.sh 2>&1 | tee .courseware/ci/ci-build.log
+
+      # Forgejo shows no job logs through its API: keep this one retrievable for diagnosing a failed run.
+      - name: Keep the gate log
+        if: ${{ always() }}
+        uses: https://github.com/actions/upload-artifact@v3
+        with:
+          name: ci-build-log-${{ github.sha }}
+          path: .courseware/ci/ci-build.log
+          retention-days: 14
 
       - name: Assemble and verify the student bundle
         shell: bash
