@@ -135,3 +135,5 @@ T9b (Codex Sol) failed with 'model at capacity' after the original Opus run auto
 T9c (Codex Luna) finished: tc/release 5b4593f, template fbbc2dc; merged. Template cli tip a0bc0ea (53+14 tests, smoke pass). Course integration re-pinned to a0bc0ea; a clean pinned checkout (local file:// fetch source) builds, 276 pages, verify PASS. .gitignore: libraries/build exceptions now explicit file names.
 Running: T10 unrelated-course regression (Haiku), T11 operating guide/AGENTS/tasks (Gemini, branch tc/docs2).
 Leftover to clean: _worktrees/prg-tc-cleancheck (path too long to remove; retry after reboot/with long-path tool), old tc/* worktrees (baseline, inventory, browser-survey, stage1, stage3, docs, browser6, pin, release, docs2) and template worktrees (-browser, -pin, -release).
+
+T10 done: Go (PRG350) and PowerShell (PRG900) deck + exercises PDFs identical text on every page vs old-template baselines; template test:site PASS (evidence _baselines/after/RESULT.md).
