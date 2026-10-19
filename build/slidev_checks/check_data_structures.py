@@ -321,12 +321,14 @@ def check_dict(slide, k, shown, state, namespace, output, identity) -> dict[str,
 
 # Reads what each component rendered for every click state, from the built app.
 BROWSER_SCRIPT = r"""
-import { browserTimeoutMs, withBrowser } from %(browser)s;
+import { browserTimeoutMs, withBrowser, withPage } from %(browser)s;
+import { animationRate, onPages, settle } from %(animation)s;
 const [origin, plan] = [process.argv[2], JSON.parse(process.argv[3])];
-const results = {};
-await withBrowser({ origin }, async ({ page }) => {
-  for (const { route, states, kind } of plan) {
+const results = {}, unsettled = {};
+const readRoute = async (page, { route, states, kind }) => {
+  {
     results[route] = [];
+    unsettled[route] = [];
     for (let k = 0; k < states; k++) {
       const url = `${origin}/slidev/?r=${Date.now()}#/${route}?clicks=${k}`;
       await page.goto(url, { waitUntil: 'networkidle0', timeout: browserTimeoutMs });
@@ -335,7 +337,10 @@ await withBrowser({ origin }, async ({ page }) => {
         { timeout: browserTimeoutMs },
       );
       await page.evaluate(() => document.fonts.ready);
-      await new Promise(resolve => setTimeout(resolve, 900));
+      // Read once the opening transitions have ended, played fast.
+      await animationRate(page, 10);
+      const problem = await settle(page, route, k);
+      if (problem) unsettled[route].push(problem);
       results[route].push(await page.evaluate((route, kind) => {
         const frame = document.querySelector(`[data-source-id="${route}"]`);
         const text = el => el.textContent.trim();
@@ -394,8 +399,9 @@ await withBrowser({ origin }, async ({ page }) => {
       }, route, kind));
     }
   }
-});
-console.log(JSON.stringify(results));
+};
+await withBrowser({ origin }, session => onPages(session, withPage, plan, readRoute));
+console.log(JSON.stringify({ results, unsettled }));
 """
 
 
@@ -417,16 +423,23 @@ def check_browser(slides: list[Slide], origin: str) -> int:
     browser = json.dumps((template / "build/browser.ts").as_posix())
     with tempfile.TemporaryDirectory() as folder:
         script = Path(folder) / "read-states.ts"
-        script.write_text(BROWSER_SCRIPT % {"browser": browser}, encoding="utf-8", newline="\n")
+        animation = json.dumps((Path(__file__).parent / "browser_support.ts").as_posix())
+        script.write_text(
+            BROWSER_SCRIPT % {"browser": browser, "animation": animation},
+            encoding="utf-8", newline="\n",
+        )
         result = subprocess.run(
             [shutil.which("bun") or "bun", str(script), origin, json.dumps(plan)],
             capture_output=True, text=True, encoding="utf-8", check=False,
         )
     if result.returncode:
         raise RuntimeError(result.stderr[-3000:])
-    rendered = json.loads(result.stdout.strip().splitlines()[-1])
+    reported = json.loads(result.stdout.strip().splitlines()[-1])
+    rendered = reported["results"]
     checked = 0
     for slide, item in zip(slides, plan, strict=True):
+        if reported["unsettled"][item["route"]]:
+            fail(slide.file, "; ".join(reported["unsettled"][item["route"]]))
         states = zip(rendered[item["route"]], slide.expected, strict=True)
         for k, (dom, expected) in enumerate(states):
             if dom["step"] != k:

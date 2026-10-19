@@ -536,11 +536,13 @@ def verify_provenance(slide: Slide) -> None:
 
 
 BROWSER_SCRIPT = r"""
-import { browserTimeoutMs, reducedMotion, withBrowser } from %(browser)s;
+import { browserTimeoutMs, reducedMotion, withBrowser, withPage } from %(browser)s;
+import { animationRate, onPages, settle } from %(animation)s;
 const origin = process.argv[2], plan = JSON.parse(process.argv[3]);
+const fast = 10;
 const outputFile = process.argv[4];
 const results = {};
-await withBrowser({ origin }, async ({ page }) => {
+await withBrowser({ origin }, session => onPages(session, withPage, plan, async (page, item) => {
   const read = async (route, k, reduced=false, navigate=true) => {
     if (navigate) {
       const url = `${origin}/slidev/?r=${Date.now()}#/${route}?clicks=${k}`;
@@ -643,51 +645,57 @@ await withBrowser({ origin }, async ({ page }) => {
         .filter(Boolean));
     return data;
   };
-  for (const item of plan) {
-    const states=[];
+  // Each click is read once it has rendered and its transitions have ended (settle), with the
+  // page's animations running fast. The one mid-transition frame per direction is sampled 300 ms
+  // into the transition at normal speed, as a viewer would see it.
+  {
+    const states=[], unsettled=[];
+    const wait = async (k) => {
+      const problem = await settle(page, item.route, k);
+      if (problem) unsettled.push(problem);
+    };
+    const middleFrame = async (key, k, direction) => {
+      await animationRate(page, 1);
+      await page.keyboard.press(key);
+      await new Promise(resolve=>setTimeout(resolve,300));
+      const middle=await read(item.route,k,false,false);
+      if (middle.step !== k || middle.overflow) {
+        throw new Error(`${item.route}: ${direction} transition frame overflow or wrong state`);
+      }
+      await animationRate(page, fast);
+    };
     await page.goto(
       `${origin}/slidev/?r=${Date.now()}#/${item.route}?clicks=0`,
       { waitUntil: 'networkidle0', timeout: browserTimeoutMs },
     );
+    await animationRate(page, fast);
     for (let k=0;k<item.states;k++) {
+      await wait(k);
       states.push(await read(item.route,k,false,false));
       if (k+1<item.states) {
-        await page.keyboard.press('ArrowRight');
-        if (k===0) {
-          await new Promise(resolve=>setTimeout(resolve,300));
-          const middle=await read(item.route,k+1,false,false);
-          if (middle.step !== k + 1 || middle.overflow) {
-            throw new Error(`${item.route}: forward transition frame overflow or wrong state`);
-          }
-          await new Promise(resolve=>setTimeout(resolve,350));
-        } else await new Promise(resolve=>setTimeout(resolve,650));
+        if (k===0) await middleFrame('ArrowRight', k+1, 'forward');
+        else await page.keyboard.press('ArrowRight');
       }
     }
-    await new Promise(resolve=>setTimeout(resolve,650));
+    await wait(item.states-1);
     states[states.length-1]=await read(item.route,item.states-1,false,false);
     const reverse=[];
     for (let k=item.states-1;k>=0;k--) {
+      await wait(k);
       reverse.push(await read(item.route,k,false,false));
       if (k>0) {
-        await page.keyboard.press('ArrowLeft');
-        if (k===item.states-1) {
-          await new Promise(resolve=>setTimeout(resolve,300));
-          const middle=await read(item.route,k-1,false,false);
-          if (middle.step !== k - 1 || middle.overflow) {
-            throw new Error(`${item.route}: reverse transition frame overflow or wrong state`);
-          }
-          await new Promise(resolve=>setTimeout(resolve,350));
-        } else await new Promise(resolve=>setTimeout(resolve,650));
+        if (k===item.states-1) await middleFrame('ArrowLeft', k-1, 'reverse');
+        else await page.keyboard.press('ArrowLeft');
       }
     }
-    await new Promise(resolve=>setTimeout(resolve,650));
+    await wait(0);
     reverse[reverse.length-1]=await read(item.route,0,false,false);
     await reducedMotion(page, true);
     const reduced=await read(item.route,item.states-1,true);
     await reducedMotion(page, false);
-    results[item.route]={states,reverse,reduced};
+    results[item.route]={states,reverse,reduced,unsettled};
   }
-});
+}));
 await Bun.write(outputFile, JSON.stringify(results));
 console.log('Browser state results written.');
 """
@@ -717,7 +725,11 @@ def browser_plan(slides: list[Slide], origin: str) -> int:
     with tempfile.TemporaryDirectory() as folder:
         script = Path(folder) / "read-core.ts"
         output = Path(folder) / "rendered.json"
-        script.write_text(BROWSER_SCRIPT % {"browser": browser}, encoding="utf-8", newline="\n")
+        animation = json.dumps((Path(__file__).parent / "browser_support.ts").as_posix())
+        script.write_text(
+            BROWSER_SCRIPT % {"browser": browser, "animation": animation},
+            encoding="utf-8", newline="\n",
+        )
         result = subprocess.run(
             [shutil.which("bun") or "bun", str(script), origin, json.dumps(plan), str(output)],
             capture_output=True,
@@ -731,6 +743,8 @@ def browser_plan(slides: list[Slide], origin: str) -> int:
     checked = 0
     for slide in slides:
         record = rendered[slide.route]
+        if record["unsettled"]:
+            fail(slide.file, "; ".join(record["unsettled"]))
         for direction in ("states", "reverse"):
             rows = record[direction]
             for index, dom in enumerate(rows):
