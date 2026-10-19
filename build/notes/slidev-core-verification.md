@@ -1,3 +1,5 @@
+> Historical record (2026-10-18). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # Core animation verification
 
 Independent verification of the native Slidev additions for modules 01, 02, 04

@@ -3,6 +3,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
+import { templateDir } from '../toolchain.ts';
 
 type DiagramApi = {
   DIAGRAM_RENDERER: string;
@@ -31,13 +32,12 @@ function normalized(value: string): string {
 
 async function main() {
   const root = path.resolve(process.cwd());
-  const shared = process.env.PRESENTATION_TEMPLATE_DIR;
-  if (!shared) fail('Set PRESENTATION_TEMPLATE_DIR to the Slidev-capable Presentation-Template worktree.');
+  const shared = templateDir();
   const diagramsUrl = pathToFileURL(path.join(shared, 'build/src/diagrams.ts')).href;
   const { DIAGRAM_RENDERER, diagramCacheFile, diagramHash, embedDiagram } = await import(diagramsUrl) as DiagramApi;
   const { parseModule } = await import(pathToFileURL(path.join(shared, 'build/src/parser.ts')).href);
-  const { launchBrowser } = await import(pathToFileURL(path.join(shared, 'build/lint-slides.ts')).href);
-  const { serveDirectory } = await import(pathToFileURL(path.join(shared, 'build/slidev/build.ts')).href);
+  const { withBrowser, browserTimeoutMs } = await import(pathToFileURL(path.join(shared, 'build/browser.ts')).href);
+  const { readManifest, deliverable } = await import(pathToFileURL(path.join(shared, 'build/artifacts.ts')).href);
   const sources = [
     ...markdownFiles(path.join(root, 'src/slides')),
     ...markdownFiles(path.join(root, 'src/slidev')),
@@ -103,8 +103,9 @@ async function main() {
     summary.push(`${label}: ${code.split(/\r?\n/, 1)[0]}, nodes=${svgNodes}, edges=${svgEdges}, viewBox=${viewBox?.[3]}x${viewBox?.[4]}, ids=${ids.length}, cache=${fs.existsSync(cacheFile) ? 'hit' : 'miss'}`);
   }
 
-  const manifestPath = path.join(root, 'build/slidev/dist/manifest.json');
-  if (!fs.existsSync(manifestPath)) fail('Build Slidev first; build/slidev/dist/manifest.json is missing.');
+  const output = path.join(root, '.courseware/fundamentals/student');
+  const manifestPath = path.join(output, 'manifest.json');
+  if (!fs.existsSync(manifestPath)) fail('Build Slidev first; .courseware/fundamentals/student/manifest.json is missing.');
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   const browserCases: { id: string; title: string; source: string }[] = [];
   for (const sourceFile of [...new Set(found.map(item => item.file))]) {
@@ -122,18 +123,11 @@ async function main() {
   }
 
   if (browserCases.length) {
-    const output = path.join(root, 'build/slidev/dist');
-    const server = serveDirectory(output, 0);
-    await new Promise<void>(resolve => { if (server.listening) resolve(); else server.once('listening', resolve); });
-    const address = server.address();
-    if (!address || typeof address === 'string') fail('Cannot start the diagram validation server.');
-    const browser = await launchBrowser();
-    try {
-      const page = await browser.newPage();
-      await page.setViewport({ width: 1280, height: 800 });
+    const presentation = path.join(root, deliverable(readManifest(output), 'presentation').path);
+    await withBrowser({ dir: presentation, port: 0 }, async ({ page, origin }) => {
       for (const testCase of browserCases) {
-        await page.goto(`http://127.0.0.1:${address.port}/slidev/#/${testCase.id}`, { waitUntil: 'networkidle0', timeout: 120000 });
-        await page.waitForSelector(`.course-frame[data-source-id="${testCase.id}"] svg.pele`, { timeout: 120000 });
+        await page.goto(`${origin}/slidev/#/${testCase.id}`, { waitUntil: 'networkidle0', timeout: browserTimeoutMs });
+        await page.waitForSelector(`.course-frame[data-source-id="${testCase.id}"] svg.pele`, { timeout: browserTimeoutMs });
         const state = await page.evaluate(async (id: string) => {
           await document.fonts.ready;
           const frame = document.querySelector<HTMLElement>(`.course-frame[data-source-id="${id}"]`);
@@ -168,10 +162,7 @@ async function main() {
           if (state.escaped.length) failures.push(`${testCase.id}: diagram text escapes its SVG/frame bounds: ${state.escaped.join(', ')}`);
         }
       }
-    } finally {
-      await browser.close();
-      await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
-    }
+    });
   }
 
   console.log(`Renderer: ${DIAGRAM_RENDERER}; audited ${found.length} Mermaid fence(s).`);

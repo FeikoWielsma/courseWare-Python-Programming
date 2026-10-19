@@ -1,3 +1,5 @@
+> Historical record (2026-10-18). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # Libraries Slidev Phase 3: delivery review
 
 Completed 2026-10-18. This closes the verification and delivery work in

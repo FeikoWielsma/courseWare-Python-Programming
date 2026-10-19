@@ -1,3 +1,5 @@
+> Historical record (2026-10-18). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # Libraries Slidev migration
 
 Implemented 2026-10-18. Phase 1 of

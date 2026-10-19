@@ -1,3 +1,5 @@
+> Historical record (2026-10-18). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # Engaging examples implementation
 
 The trainer approved this rewrite on 2026-10-18: music and photos recur through

@@ -1,3 +1,5 @@
+> Historical record (2026-10-18). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # Slidev stateful modules package
 
 Recorded 2026-10-18. Canonical example rewrite of modules 09, 10 and 11 and

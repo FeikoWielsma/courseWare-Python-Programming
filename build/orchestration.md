@@ -101,3 +101,43 @@ Notes :
 6. WP4 remainder : docs (`AGENTS.md`, `MAINTAINING.md`, `README.md`) on the spine,
    starters and the site; devcontainer check.
 7. WP5 student review on a different provider from the authors, then a fix round.
+
+---
+
+# Toolchain simplification run (started 2026-10-18)
+
+Design: `build/notes/courseware-toolchain-simplification.md`. Brief: `build/agent-brief.md`.
+Integration: course `toolchain/integration` (`_worktrees/prg-toolchain-int`), template
+`feature/courseware-cli` (`_worktrees/presentation-template-cli`).
+Providers: Claude (Sonnet coordinator, Opus 5.5 for hard work, Haiku 5.5 menial),
+Antigravity Gemini 3.8 Flash and Cursor Grok 4.7 (menial), Codex Luna/Sol after its
+quota resets. Expect quota cut-offs: every package commits often and keeps its notes
+file; resume from branch + notes.
+
+| Package | Agent | Branch | Status |
+|---|---|---|---|
+| T0 baselines (Python decks, two unrelated courses) | Haiku 5.5 | `tc/baseline` | merged; baselines in _baselines (Python, Go, PowerShell; Git-Fundamentals and Bash have no build tooling) |
+| T1 inventory of commands, consumers, deliverables | Gemini 3.8 Flash | `tc/inventory` | merged |
+| T2 browser/serving duplication survey | Grok 4.7 | `tc/browser-survey` | merged; feeds stage 6 |
+| T3 shared orchestration entry + migrate both decks (stage 1-2) | Opus 5.5 | template `feature/courseware-cli` (aa78ed9 + docs), course `tc/stage1` | merged into integration; template branch NOT yet merged to Presentation-Template main (additive; merge after all stages + 2-course regression) |
+| T4 outputs separation + artifact manifest (stage 3) | Opus 5.5 | template `feature/courseware-cli` (16fcb8a..679ea94), course `tc/stage3` | merged; template cli+browser merged (862c490); merged state rebuilt, all 4 PDFs identical text to baselines, verify passes |
+| T5 shared browser/serve module in the template (stage 6a) | Grok 4.7 | template `feature/courseware-browser` (139b7d5, 4a9b1ce) | done; to merge into feature/courseware-cli after T4; course checks (stage 6b) wait for T4 to avoid path conflicts |
+| T6 notes index + history banners (stage 7 prep) | Gemini 3.8 Flash | `tc/docs` | merged. Follow-up (coordinator): AGENTS.md still tells agents to read `slidev-handoff.md`, now bannered historical; point it at `build/notes/README.md`; write the MAINTAINING.md operating guide from `toolchain-docs.md` outline after stages 3-5 |
+| T7 course checks onto shared browser module (stage 6b) | Grok 4.7 | course `tc/browser6` | merged (239d855); deleteProfile retry fix applied on template cli branch |
+| T8 pin the toolchain (stage 4) | Opus 5.5 | template `feature/courseware-pin`, course `tc/pin` | merged (template cli aaa65d8; course integration). Final re-pin to the merged template SHA still to do; release.yml text for T9 in toolchain-pin.md |
+| T9 release assembly + publishing from manifest (stage 5); owns release.yml | Opus 5.5 | template `feature/courseware-release` (6 commits), course `tc/release` (1 commit) | Opus hit the Claude rate limit mid-run; WIP intact on branches. Resumed as T9b on Codex gpt-6.1-sol (high): merges integration, reviews, rewrites release.yml, e2e vs fake Forgejo, notes |
+
+Findings to resolve (user decision): the published Marp HTML (PRG400-Python-Programming-Marp.html) contains the preamble's trainer notes (pre-existing, found by `verify --bundle`). `dev.ts` still writes build/slidev/authoring/ (stage 3 leftover).
+Template integration branch: `feature/courseware-cli` (not merged to Presentation-Template main). Child template branches: -pin, -release.
+
+T9b (Codex Sol) failed with 'model at capacity' after the original Opus run auto-resumed and committed more (tc/release 9fe8eff, template 98d878c: rewritten release.yml, hardened provenance/retries). Remaining work (gates, review, e2e vs fake Forgejo, notes) relaunched as T9c on Codex gpt-6-luna.
+
+T9c (Codex Luna) finished: tc/release 5b4593f, template fbbc2dc; merged. Template cli tip a0bc0ea (53+14 tests, smoke pass). Course integration re-pinned to a0bc0ea; a clean pinned checkout (local file:// fetch source) builds, 276 pages, verify PASS. .gitignore: libraries/build exceptions now explicit file names.
+Running: T10 unrelated-course regression (Haiku), T11 operating guide/AGENTS/tasks (Gemini, branch tc/docs2).
+Leftover to clean: _worktrees/prg-tc-cleancheck (path too long to remove; retry after reboot/with long-path tool), old tc/* worktrees (baseline, inventory, browser-survey, stage1, stage3, docs, browser6, pin, release, docs2) and template worktrees (-browser, -pin, -release).
+
+T10 done: Go (PRG350) and PowerShell (PRG900) deck + exercises PDFs identical text on every page vs old-template baselines; template test:site PASS (evidence _baselines/after/RESULT.md).
+
+## Result (2026-10-19)
+All stages (1-7) implemented and merged on course `toolchain/integration` (head after docs2 merge) and template `feature/courseware-cli` (tip a0bc0ea+). Gates pass: ruff, check-fences, slide references, starters, 13 solutions, quiz, lint (both decks), template typecheck/test (53)/slidev tests (14)/smoke, check:delivery, slidev:check, verify; PDFs identical to baselines (Python x4, Go x2, PowerShell x2); clean pinned checkout builds. Worktrees and merged branches removed.
+Awaiting the user: push/merge template cli branch to Presentation-Template main and re-pin; merge toolchain/integration to master (discard the two uncommitted copies in the main checkout: build/tasks.md, build/notes/courseware-toolchain-simplification.md); verify Forgejo draft/tag behaviour on the real server; Marp HTML trainer-notes leak.

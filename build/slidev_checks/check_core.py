@@ -14,7 +14,6 @@ import argparse
 import contextlib
 import io
 import json
-import os
 import re
 import shutil
 import subprocess
@@ -537,20 +536,20 @@ def verify_provenance(slide: Slide) -> None:
 
 
 BROWSER_SCRIPT = r"""
-import { launchBrowser } from %(launch)s;
+import { browserTimeoutMs, reducedMotion, withBrowser } from %(browser)s;
 const origin = process.argv[2], plan = JSON.parse(process.argv[3]);
 const outputFile = process.argv[4];
-const browser = await launchBrowser();
 const results = {};
-try {
-  const page = await browser.newPage();
-  await page.setViewport({ width: 1280, height: 800 });
+await withBrowser({ origin }, async ({ page }) => {
   const read = async (route, k, reduced=false, navigate=true) => {
     if (navigate) {
       const url = `${origin}/slidev/?r=${Date.now()}#/${route}?clicks=${k}`;
-      await page.goto(url, { waitUntil: 'networkidle0' });
+      await page.goto(url, { waitUntil: 'networkidle0', timeout: browserTimeoutMs });
     }
-    await page.waitForSelector(`[data-source-id="${route}"] .ds-run`);
+    await page.waitForSelector(
+      `[data-source-id="${route}"] .ds-run`,
+      { timeout: browserTimeoutMs },
+    );
     await page.evaluate(() => document.fonts.ready);
     const data = await page.evaluate((route) => {
       const frame = document.querySelector(`[data-source-id="${route}"]`);
@@ -648,7 +647,7 @@ try {
     const states=[];
     await page.goto(
       `${origin}/slidev/?r=${Date.now()}#/${item.route}?clicks=0`,
-      { waitUntil: 'networkidle0' },
+      { waitUntil: 'networkidle0', timeout: browserTimeoutMs },
     );
     for (let k=0;k<item.states;k++) {
       states.push(await read(item.route,k,false,false));
@@ -683,21 +682,23 @@ try {
     }
     await new Promise(resolve=>setTimeout(resolve,650));
     reverse[reverse.length-1]=await read(item.route,0,false,false);
-    await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
+    await reducedMotion(page, true);
     const reduced=await read(item.route,item.states-1,true);
-    await page.emulateMediaFeatures([]);
+    await reducedMotion(page, false);
     results[item.route]={states,reverse,reduced};
   }
-} finally { await browser.close(); }
+});
 await Bun.write(outputFile, JSON.stringify(results));
 console.log('Browser state results written.');
 """
 
 
 def browser_plan(slides: list[Slide], origin: str) -> int:
-    shared = os.environ.get("PRESENTATION_TEMPLATE_DIR")
-    template = Path(shared) if shared else ROOT.parent / "Presentation-Template"
-    manifest_path = ROOT / "build/slidev/dist/manifest.json"
+    template = Path(subprocess.run(
+        [shutil.which("bun") or "bun", str(ROOT / "build/toolchain.ts"), "--path"],
+        stdout=subprocess.PIPE, text=True, check=True,
+    ).stdout.strip())
+    manifest_path = ROOT / ".courseware/fundamentals/student/manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     native = {
         page["title"]: page["sourceId"]
@@ -712,11 +713,11 @@ def browser_plan(slides: list[Slide], origin: str) -> int:
         if route != slide.route:
             fail(slide.file, f"manifest route {route} differs from recorded route {slide.route}")
         plan.append({"route": route, "states": len(slide.groups), "kind": slide.kind})
-    launch = json.dumps((template / "build/lint-slides.ts").as_posix())
+    browser = json.dumps((template / "build/browser.ts").as_posix())
     with tempfile.TemporaryDirectory() as folder:
         script = Path(folder) / "read-core.ts"
         output = Path(folder) / "rendered.json"
-        script.write_text(BROWSER_SCRIPT % {"launch": launch}, encoding="utf-8", newline="\n")
+        script.write_text(BROWSER_SCRIPT % {"browser": browser}, encoding="utf-8", newline="\n")
         result = subprocess.run(
             [shutil.which("bun") or "bun", str(script), origin, json.dumps(plan), str(output)],
             capture_output=True,

@@ -1,3 +1,5 @@
+> Historical record (2026-10-18). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # Libraries Slidev Phase 2
 
 Completed 2026-10-18. Scope: the optional course under `libraries/`.

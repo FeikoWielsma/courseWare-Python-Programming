@@ -1,25 +1,22 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { templateDir } from './toolchain.ts';
 
 const courseRoot = path.resolve(import.meta.dirname, '..');
-const output = path.join(courseRoot, 'build/slidev/dist');
-const student = path.join(output, 'student');
+// The student build's artifact manifest names the packaged presentation.
+const output = path.join(courseRoot, '.courseware/fundamentals/student');
 const checksDir = path.join(courseRoot, 'build/slidev_checks');
-const template = process.env.PRESENTATION_TEMPLATE_DIR;
-
-if (!template) {
-  throw new Error('Set PRESENTATION_TEMPLATE_DIR to the Slidev-capable Presentation-Template worktree.');
-}
+const template = templateDir();
+const { readManifest, deliverable } = await import(pathToFileURL(path.join(template, 'build/artifacts.ts')).href);
+const student = path.join(courseRoot, deliverable(readManifest(output), 'presentation').path);
 if (!fs.existsSync(path.join(student, 'index.html'))) {
   throw new Error(`Packaged student app not found: ${student}`);
 }
-if (!fs.existsSync(path.join(output, 'manifest.json'))) {
-  throw new Error(`Slidev manifest not found: ${path.join(output, 'manifest.json')}`);
-}
 
-const { serveDirectory } = await import(pathToFileURL(path.join(template, 'build/slidev/build.ts')).href);
-const server = serveDirectory(student, 0);
+const { serve } = await import(pathToFileURL(path.join(template, 'build/browser.ts')).href);
+const server = await serve(student, { port: 0 });
+const origin = server.url;
 const children: ReturnType<typeof Bun.spawn>[] = [];
 
 function run(label: string, command: string[]) {
@@ -33,13 +30,6 @@ function run(label: string, command: string[]) {
 }
 
 try {
-  await new Promise<void>((resolve, reject) => {
-    server.once('listening', resolve);
-    server.once('error', reject);
-  });
-  const address = server.address();
-  if (!address || typeof address === 'string') throw new Error('Cannot start the packaged student server.');
-  const origin = `http://127.0.0.1:${address.port}`;
   console.log(`Serving ${student} at ${origin}`);
 
   const animationChecks = fs.readdirSync(checksDir)
@@ -69,5 +59,5 @@ try {
     if (child.exitCode === null) child.kill();
   }
   await Promise.all(children.map(child => child.exited));
-  await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
+  await server.close();
 }

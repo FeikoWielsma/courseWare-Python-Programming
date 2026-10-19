@@ -1,3 +1,5 @@
+> Historical record (2026-10-18). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # Functions examples rework
 
 Historical first rewrite. The trainer subsequently approved music and photos;

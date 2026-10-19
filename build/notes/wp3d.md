@@ -1,3 +1,5 @@
+> Historical record (2026-10-15). Current commands and defaults: MAINTAINING.md; index: README.md in this folder.
+
 # WP3d notes : modules 10 and 11
 
 ## Done

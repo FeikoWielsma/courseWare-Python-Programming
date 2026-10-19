@@ -14,11 +14,18 @@
     "check:delivery": "bun run check-slidev-delivery.ts",
     "build": "bun run course.ts",
     "serve": "bun run course.ts --serve",
-    "lint": "bun run ../../Presentation-Template/build/lint-slides.ts",
+    "lint": "bun run course.ts --lint",
     "site": "bun run site.config.ts",
     "libraries": "bun run libraries.ts",
     "libraries:marp": "bun run libraries.ts --marp",
     "libraries:serve": "bun run libraries.ts --serve",
-    "lint:libraries": "bun run libraries.ts --lint"
+    "lint:libraries": "bun run libraries.ts --lint",
+    "toolchain": "bun run toolchain.ts toolchain",
+    "pin": "bun run toolchain.ts pin",
+    "verify": "bun run toolchain.ts verify",
+    "test": "bun test toolchain.test.ts",
+    "bundle": "bun run toolchain.ts bundle",
+    "release": "bun run toolchain.ts release",
+    "sync-student": "bun run toolchain.ts sync-student"
   }
 }
