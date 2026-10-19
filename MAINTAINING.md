@@ -36,9 +36,9 @@ in `build/package.json` maps directly to this orchestration:
 | `libraries:serve` | `bun run libraries.ts --serve` | **Libraries dev server**: Starts Slidev development server for companion course on port 3030. |
 | `lint:libraries` | `bun run libraries.ts --lint` | **Libraries slide lint**: Checks slide layout budgets for the libraries deck. Gating in CI. |
 | `check:animations` | `uv run python check-slidev-examples.py` | **Static animation checks**: Validates slide example states, core, data structures, and provenance without launching a browser. |
-| `check:delivery` | `bun run check-slidev-delivery.ts` | **End-to-end browser delivery check**: Launches headless Chrome via the shared browser module, serves packaged presentation (`.courseware/fundamentals/student/slides`) on an ephemeral port (`port: 0`), and verifies core transitions (136 forward/reverse frames, reduced motion, containment), data structures (33 states), and wheel navigation (8 boundary tests). Gating in CI. |
+| `check:delivery` | `bun run check-slidev-delivery.ts` | **End-to-end browser delivery check**: Launches headless Chrome via the shared browser module, serves packaged presentation (`.courseware/fundamentals/student/slides`) on an ephemeral port (`port: 0`), and verifies core transitions (136 forward/reverse frames, reduced motion, containment), data structures (33 states), and wheel navigation (8 boundary tests). Each click is read once it has rendered and its transitions have ended (page animations play 10× faster; the mid-transition frame is sampled at normal speed); a click that does not settle in 2 s or starts a transition over 650 ms fails. Routes are read on up to 4 pages at once (`COURSE_CHECK_PAGES`), the two animation checks run side by side, the wheel probe alone. Gating in CI. |
 | `site` | `bun run site.config.ts` | **Offline exercise site build**: Builds self-contained student exercise site into `build/site/dist`. |
-| `toolchain` | `bun run toolchain.ts toolchain` | **Inspect toolchain pin**: Validates and prints active template commit against `build/toolchain.json` pin. Fails if uncommitted changes exist or commits diverge without `PRESENTATION_TEMPLATE_DIR`. |
+| `toolchain` | `bun run toolchain.ts toolchain` | **Inspect toolchain pin and cache**: Validates and prints active template commit against `build/toolchain.json` pin. Fails if uncommitted changes exist or commits diverge without `PRESENTATION_TEMPLATE_DIR`. Then lists the machine's cached toolchains with size, the part not hard-linked to Bun's package cache, and last use. `toolchain -- --prune [--keep N]` first removes all but the pin and the N (default 2) most recently used others, plus the old per-checkout `.courseware/toolchain`. |
 | `pin` | `bun run toolchain.ts pin` | **Re-pin toolchain**: Updates `build/toolchain.json` with a specific template commit SHA (e.g. `bun run pin -- <sha>`). |
 | `verify` | `bun run toolchain.ts verify` | **Artifact verification**: Validates `artifacts.json` manifests against content rules. Fails on missing deliverables, checksum/size mismatches, dirty Git source, recorded check failures, or if student deliverables leak caches, QA logs, authoring sources, or un-waived trainer notes. Use `verify -- <deck>` for deck manifests, or `verify -- --bundle` for the student bundle. Gating in CI. |
 | `test` | `bun test toolchain.test.ts` | **Toolchain tests**: Runs unit tests for local toolchain resolution and cache verification. |
@@ -83,7 +83,7 @@ Toolchain behaviour is governed by three files:
      - `gitignore`: Gitignore entries injected into student repository clones.
 2. **`build/toolchain.json`** (Pinned toolchain definition):
    - Holds the `repository` URL and exact 40-character git `commit` SHA of `Presentation-Template`.
-   - `build/toolchain.ts` reads this file, automatically clones/fetches the commit into `.courseware/toolchain/<commit>`, runs `bun install --frozen-lockfile`, and resolves template paths.
+   - `build/toolchain.ts` reads this file, fetches the commit once into the per-machine cache `<cache>/toolchain/<first 12 characters of the commit>`, runs `bun install --frozen-lockfile`, and resolves template paths. `<cache>` is `COURSEWARE_CACHE_DIR`, else `%LOCALAPPDATA%\courseware` (Windows), `~/Library/Caches/courseware` (macOS) or `$XDG_CACHE_HOME/courseware` (`~/.cache/courseware`). Every checkout and worktree of every course on the machine shares it; builds that start together take turns through a lock. Bun hard-links packages from its own cache, so a cached toolchain shows about 830 MB but adds only a few MB of disk; `toolchain` reports both.
 3. **`build/slidev.config.ts`** and **`libraries/build/slidev.config.ts`** (Slidev engine settings):
    - Defines presentation `title` and `accent` color.
    - `compactSlides`: Array of slide identifiers assigned compact layout instead of auto-fitting.
@@ -160,13 +160,14 @@ Continuous integration and automated distribution are defined in `.forgejo/workf
   - `sync_tag`: Skips build/publish and only synchronises student repositories from the specified tag.
 - **Three independent jobs**:
   1. **`build`**: Runs on Docker image `git.feikowielsma.nl/feiko/courseware-ci-image:latest`.
-     - Installs Bun 1.4.1 and uv.
-     - Fetches pinned `Presentation-Template` using `bun run build/toolchain.ts --path`.
-     - Validates lockfiles (`uv lock --check`) and compiles all Python modules (`python -m compileall`).
-     - Gating checks: slide code fences, exercise slide references, starters consistency, solution tests, quiz check, and Ruff.
-     - Companion course checks: `libraries` demos, solutions, outputs, data checks, native states, and fences.
-     - Slide builds: fundamentals Slidev (`build -- --force`), delivery checks (`check:delivery`), Marp fallback, exercises, offline site, and libraries (Slidev, Marp, exercises).
-     - Manifest verification: `verify -- fundamentals` and `verify -- libraries`.
+     - Installs Bun 1.4.1 and uv unless the image already has them.
+     - Fetches pinned `Presentation-Template` using `bun run build/toolchain.ts --path`, with `PUPPETEER_SKIP_DOWNLOAD=true` (the image's Chrome renders everything).
+     - Validates lockfiles (`uv lock --check`) and syncs both uv projects.
+     - Runs `build/ci-build.sh`, which holds every gate and build and runs independent groups side by side; run it locally the same way (`TEMPLATE=$(bun run build/toolchain.ts --path) bash build/ci-build.sh`):
+       1. at once: the fundamentals gates (`compileall`, slide code fences, exercise slide references, starters, solution tests, quiz, Ruff); the `libraries` gates (data, demos, solutions, outputs, native states, fences); the fundamentals decks (`check:animations`, Slidev `build -- --force`, Marp fallback, exercises); the libraries decks (Slidev, Marp, lint, exercises) and the offline site;
+       2. `check:delivery` alone, because its wheel probe times gestures;
+       3. manifest verification: `verify -- fundamentals` and `verify -- libraries`.
+       Each group stops at its first failure; every group's log is printed; the step fails if any group failed.
      - Bundle assembly and verification: `bundle` and `verify -- --bundle`.
      - Packages upload archive: `release -- --prepare` creates `.courseware/release/upload.zip`.
      - Uploads `.courseware/release/upload.zip` as Actions artifact `release-${{ github.sha }}`.

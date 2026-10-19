@@ -38,14 +38,12 @@ try {
     .map(name => path.join(checksDir, name));
   if (animationChecks.length === 0) throw new Error(`No animation checks found in ${checksDir}.`);
 
-  // Await asynchronous children one at a time: the HTTP server remains
-  // responsive without launching a Chrome instance for every module at once.
+  // The animation checks run side by side, one Chrome each. The wheel probe
+  // times gestures in tens of milliseconds, so it runs alone afterwards.
   const failures: string[] = [];
-  for (const script of animationChecks) {
-    try {
-      await run(path.basename(script), ['uv', 'run', 'python', script, '--browser', origin]);
-    } catch (error) { failures.push(`${path.basename(script)}: ${String(error)}`); }
-  }
+  await Promise.all(animationChecks.map(script =>
+    run(path.basename(script), ['uv', 'run', 'python', script, '--browser', origin])
+      .catch(error => { failures.push(`${path.basename(script)}: ${String(error)}`); })));
   try {
     await run('physical wheel delivery probe', [
       process.execPath, 'run', path.join(checksDir, 'check_delivery.ts'),

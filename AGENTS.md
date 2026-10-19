@@ -99,7 +99,9 @@ bun run --cwd build verify -- libraries      # gating in CI
 
 Builds run the shared `courseware.ts` from the Presentation-Template commit
 pinned in `build/toolchain.json`. `PRESENTATION_TEMPLATE_DIR` is the development
-override. Run `bun run --cwd build toolchain` to inspect the pin.
+override. Run `bun run --cwd build toolchain` to inspect the pin and the per-machine
+toolchain cache that every checkout shares (`toolchain -- --prune` cleans it). CI runs
+all of the checks above through `build/ci-build.sh`, independent groups side by side.
 
 `ruff` is configured in `ruff.toml`, not `pyproject.toml`, because the student bundle
 ships `ruff.toml` and no `pyproject.toml`. Do not "fix" a finding where the

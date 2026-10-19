@@ -32,8 +32,11 @@ jobs:
       - name: Install Bun 1.4 for Slidev
         shell: bash
         run: |
-          curl -fsSL https://bun.sh/install | bash -s "bun-v1.4.1"
           bun_bin="${BUN_INSTALL:-$HOME/.bun}/bin"
+          # An image that already carries this Bun needs no download.
+          if [[ "$("$bun_bin/bun" --version 2>/dev/null)" != "1.4.1" ]]; then
+            curl -fsSL https://bun.sh/install | bash -s "bun-v1.4.1"
+          fi
           echo "$bun_bin" >> "$GITHUB_PATH"
           export PATH="$bun_bin:$PATH"
           bun --version
@@ -42,13 +45,16 @@ jobs:
         shell: bash
         env:
           PRESENTATION_TEMPLATE_REPOSITORY: ${{ github.server_url }}/SpiralTrain/Presentation-Template.git
+          # The image's Chrome (CHROME_PATH) does all rendering; Puppeteer's own ~680 MB of browsers is not needed.
+          PUPPETEER_SKIP_DOWNLOAD: 'true'
         run: |
-          echo "TEMPLATE=$(bun run build/toolchain.ts --path)" >> "$GITHUB_ENV"
+          template=$(bun run build/toolchain.ts --path)
+          echo "TEMPLATE=$template" >> "$GITHUB_ENV"
 
       - name: Install uv
         shell: bash
         run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
+          if ! command -v uv > /dev/null; then curl -LsSf https://astral.sh/uv/install.sh | sh; fi
           echo "$HOME/.local/bin" >> "${GITHUB_PATH}"
 
       - name: Check the lockfile is current
@@ -59,67 +65,19 @@ jobs:
 
       - name: Install the project
         shell: bash
-        run: uv sync --frozen
-
-      - name: Check the Python compiles
-        shell: bash
-        run: uv run python -m compileall -q demos solutions libraries/demos libraries/solutions
-
-      - name: Check the slide code fences
-        shell: bash
-        run: uv run python "$TEMPLATE/build/tools/check-fences.py"
-
-      - name: Check exercise slide references
-        shell: bash
-        run: uv run python "$TEMPLATE/build/tools/check-slide-references.py"
-
-      - name: Check the exercise starters are current
-        shell: bash
-        run: uv run python "$TEMPLATE/build/tools/make-starters.py" --check
-
-      - name: Check the exercise solutions
-        shell: bash
-        run: uv run python build/check-solutions.py
-
-      - name: Check the quiz
-        shell: bash
-        run: uv run python build/site/check-quiz.py
-
-      - name: Check the style
-        shell: bash
-        run: uv run ruff check .
-
-      - name: Check optional libraries examples
-        shell: bash
         run: |
+          uv sync --frozen
           uv sync --project libraries --frozen
-          uv run --project libraries python libraries/build/make-data.py --check
-          uv run --project libraries python libraries/build/check-demos.py
-          uv run --project libraries python libraries/build/check-solutions.py
-          uv run --project libraries python libraries/build/check-outputs.py
-          uv run --project libraries python libraries/build/native_states.py --check
-          cd libraries
-          uv run python "$TEMPLATE/build/tools/check-fences.py"
 
-      - name: Build slides and exercises
+      # Every gate that used to be its own step, in build/ci-build.sh: the Python gates of both
+      # projects and the fundamentals and libraries deck builds run side by side, then
+      # check:delivery alone, then verify. Each group's log is printed in full.
+      - name: Check and build slides and exercises
         shell: bash
         env:
           CHROME_PATH: /usr/bin/google-chrome-stable
           MARP_EXTRA_ARGS: --chrome-arg=--no-sandbox --chrome-arg=--disable-dev-shm-usage
-        run: |
-          cd build
-          bun run check:animations
-          bun run build -- --force
-          bun run check:delivery
-          bun run build:marp -- --force
-          bun run build -- --exercises --force
-          bun run site
-          bun run libraries -- --skip-lint --force
-          bun run libraries:marp -- --skip-lint --force
-          bun run lint:libraries
-          bun run libraries -- --exercises --force
-          bun run verify -- fundamentals
-          bun run verify -- libraries
+        run: bash build/ci-build.sh
 
       - name: Assemble and verify the student bundle
         shell: bash
@@ -149,8 +107,11 @@ jobs:
       - name: Install Bun 1.4 for Slidev
         shell: bash
         run: |
-          curl -fsSL https://bun.sh/install | bash -s "bun-v1.4.1"
           bun_bin="${BUN_INSTALL:-$HOME/.bun}/bin"
+          # An image that already carries this Bun needs no download.
+          if [[ "$("$bun_bin/bun" --version 2>/dev/null)" != "1.4.1" ]]; then
+            curl -fsSL https://bun.sh/install | bash -s "bun-v1.4.1"
+          fi
           echo "$bun_bin" >> "$GITHUB_PATH"
           export PATH="$bun_bin:$PATH"
           bun --version
@@ -159,8 +120,11 @@ jobs:
         shell: bash
         env:
           PRESENTATION_TEMPLATE_REPOSITORY: ${{ github.server_url }}/SpiralTrain/Presentation-Template.git
+          # The image's Chrome (CHROME_PATH) does all rendering; Puppeteer's own ~680 MB of browsers is not needed.
+          PUPPETEER_SKIP_DOWNLOAD: 'true'
         run: |
-          echo "TEMPLATE=$(bun run build/toolchain.ts --path)" >> "$GITHUB_ENV"
+          template=$(bun run build/toolchain.ts --path)
+          echo "TEMPLATE=$template" >> "$GITHUB_ENV"
 
       - name: Restore the reviewed upload set
         uses: https://github.com/actions/download-artifact@v3
@@ -191,8 +155,11 @@ jobs:
       - name: Install Bun 1.4 for Slidev
         shell: bash
         run: |
-          curl -fsSL https://bun.sh/install | bash -s "bun-v1.4.1"
           bun_bin="${BUN_INSTALL:-$HOME/.bun}/bin"
+          # An image that already carries this Bun needs no download.
+          if [[ "$("$bun_bin/bun" --version 2>/dev/null)" != "1.4.1" ]]; then
+            curl -fsSL https://bun.sh/install | bash -s "bun-v1.4.1"
+          fi
           echo "$bun_bin" >> "$GITHUB_PATH"
           export PATH="$bun_bin:$PATH"
           bun --version
@@ -201,8 +168,11 @@ jobs:
         shell: bash
         env:
           PRESENTATION_TEMPLATE_REPOSITORY: ${{ github.server_url }}/SpiralTrain/Presentation-Template.git
+          # The image's Chrome (CHROME_PATH) does all rendering; Puppeteer's own ~680 MB of browsers is not needed.
+          PUPPETEER_SKIP_DOWNLOAD: 'true'
         run: |
-          echo "TEMPLATE=$(bun run build/toolchain.ts --path)" >> "$GITHUB_ENV"
+          template=$(bun run build/toolchain.ts --path)
+          echo "TEMPLATE=$template" >> "$GITHUB_ENV"
 
       - name: Synchronise the student repository and its GitHub mirror
         shell: bash

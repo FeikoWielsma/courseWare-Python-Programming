@@ -9,7 +9,7 @@ Current canonical commands and operating procedures are maintained in [`MAINTAIN
 | Classification | Count | Description |
 |---|---|---|
 | **ACTIVE-WORK** | 1 | Active toolchain simplification design (`courseware-toolchain-simplification.md`) |
-| **CURRENT** | 5 | Live toolchain behaviour notes (`toolchain-stage1.md`, `toolchain-stage3.md`, `toolchain-pin.md`, `toolchain-release.md`, `toolchain-browser6.md`) |
+| **CURRENT** | 6 | Live toolchain behaviour notes (`toolchain-stage1.md`, `toolchain-stage3.md`, `toolchain-pin.md`, `toolchain-release.md`, `toolchain-browser6.md`, `toolchain-perf.md`) |
 | **HISTORICAL-EVIDENCE** | 4 | Toolchain simplification baselines, surveys, inventories, and audits (`toolchain-baseline.md`, `toolchain-browser-survey.md`, `toolchain-inventory.md`, `toolchain-docs.md`) |
 | **HISTORICAL** | 39 | Superseded handoff notes, phase completion reports, review evidence, and legacy conversion plans (38 notes in this directory, plus top-level `build/plan-2026-08-conversion.md`) |
 
@@ -54,7 +54,8 @@ Current canonical commands and operating procedures are maintained in [`MAINTAIN
 | [toolchain-browser6.md](toolchain-browser6.md) | 2026-10-18 | CURRENT | Package T7 course browser checks migrated onto shared browser module (`build/browser.ts`) | None (Live behaviour) |
 | [toolchain-docs.md](toolchain-docs.md) | 2026-10-18 | HISTORICAL-EVIDENCE | Package T6 documentation consolidation, contradiction audit, and Stage 7 preparation | [MAINTAINING.md](../../MAINTAINING.md) |
 | [toolchain-inventory.md](toolchain-inventory.md) | 2026-10-18 | HISTORICAL-EVIDENCE | Package T1 comprehensive inventory of all toolchain commands, deliverables, and CI | [MAINTAINING.md](../../MAINTAINING.md) |
-| [toolchain-pin.md](toolchain-pin.md) | 2026-10-19 | CURRENT | Package T8 pinned toolchain resolution (`build/toolchain.json`), cache, and override guard | None (Live behaviour) |
+| [toolchain-pin.md](toolchain-pin.md) | 2026-10-19 | CURRENT | Package T8 pinned toolchain resolution (`build/toolchain.json`), cache (now per machine, see toolchain-perf.md), and override guard | None (Live behaviour) |
+| [toolchain-perf.md](toolchain-perf.md) | 2026-10-19 | CURRENT | Package PERF: build time (settled delivery check, concurrent CI groups) and the per-machine toolchain cache, with measurements | None (Live behaviour) |
 | [toolchain-release.md](toolchain-release.md) | 2026-10-19 | CURRENT | Package T9 manifest-driven release assembly, independent publish and student-sync jobs | None (Live behaviour) |
 | [toolchain-stage1.md](toolchain-stage1.md) | 2026-10-18 | CURRENT | Package T3 shared orchestration entry point (`courseware.ts`) and deck configuration | None (Live behaviour) |
 | [toolchain-stage3.md](toolchain-stage3.md) | 2026-10-18 | CURRENT | Package T4 separate variant outputs (`.courseware/<deck>/<variant>/`) and artifact manifest schema | None (Live behaviour) |
