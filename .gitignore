@@ -82,10 +82,15 @@ build/site/dist/
 exercises/starters/*/uv.lock
 
 # Optional libraries deck build outputs
+# Only the maintained scripts are tracked; scratch scripts and QA output stay ignored.
 libraries/build/*
-!libraries/build/*.py
-!libraries/build/*.toml
-!libraries/build/*.ts
+!libraries/build/check-demos.py
+!libraries/build/check-outputs.py
+!libraries/build/check-solutions.py
+!libraries/build/check_support.py
+!libraries/build/make-data.py
+!libraries/build/native_states.py
+!libraries/build/slidev.config.ts
 libraries/PRG400-Python-Libraries-and-Tools*.pdf
 libraries/PRG400-Python-Libraries-and-Tools*.html
 libraries/data/*.db
