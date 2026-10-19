@@ -3,3 +3,13 @@
   margin-left: 42px;
   max-width: calc(100% - 42px);
 }
+
+/* Keep the transaction example within the export content area at the same font size. */
+.course-frame[data-source-id="10-python-database-access-15"] {
+  --slidev-code-line-height: 1.35;
+}
+
+/* Give the exception tree enough height for labels above the 10px validation minimum. */
+.course-frame[data-source-id="08-exception-handling-1"] .course-step + .course-step {
+  margin-top: 3px;
+}
