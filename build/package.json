@@ -23,6 +23,9 @@
     "toolchain": "bun run toolchain.ts toolchain",
     "pin": "bun run toolchain.ts pin",
     "verify": "bun run toolchain.ts verify",
-    "test": "bun test toolchain.test.ts"
+    "test": "bun test toolchain.test.ts",
+    "bundle": "bun run toolchain.ts bundle",
+    "release": "bun run toolchain.ts release",
+    "sync-student": "bun run toolchain.ts sync-student"
   }
 }
