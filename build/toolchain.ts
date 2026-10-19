@@ -185,7 +185,7 @@ function toolchain(args: string[]) {
   for (const entry of cacheEntries()) {
     const { size, own } = usage(entry.dir);
     total += size; totalOwn += own;
-    console.log(`  ${entry.name}  ${megabytes(size).padStart(7)} (${megabytes(own)} not shared)  last used ${new Date(entry.used).toISOString().slice(0, 16).replace('T', ' ')}  ${entry.commit}`);
+    console.log(`  ${entry.name}  ${megabytes(size).padStart(7)} (${megabytes(own)} not shared)  last used ${new Date(entry.used).toLocaleString('sv-SE').slice(0, 16)}  ${entry.commit}`);
   }
   console.log(`  total ${megabytes(total)}, of which ${megabytes(totalOwn)} is not hard-linked to Bun's package cache`);
   const legacy = path.join(courseRoot, '.courseware/toolchain');

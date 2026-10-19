@@ -12,11 +12,12 @@ cd "$(dirname "$0")/.."
 logs=$(mktemp -d)
 trap 'rm -rf "$logs"' EXIT
 
-# Runs one gating command and reports its time; a failure ends the group (set -e).
+# Runs one gating command and reports its time. A failure exits the group's subshell: not set -e,
+# which bash ignores in functions called from a condition.
 step() {
   local start=$SECONDS
   echo "--- $*"
-  "$@" || { local status=$?; echo "--- FAILED (exit $status) after $((SECONDS - start)) s: $*"; return "$status"; }
+  "$@" || { local status=$?; echo "--- FAILED (exit $status) after $((SECONDS - start)) s: $*"; exit "$status"; }
   echo "--- $((SECONDS - start)) s: $*"
 }
 
@@ -36,13 +37,13 @@ gates_libraries() {
   step uv run --project libraries python libraries/build/check-solutions.py
   step uv run --project libraries python libraries/build/check-outputs.py
   step uv run --project libraries python libraries/build/native_states.py --check
-  cd libraries
+  cd libraries || exit
   step uv run python "$TEMPLATE/build/tools/check-fences.py"
 }
 
 # The fundamentals Marp fallback and exercises share build/dist, so they stay in one group.
 deck_fundamentals() {
-  cd build
+  cd build || exit
   step bun run check:animations
   step bun run build -- --force
   step bun run build:marp -- --force
@@ -50,7 +51,7 @@ deck_fundamentals() {
 }
 
 deck_libraries() {
-  cd build
+  cd build || exit
   step bun run libraries -- --skip-lint --force
   step bun run libraries:marp -- --skip-lint --force
   step bun run lint:libraries
@@ -59,12 +60,12 @@ deck_libraries() {
 }
 
 delivery() {
-  cd build
+  cd build || exit
   step bun run check:delivery
 }
 
 manifests() {
-  cd build
+  cd build || exit
   step bun run verify -- fundamentals
   step bun run verify -- libraries
 }
@@ -74,7 +75,7 @@ together() {
   local -A pids
   local name failed=0 start=$SECONDS
   for name in "$@"; do
-    (set -e; "$name") > "$logs/$name.log" 2>&1 &
+    ("$name") > "$logs/$name.log" 2>&1 &
     pids[$name]=$!
   done
   for name in "$@"; do
