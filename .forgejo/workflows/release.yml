@@ -33,8 +33,10 @@ jobs:
         shell: bash
         run: |
           curl -fsSL https://bun.sh/install | bash -s "bun-v1.4.1"
-          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
-          "$HOME/.bun/bin/bun" --version
+          bun_bin="${BUN_INSTALL:-$HOME/.bun}/bin"
+          echo "$bun_bin" >> "$GITHUB_PATH"
+          export PATH="$bun_bin:$PATH"
+          bun --version
 
       - name: Fetch the pinned Presentation-Template
         shell: bash
@@ -148,8 +150,10 @@ jobs:
         shell: bash
         run: |
           curl -fsSL https://bun.sh/install | bash -s "bun-v1.4.1"
-          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
-          "$HOME/.bun/bin/bun" --version
+          bun_bin="${BUN_INSTALL:-$HOME/.bun}/bin"
+          echo "$bun_bin" >> "$GITHUB_PATH"
+          export PATH="$bun_bin:$PATH"
+          bun --version
 
       - name: Fetch the pinned Presentation-Template
         shell: bash
@@ -188,8 +192,10 @@ jobs:
         shell: bash
         run: |
           curl -fsSL https://bun.sh/install | bash -s "bun-v1.4.1"
-          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
-          "$HOME/.bun/bin/bun" --version
+          bun_bin="${BUN_INSTALL:-$HOME/.bun}/bin"
+          echo "$bun_bin" >> "$GITHUB_PATH"
+          export PATH="$bun_bin:$PATH"
+          bun --version
 
       - name: Fetch the pinned Presentation-Template
         shell: bash
