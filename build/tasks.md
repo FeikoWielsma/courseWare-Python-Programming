@@ -694,3 +694,12 @@ The previously listed scaffolding work for Exercises 10 to 13 stays deferred.
 - [x] Check source gates, lint, browser states and a chapter PDF export.
 
 Evidence and full-deck validation limits: [chapter 1 review](notes/chapter1-background.md).
+
+## Archived Marp fallbacks (2026-10-19)
+
+- [x] Route both decks' Marp PDF/HTML builds to the top-level `archive/` folder.
+- [x] Remove the libraries standalone HTML alias and obsolete generated copies.
+- [x] Update student and maintainer documentation; ship the archive index without
+      including historical exercises, demos or original PDFs.
+- [x] Rebuild both Marp decks and verify their artifact manifests. Check the real
+      bundle source map: all four fallback files retain their `archive/` paths.

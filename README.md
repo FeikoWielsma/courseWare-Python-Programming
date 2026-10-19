@@ -13,8 +13,9 @@ material, so a `git pull` always gives you the latest version.
   `python slides/serve.py`, then open <http://localhost:4188/slidev/>. Arrow keys
   or scrolling move through the steps; going back reverses them.
 - **`PRG400-Python-Programming.pdf`** : the slides as a PDF, showing the completed
-  examples. **`PRG400-Python-Programming-Marp.html`** and **`-Marp.pdf`** are the
-  static fallback deck; the HTML opens directly from disk.
+  examples.
+- **`archive/`** : optional static Marp PDF and HTML versions of both slide decks.
+  The HTML opens directly from disk.
 - **`PRG400-Python-Programming-Exercises.pdf`** : the lab guide, one exercise per
   module.
 - **`site/index.html`** : the same exercises as a small website that opens from

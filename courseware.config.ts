@@ -7,7 +7,6 @@ export default {
       dir: 'libraries',
       renderer: 'slidev',
       archive: 'build/dist/PRG400-Python-Libraries-and-Tools-slides.zip',
-      plainMarpHtml: true,
     },
   },
   // The student bundle is an allowlist: tracked files below these paths, plus each deck's
@@ -17,6 +16,8 @@ export default {
     archive: 'build/dist/Python-Programming-student.zip',
     include: [
       'README.md',
+      // Only the archive index and manifest-declared Marp outputs travel.
+      'archive/README.md',
       // Travels so the Ruff extension sees the course rules; the student writes pyproject.toml.
       'ruff.toml',
       // GitHub Codespaces setup, used by the GitHub mirror of the student repository.

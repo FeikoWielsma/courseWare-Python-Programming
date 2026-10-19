@@ -24,7 +24,7 @@ in `build/package.json` maps directly to this orchestration:
 | `build` | `bun run course.ts` | **Canonical fundamentals build**: Renders Slidev presentation, validates slide layout and rendered frames, writes `PRG400-Python-Programming.pdf`, packages student presentation archive `build/dist/Python-Programming-slides.zip`, and records `.courseware/fundamentals/student/artifacts.json`. Use for standard local builds and CI artifact generation. Supported flags: `--exercises` (builds exercises PDF/HTML), `--marp` (builds Marp fallback), `--force` (bypass lint failure), `--skip-lint`, `--no-html`, `--range <pages>`, `--with-clicks`. |
 | `serve` | `bun run course.ts --serve` | **Fundamentals dev server**: Starts native Slidev development server with hot module reload on port 3030. Use when authoring or editing canonical slides (`src/slides/`) or native additions (`src/slidev/`). |
 | `lint` | `bun run course.ts --lint` | **Fundamentals slide lint**: Validates layout budgets, line heights, and margins for fundamentals slides. Gating in CI. |
-| `build:marp` | `bun run course.ts --marp` | **Fundamentals Marp fallback**: Builds static Marp fallback PDF (`PRG400-Python-Programming-Marp.pdf`) and HTML (`PRG400-Python-Programming-Marp.html`), recording `.courseware/fundamentals/marp/artifacts.json`. |
+| `build:marp` | `bun run course.ts --marp` | **Fundamentals Marp fallback**: Builds static Marp fallback PDF (`archive/PRG400-Python-Programming-Marp.pdf`) and HTML (`archive/PRG400-Python-Programming-Marp.html`), recording `.courseware/fundamentals/marp/artifacts.json`. |
 | `serve:marp` | `bun run course.ts --marp --serve` | **Fundamentals Marp dev server**: Launches Marp development server via `marp-cli` with live browser reloading. |
 | `slidev` | `bun run slidev.ts` | **Slidev direct passthrough**: Direct pass-through to template `slidev/build.ts` for fundamentals with arbitrary flags (e.g. `--notes` for trainer view, `--range`, `--with-clicks`). |
 | `slidev:compare` | `bun run slidev.ts --compare --serve` | **Visual parity portal**: Builds both Slidev and Marp presentations and starts comparison portal server to inspect visual parity. |
@@ -32,7 +32,7 @@ in `build/package.json` maps directly to this orchestration:
 | `slidev:check` | `bun run slidev.ts --check-only` | **Slidev frame verification**: Verifies pre-rendered Slidev frames without rebuilding. |
 | `slidev:dev` | `bun run slidev.ts --dev` | **Slidev authoring server**: Runs native Slidev development server watching canonical and native sources. |
 | `libraries` | `bun run libraries.ts` | **Canonical libraries build**: Builds companion course deck (`libraries/`), canonical PDF (`PRG400-Python-Libraries-and-Tools.pdf`), and student slides archive (`build/dist/PRG400-Python-Libraries-and-Tools-slides.zip`), recording `.courseware/libraries/student/artifacts.json`. |
-| `libraries:marp` | `bun run libraries.ts --marp` | **Libraries Marp fallback**: Builds Marp fallback PDF/HTML for libraries and copies the plain `.html` alias (`PRG400-Python-Libraries-and-Tools.html`), recording `.courseware/libraries/marp/artifacts.json`. |
+| `libraries:marp` | `bun run libraries.ts --marp` | **Libraries Marp fallback**: Builds Marp fallback PDF/HTML for libraries in the top-level `archive/` folder, recording `.courseware/libraries/marp/artifacts.json`. |
 | `libraries:serve` | `bun run libraries.ts --serve` | **Libraries dev server**: Starts Slidev development server for companion course on port 3030. |
 | `lint:libraries` | `bun run libraries.ts --lint` | **Libraries slide lint**: Checks slide layout budgets for the libraries deck. Gating in CI. |
 | `check:animations` | `uv run python check-slidev-examples.py` | **Static animation checks**: Validates slide example states, core, data structures, and provenance without launching a browser. |
@@ -66,7 +66,7 @@ Toolchain behaviour is governed by three files:
      - `dir`: Path to deck relative to course root (defaults to `"."`).
      - `renderer`: Default rendering engine (`"slidev"` or `"marp"`). Both decks default to `"slidev"`.
      - `archive`: Target path for packaged student presentation ZIP (`build/dist/*-slides.zip`).
-     - `plainMarpHtml`: If true, copies the Marp fallback HTML to `<pdfName>.html` for legacy URLs.
+     - The thin course build adapters supply `--out archive/<name>-Marp.pdf` for Marp fallbacks (relative to each deck folder). Explicit `--out` overrides this default.
      - *Note*: PDF filenames are not defined in `courseware.config.ts`; each deck declares `pdfName` inside its Markdown preamble header (`src/slides/00-preamble/00-preamble.md`).
    - `bundle`: Allowlist configuration for student distribution package.
      - `archive`: Path to student distribution archive (`build/dist/Python-Programming-student.zip`).
@@ -104,7 +104,7 @@ Every build executes within an isolated variant directory under `.courseware/<de
 - **Deliverables**:
   - Canonical presentation PDFs: `PRG400-Python-Programming.pdf` (fundamentals) and `PRG400-Python-Libraries-and-Tools.pdf` (libraries) at course root.
   - Exercises deliverables: `PRG400-Python-Programming-Exercises.pdf` and `PRG400-Python-Programming-Exercises.html` at course root.
-  - Fallback outputs: `PRG400-Python-Programming-Marp.pdf`, `PRG400-Python-Programming-Marp.html`, `PRG400-Python-Libraries-and-Tools-Marp.pdf`, `PRG400-Python-Libraries-and-Tools-Marp.html`, and alias `PRG400-Python-Libraries-and-Tools.html`.
+  - Fallback outputs: both decks write their `-Marp.pdf` and `-Marp.html` files to the top-level `archive/` folder. The libraries standalone HTML alias is retired. Manifest paths preserve this layout in the student bundle and synchronised checkout.
   - Presentation ZIP archives: `build/dist/Python-Programming-slides.zip` and `build/dist/PRG400-Python-Libraries-and-Tools-slides.zip`. Packaged folder is `.courseware/<deck>/student/slides/` containing `index.html`, `serve.py`, `slidev/index.html`, and the PDF.
   - Full student distribution bundle: `build/dist/Python-Programming-student.zip` (and unpacked in `SpiralTrain/Python-Programming-Student`).
 - **Which file students download**:
@@ -204,7 +204,7 @@ presentation at `.courseware/fundamentals/student/slides/` and creates
 From the extracted folder run `python slides/serve.py`, then open port 4188.
 It needs no Node installation or internet connection. The exercise site's module
 buttons lead to this presentation; hint previews still work directly from disk.
-`build:marp` writes `PRG400-Python-Programming-Marp.pdf` and `.html`. Exercise and
+`build:marp` writes `archive/PRG400-Python-Programming-Marp.pdf` and `.html`. Exercise and
 separate `libraries/` builds retain their existing engines.
 
 Builds run the shared `build/courseware.ts` from the Presentation-Template commit
@@ -262,7 +262,7 @@ demos/<same name as the slide module>/     runnable demo code, files named NN_na
 solutions/NN-<exercise stem>/              the Wordle game at the end of each exercise
 exercises/handouts/NN-<exercise stem>/     what an exercise hands out (data, word lists)
 exercises/starters/NN-<exercise stem>/     GENERATED : previous solution + handouts
-archive/                                   retired material, not built, linted or shipped
+archive/                                   generated Marp fallbacks plus unshipped historical material
 ../Presentation-Template/build/tools/make-starters.py regenerates the starters; --check in CI
 build/solution-tests/NN-<exercise stem>/   reference tests run by CI against solutions 05 to 12
 build/check-solutions.py                   tests (from build/solution-tests/ and stage 13), mypy and a scripted game per stage
@@ -443,8 +443,8 @@ uv run python "$(bun run --cwd ../build toolchain.ts --path)/build/tools/check-f
 `build/libraries.ts` runs the shared `courseware.ts` for the `libraries` deck, which
 builds with `libraries/` as its working directory. Slidev is the default, with its configuration in
 `libraries/build/slidev.config.ts`; `libraries:serve` starts native authoring on
-port 3030. `libraries:marp` retains named `-Marp.pdf` and `-Marp.html` fallbacks
-and copies the legacy standalone HTML alias. `--exercises` keeps the existing
+port 3030. `libraries:marp` writes named `-Marp.pdf` and `-Marp.html` fallbacks
+to the top-level `archive/` folder. `--exercises` keeps the existing
 exercise builder. Add new optional topics there; they do not enter the
 fundamentals PDF, schedule, exercise site or Wordle exercise chain. CI builds and
 publishes the Slidev PDF, Marp PDF/HTML, exercises PDF/HTML and

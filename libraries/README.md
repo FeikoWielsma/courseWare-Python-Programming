@@ -33,9 +33,8 @@ demo runs offline.
   Arrow keys and the mouse wheel advance or reverse reveals.
 - **`PRG400-Python-Libraries-and-Tools-slides.zip`** : a separate release download
   containing the presentation, Python launcher and PDF. Extract it before use.
-- **`PRG400-Python-Libraries-and-Tools-Marp.pdf`** and **`.html`** : the Marp
-  fallback. The original `PRG400-Python-Libraries-and-Tools.html` link also opens
-  this standalone fallback.
+- **`../archive/PRG400-Python-Libraries-and-Tools-Marp.pdf`** and **`.html`** : the
+  optional static fallback, kept in the course archive. The HTML opens from disk.
 - **`PRG400-Python-Libraries-and-Tools-Exercises.pdf`** : the exercises, one per module.
 - **`demos/`** : the runnable example programs shown on the slides, one folder
   per module. A slide that shows a demo names it at the bottom, for example

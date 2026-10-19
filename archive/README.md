@@ -1,6 +1,14 @@
 # Archive
 
-Material the course no longer uses, kept for trainers. Nothing here is built,
+The generated `*-Marp.pdf` and `*-Marp.html` files are optional static versions
+of the two slide decks. The main course folders contain the current Slidev
+presentations and PDFs. The Marp HTML files open directly from disk.
+
+Rebuild these fallbacks with `bun run --cwd build build:marp` and
+`bun run --cwd build libraries:marp`. Both commands write to this folder.
+The student bundle includes these generated files and this index.
+
+The historical material listed below is kept for trainers. It is not built,
 linted, or shipped in the student bundle.
 
 - `calculator/` : the calculator exercise spine of Exercises 2 to 11, replaced by
