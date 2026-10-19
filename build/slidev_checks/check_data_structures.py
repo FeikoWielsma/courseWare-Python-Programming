@@ -28,7 +28,6 @@ import ast
 import contextlib
 import io
 import json
-import os
 import re
 import shutil
 import subprocess
@@ -322,19 +321,19 @@ def check_dict(slide, k, shown, state, namespace, output, identity) -> dict[str,
 
 # Reads what each component rendered for every click state, from the built app.
 BROWSER_SCRIPT = r"""
-import { launchBrowser } from %(launch)s;
+import { browserTimeoutMs, withBrowser } from %(browser)s;
 const [origin, plan] = [process.argv[2], JSON.parse(process.argv[3])];
-const browser = await launchBrowser();
 const results = {};
-try {
-  const page = await browser.newPage();
-  await page.setViewport({ width: 1280, height: 800 });
+await withBrowser({ origin }, async ({ page }) => {
   for (const { route, states, kind } of plan) {
     results[route] = [];
     for (let k = 0; k < states; k++) {
       const url = `${origin}/slidev/?r=${Date.now()}#/${route}?clicks=${k}`;
-      await page.goto(url, { waitUntil: 'networkidle0' });
-      await page.waitForSelector(`[data-source-id="${route}"] .ds-run`);
+      await page.goto(url, { waitUntil: 'networkidle0', timeout: browserTimeoutMs });
+      await page.waitForSelector(
+        `[data-source-id="${route}"] .ds-run`,
+        { timeout: browserTimeoutMs },
+      );
       await page.evaluate(() => document.fonts.ready);
       await new Promise(resolve => setTimeout(resolve, 900));
       results[route].push(await page.evaluate((route, kind) => {
@@ -395,15 +394,17 @@ try {
       }, route, kind));
     }
   }
-} finally { await browser.close(); }
+});
 console.log(JSON.stringify(results));
 """
 
 
 def check_browser(slides: list[Slide], origin: str) -> int:
     """Compare each rendered click state with the Python state."""
-    shared = os.environ.get("PRESENTATION_TEMPLATE_DIR")
-    template = Path(shared) if shared else ROOT.parent / "Presentation-Template"
+    template = Path(subprocess.run(
+        [shutil.which("bun") or "bun", str(ROOT / "build/toolchain.ts"), "--path"],
+        stdout=subprocess.PIPE, text=True, check=True,
+    ).stdout.strip())
     page_map = ROOT / ".courseware/fundamentals/student/manifest.json"
     manifest = json.loads(page_map.read_text(encoding="utf-8"))
     native = [page for page in manifest["pages"] if page["kind"] == "enrichment"]
@@ -413,10 +414,10 @@ def check_browser(slides: list[Slide], origin: str) -> int:
         if slide.title not in pages:
             fail(slide.file, "not in the built deck; add it to build/slidev.config.ts enrichments")
         plan.append({"route": pages[slide.title], "states": len(slide.ends), "kind": slide.kind})
-    launch = json.dumps((template / "build/lint-slides.ts").as_posix())
+    browser = json.dumps((template / "build/browser.ts").as_posix())
     with tempfile.TemporaryDirectory() as folder:
         script = Path(folder) / "read-states.ts"
-        script.write_text(BROWSER_SCRIPT % {"launch": launch}, encoding="utf-8", newline="\n")
+        script.write_text(BROWSER_SCRIPT % {"browser": browser}, encoding="utf-8", newline="\n")
         result = subprocess.run(
             [shutil.which("bun") or "bun", str(script), origin, json.dumps(plan)],
             capture_output=True, text=True, encoding="utf-8", check=False,

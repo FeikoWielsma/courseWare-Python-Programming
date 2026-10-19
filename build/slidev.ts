@@ -1,3 +1,3 @@
-import { courseware } from './course.ts';
+import { courseware } from './toolchain.ts';
 
 courseware('slidev', 'fundamentals');
