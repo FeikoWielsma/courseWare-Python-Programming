@@ -131,3 +131,7 @@ Findings to resolve (user decision): the published Marp HTML (PRG400-Python-Prog
 Template integration branch: `feature/courseware-cli` (not merged to Presentation-Template main). Child template branches: -pin, -release.
 
 T9b (Codex Sol) failed with 'model at capacity' after the original Opus run auto-resumed and committed more (tc/release 9fe8eff, template 98d878c: rewritten release.yml, hardened provenance/retries). Remaining work (gates, review, e2e vs fake Forgejo, notes) relaunched as T9c on Codex gpt-6-luna.
+
+T9c (Codex Luna) finished: tc/release 5b4593f, template fbbc2dc; merged. Template cli tip a0bc0ea (53+14 tests, smoke pass). Course integration re-pinned to a0bc0ea; a clean pinned checkout (local file:// fetch source) builds, 276 pages, verify PASS. .gitignore: libraries/build exceptions now explicit file names.
+Running: T10 unrelated-course regression (Haiku), T11 operating guide/AGENTS/tasks (Gemini, branch tc/docs2).
+Leftover to clean: _worktrees/prg-tc-cleancheck (path too long to remove; retry after reboot/with long-path tool), old tc/* worktrees (baseline, inventory, browser-survey, stage1, stage3, docs, browser6, pin, release, docs2) and template worktrees (-browser, -pin, -release).
