@@ -137,3 +137,7 @@ Running: T10 unrelated-course regression (Haiku), T11 operating guide/AGENTS/tas
 Leftover to clean: _worktrees/prg-tc-cleancheck (path too long to remove; retry after reboot/with long-path tool), old tc/* worktrees (baseline, inventory, browser-survey, stage1, stage3, docs, browser6, pin, release, docs2) and template worktrees (-browser, -pin, -release).
 
 T10 done: Go (PRG350) and PowerShell (PRG900) deck + exercises PDFs identical text on every page vs old-template baselines; template test:site PASS (evidence _baselines/after/RESULT.md).
+
+## Result (2026-10-19)
+All stages (1-7) implemented and merged on course `toolchain/integration` (head after docs2 merge) and template `feature/courseware-cli` (tip a0bc0ea+). Gates pass: ruff, check-fences, slide references, starters, 13 solutions, quiz, lint (both decks), template typecheck/test (53)/slidev tests (14)/smoke, check:delivery, slidev:check, verify; PDFs identical to baselines (Python x4, Go x2, PowerShell x2); clean pinned checkout builds. Worktrees and merged branches removed.
+Awaiting the user: push/merge template cli branch to Presentation-Template main and re-pin; merge toolchain/integration to master (discard the two uncommitted copies in the main checkout: build/tasks.md, build/notes/courseware-toolchain-simplification.md); verify Forgejo draft/tag behaviour on the real server; Marp HTML trainer-notes leak.
