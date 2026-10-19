@@ -13,7 +13,7 @@ export const presentationPage = {
   <iframe title="Python Programming slides" src="slides-marp.html" allow="fullscreen" loading="lazy"></iframe>
 </div>
 <p><a href="../PRG400-Python-Programming.pdf">Read the slides PDF</a> directly.
-The <a href="../PRG400-Python-Programming-Marp.html">static fallback</a> also opens directly from disk.</p>
+The <a href="slides-marp.html">static fallback</a> also opens directly from disk.</p>
 <p>Slide previews inside exercise hints remain available without starting a server.</p>
 <style>
 .presentation-frame { width: 100%; height: min(72vh, 760px); min-height: 420px; margin: 1.5rem 0; overflow: hidden; border: 1px solid var(--line, #d0d7de); border-radius: 10px; background: #fff; }

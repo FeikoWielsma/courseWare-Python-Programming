@@ -4,119 +4,104 @@ Course : *Python Programming* (PRG400), the four-day Python fundamentals course.
 
 Read first, in this order :
 
-1. `../Presentation-Template/WRITING-STYLE.md` : how every course is written.
+1. `../Presentation-Template/WRITING-STYLE.md` : shared course writing rules.
 2. `../Presentation-Template/docs/course-conventions.md` : frontmatter, demo pills,
-   code fences, diagrams, appendices. Not repeated here.
-3. This file : what is specific to PRG400.
-4. `build/plan.md` (the current design) and `build/tasks.md` (what is done and open).
+   code fences, diagrams and appendices.
+3. This file : PRG400-specific decisions and contracts.
+4. `build/plan.md` (current design) and `build/tasks.md` (remaining backlog).
 
-Changes to the shared build are made in `../Presentation-Template` itself, from a
-worktree, and must keep the other courses building. See its `AGENTS.md`.
+For configured builds, toolchain resolution and shared commands, read
+[`../Presentation-Template/docs/courseware.md`](../Presentation-Template/docs/courseware.md)
+and [MAINTAINING.md](MAINTAINING.md). Shared build changes belong in a
+Presentation-Template worktree and must keep other courses building.
 
-For historical Slidev migration records, Marp parity audits, and previous work
-package reports, consult [`build/notes/README.md`](build/notes/README.md).
+Historical migration records and content reviews are indexed in
+[`build/notes/README.md`](build/notes/README.md).
 
----
+## Course identity
 
-## What this course is
-
-Eleven modules plus three appendices (`12-appendix-type-hinting`,
-`13-appendix-libraries`, `14-appendix-python-tooling`) of Markdown slides with native Slidev additions, runnable
-demos, and thirteen exercises that build one Wordle game. Modules 01 to 11 were converted from the original deck
-(`archive/PRG400-Python-Programming_og.pdf`, kept for reference, never edited).
+Eleven modules and three appendices (`12-appendix-type-hinting`,
+`13-appendix-libraries`, `14-appendix-python-tooling`) use Markdown slides with
+native Slidev additions and runnable demos. Thirteen exercises build one Wordle
+game. Modules 01 to 11 came from `archive/PRG400-Python-Programming_og.pdf`,
+which is retained as reference and never edited.
 
 ## Course-specific rules
 
 - **Module 01 opens with Python context** : What is Python, Background, Features
-  and Applications, followed by files, folders, the editor, the terminal and the
-  edit-save-run cycle. Keep only the uv setup needed to run a file. Detailed
-  tooling, Ruff and syntax reference belong in appendix 14.
+  and Applications, followed by files, folders, the editor, terminal and the
+  edit-save-run cycle. Keep only uv setup needed to run a file. Detailed tooling,
+  Ruff and syntax reference belong in appendix 14.
 - **Exercise 1 practises running code** : plain `print()` statements, comments
   and repairing a syntax error. No imports, functions, annotations or file
   reading. Exercise 3 supplies practice words written directly in Python.
-- **Type hints are taught as the course goes** : variables in 02, collections in 03,
-  signatures in 05, constructors in 11; the appendix is the recap. Keep the
-  annotations when you touch a demo, and keep its slide fence identical to it.
-  The first Functions examples deliberately teach calls and results before
-  introducing annotations; preserve that progression.
-- **Teaching examples** use music and photos, World of Warcraft characters for Classes and
-  a film watchlist for SQLite. Libraries modules use music and photos for data, WoW for
-  inheritance, and books.toscrape.com for scraping and SQLAlchemy. For example rewrites, read
-  `build/notes/history/engaging-examples.md`; the Wordle exercise contracts stay separate.
-- **All code is PEP 8 named and Pythonic**, in slides, demos, exercises and
-  solutions alike. Where an unpythonic form is the lesson (the `%` formatting
-  example kept for recognition), keep it and say so in a comment or a `ruff.toml`
-  entry.
-- **f-strings everywhere**; `%` and `str.format` appear once, to be recognised.
-- **Properties are taught one way** : plain attributes first, `@property` when a value
-  is computed or needs a rule. No `get_x` / `set_x`, no `property(get, set)`.
-- **pytest, not unittest** (taught in the Exercise 13 libraries appendix).
-- Inheritance in depth, generators, decorators, `dataclass` and `collections` in
-  depth belong to the Advanced Python course.
-- Demo files are `NN_name.py` (module 07 uses `demoNN_name.py`).
-- Do not write content in Dutch.
+- **Type hints are taught as the course goes** : variables in 02, collections in
+  03, signatures in 05, constructors in 11; appendix 12 is the recap. Preserve
+  annotations in touched demos and identical slide fences. Functions examples
+  teach calls and results before signatures introduce annotations.
+- **Teaching examples** use music and photos, WoW characters for classes, and a
+  film watchlist for SQLite. The libraries course uses music and photos for data,
+  WoW for inheritance, and books.toscrape.com for scraping and SQLAlchemy. See
+  `build/notes/history/engaging-examples.md` before rewriting examples. Wordle
+  contracts remain separate.
+- **Pythonic code** applies to slides, demos, exercises and solutions. Keep an
+  unpythonic form only when it is the lesson, and identify that lesson in a
+  comment or scoped `ruff.toml` ignore.
+- **f-strings everywhere**; `%` and `str.format` appear once for recognition.
+- **Properties** : plain attributes first, `@property` for computed values or
+  rules. Do not use `get_x`, `set_x` or `property(get, set)`.
+- **pytest, not unittest**. Deep inheritance, generators, decorators,
+  dataclasses and collections belong to Advanced Python.
+- Demo files use `NN_name.py` (`demoNN_name.py` in module 07). Student-facing
+  content is in English.
 
 ## Exercises : the Wordle spine
 
-The general pattern is `../Presentation-Template/docs/agents/exercise-spine.md`
-(also the `exercise-spine` skill). Here :
+The shared pattern is [`exercise-spine.md`](../Presentation-Template/docs/agents/exercise-spine.md).
+Here, `solutions/NN-<exercise stem>/` is a complete uv project and
+`exercises/starters/` is generated from solutions and handouts. Never edit a
+starter by hand. `build/check-solutions.py` runs each stage's tests (from
+`build/solution-tests/` for 05 to 12, from its solution folder for 13), mypy from
+Exercise 12, and scripted games against `build/transcripts/`.
 
-- `solutions/NN-<exercise stem>/` is the game at the end of exercise NN, a complete
-  uv project. `exercises/starters/` is generated by the shared `make-starters.py` from the
-  solutions and `exercises/handouts/`; never edit a starter by hand.
-- Exercise text quotes the solution code verbatim and shows only output produced by
-  running it. A Python variable, `secret = "crane"`, fixes the secret. `build/check-solutions.py` runs
-  every stage's tests (from `build/solution-tests/` for 05 to 12, and from its
-  solution folder for 13), mypy from Exercise 12, and a scripted game against
-  `build/transcripts/`.
-- Names (`score_guess`, `play`, `Game`, the module names) are a contract between the
-  text, the solutions, the tests and the starters.
-- Steps vary in how much they give : the code itself (at most about 20 lines), a
-  skeleton with hints and a solution, or only the signature and expected output (Exercise 13
-  teaches writing tests). Mix these in an exercise. **Do not label steps** with stars
-  or difficulty words.
-- Start with word lists written in Python; file loading begins in Exercise 9.
-  Keep display alignment and environment variables in the optional tooling appendix.
-- **Nothing new on the required path** : a required step uses only what a slide, a
-  demo or an earlier exercise showed. The exercise may explain the *problem*; the
-  language is taught on the slides. Every step where the student writes code gets
-  a hint, and its first hint names the slide or demo (`WRITING-STYLE.md` §8).
-- **No timings** in exercises or on slides; the trainer paces the room.
-- Slides and demos never become Wordle-themed.
-- `archive/` holds retired material (the calculator exercises, old demos). Do not
-  build on it.
+Names (`score_guess`, `play`, `Game`, module names) are contracts between text,
+solutions, tests and starters. Exercise text quotes solution code verbatim and
+shows output produced by running it. Use `secret = "crane"` for repeatable checks.
+
+Vary support without star or difficulty labels: short code, a hinted skeleton, or
+only a signature and expected output. Word lists stay in Python until Exercise 9.
+Every required step uses concepts already taught, and each code-writing step has
+a first hint naming its teaching slide or demo. Keep timings out. Slides and demos
+stay separate from Wordle. `archive/` contains retired material, not source
+content.
 
 ## Checks
 
-```bash
+```powershell
 uv sync
-uv run python ../Presentation-Template/build/tools/check-fences.py          # gating in CI
-uv run python ../Presentation-Template/build/tools/check-slide-references.py # gating in CI
-uv run ruff check .                          # gating in CI, at zero
-uv run python ../Presentation-Template/build/tools/make-starters.py --check # gating in CI
-uv run python build/check-solutions.py       # gating in CI
-uv run python build/site/check-quiz.py       # gating in CI
-bun run --cwd build build -- --skip-lint     # slides; then lint separately :
-bun run --cwd build lint
-bun run --cwd build build -- --exercises     # exercises PDF
-bun run --cwd build site                     # offline exercise site
-bun run --cwd build verify -- fundamentals   # gating in CI: manifest check
-bun run --cwd build verify -- libraries      # gating in CI
+uv sync --project libraries
+$template = bun run build/toolchain.ts --path
+uv run python "$template/build/tools/check-fences.py"
+uv run python "$template/build/tools/check-slide-references.py"
+uv run python "$template/build/tools/make-starters.py" --check
+uv run ruff check .
+uv run python build/check-solutions.py
+uv run python build/site/check-quiz.py
+bun run --cwd build build -- --skip-lint
+bun run --cwd build build -- --exercises
+bun run --cwd build site
+bun run --cwd build verify -- fundamentals
+bun run --cwd build verify -- libraries
 ```
 
-Builds run the shared `courseware.ts` from the Presentation-Template commit
-pinned in `build/toolchain.json`. `PRESENTATION_TEMPLATE_DIR` is the development
-override. Run `bun run --cwd build toolchain` to inspect the pin and the per-machine
-toolchain cache that every checkout shares (`toolchain -- --prune` cleans it). CI runs
-all of the checks above through `build/ci-build.sh`, independent groups side by side.
-
-`ruff` is configured in `ruff.toml`, not `pyproject.toml`, because the student bundle
-ships `ruff.toml` and no `pyproject.toml`. Do not "fix" a finding where the
-anti-pattern is the lesson : add a scoped `[lint.per-file-ignores]` entry with a
-comment naming the lesson.
+`build/ci-build.sh` runs CI gates, including delivery and libraries checks. The
+site command builds a fresh fundamentals Marp prerequisite itself. `ruff` lives in
+`ruff.toml` because the student bundle ships that file and no `pyproject.toml`.
+When a lesson intentionally violates a Ruff rule, scope its ignore and name the
+lesson in a comment.
 
 ## Releasing
 
-`.forgejo/workflows/release.yml` runs on every push to `master`. A new demo folder
-needs one edit: add it to `bundle.include` in `courseware.config.ts`. The bundle
-is an allowlist. `MAINTAINING.md` has the rest.
+`.forgejo/workflows/release.yml` runs on pushes to `master`. Add new demo folders
+to `bundle.include` in `courseware.config.ts`. The bundle is an allowlist;
+MAINTAINING.md and the shared courseware guide describe operations.

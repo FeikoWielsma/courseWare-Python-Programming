@@ -4,7 +4,7 @@
 # uv projects synced. Every command is gating. Independent groups run side by side, each stopping at
 # its first failure; the script fails when any group fails, and prints every group's log in full.
 #   1. Python gates (fundamentals, libraries) and deck builds (fundamentals, libraries) at once
-#   2. the exercise site, which embeds the completed fundamentals Marp artifact
+#   2. the exercise site, which builds and embeds the fundamentals Marp fallback
 #   3. check:delivery alone: its wheel probe times gestures in tens of milliseconds
 #   4. the manifest checks
 set -uo pipefail
@@ -23,6 +23,7 @@ step() {
 }
 
 gates_fundamentals() {
+  step bun run --cwd build test
   step uv run python -m compileall -q demos solutions libraries/demos libraries/solutions
   step uv run python "$TEMPLATE/build/tools/check-fences.py"
   step uv run python "$TEMPLATE/build/tools/check-slide-references.py"
@@ -42,21 +43,20 @@ gates_libraries() {
   step uv run python "$TEMPLATE/build/tools/check-fences.py"
 }
 
-# The fundamentals Marp fallback and exercises share build/dist, so they stay in one group.
+# Fundamentals builds share build/dist, so they stay in one group.
 deck_fundamentals() {
   cd build || exit
   step bun run check:animations
-  step bun run build -- --force
-  step bun run build:marp -- --force
-  step bun run build -- --exercises --force
+  step bun run build
+  step bun run build -- --exercises
 }
 
 deck_libraries() {
   cd build || exit
-  step bun run libraries -- --skip-lint --force
-  step bun run libraries:marp -- --skip-lint --force
+  step bun run libraries -- --skip-lint
+  step bun run libraries:marp -- --skip-lint
   step bun run lint:libraries
-  step bun run libraries -- --exercises --force
+  step bun run libraries -- --exercises
 }
 
 delivery() {
@@ -88,7 +88,7 @@ together() {
 }
 
 together gates_fundamentals gates_libraries deck_fundamentals deck_libraries || exit 1
-# The site embeds the fundamentals Marp artifact, so both deck groups must finish first.
+# Site assembly builds its own fundamentals Marp prerequisite.
 step bun run --cwd build site
 together delivery || exit 1
 together manifests || exit 1

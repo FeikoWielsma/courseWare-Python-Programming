@@ -34,6 +34,7 @@ type ProbePage = {
   createCDPSession(): Promise<{ send(method: string, params: object): Promise<unknown>; detach(): Promise<void> }>;
 };
 let page: ProbePage;
+let wheelSession: Awaited<ReturnType<ProbePage['createCDPSession']>> | undefined;
 const current = () => new URL(page.url()).hash;
 const clickCount = () => Number(new URLSearchParams(current().split('?')[1] || '').get('clicks') || 0);
 const state = (id: string) => page.evaluate((sourceId: string) =>
@@ -41,12 +42,12 @@ const state = (id: string) => page.evaluate((sourceId: string) =>
     .map(element => getComputedStyle(element).opacity), id);
 const require = (condition: unknown, message: string) => { if (!condition) throw new Error(message); };
 const wheel = async (deltaY: number, modifiers = 0) => {
-  const session = await page.createCDPSession();
-  await session.send('Input.dispatchMouseEvent', { type: 'mouseWheel', x: 640, y: 400, deltaX: 0, deltaY, modifiers });
-  await session.detach();
+  wheelSession ||= await page.createCDPSession();
+  await wheelSession.send('Input.dispatchMouseEvent', { type: 'mouseWheel', x: 640, y: 400, deltaX: 0, deltaY, modifiers });
 };
 
 await withBrowser(originOption ? { origin: originOption } : { dir: presentation, port: 0 }, async (session: { page: ProbePage; origin: string }) => {
+  try {
   page = session.page;
   const origin = session.origin;
   const topic = manifest.topics.find((item: { id: string }) => item.id === '03-data-structures-3')
@@ -88,7 +89,16 @@ await withBrowser(originOption ? { origin: originOption } : { dir: presentation,
   require(wheelReverse[0] === '0', 'Physical CDP wheel-up did not reverse a reveal.');
   console.log('PASS physical wheel forward/reverse');
 
+  await page.evaluate(() => {
+    (window as Window & { wheelProbeTimes?: number[] }).wheelProbeTimes = [];
+    window.addEventListener('wheel', event => {
+      if (event.deltaY === 90) (window as Window & { wheelProbeTimes?: number[] }).wheelProbeTimes!.push(performance.now());
+    }, { capture: true, once: false });
+  });
   await wheel(90); await pause(20); await wheel(90); await pause(20); await wheel(90); await pause(950);
+  const burstTimes = await page.evaluate(() => (window as Window & { wheelProbeTimes?: number[] }).wheelProbeTimes || []);
+  require(burstTimes.length === 3 && burstTimes[1] - burstTimes[0] < 120 && burstTimes[2] - burstTimes[1] < 120,
+    `CDP burst did not arrive as one gesture: ${JSON.stringify(burstTimes)}.`);
   const momentum = await state(topic.id);
   require(momentum[0] === '1' && momentum.filter(value => value === '1').length === 1,
     `Momentum burst advanced more than one state: ${JSON.stringify(momentum)}.`);
@@ -143,4 +153,8 @@ await withBrowser(originOption ? { origin: originOption } : { dir: presentation,
   await wheel(-90); await pause(900);
   require(current() === boundaryFrom, 'Wheel-up did not cross the slide boundary in reverse.');
   console.log(`PASS wheel slide boundary forward/reverse: ${boundaryFrom} -> ${boundaryTo}`);
+  } finally {
+    await wheelSession?.detach();
+    wheelSession = undefined;
+  }
 });

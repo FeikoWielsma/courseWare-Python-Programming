@@ -2,10 +2,15 @@
 // PDF names come from each deck's src/slides/00-preamble/00-preamble.md (pdfName).
 export default {
   decks: {
-    fundamentals: { renderer: 'slidev', archive: 'build/dist/Python-Programming-slides.zip' },
+    fundamentals: {
+      renderer: 'slidev',
+      archive: 'build/dist/Python-Programming-slides.zip',
+      marpOutput: 'archive/PRG400-Python-Programming-Marp.pdf',
+    },
     libraries: {
       dir: 'libraries',
       renderer: 'slidev',
+      marpOutput: '../archive/PRG400-Python-Libraries-and-Tools-Marp.pdf',
       archive: 'build/dist/PRG400-Python-Libraries-and-Tools-slides.zip',
     },
   },
