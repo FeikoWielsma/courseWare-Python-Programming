@@ -129,3 +129,5 @@ file; resume from branch + notes.
 
 Findings to resolve (user decision): the published Marp HTML (PRG400-Python-Programming-Marp.html) contains the preamble's trainer notes (pre-existing, found by `verify --bundle`). `dev.ts` still writes build/slidev/authoring/ (stage 3 leftover).
 Template integration branch: `feature/courseware-cli` (not merged to Presentation-Template main). Child template branches: -pin, -release.
+
+T9b (Codex Sol) failed with 'model at capacity' after the original Opus run auto-resumed and committed more (tc/release 9fe8eff, template 98d878c: rewritten release.yml, hardened provenance/retries). Remaining work (gates, review, e2e vs fake Forgejo, notes) relaunched as T9c on Codex gpt-6-luna.
