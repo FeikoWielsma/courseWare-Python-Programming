@@ -103,7 +103,7 @@ Every build executes within an isolated variant directory under `.courseware/<de
   - Records: `deck`, `variant`, `audience` (`student` or `trainer`), `createdAt`, `source` Git commit and dirty status, `toolchain` commit/pin/override status, check statuses (`slidev`, `lint`), and deliverable metadata (`role`, `path`, `kind`, `size`, `sha256`).
 - **Deliverables**:
   - Canonical presentation PDFs: `PRG400-Python-Programming.pdf` (fundamentals) and `PRG400-Python-Libraries-and-Tools.pdf` (libraries) at course root.
-  - Exercises deliverables: `exercises/Python-Programming-Exercises.pdf` and `exercises/Python-Programming-Exercises.html`.
+  - Exercises deliverables: `PRG400-Python-Programming-Exercises.pdf` and `PRG400-Python-Programming-Exercises.html` at course root.
   - Fallback outputs: `PRG400-Python-Programming-Marp.pdf`, `PRG400-Python-Programming-Marp.html`, `PRG400-Python-Libraries-and-Tools-Marp.pdf`, `PRG400-Python-Libraries-and-Tools-Marp.html`, and alias `PRG400-Python-Libraries-and-Tools.html`.
   - Presentation ZIP archives: `build/dist/Python-Programming-slides.zip` and `build/dist/PRG400-Python-Libraries-and-Tools-slides.zip`. Packaged folder is `.courseware/<deck>/student/slides/` containing `index.html`, `serve.py`, `slidev/index.html`, and the PDF.
   - Full student distribution bundle: `build/dist/Python-Programming-student.zip` (and unpacked in `SpiralTrain/Python-Programming-Student`).
