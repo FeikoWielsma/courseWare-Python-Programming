@@ -1,15 +1,12 @@
 """Explore the Wordle word list and the data structures around a guess."""
 
-import random
 import string
-from pathlib import Path
 
-words = Path("words.txt").read_text(encoding="utf-8").split()
+words = ["hello", "crane", "react", "paper"]
 guess = input("Your guess: ").strip().lower()
-random.seed(0)
-secret = random.choice(words)
+secret = "crane"
 
-print(f"There are {len(words)} words. The first ten are {words[:10]}.")
+print(f"There are {len(words)} words. The first two are {words[:2]}.")
 print(f"Crane is in the word list: {'crane' in words}.")
 print(f"Example secret: {secret.upper()}.")
 common = sorted(set(guess) & set(secret))

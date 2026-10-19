@@ -17,12 +17,11 @@ Some steps give you the code, some a skeleton to complete, and one only the rule
 Exercise 3's script explored the data; this exercise turns it into a game. Replace the contents of `wordle.py` with :
 
 ```python
-import os
-import random
-from pathlib import Path
-
-words = Path("words.txt").read_text(encoding="utf-8").split()
-secret = os.environ.get("WORDLE_SECRET", random.choice(words))
+words = [
+    "hello", "crane", "react", "paper", "slate", "error", "house", "ghost",
+    "world", "money", "speed", "geese", "trace", "grace", "raise", "trick",
+]
+secret = "crane"
 max_guesses = 6
 
 print("Guess the five-letter word.")
@@ -38,20 +37,11 @@ print(f"The word was {secret.upper()}.")
 
 The `while` loop runs its indented block again and again for as long as its condition is true. Every pass reads a guess and adds one to `guess_count`, so after six passes the condition is false and the program carries on below the loop. The slide *while Loop* shows the shape.
 
-A random secret makes a game you cannot check, so the secret can be fixed from outside the program. `os.environ` holds the environment variables of the process, and `get` returns the second argument when `WORDLE_SECRET` is not set. In PowerShell, set it for the rest of the session :
+:::hint
+The slide *while Loop* shows a changing counter. Keep the counter update inside the loop and the final message outside it.
+:::
 
-```powershell
-$env:WORDLE_SECRET = "crane"
-uv run python wordle.py
-```
-
-In bash, set it for a single run :
-
-```bash
-WORDLE_SECRET=crane uv run python wordle.py
-```
-
-The outputs in this exercise all use `crane`. In PowerShell, `Remove-Item Env:WORDLE_SECRET` brings the random secret back. Play once : the game takes any six answers, even ones that are not words, and does not yet tell you anything about them.
+The list includes the words used in the checks below. Keep `secret = "crane"` while building the game. Run it with `uv run python wordle.py` : it takes any six answers, even ones that are not words, and does not yet tell you anything about them.
 
 ```text
 Guess the five-letter word.
@@ -308,12 +298,11 @@ Out of guesses. The word was CRANE.
 
 :::solution
 ```python
-import os
-import random
-from pathlib import Path
-
-words = Path("words.txt").read_text(encoding="utf-8").split()
-secret = os.environ.get("WORDLE_SECRET", random.choice(words))
+words = [
+    "hello", "crane", "react", "paper", "slate", "error", "house", "ghost",
+    "world", "money", "speed", "geese", "trace", "grace", "raise", "trick",
+]
+secret = "crane"
 max_guesses = 6
 used_letters: set[str] = set()
 
@@ -359,7 +348,7 @@ else:
 The file is also in `solutions/04-control-flow/wordle.py`.
 :::
 
-You have a game. Play a few rounds with a random secret : remove the environment variable, or start a new terminal.
+You have a game. Change `secret` to another word from `words` and play again. Restore `"crane"` before continuing.
 
 ### If time permits
 

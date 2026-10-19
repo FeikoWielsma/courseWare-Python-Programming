@@ -1,8 +1,5 @@
 """Start Wordle when run as a module."""
 
-import os
-import random
-
 from wordle.game import play
 from wordle.words import load_words
 
@@ -15,9 +12,8 @@ def main() -> None:
             "Guess the five-letter word. Type 'quit' to give up, "
             "'letters' for the letters tried."
         )
-        play(os.environ.get("WORDLE_SECRET", random.choice(words)), words)
-    except FileNotFoundError:
-        print("The word list is missing. Restore words.txt and try again.")
+        secret = "crane"
+        play(secret, words)
     except (KeyboardInterrupt, EOFError):
         print("\nGame stopped.")
 

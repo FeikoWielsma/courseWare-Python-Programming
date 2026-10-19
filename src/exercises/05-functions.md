@@ -4,20 +4,13 @@ Your Wordle works, but it is one long script from top to bottom. In this exercis
 
 Continue in your own `wordle` project, or start from `exercises/starters/05-functions/`. The starter is the finished Exercise 4.
 
-Some steps give you the code, some a skeleton to complete, and one only the function's signature and a few examples of what it should return. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
+Some steps give you the code and some give you a skeleton to complete. The scoring function is built in two passes, with a check after each one. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
 
 ### Step 1 : Find the bug
 
-Play one round where you know the answer. The starter supports `WORDLE_SECRET`, an environment variable that overrides the random choice. In PowerShell, run :
-
-```powershell
-$env:WORDLE_SECRET = "crane"
-uv run python wordle.py
-```
-
-In Bash, use `WORDLE_SECRET=crane uv run python wordle.py`. If your own script does not have the override yet, temporarily set `secret = "crane"`.
+Keep `secret = "crane"` and run `uv run python wordle.py`.
 
 Enter `error`, then `crane`. Here is the captured output, with typed input omitted :
 
@@ -38,22 +31,20 @@ CRANE has one R, and the green R in second place already uses it. The other two 
 
 Before the scoring can be fixed it needs to be something you can call on its own, and before anything can be called on its own the script must stop running a whole game the moment it is loaded.
 
-Move the code that reads the word list into a function, and the rest of the script into a function called `main`. Call `main` at the bottom, behind a guard :
+Move the word list into a function that returns it, and the rest of the script into a function called `main`. Call `main` at the bottom, behind a guard :
 
 ```python
-import os
-import random
-from pathlib import Path
-
-
-def load_words(path: str = "words.txt") -> list[str]:
-    """Read the word list, one word per line."""
-    return Path(path).read_text(encoding="utf-8").split()
+def load_words() -> list[str]:
+    """Return the small practice word list."""
+    return [
+        "hello", "crane", "react", "paper", "slate", "error", "house", "ghost",
+        "world", "money", "speed", "geese", "trace", "grace", "raise", "trick",
+    ]
 
 
 def main() -> None:
     words = load_words()
-    secret = os.environ.get("WORDLE_SECRET", random.choice(words))
+    secret = "crane"
     ...  # the rest of the game, indented one level further
 
 
@@ -63,7 +54,7 @@ if __name__ == "__main__":
 
 Run the game again with `uv run python wordle.py` and confirm it plays exactly as before.
 
-The `if __name__ == "__main__":` line means : only start a game when this file is run, not when another file imports it. In Step 4 you import `wordle` into the interactive interpreter to try a function on its own, and without the guard the import would start a game and sit waiting for a guess. Module 6 explains how this works.
+The `if __name__ == "__main__":` line means : only start a game when this file is run, not when another file imports it. The slide *Running and Importing a File* shows the guard. In Step 4 you import `wordle` into the interactive interpreter to try a function on its own, and without the guard the import would start a game and sit waiting for a guess.
 
 :::hint
 
@@ -73,7 +64,7 @@ The slide *Function Syntax* shows the shape : everything indented under the `def
 
 ### Step 3 : Checking a guess
 
-The game loop rejects a guess that is the wrong length or not in the word list. Give that check a name. Add `WORD_LENGTH = 5` beside the imports, then fill in the body. See *Annotating a Function* for the signature :
+The game loop rejects a guess that is the wrong length or not in the word list. Give that check a name. Add `WORD_LENGTH = 5` above the functions, then fill in the body. See *Annotating a Function* for the signature :
 
 ```python
 def is_valid(guess: str, words: list[str]) -> bool:
@@ -118,49 +109,83 @@ def is_valid(guess: str, words: list[str]) -> bool:
 
 ### Step 4 : Scoring a guess
 
-This is the function the bug lives in. Here is its signature :
+Each letter of the secret can colour one letter of the guess. A letter in the right place is green and uses its matching secret letter first. Only the secret letters left over can make other guess letters yellow. Any guess letter that cannot use one of those remaining letters stays grey.
+
+Keep the current game loop unchanged during this step. Build and check `score_guess` on its own; Step 5 connects it to the game.
+
+#### 4a
+
+Add this first version above `main`. It starts every position grey, marks exact matches green, and collects the unused secret letters. The first pass is given :
 
 ```python
 def score_guess(secret: str, guess: str) -> list[str]:
-    """Mark each letter of guess as "green", "yellow" or "grey"."""
+    """Mark each letter of guess as "green", "yellow" or "grey".
+
+    A letter is yellow only while the secret still has an unmatched copy of it,
+    so one E in the secret cannot make two E's in the guess yellow.
+    """
+    marks = ["grey"] * WORD_LENGTH
+    unmatched: list[str] = []
+
+    for position, letter in enumerate(guess):
+        if letter == secret[position]:
+            marks[position] = "green"
+        else:
+            unmatched.append(secret[position])
+
+    return marks
 ```
 
-The rules :
+Start the interactive interpreter with `uv run python`, then import and call the function :
 
-- a letter in the right place is `"green"`
-- a letter that is in the secret, but somewhere else, is `"yellow"`
-- anything else is `"grey"`
-- each letter of the secret can colour **one** letter of the guess, and a green match uses it up first
+```text
+>>> from wordle import score_guess
+>>> score_guess("crane", "error")
+['grey', 'green', 'grey', 'grey', 'grey']
+```
 
-Here is what it should return for three guesses. The first is the bug from Step 1 : only the R in the right place is coloured. In the last, SPEED has two E's, so GEESE may colour two of its three and no more :
+Only the R at position `1` is green. That match has used CRANE's only R. At the end of this pass, `unmatched` contains `['c', 'a', 'n', 'e']`: these are the secret letters available for yellow matches.
+
+:::hint
+The slide *List Operations* builds a list by repetition, and *Iterating with enumerate* supplies a position and letter. *List Functions and Methods* shows `append`. Follow one position at a time through the supplied first loop.
+:::
+
+#### 4b
+
+Insert a second loop immediately before `return marks`. Fill its condition and its final statement :
 
 ```python
-score_guess("crane", "error")   # ['yellow', 'green', 'grey', 'grey', 'grey']
-score_guess("crane", "react")   # ['yellow', 'yellow', 'green', 'yellow', 'grey']
-score_guess("speed", "geese")   # ['grey', 'yellow', 'green', 'yellow', 'grey']
+    for position, letter in enumerate(guess):
+        if ...:
+            marks[position] = "yellow"
+            ...
 ```
 
-Try your function in the interactive interpreter, the slide *Python in Interactive Mode*. Start it with `uv run python`, import the function, and call it :
+A letter can become yellow only when its position is not already green and the letter is still in `unmatched`. After marking it yellow, remove one copy of that letter from `unmatched`, so it cannot colour another position.
+
+For ERROR against CRANE, the first E can use the remaining E and becomes yellow. The green R stays green. There is no R left for either of the later R's, so both stay grey.
+
+:::hint
+The slide *Logical, Membership, Identity Operators* combines conditions with `and` and checks membership with `in`. *List Functions and Methods* shows `remove`, which removes one matching item.
+:::
+
+:::hint
+The condition combines `marks[position] != "green"` with `letter in unmatched`. After setting the mark, call `unmatched.remove(letter)`.
+:::
+
+Leave the interpreter with `exit()` and restart it after saving the change. Repeat the import before checking these three calls :
 
 ```text
 >>> from wordle import score_guess
 >>> score_guess("crane", "error")
 ['yellow', 'green', 'grey', 'grey', 'grey']
+>>> score_guess("crane", "react")
+['yellow', 'yellow', 'green', 'yellow', 'grey']
+>>> score_guess("speed", "geese")
+['grey', 'yellow', 'green', 'yellow', 'grey']
 ```
 
-`from wordle import score_guess` makes the function in `wordle.py` available in the interpreter; module 06 explains it. The interpreter reads the file once, so after a change leave it with `exit()` and start it again. The game itself still uses its old scoring until you connect the new function in Step 5.
-
-:::hint
-
-The slide *List Operations* builds a list by repetition, `['go']*3`, and *List Functions and Methods* has `append` and `remove`. *Iterating with enumerate*, in module 04, gives the position with each letter.
-
-:::
-
-:::hint
-
-The last rule is hard to get right in a single loop. Two loops make it easy. The first finds the greens, and keeps a list of the secret's letters that were not matched. The second goes over the remaining letters of the guess and marks one yellow only if its letter is still in that list, removing it when it does.
-
-:::
+The last example checks repeated E's: SPEED has two, so GEESE can colour two of its three E's. The game still uses its old scoring until Step 5.
 
 :::solution
 
@@ -190,8 +215,6 @@ def score_guess(secret: str, guess: str) -> list[str]:
 
     return marks
 ```
-
-`["grey"] * WORD_LENGTH` builds a list of five `"grey"` strings, so every letter starts grey and only the two loops change that.
 
 :::
 
@@ -259,7 +282,7 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
     ...  # move the loop here, returning True on a win and False otherwise
 ```
 
-`max_guesses=8` allows an easier game; the default is six. See *Default Arguments*. Keep loading the words and choosing the secret in `main`, then call `play(secret, words)`. Without `WORDLE_SECRET`, the secret is random.
+`max_guesses=8` allows an easier game; the default is six. See *Default Arguments*. Keep loading the words and choosing the secret in `main`, then call `play(secret, words)`. Keep `secret = "crane"` for repeatable checks.
 
 :::hint
 
@@ -313,7 +336,7 @@ Replace `main` with :
 def main() -> None:
     words = load_words()
     print("Guess the five-letter word. Type 'quit' to give up, 'letters' for the letters tried.")
-    secret = os.environ.get("WORDLE_SECRET", random.choice(words))
+    secret = "crane"
     play(secret, words)
 ```
 
@@ -336,7 +359,7 @@ Got it in 2!
 
 :::
 
-Remove the override with `Remove-Item Env:WORDLE_SECRET` in PowerShell, or `unset WORDLE_SECRET` if you exported it in Bash, and play a random game.
+Change the `secret` variable in `main` to another word from the list and play again. Restore `"crane"` for the following checks.
 
 ### If time permits
 

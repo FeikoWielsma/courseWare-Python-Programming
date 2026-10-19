@@ -1,4 +1,5 @@
 import * as path from 'path';
+import * as fs from 'fs';
 import { spawnSync } from 'child_process';
 import questions from './site/quiz.json';
 import { wordlePlugin } from './site/plugin.ts';
@@ -47,4 +48,14 @@ export default {
 if (import.meta.main) {
   const result = spawnSync(process.execPath, ['run', path.join(templateDir(), 'build/site/build-site.ts'), ...process.argv.slice(2)], { stdio: 'inherit' });
   process.exitCode = result.status ?? 1;
+  if (process.exitCode === 0) {
+    const siteDir = path.join(import.meta.dirname, 'site/dist');
+    const courseDir = path.resolve(import.meta.dirname, '..');
+    const marpHtml = fs.readFileSync(path.join(courseDir, 'PRG400-Python-Programming-Marp.html'), 'utf8');
+    const embeddedDeck = marpHtml.replace(/<div class="bespoke-marp-note"[^>]*>[\s\S]*?<\/div>/g, '');
+    fs.writeFileSync(path.join(siteDir, 'slides-marp.html'), embeddedDeck);
+    const shortcutDir = path.join(import.meta.dirname, 'site/student-shortcut');
+    fs.mkdirSync(shortcutDir, { recursive: true });
+    fs.writeFileSync(path.join(shortcutDir, 'index.html'), '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=site/index.html"><title>Python Programming exercises</title></head><body><p><a href="site/index.html">Open the Python Programming exercise site</a></p></body></html>\n');
+  }
 }

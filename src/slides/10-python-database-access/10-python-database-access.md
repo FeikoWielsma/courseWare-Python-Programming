@@ -439,6 +439,33 @@ Error: rating must be 1 to 5, got 9
 
 ---
 
+# Recording a Timestamp
+
+- `datetime` from the standard library represents a date and time
+- `isoformat` produces text with the year first :
+  - `timespec="seconds"` keeps the time to whole seconds
+
+```python
+from datetime import datetime
+
+taken_at = datetime(2026, 10, 17, 10, 8, 15)
+print(taken_at.isoformat(timespec="seconds"))
+```
+
+```text
+2026-10-17T10:08:15
+```
+
+- `datetime.now()` supplies the current local date and time :
+
+```python
+recorded_at = datetime.now().isoformat(timespec="seconds")
+```
+
+> `demo13 · timestamp`
+
+---
+
 # Summary : Python Database Access
 
 - Python DB API is standard interface from Python to databases :

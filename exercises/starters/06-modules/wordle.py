@@ -1,15 +1,14 @@
 """Wordle, as it stands at the end of Exercise 5."""
 
-import os
-import random
-from pathlib import Path
-
 WORD_LENGTH = 5
 
 
-def load_words(path: str = "words.txt") -> list[str]:
-    """Read the word list, one word per line."""
-    return Path(path).read_text(encoding="utf-8").split()
+def load_words() -> list[str]:
+    """Return the small practice word list."""
+    return [
+        "hello", "crane", "react", "paper", "slate", "error", "house", "ghost",
+        "world", "money", "speed", "geese", "trace", "grace", "raise", "trick",
+    ]
 
 
 def is_valid(guess: str, words: list[str]) -> bool:
@@ -91,7 +90,7 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
 def main() -> None:
     words = load_words()
     print("Guess the five-letter word. Type 'quit' to give up, 'letters' for the letters tried.")
-    secret = os.environ.get("WORDLE_SECRET", random.choice(words))
+    secret = "crane"
     play(secret, words)
 
 

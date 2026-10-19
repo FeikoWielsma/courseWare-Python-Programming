@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Several Names for One Object
-pills: ["demo03 · multipleassignment"]
+pills: ["demo04 · multipleassignment"]
 ---
 
 # Several Names for One Object

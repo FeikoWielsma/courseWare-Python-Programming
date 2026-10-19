@@ -6,12 +6,10 @@ when a delegated worktree starts from an earlier commit.
 
 ## Start
 
-1. Read `AGENTS.md`, `build/notes/slidev-handoff.md` and the accepted plan at
-   `C:/Git/courseWare/Python-Programming/build/notes/slidev-migration-plan.md`.
-2. Read shared writing/conventions from `C:/Git/courseWare/Presentation-Template`.
-   The shared Slidev implementation is
-   `C:/Git/courseWare/_worktrees/presentation-template-slidev`; read its
-   `AGENTS.md` and `docs/slidev.md` before using its tooling.
+1. Read `AGENTS.md`, `build/notes/history/slidev-handoff.md` and the accepted plan at
+   `C:/Git/courseWare/Python-Programming/build/notes/history/slidev-migration-plan.md`.
+2. Read shared writing/conventions from `C:/Git/courseWare/Presentation-Template`
+   `main`. Read its `AGENTS.md` and `docs/slidev.md` before using its tooling.
 3. Inspect your branch/status and assigned demos. Set
    `PRESENTATION_TEMPLATE_DIR` to that absolute shared feature worktree when
    building from a delegated checkout. Install dependencies only in the shared
@@ -20,7 +18,7 @@ when a delegated worktree starts from an earlier commit.
 ## Implement within the assigned file boundary
 
 - The trainer now authorizes canonical example replacements within explicitly
-  assigned modules. Read `build/notes/engaging-examples.md` for the accepted map
+  assigned modules. Read `build/notes/history/engaging-examples.md` for the accepted map
   and ownership. Keep the subject coverage, useful teaching order and exercise
   contracts; quote the updated demos verbatim in slides and native additions.
   Preserve annotations after their introduction. The first Functions examples

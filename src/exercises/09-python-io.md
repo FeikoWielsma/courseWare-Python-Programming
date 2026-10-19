@@ -1,6 +1,6 @@
 # Exercise 9 : Python IO
 
-Your game plays well, but it lives on borrowed data and it has no memory. The word list is a file you copied in Exercise 1, it is only found when you start the game from the right folder, and the moment a game ends the result is gone. In this exercise you clean a real word list, make the game find its data wherever it is started from, and keep a history of every game on disk.
+Your game uses a small word list written directly in Python, and the moment a game ends the result is gone. In this exercise you clean a real word list, make the game find its data wherever it is started from, and keep a history of every game on disk.
 
 Continue in your own `wordle` project, or start from `exercises/starters/09-python-io/`. The starter is the finished Exercise 8 plus this exercise's handouts : `raw-words.txt`, `allowed.txt` and `SOURCES.md`. If you continue in your own project, copy those three files in from `exercises/handouts/09-python-io/`.
 
@@ -43,25 +43,22 @@ Strip the whitespace from each line before you look at it, then check its length
 :::
 
 :::hint
-A set throws duplicates away and `sorted(...)` turns it back into a list. A set comprehension can hold the whole filter : `{line.strip().lower() for line in lines if ...}`.
+A set throws duplicates away. Add a cleaned word with `kept.add(word)` only when all three checks pass; return `sorted(kept)` after the loop.
 :::
 
 :::solution
 ```python
 def clean_words(lines: list[str]) -> list[str]:
     """Return unique lowercase five-letter ASCII words in sorted order."""
-    return sorted(
-        {
-            line.strip().lower()
-            for line in lines
-            if len(line.strip()) == 5
-            and line.strip().isascii()
-            and line.strip().isalpha()
-        }
-    )
+    kept: set[str] = set()
+    for line in lines:
+        word = line.strip().lower()
+        if len(word) == 5 and word.isascii() and word.isalpha():
+            kept.add(word)
+    return sorted(kept)
 ```
 
-The condition strips each line three times, which is easy to read and fast enough for a thousand lines.
+The loop cleans each line once, checks that cleaned word, and adds it to the set. `sorted(kept)` returns a list in alphabetical order, matching the skeleton above.
 :::
 
 ### Step 2 : Write the clean list
@@ -91,29 +88,44 @@ Path("wordle/data/words.txt").write_text("\n".join(words) + "\n", encoding="utf-
 5610
 ```
 
-The folder `wordle/data/` is inside the package, next to the code that reads it. Data that belongs to the program travels with the program. Now `wordle/data/words.txt` is the answer list, and the old `words.txt` in the project folder is no longer needed : delete it, so that nothing can keep using it by accident. It held the same 935 words.
+The folder `wordle/data/` is inside the package, next to the code that will read it. The existing loader still returns the practice list. Step 3 replaces it with a file reader.
 
 Also copy the handed-out `allowed.txt` and `SOURCES.md` into `wordle/data/`. You use `allowed.txt` in Step 4; `SOURCES.md` records where the word lists come from.
 
+:::hint
+The slides *Reading Text Files*, *Creating and Removing Directories* and *Writing Text Files* show reading, making a folder and writing text with `Path`.
+:::
+
 ### Step 3 : Find the file from the package
 
-Your `load_words` still opens `words.txt` as a path relative to wherever the program was started. Try what that means. Start Python in the project folder again and import the function first, because after the change of folder Python can no longer find the `wordle` package. Then change the working directory :
+Replace the practice-list function in `wordle/words.py` with a file reader. Add `from pathlib import Path` at the top of the module.
+
+First try a path relative to the project folder :
+
+```python
+def load_words() -> list[str]:
+    """Read the answer list from the project folder."""
+    data_path = Path("wordle/data/words.txt")
+    text = data_path.read_text(encoding="utf-8")
+    return text.split()
+```
+
+Start `uv run python` in the project folder and check the new loader, then change the working directory :
 
 ```python
 import os
 from wordle.words import load_words
 
+print(len(load_words()))  # 935
 os.chdir("wordle")
 load_words()
 ```
 
 ```text
-FileNotFoundError: [Errno 2] No such file or directory: 'words.txt'
+FileNotFoundError: [Errno 2] No such file or directory: 'wordle/data/words.txt'
 ```
 
-A relative path is resolved against the working directory, and the working directory belongs to whoever starts the program, not to the program. The same holds for a game started from a shortcut, from a scheduled task or from an editor in another folder. Leave this Python session with `exit()` before editing the loader.
-
-The fix is to ask the module where it lives. Every module knows its own file name in `__file__`, and `pathlib` turns that into a folder you can build a path from. Replace `load_words` in `wordle/words.py`:
+A relative path is resolved against the working directory. Leave Python with `exit()` before editing the loader. Build the path from the module's own location instead :
 
 ```python
 def load_words() -> list[str]:
@@ -122,15 +134,13 @@ def load_words() -> list[str]:
     return data_path.read_text(encoding="utf-8").split()
 ```
 
-`Path(__file__).parent` is `wordle/`; `/` joins path parts (see *Paths with pathlib*). The loader now finds its own data, so the `path` parameter is gone. Start a fresh `uv run python` session from the project folder, repeat the import and `os.chdir("wordle")`, then evaluate `len(load_words())` :
+`Path(__file__).parent` is the folder containing `words.py`; `/` joins path parts. Start a fresh interpreter and repeat both checks. `len(load_words())` now returns `935` from either folder. Leave Python and run `uv run python -m wordle` from the project folder.
 
-```text
-935
-```
+:::hint
+The slide *Paths Relative to a Module* builds a path from `__file__`, and *Paths with pathlib* shows joining path parts with `/`. Save the changed loader before starting a new interpreter session.
+:::
 
-Leave Python with `exit()`, then run `uv run python -m wordle` in the terminal. The game now finds its package data without a `words.txt` in the project folder.
-
-One more thing still points at the old file. The `except FileNotFoundError` in `main` of `wordle/__main__.py` tells the player to restore `words.txt`, which you just deleted. The word lists now live in `wordle/data/`, and Step 4 adds a second one, so change the message to name both :
+File loading adds a possible failure. Add this handler before the existing interruption handler in `main` of `wordle/__main__.py`. Step 4 adds the second file named in the message :
 
 ```python
     except FileNotFoundError:
@@ -139,6 +149,10 @@ One more thing still points at the old file. The `except FileNotFoundError` in `
             "and wordle/data/allowed.txt and try again."
         )
 ```
+
+:::hint
+The slide *Typed Exception Handling* shows an `except FileNotFoundError` clause. Temporarily rename `wordle/data/words.txt`, run the game and check the message, then restore the filename.
+:::
 
 ### Step 4 : Two lists, answers and allowed guesses
 
@@ -157,7 +171,7 @@ def load_allowed() -> list[str]:
 
 Then change `play` in `wordle/game.py`. Load the allowed list once, at the top of the function, and check guesses against it, instead of against `words`. Everything else keeps using `words`.
 
-Play with `WORDLE_SECRET=crane` set. This is the environment variable that `main` has read since Exercise 5, and it fixes the secret word. In a bash shell, put it in front of the command : `WORDLE_SECRET=crane uv run python -m wordle`. In PowerShell, set it once with `$env:WORDLE_SECRET = "crane"` and then run the command as usual. `crone` is a word the game used to reject, and it is accepted now :
+Keep `secret = "crane"` in `wordle/__main__.py` and run `uv run python -m wordle`. `crone` is a word the game used to reject, and it is accepted now :
 
 ```text
 [C][R] O [N][E]
@@ -221,7 +235,7 @@ def record_history(secret: str, guesses: int, won: bool) -> None:
 
 Open the file for **appending** with `"a"`, so earlier games stay. See *File Open Modes* and *Using with*. Inside the `with`, give `csv.writer` the row `[secret, guesses, int(won)]`. Then call `record_history` in `play` : once with `True` just before the `return True` of a win, and once with `False` after the loop, before the final `return False`. A game you give up with `quit` counts as lost.
 
-Play two games with `WORDLE_SECRET=crane` : guess `slate` and then `crane` in the first, and `slate` followed by `quit` in the second. Open `history.txt`:
+Play two games with `secret = "crane"` in `wordle/__main__.py` : guess `slate` and then `crane` in the first, and `slate` followed by `quit` in the second. Open `history.txt`:
 
 ```text
 crane,2,1
@@ -302,6 +316,10 @@ Also change the welcome line in `wordle/__main__.py` so it lists the commands th
 ```
 
 The game is playable again, with a memory. After the two games of Step 5, type `stats` at the first prompt of a new game :
+
+:::hint
+The slide *Reading CSV Rows by Name* explains reading CSV data, and *Generator Expressions*, in module 07, shows summing conditions. Keep `print_stats` outside `play`, beside the other functions.
+:::
 
 ```text
 Games played: 2; won: 1.

@@ -177,11 +177,6 @@ print(next_index(0, "shuffle"))  # Deliberate checker error.
 
 # Summary : Type Hinting
 
-- `uv` manages the interpreter, the environment and the packages :
-  - `uv python install` , `uv init` , `uv add` , `uv sync` , `uv run`
-  - `pyproject.toml` states what is wanted, `uv.lock` pins what was resolved
-- `ruff` reports style and correctness problems without running the code :
-  - `ruff check .` and `ruff check . --fix` , configured in `ruff.toml`
 - Type hints record in the signature what a function expects and returns :
   - `age: int` for a variable, `def f(a: int) -> str` for a function
   - `list[int]` , `dict[str, int]` and `tuple[int, int]` for containers
@@ -189,5 +184,6 @@ print(next_index(0, "shuffle"))  # Deliberate checker error.
   - `Literal["normal", "repeat"]` for a closed set of literal values
 - Annotations are ignored at runtime :
   - Their value comes from the editor and from a checker such as `mypy`
+- `uv run mypy wordle` checks the package without running the game
 
 > `exercise12 · Type Hinting`

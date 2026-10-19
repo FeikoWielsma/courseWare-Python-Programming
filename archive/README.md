@@ -14,3 +14,5 @@ linted, or shipped in the student bundle.
   experiments, older CSV and binary-file scripts, and their data files.
 - `old-exercises/` : exercise documents from other courses (Word files on
   datetime, regular expressions, XML, decorators, NumPy) and mod_python notes.
+- `PRG400-Python-Programming_og.pdf` and `PRG400-Python-Programming-Exercises_og.pdf` :
+  the original deck and exercise booklet. Never edited.

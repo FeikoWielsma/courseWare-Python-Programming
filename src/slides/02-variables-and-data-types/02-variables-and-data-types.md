@@ -8,41 +8,58 @@ footer: Variables and Data Types
 
 # Variables
 
-- Variables are names bound to objects :
-  - Assignment binds a name to the object produced by an expression
-  - Several names can refer to the same object
-- Objects have types, such as `int`, `float` and `str` :
-  - `type(x)` returns the type of the object currently bound to `x`
-  - Rebinding `x` can make it refer to an object of a different type
-- `id(x)` identifies the object while it exists
-- The `=` operator binds the name on its left to the object on its right :
-  - A name does not need a separate declaration before assignment
+- Variables give names to values :
+  - Assignment makes the name on the left of `=` refer to the value on the right
+  - Reading the name retrieves its current value
+- Assignment creates a name; no separate declaration is needed
 
 ```python
 duration = 222  # Track length in seconds
 size_mb = 8.5  # Photo file size
 title = "Imagine"  # Track title
 ```
+- Python represents values as objects with types :
+  - `type(duration)` is `int`, `type(size_mb)` is `float`, and `type(title)` is `str`
 - Uppercase names such as `MAX_VOLUME` mark values intended to stay constant
 
 > `demo01 · variables`
 
 ---
 
+# Reading Keyboard Input
+
+- `input()` displays a prompt and waits for a line of text :
+  - Pressing Enter submits the text and lets the program continue
+  - The prompt is the text passed between the parentheses
+- Assignment stores the entered text under a variable name :
+
+```python
+title = input("Track title: ")
+print(title)
+```
+
+```text
+Track title: Imagine
+Imagine
+```
+
+- `input()` returns a string, without the final line break :
+  - Typing digits also produces text; numeric calculations require conversion
+- `print(title)` displays the value stored under `title`
+
+> `demo02 · keyboard_input`
+
+---
+
 # Everything is an Object
 
-- Each object `x` has :
-  - Unique identifier, an integer, returned by `id(x);`
-  - Type returned by `type(x)`
-  - Value may or may not be changeable :
-    - Value can itself consist of one or more objects
-  - Zero or more methods provided by type object to get and/or change content
-  - Zero or more names
-- Objects have individuality :
-  - Multiple names in multiple scopes can be bound to the same object
-  - This is known as aliasing
-- Variable names are not properties of an object :
-  - A namespace maps each name to the object it refers to
+- Every Python value is an object with a type and an identity :
+  - `type(x)` reports its type, such as `int` or `str`
+  - `id(x)` reports an identifier that stays the same while the object exists
+- Several names can refer to the same object :
+  - This is called aliasing
+  - Assigning another value to one name does not reassign the other names
+- A namespace is the mapping from names to the objects they refer to
 
 <svg viewBox="0 0 960 190" width="100%" style="width:100%;height:auto;display:block;margin:8px 0 4px" role="img" aria-label="Two names in a namespace refer to one object, which carries the identity, type and value">
 <defs>
@@ -80,7 +97,7 @@ title = "Imagine"  # Track title
 </g>
 </svg>
 
-> `demo02 · typeandid`
+> `demo03 · typeandid`
 
 
 ---
@@ -110,7 +127,7 @@ a, b, c = 1, 2, "Imagine"
 - One string object with the value `"Imagine"` :
   - Assigned to the variable c
 
-> `demo03 · multipleassignment`
+> `demo04 · multipleassignment`
 
 
 ---
@@ -130,7 +147,7 @@ a, b, c = 1, 2, "Imagine"
 - Python reports an unsupported combination instead of silently converting it
 - Common types include numbers, strings, lists, tuples, sets and dictionaries
 
-> `demo04 · strongtyping`
+> `demo05 · strongtyping`
 
 ---
 
@@ -194,13 +211,16 @@ print(bool("Imagine"))  # True
 print(bool(""))  # False
 print(bool(222))  # True
 print(bool(0))  # False
+print(int(True))  # 1
+print(int(False))  # 0
 ```
 
 - Nonzero numbers and nonempty strings are truthy
 - Zero, empty strings, empty collections and `None` are falsy
+- `int(True)` is `1`; `int(False)` is `0`
 - `int("ff", 16)` reads a number written in hexadecimal
 
-> `demo05 · numbertypeconversion`
+> `demo06 · numbertypeconversion`
 
 ---
 
@@ -226,7 +246,7 @@ print(repr(" Imagine "))  # ' Imagine '
 | `hex(65)` | `'0x41'` |
 | `oct(65)` | `'0o101'` |
 
-> `demo06 · conversionfunctions`
+> `demo07 · conversionfunctions`
 
 ---
 
@@ -247,7 +267,7 @@ print(repr(" Imagine "))  # ' Imagine '
 
 - For some of these functions the `math` module must be imported
 
-> `demo07 · numberfunctions`
+> `demo08 · numberfunctions`
 
 ---
 
@@ -269,7 +289,7 @@ print(2**10)  # 1024, exponentiation
 - Bitwise operators `& | ^ ~ << >>` work on the bits of integers, rarely needed
 - There is no `++` or `--` : write `count += 1` instead
 
-> `demo08 · pythonoperators`
+> `demo09 · pythonoperators`
 
 ---
 
@@ -358,7 +378,7 @@ print(a is c)  # False, two different lists
 print(a is b)  # True, two names for one list
 ```
 
-> `demo09 · booleanoperators`
+> `demo10 · booleanoperators`
 
 ---
 
@@ -444,7 +464,7 @@ print(filename)  # IMG_0421.jpg
 - Repetition can produce a separator : `"-" * 12`
 - A negative step reverses the characters : `filename[::-1]`
 
-> `demo10 · stringoperations`
+> `demo11 · stringoperations`
 
 ---
 
@@ -466,7 +486,7 @@ print(filename)  # IMG_0421.jpg
 | `\xhh` | | Character with hexadecimal value hh |
 | `\uxxxx` | | Unicode character with 16-bit hexadecimal value xxxx |
 
-> `demo11 · escapecharacters`
+> `demo12 · escapecharacters`
 
 ---
 
@@ -523,7 +543,7 @@ print(f"{title!r}")  # 'Imagine', quotes remain visible
 print(f"{seconds = }")  # seconds = 222, useful during debugging
 ```
 
-> `demo12 · f-strings`
+> `demo13 · f-strings`
 
 ---
 
@@ -554,7 +574,7 @@ print("Photo %05d: %6.2f MB" % (photo_id, size_mb))
 print("Photo {:05d}: {:6.2f} MB".format(photo_id, size_mb))
 ```
 
-> `demo13 · formatspecs`
+> `demo14 · formatspecs`
 
 ---
 
@@ -580,7 +600,7 @@ Bring headphones.
 - Both triple single quotes and triple double quotes are supported
 - Escape sequences such as `\n` and `\t` still work inside the string
 
-> `demo14 · triplequotes`
+> `demo15 · triplequotes`
 
 ---
 
@@ -625,15 +645,17 @@ print(clean.replace(".jpg", "_edit.jpg"))  # img_0421_edit.jpg
 - Each string method returns a result; `filename` still holds the original text
 - Chained calls apply left to right, passing each result to the next method
 
-> `demo15 · stringfunctions`
+> `demo16 · stringfunctions`
 
 ---
+
 
 # Summary : Variables and Data Types
 
 - A variable is a name bound to an object :
   - Created on first assignment with `=`, and can be annotated, as in `seconds: int = 222`
   - Every object has an identity, `id(x)`, a type, `type(x)`, and a value
+- `input()` waits for a line of text and returns it as a string
 - Python is strongly typed :
   - Converting between types is explicit, with `int()`, `float()`, `str()` and `bool()`
 - Numbers are `int`, `float` and `complex`; `bool` is a subtype of `int`

@@ -2,6 +2,72 @@
 
 Checklist for the work described in `build/plan.md`. Tick as you go.
 
+## A gentler introduction (2026-10-19)
+
+- [x] Rewrite Module 01 around files, folders, the editor, terminal commands and
+      the edit-save-run cycle; demonstrate statement order, comments and repairing
+      a syntax error with small music examples.
+- [x] Move detailed tooling and syntax reference to appendix 14, with its demos,
+      bundle inclusion and the existing block-execution animation.
+- [x] Rewrite Exercise 1 around `print()`; update its solution and generated
+      Exercise 2 starter. Introduce the word-list handout in Exercise 3.
+- [x] Align the opening quiz questions, student README and course instructions.
+- [x] Introduce `input()` immediately after variables in Module 02, add its demo
+      and an Exercise 2 hint pointing back to the slide. Renumber the following
+      demos and preserve the animation routes and explicit slide layouts.
+- [x] Check content, demos, starters, all solution stages, quiz and animation
+      provenance; rebuild slides, exercises, Marp fallback and the offline site.
+      Evidence and PDF header limitation: [gentler-introduction.md](notes/gentler-introduction.md).
+
+## Teaching progression audit (2026-10-19)
+
+- [x] Check Exercises 1 to 13 against preceding slide and demo coverage.
+- [x] Add prerequisite examples for text formatting, Boolean conversion, imports,
+      reading a list, random choices, environment settings, the entry-point guard
+      and timestamps. Move loop unpacking to the Control Flow module.
+- [x] Correct stale interpreter instructions, the solver example, the file-loader
+      transition and the typing appendix's old Ruff prerequisite. Add missing hints.
+- [x] Align word-cleaning solutions with the exercise skeleton and regenerate
+      dependent starters. Divide the large database/class integration steps.
+- [x] Complete final checks: 533 fences, all slide references, Ruff, 12 starters,
+      all 13 solution stages, 39 quiz questions and native animation checks pass.
+      Slide lint and all 300 Slidev pages pass; slides, exercises, Marp fallback
+      and site are rebuilt, and fundamentals artifact manifests verify.
+- [x] Inspect the eight added/moved teaching slides and selected exercise PDF
+      pages. Confirm the database integration's three substeps in the browser.
+
+Findings, changes and the larger teaching decisions:
+[progression-audit.md](notes/progression-audit.md).
+
+## Exercise scaffolding follow-up (2026-10-19)
+
+- [x] Stage Exercise 2 into plain input, cleaning and supplied display code;
+      check comparisons before copying the supplied formatted table rows.
+- [x] Give Exercise 5 a runnable green-match pass and a second-pass skeleton,
+      with checks before connecting the scorer to the game.
+- [x] Build Exercise 7's renderer, candidate filtering, letter counts and scoring
+      through checked loops before comprehensions and selection with `max`.
+- [x] Execute intermediate examples and compare the completed functions and
+      final Exercise 2 output with the canonical solutions. Regenerate starters.
+- [x] Finish source checks: 549 fences, all slide references, Ruff and all
+      generated starters pass. All 13 solution stages and 39 quiz questions pass.
+- [x] Rebuild the exercise PDF and offline site; inspect the revised PDF pages
+      and browser substeps for Exercises 2, 5 and 7. Fundamentals manifests verify.
+
+Deferred by the trainer; these are follow-up tasks, outside the current work:
+
+- [ ] Exercise 10: add runnable checkpoints around the multi-file database
+      integration, beyond the existing 6a/6b/6c section boundaries.
+- [ ] Exercise 11: scaffold and check the `play` refactor separately from the
+      board renderer and the individual class methods/properties.
+- [ ] Exercise 12: review the cross-file `Mark` migration and its checker
+      feedback alongside those integrations; no further revision is scheduled.
+- [ ] Exercise 13: separate saving, loading and resuming into checked stages,
+      preserving the stored guess limit and hard-mode setting.
+
+Scope and acceptance notes:
+[deferred Exercises 10 to 13](notes/progression-audit.md#deferred-exercises-10-to-13).
+
 ---
 
 ## Phase 1 : Content repairs
@@ -532,12 +598,12 @@ a CSV reader that no longer skips its header. Rendered PDF pages were inspected.
 - [x] Export and render-review both course PDFs; verify all five code click states.
 - [x] Verify the included Python launcher and document commands and limitations.
 
-Details and executed evidence: `build/notes/slidev-foundation.md`. This opt-in
+Details and executed evidence: `build/notes/history/slidev-foundation.md`. This opt-in
 comparison does not change the existing exercise site or release allowlists.
 
 ## Slidev parity follow-up (2026-10-18)
 
-Entry point: `build/notes/slidev-handoff.md`. The original stopping points above
+Entry point: `build/notes/history/slidev-handoff.md`. The original stopping points above
 are historical; the current rollout is recorded below.
 
 - [x] Add wheel/trackpad navigation, preserving reveal steps and scrollable content.
@@ -563,7 +629,7 @@ are historical; the current rollout is recorded below.
 - [x] Wire release assets, student bundle and Codespaces; record shared-template
       prerequisites and the successful two-course PDF regression comparison.
 
-Executed evidence, artifact paths and limits: `build/notes/slidev-rollout.md`.
+Executed evidence, artifact paths and limits: `build/notes/history/slidev-rollout.md`.
 No remote push/release or shared-production merge was performed. Merge the shared
 `feature/slidev-foundation` into Presentation-Template main before releasing this
 course; the workflow checks for that toolchain and stops if it is missing.
@@ -579,11 +645,11 @@ course; the workflow checks for that toolchain and stops if it is missing.
 - [x] Phase 2: add shared music/photo data, rewrite modules and exercises, then
       add verified native slides.
 - [x] Phase 3: browser/export/delivery verification and final documentation;
-      see `build/notes/libraries-slidev-phase3.md`.
+      see `build/notes/history/libraries-slidev-phase3.md`.
 
-Implementation details, commands and limits: `build/notes/libraries-review.md`.
-Phase 1 evidence: `build/notes/libraries-slidev-phase1.md`.
-Phase 2 evidence: `build/notes/libraries-slidev-phase2.md`.
+Implementation details, commands and limits: `build/notes/history/libraries-review.md`.
+Phase 1 evidence: `build/notes/history/libraries-slidev-phase1.md`.
+Phase 2 evidence: `build/notes/history/libraries-slidev-phase2.md`.
 
 ## Toolchain simplification (2026-10-18 to 2026-10-19)
 
@@ -591,17 +657,31 @@ Design: [`build/notes/courseware-toolchain-simplification.md`](notes/courseware-
 
 Done:
 - [x] Stage 1: Add one shared orchestration entry point (`build/courseware.ts`) and declarative deck configuration (`courseware.config.ts`) with thin adapters. [`build/notes/toolchain-stage1.md`](notes/toolchain-stage1.md)
-- [x] Stage 2: Inventory commands, deliverables, and CI workflows; capture pre-migration baselines and cross-course fingerprints. [`build/notes/toolchain-inventory.md`](notes/toolchain-inventory.md), [`build/notes/toolchain-baseline.md`](notes/toolchain-baseline.md)
+- [x] Stage 2: Inventory commands, deliverables, and CI workflows; capture pre-migration baselines and cross-course fingerprints. [`build/notes/history/toolchain-inventory.md`](notes/history/toolchain-inventory.md), [`build/notes/history/toolchain-baseline.md`](notes/history/toolchain-baseline.md)
 - [x] Stage 3: Separate variant output directories (`.courseware/<deck>/<variant>/`), artifact manifest schema (`artifacts.json`), and content verification. [`build/notes/toolchain-stage3.md`](notes/toolchain-stage3.md)
 - [x] Stage 4: Pin toolchain resolution via `build/toolchain.json`, bootstrap caching, and explicit development override guard. [`build/notes/toolchain-pin.md`](notes/toolchain-pin.md)
 - [x] Stage 5: Extract manifest-driven release assembly, independent publish job, and student/mirror synchronization jobs in CI. [`build/notes/toolchain-release.md`](notes/toolchain-release.md)
-- [x] Stage 6: Consolidate browser and server lifecycle management into shared module (`build/browser.ts`) for course delivery checks. [`build/notes/toolchain-browser6.md`](notes/toolchain-browser6.md), [`build/notes/toolchain-browser-survey.md`](notes/toolchain-browser-survey.md)
-- [x] Stage 7: Update single operating guide in `MAINTAINING.md`, classify historical documentation, and align repo instructions. [`build/notes/toolchain-docs.md`](notes/toolchain-docs.md)
+- [x] Stage 6: Consolidate browser and server lifecycle management into shared module (`build/browser.ts`) for course delivery checks. [`build/notes/toolchain-browser6.md`](notes/toolchain-browser6.md), [`build/notes/history/toolchain-browser-survey.md`](notes/history/toolchain-browser-survey.md)
+- [x] Stage 7: Update single operating guide in `MAINTAINING.md`, archive historical handoffs under `build/notes/history/`, and align repo instructions. [`build/notes/history/toolchain-docs.md`](notes/history/toolchain-docs.md)
+- [x] Re-pin `build/toolchain.json` to Presentation-Template `main` `a6547bf`.
+- [x] Per-machine toolchain cache, shared by every checkout. [`build/notes/toolchain-perf.md`](notes/toolchain-perf.md)
+- [x] Publish through the shared release command. Courses that build with a plain Marp or Slidev deck use it. PySpark and TNO Python still wrap the source before Marp, which this config cannot express.
 
 Open:
-- [ ] Push and merge template CLI/release branch to Presentation-Template `main` and re-pin `build/toolchain.json` to merged commit.
-- [ ] Verify draft-release and asset promotion behaviour on real Forgejo server before enabling production publishing.
-- [ ] Resolve Marp HTML trainer-notes leak in shared renderer (waived via `waiveMarpHtmlNotes: true` in `courseware.config.ts`).
-- [ ] Migrate `dev.ts` authoring output from `build/slidev/authoring/` into `.courseware/`.
-- [ ] Migrate other courses to `courseware.config.ts` and `build/toolchain.ts` when wanted.
-- [ ] Evaluate shared machine-wide toolchain cache option vs per-checkout cache.
+- [ ] Point the shared Slidev dev server (`dev.ts`) at `.courseware/<deck>/authoring` instead of `build/slidev/authoring/`.
+
+
+## Simpler early data and output (2026-10-19)
+
+- [x] Exercise 2 uses plain output; alignment is an optional appendix exercise.
+- [x] Exercise 3 starts from four inline words; Exercises 4 to 8 use a small
+      practice list that includes their checks. No word-list files before IO.
+- [x] Introduce file loading and missing-file recovery together in Exercise 9.
+- [x] Use Python variables for repeatable secrets across all exercises; move
+      environment variables to appendix 14.
+- [x] Update solutions, regenerate starters and refresh scripted transcripts.
+- [x] Verify source checks, solution stages, animations and rebuilt artifacts.
+      The 300-page Slidev deck has zero layout failures; revised PDF pages and
+      offline exercise pages were inspected. Evidence: `notes/progression-audit.md`.
+
+The previously listed scaffolding work for Exercises 10 to 13 stays deferred.

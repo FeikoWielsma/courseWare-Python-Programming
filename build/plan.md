@@ -1,8 +1,11 @@
 # PRG400 rework plan : the Wordle spine and a coherent course
 
 Written 2026-10-14. Supersedes the conversion plan, which is kept as
-`build/plan-2026-08-conversion.md`. Conventions : `AGENTS.md`. Progress is
+`build/notes/history/plan-2026-08-conversion.md`. Conventions : `AGENTS.md`. Progress is
 ticked in `build/tasks.md`.
+
+Teaching-order corrections made on 2026-10-19 and the remaining scaffolding
+decisions are recorded in [the progression audit](notes/progression-audit.md).
 
 This plan is written to be executed partly by subagents. Section 9 cuts it
 into work packages with inputs, outputs and acceptance criteria. Section 10
@@ -80,13 +83,20 @@ Marks are the strings `"green"`, `"yellow"`, `"grey"` throughout.
 
 ### Ex 1 : Python Intro (rewrite of the existing exercise)
 
-- Install uv, Python, VS Code with the Python and Ruff extensions; already written.
-- **Change :** the course project is `wordle`, made with `uv init wordle`, not
-  `course-work`. Exercises 12 and 13 refer to it by that name.
-- Run the generated `main.py`; see ruff work on a deliberately bad file; already written.
-- New last step ★ : drop `words.txt` (handout) into the project and print how many
-  characters it has. The first contact with the project's data.
-- Solution : `solutions/01-python-intro/` (the uv project, `main.py`, `words.txt`).
+Revised after trainer feedback on 2026-10-19. Supersedes the original toolchain
+exercise and its file-reading task.
+
+- Install uv, Python and VS Code with the Microsoft Python extension. Prepared
+  Codespaces start at project creation.
+- Create `wordle` with `uv init --bare --python 3.14 wordle`, then explicitly
+  open the folder and create `wordle.py` in the editor.
+- Write a message with `print()`, change it, save and run again. Add a second
+  statement and a comment, then repair a demonstrated missing closing quote.
+- Keep imports, functions, annotations and file reading out of this exercise.
+  Practice words are written in Python from Exercise 3; word-list files begin in Exercise 9.
+- Solution : `solutions/01-environment-configuration/`, a uv project with a
+  three-line `wordle.py`; Exercise 2's starter is generated from it.
+- Detailed tooling and syntax reference live in appendix 14. Ruff is optional.
 
 ### Ex 2 : Variables and Data Types : *Comparing two words*
 
@@ -95,11 +105,11 @@ comparison, f-strings, `input`, `int`.
 
 | Step | Tier | Content |
 |---|---|---|
-| 1 | ★ | `secret = "crane"`; read a guess with `input()`; `.strip().lower()`; print both, upper-cased, in an f-string banner |
-| 2 | ★★ | For each of the five positions print `guess[i] == secret[i]` and `guess[i] in secret`, laid out as a small table with f-string alignment (`{value!s:^7}`) |
+| 1 | ★ | Three checkpoints: read and display a plain guess, assign cleaned text back to `guess`, then replace the temporary print with plain heading/display lines |
+| 2 | ★★ | Check the two comparisons for the first letter with plain prints, then replace them with a supplied header and row; copy that row for the other positions; use plain f-strings without format specifications |
 | 3 | ★★ | `len(guess) == 5` as a printed check; slicing : the first and last two letters; `secret.count("e")` |
-| 4 | ★ | Escape characters : print the row of the table with `\t`, then a raw string; one line pointing at module 02's escape slide |
-| If time | ★★★ | Ask "how many guesses do you want?" and convert with `int()`; read the `ValueError` when the answer is `six` |
+| 4 | ★ | Escape characters : print a line break with `\n`, then compare a raw string with the escaped form |
+| If time | ★★★ | Optional alignment experiment using appendix 14; ask "how many guesses do you want?" and convert with `int()`; read the `ValueError` when the answer is `six` |
 
 - The naive "`in secret`" check is planted here on purpose. Exercise 5 fixes it.
 - Solution : `solutions/02-variables-and-data-types/wordle.py`.
@@ -110,13 +120,18 @@ Still no loops : sets and their operators carry the exercise.
 
 | Step | Tier | Content |
 |---|---|---|
-| 1 | ★ | `words = Path("words.txt").read_text(encoding="utf-8").split()` given as a one-line incantation ("Exercise 9 takes this apart"); `len(words)`, `words[:10]`, `"crane" in words`; `random.choice(words)` with the import given |
+| 1 | ★ | `words = ["hello", "crane", "react", "paper"]`; `len(words)`, `words[:2]`, `"crane" in words`; a fixed `secret = "crane"`. Random selection is optional |
 | 2 | ★★ | Letters in common : `set(guess) & set(secret)`; ruled out : `set(guess) - set(secret)`; the letters not yet tried, from `string.ascii_lowercase` |
 | 3 | ★★ | A `history` list of guesses; append two guesses by hand; a tuple `(guess, ruled_out)`; try to change it and read the `TypeError` |
 | 4 | ★★ | A `stats` dict : `{"played": 0, "won": 0}`; update it; `stats.get("streak", 0)` |
 | If time | ★★★ | Sort the word list in reverse and by last letter (`sorted(key=...)` with a given lambda); how many words start with each vowel, using `.count` on a joined string |
 
 - Solution : `solutions/03-data-structures/wordle.py`.
+
+Exercise 4 expands the inline practice list to include every word in its checks.
+Exercises 5 to 8 keep that list in `load_words()`, with no file or path parameter.
+Exercise 8 handles interruption; missing-file recovery is introduced with file reading in Exercise 9.
+Text alignment and environment settings live in appendix 14.
 
 ### Ex 4 : Control Flow : *A real game*
 
@@ -134,9 +149,13 @@ The first playable game. The reference solution exists as
 
 ### Ex 5 : Functions : *Cutting the script into named pieces*
 
-**Done, prototype.** `load_words`, `is_valid`, `score_guess`, `render`, `play`,
-`main`, the `__main__` guard, `WORD_LENGTH`. Handout : `test_wordle.py` (9 tests).
-If time : hard mode, `follows_hints(guess, previous, marks)`.
+`load_words`, `is_valid`, `score_guess`, `render`, `play`, `main`, the
+`__main__` guard and `WORD_LENGTH`. Step 4 gives a runnable first pass of the
+scorer and checks its green matches. The student completes a second-pass
+skeleton for yellow matches, then checks three duplicate-letter cases before
+connecting scoring to the game. The final function and stage output are unchanged.
+Stage tests live in `build/solution-tests/`; student testing is appendix-only.
+If time: hard mode using the existing history contract.
 
 ### Ex 6 : Modules : *A package*
 
@@ -145,16 +164,15 @@ If time : hard mode, `follows_hints(guess, previous, marks)`.
 | 1 | ★ | Create the package `wordle/` with `__init__.py`; move `load_words` to `wordle/words.py` |
 | 2 | ★★ | `wordle/scoring.py` (`WORD_LENGTH`, `is_valid`, `score_guess`), `wordle/display.py` (`render`), `wordle/game.py` (`play`), `wordle/__main__.py` (`main`) |
 | 3 | ★ | Run it as `uv run python -m wordle`; explain `__main__.py` and why the guard moved |
-| 4 | ★★ | Tests move to `tests/test_scoring.py` and `tests/test_display.py`, importing `from wordle.scoring import ...` ; `uv run pytest` |
+| 4 | ★★ | Import scoring and display functions from their new modules and check calls in the interpreter |
 | If time | ★★ | Colour (section 10, Q1) |
 
-- Handout : the test files, split and re-pointed.
+- Stage tests stay in `build/solution-tests/`; student testing is appendix-only.
 - Project shape from here on :
 
 ```text
 wordle/
 ├── pyproject.toml
-├── words.txt              (moves to wordle/data/ in Ex 9)
 ├── wordle/
 │   ├── __init__.py
 │   ├── __main__.py
@@ -169,20 +187,26 @@ wordle/
 
 ### Ex 7 : Comprehensions : *The solver*
 
-The payoff exercise. The student writes something genuinely clever in a few lines.
+Build the solver through checked loops, then rewrite the same operations as
+comprehensions. A temporary `solver_check.py` keeps the reasoning checks separate
+from the playable game; remove it once integration is checked.
 
 | Step | Tier | Content |
 |---|---|---|
-| 1 | ★★ | `render` rewritten as `"".join(...)` over a comprehension |
+| 1 | ★★ | Run a supplied renderer using a list and loop, then replace the accumulation with a generator inside `join` |
 | 2 | ★ | The key insight, given : a word is still possible if scoring the old guess against it gives the same marks. `def consistent(word, guess, marks): return score_guess(word, guess) == marks` |
-| 3 | ★★★ | `candidates(words, history) -> list[str]` : a comprehension with `all(...)` over the history. Handout tests |
-| 4 | ★★ | `letter_counts(words) -> dict[str, int]` as a dict comprehension; `best_guess(words)` with `max(key=...)`, scoring a word by the sum of its distinct letters' counts |
+| 3 | ★★★ | Check one candidate against two history entries using a loop, replace the checks with `all`, then complete the outer filtering comprehension |
+| 4 | ★★ | Separate distinct letters, per-letter word counts, a score for one proposed word, and `max(key=...)`; check each with CACAO and CRANE before proceeding |
 | 5 | ★★ | A `hint` command in `play` : "312 words left, try SLATE" |
 | If time | ★★★ | A `solve(secret, words)` that plays a whole game by itself; how many guesses does it need, averaged over 100 secrets? |
 
-- New module : `wordle/solver.py`. Handout : `tests/test_solver.py`.
-- Generator expressions appear inside `all()` and `sum()`; one sentence says what
-  they are and points to Advanced Python for more.
+- New module: `wordle/solver.py`. Stage tests remain in `build/solution-tests/`.
+- Generator expressions inside `all()` and `sum()` replace the corresponding
+  visible loops. Completed functions and game behaviour retain their contracts.
+
+The requested scaffolding work for Exercises 2, 5 and 7 is implemented. Further
+integration/scaffolding work on Exercises 10 to 13 is explicitly deferred at the
+trainer's request; see [the open follow-up](notes/progression-audit.md#deferred-exercises-10-to-13).
 
 ### Ex 8 : Exceptions : *Never crash on bad input*
 
@@ -258,12 +282,20 @@ Demos stay neutral (principle 1). Every change below updates the slide, its demo
 file, the pill, and keeps `check-fences`, `ruff`, `lint` clean.
 
 ### 01 Python Intro
-- Slides stay neutral : the slide example project keeps its own name; only the exercises call the project `wordle`.
-- `Creating a Project` / `Adding Dependencies` : `uv add --dev pytest` already there; make sure pytest is how tests are described everywhere.
-- Trim the identifier and reserved-word slides; the five "comment" pseudo-titles are code comments, fine.
-- History slide : "maintained by a development team at the institute" is stale wording; already corrected below it, merge.
+- Revised 2026-10-19 for participants with less computer and programming experience.
+- Explain a program, source code, output, files, folders, the editor and terminal
+  before the project commands. Practise the edit-save-run cycle with music examples.
+- Teach statement order, strings, comments and a first syntax error using `print()`.
+  Interactive mode follows file execution, with explicit prompt and exit instructions.
+- Keep only essential uv installation and execution here. Detailed environments,
+  dependencies, Ruff, PATH, project files and syntax reference move to the optional
+  `14-appendix-python-tooling`, including the existing block-execution animation.
+- Slides stay neutral : only the exercises call the project `wordle`.
 
 ### 02 Variables and Data Types
+- Introduce `input()` immediately after variables with a prompt-store-print
+  example. Explain waiting for Enter and returning a string before Exercise 2
+  uses input; the IO module revisits it alongside numeric conversion.
 - **Formatting (D8)** : merge `String Formatting`, `String Format Symbols` and `Format Method` into an f-string-first pair of slides. Format specs (`:5d`, `:8.2f`, `:^10`, `!r`, `=`) are taught on f-strings. The Format Method SVG is redrawn for `f"Art: {art:5d}, Price per Unit: {price:8.2f}"`. One closing line : `%` and `.format()` exist in older code and look like this.
 - Move the operator slides here from module 04 (arithmetic, comparison, logical, membership, identity), since numbers and strings are where they are first used. Bitwise operators shrink to one line.
 - `Built-in String Functions` : keep the methods the Wordle uses (`strip`, `lower`, `upper`, `split`, `join`, `count`, `startswith`, `isalpha`), drop the rest to a docs link.
@@ -350,7 +382,7 @@ are rewritten to match, as one demo per slide.
 - **CI** (`.forgejo/workflows/release.yml`) :
   - `uv run python ../Presentation-Template/build/tools/make-starters.py --check`
   - for each `solutions/NN-*/` with tests : `uv run pytest solutions/NN-*` from inside the folder (each is its own root; `wordle` must import from there)
-  - a scripted play-through of each stage : feed a fixed secret and a sequence of guesses on stdin and compare with a stored transcript. A seed or environment variable picks the secret (`WORDLE_SECRET`), added to the solutions from Exercise 4 on
+  - a scripted play-through of each stage : feed a fixed secret and a sequence of guesses on stdin and compare with a stored transcript. The canonical solutions use a Python variable, `secret = "crane"`, for repeatable checks
   - from Exercise 12 on : `uv run mypy wordle` in the solution folder
 - **Bundle** : `exercises/` ships whole today. It currently carries 12 stray files (`.doc` exercises from other courses, mod_python settings, `out.txt`). Move them to `archive/` or delete, so `exercises/` holds only `starters/` and `handouts/`. `archive/` is not in the allowlist and must stay out.
 - **ruff** : `archive` is excluded. Solutions follow the full rule set; any lesson-protecting ignore gets a comment, as now.
@@ -532,4 +564,4 @@ New library material belongs there. It does not extend the required Wordle path
 or change the four-day fundamentals schedule. The inheritance module is a
 skippable preview of Advanced Python; all nine topics are trainer-selected.
 The Slidev migration and delivery review are complete; see
-[`notes/libraries-slidev-phase3.md`](notes/libraries-slidev-phase3.md).
+[`notes/history/libraries-slidev-phase3.md`](notes/history/libraries-slidev-phase3.md).

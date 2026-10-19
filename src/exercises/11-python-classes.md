@@ -4,6 +4,8 @@ Look at `play` in `wordle/game.py`. The state of one game is spread over a handf
 
 Continue in your own `wordle` project, or start from `exercises/starters/11-python-classes/`. The starter is the finished Exercise 10.
 
+After editing the class, leave the Python interpreter with `exit()` and start it again. Repeat the import and create a new `Game` before trying the changed methods or properties; an existing object keeps its old class definition.
+
 Some steps give you the code, some a skeleton to complete, and one only the signatures and a few examples of what they should do. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
@@ -46,6 +48,10 @@ crane 6 []
 ```
 
 An attribute is read and assigned like a variable. There is nothing else to write, and for now that is how it should be. See *Attributes Are Public*.
+
+:::hint
+The slides *Creating Classes* and *Class Members* show the constructor and attributes assigned through `self`. Keep `Game` above the existing `play` function for now.
+:::
 
 ### Step 2 : A method that plays a guess
 
@@ -264,6 +270,8 @@ Assign to `self._max_guesses` in the setter, with the underscore. `self.max_gues
 
 ### Step 5 : Draw the board and shrink play
 
+#### 5a
+
 A `Game` that can draw itself helps you debug it. Python asks an object for its text with `__str__`; `print(game)` and f-strings call it. Add one to `Game` that draws every scored guess on its own row with `render`.
 
 ```python
@@ -286,6 +294,12 @@ print(game)
 [C][R][A][N][E]
 ```
 
+:::hint
+The slide *`__str__` and `__repr__`* shows returning text from `__str__`, and *Generator Expressions* shows combining generated strings with `join`.
+:::
+
+#### 5b
+
 Now let `play` do less. Change it so that it creates a `Game` and loops until the game is over :
 
 - create the game after loading the allowed list : `game = Game(secret, allowed_words, max_guesses)`
@@ -296,7 +310,7 @@ Now let `play` do less. Change it so that it creates a `Game` and loops until th
 - after the loop, `game.is_won` decides the message : `Got it in N!` after a win, and `The word was ...` after a loss
 - return `len(game.history), game.is_won`, the same two values as in Exercise 10, so that `__main__` still has what it needs for `record_game`
 
-Play a game with `WORDLE_SECRET=crane`; it must behave as before.
+Play a game with `secret = "crane"` in `wordle/__main__.py`; it must behave as before.
 
 :::hint
 The slide *`__str__` and `__repr__`* shows `__str__` returning the text that `print` shows, and *Generator Expressions*, in module 07, writes an expression inside `join`.

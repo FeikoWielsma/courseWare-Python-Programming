@@ -8,339 +8,224 @@ footer: Python Intro
 
 # What is Python?
 
-- Python is a general purpose high-level scripting language :
-  - Supports many applications from text processing to WWW browsers and games
-- Python is Beginner's Language :
-  - Great language for the beginner programmers
-- Python is interpreted :
-  - Processed at runtime by the interpreter, with no separate compile step to run
-
-```mermaid
-graph LR
-  A[source code<br/>hello.py] --> B[compile to bytecode]
-  B --> C[bytecode<br/>hello.pyc]
-  C --> D[Python virtual machine]
-  D --> E[output]
-```
-
-- Python is interactive :
-  - Prompt allows you to interact with the interpreter directly to write your programs
-- Python is Object Oriented :
-  - Supports Object-Oriented style programming that encapsulates code within objects
-- Python is easy to learn and easy to read :
-  - Python has relatively few keywords, simple structure, and a clearly defined syntax
-  - Python code is much more clearly defined and visible to the eye
-
----
-
-# Python Features
-
-- Broad standard library :
-  - Files, paths, dates, JSON, CSV, regular expressions, SQLite and testing out of the box
-- Portable :
-  - The same code runs on Linux, Windows and macOS
-- Large ecosystem :
-  - Hundreds of thousands of packages on PyPI, installed with `uv add`
-- Used across many fields :
-  - Automation and scripting, web back ends, data analysis, machine learning, testing
-- Extendable :
-  - Performance-critical parts can be written in C or Rust and called from Python
-- Automatic memory management :
-  - Objects are freed by reference counting and a garbage collector, not by hand
-
----
-
-# History of Python
-
-- Python was developed by Guido van Rossum around 1990 at :
-  - National Research Institute for Mathematics and Computer Science in Netherlands
-- Python is derived from many other languages :
-  - Including Modula-3, C, C++, Smalltalk, Unix shell and other scripting languages
-- Python is usable as :
-  - Scripting language or compiled to byte-code for building large applications
-- Python is copyrighted and the source is open :
-  - Released under the PSF License, a permissive licence that allows commercial use
-- Python is developed in the open by a community of core developers :
-  - The Python Software Foundation holds the rights, the Steering Council decides
-- Python supports :
-  - Functional and structured programming methods as well as OOP
-  - Very high-level dynamic data types and dynamic type checking
-
----
-
-# Modern Python Tooling
-
-- Python needs an interpreter, an environment and a set of packages :
-  - Historically each of these was installed and managed by a separate tool
-  - The result was hard to reproduce on a second machine
-- Two tools now cover almost all of it :
-  - `uv` installs Python, creates the environment and resolves the packages
-  - `ruff` checks style and catches a large class of mistakes before you run
-- Both are single binaries with no Python of their own to bootstrap :
-
-| Older tool | Replaced by |
-|---|---|
-| `python.org` installer, `pyenv` | `uv python install` |
-| `venv`, `virtualenv` | `uv` creates `.venv` for you |
-| `pip`, `pip-tools`, `requirements.txt` | `uv add` and `uv.lock` |
-| `flake8`, `isort`, `black`, `pylint` | `ruff check` and `ruff format` |
-
----
-
-# Getting Started
-
-- Install `uv` once, and let it install Python for you :
-
-```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
-
-- On macOS or Linux use the shell installer :
-
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-- Close and reopen the terminal, then fetch the interpreter :
-
-```bash
-uv python install 3.14
-```
-
-- This needs no administrator rights :
-  - Any Python already on the machine is left alone, and versions live side by side
-- The traditional route is the installer from `https://www.python.org/` :
-  - Tick `Add python.exe to PATH` on the first page of the Windows wizard
-  - Python 2 reached its end of life in 2020, so Python 3 is the only choice
-- Documentation lives at `https://docs.python.org/3/`
-
----
-
-# Setting up PATH
-
-- Only needed when Python was installed by hand :
-  - `uv` puts the interpreter where `uv run` can find it, so it needs none of this
-- PATH is an environment variable :
-  - Provides a search path that lists directories that OS searches for executables
-  - Named PATH in Unix or Path in Windows, and Unix is case-sensitive
-- Setting PATH in Linux :
-
-```bash
-export PATH="$PATH:/usr/local/bin/python"
-```
-
-- Setting PATH in Windows :
-
-```bash
-PATH=%PATH%;C:\Python
-```
-
-  - Or use the environment variables tab under System Properties
-- PYTHONPATH is a separate variable :
-  - It tells the interpreter where to find modules you import, not where Python is
-
----
-
-# Creating a Project
-
-- A project is a directory with a `pyproject.toml` in it :
-
-```bash
-uv init course-work
-cd course-work
-```
-
-- `uv init` writes three things :
-  - `pyproject.toml` , the file that names the project and its dependencies
-  - `.python-version` , the interpreter this project is pinned to
-  - `main.py` , a placeholder to delete or edit
-
-```text
-course-work/
-├─ pyproject.toml
-├─ .python-version
-├─ main.py
-└─ .venv/            created on the first uv run or uv add
-```
-
-- Run code through `uv run`, which uses the project's own interpreter :
-
-```bash
-uv run python main.py
-```
-
----
-
-# Adding Dependencies
-
-- `uv add` installs a package and records it in `pyproject.toml` :
-
-```bash
-uv add requests
-uv add "requests>=2.28,<3"
-uv add --dev pytest
-```
-
-- Two files describe the dependencies, and both belong in version control :
-  - `pyproject.toml` states what the project asks for
-  - `uv.lock` states the exact versions that were resolved
-- Anyone can then reproduce the environment exactly :
-
-```bash
-uv sync          # install exactly what uv.lock says
-uv remove requests
-```
-
-- `--dev` marks a tool used while developing, not by the running program :
-  - `ruff` is such a tool; so is the test runner `pytest`, which the libraries appendix covers
-- There is no environment to activate :
-  - `uv run` puts the project's `.venv` in front for the length of one command
-
-> `demo01 · uv_project`
-
----
-
-# Running Python
-
-- Inside a project, `uv run python` starts the project's own interpreter :
-  - A plain `python` works too, where a Python is on the PATH
-- Interactive Interpreter :
-  - Start the interactive interpreter by entering `uv run python` with no file
-  - The interpreter answers with its `>>>` prompt, ready for a statement
-  - `python -h` lists the command line options
-- Script from Command Line :
-  - A Python script is executed by passing its file name to the interpreter
-
-```bash
-uv run python script.py
-```
-
-- Integrated Development Environment :
-  - Run and debug Python from an editor, which is how most work is done
-  - This course uses VS Code, set up two slides on
-- Jupyter Notebook on a web server :
-  - Cell by cell execution, common in data science work
-
----
-
-# Python in Interactive Mode
-
-- Start with Hello World Python program in interactive mode :
-  - Invoke the interpreter by typing `uv run python` in a terminal
-
-```text
-C:\course-work> uv run python
-Python 3.14.0 (main, Oct  7 2025, 10:12:33) [MSC v.1942 64 bit (AMD64)] on win32
-Type "help", "copyright", "credits" or "license" for more information.
->>> print("Hello, Python!")
-Hello, Python!
->>>
-```
-
-- Type the statement right of the `>>>` prompt and press Enter :
-  - The interpreter evaluates it and prints the result immediately
-- Separate multiple statements with a semicolon ;
-
----
-
-# Python in Script Mode
-
-- When the interpreter is invoked with a script parameter :
-  - The script begins execution and continues until it is finished
-  - When the script is finished, the interpreter is no longer active
-- All Python files will have extension `.py` :
-  - Put the following source code in a `hello.py` file
+- Python is a programming language :
+  - A program is a set of instructions a computer carries out
+  - Python code expresses those instructions as text
+- The Python interpreter is the application that runs Python code
+- Python programs can process files, automate tasks and build applications
+- A small Python program displays a message :
 
 ```python
 print("Hello, Python!")
 ```
 
-- Run the script as follows :
-
-```bash
-uv run python hello.py
-```
-
-- This will produce following result :
-
 ```text
 Hello, Python!
 ```
 
-- `print()` default prints a new line
+---
 
-> `demo02 · hellopython`
+# Source Code and Output
+
+- Source code is the text written in the Python language
+- Output is the text a running program displays
+- `print()` displays the value between its parentheses :
+  - Quotes mark the beginning and end of a piece of text
+  - The displayed text does not include those quotes
+
+```python
+print("Playing Imagine")
+```
+
+```text
+Playing Imagine
+```
+
+> `demo01 · first_message`
 
 ---
 
-# Linting with ruff
+# Files and Folders
 
-- A linter reads code without running it and reports what looks wrong :
-  - Unused imports and variables, shadowed built-ins, unreachable code
-  - Style that departs from the conventions the rest of Python follows
-- Two commands cover the daily use :
+- A file stores content under a name :
+  - A Python source file has a name ending in `.py`, such as `hello.py`
+  - A saved file remains available after the editor closes
+- A folder groups files and other folders :
+  - A project folder keeps the files for one program together
+  - A file's path describes its location
+- An editor opens a file so its contents can be read and changed
 
-```bash
-uv run ruff check .          # report problems
-uv run ruff check . --fix    # fix the ones that are safe to fix
-uv run ruff format .         # lay the code out consistently
+---
+
+# The Editor and the Terminal
+
+- Visual Studio Code provides two places to work :
+  - The editor area contains the Python source file
+  - The terminal accepts commands and displays their output
+- The Explorer panel lists the files in the open folder
+- `File > Open Folder` opens a project folder
+- `Terminal > New Terminal` opens a terminal in that folder
+- A terminal prompt indicates that a command can be entered :
+  - Type the command after the prompt, then press Enter
+  - The prompt itself is not part of the command
+
+---
+
+# Preparing Python
+
+- Python must be installed before a Python file can run
+- `uv` is a tool that can install Python and run it for a project
+- On Windows, open PowerShell from the Start menu and run :
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-- Rules are configured in `ruff.toml`, which ships with this course :
-  - It selects the rule set the course material is written against
-  - Without it the editor would flag patterns the course uses on purpose
+- On macOS or Linux, open Terminal and run :
 
-> `demo03 · ruff_findings`
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+- Close and reopen the terminal, then install Python :
+
+```bash
+uv python install 3.14
+```
 
 ---
 
 # Editor Setup
 
-- The course demonstrates Visual Studio Code :
-  - Any editor works, but the slides assume this one
-- Install two extensions from the Extensions panel :
-  - `Python` , published by Microsoft
-  - `Ruff` , published by Astral
-- With both installed the editor will :
-  - Underline the problems `ruff check` would report, as you type
-  - Offer the same fixes, and format on save if you ask it to
-  - Resolve imports against the project's `.venv` rather than a global Python
-- Point the editor at the project interpreter :
-  - Command Palette, `Python: Select Interpreter`, choose the one in `.venv`
+- Install Visual Studio Code from `https://code.visualstudio.com/`
+- Open the Extensions panel using the squares icon on the left :
+  - Search for `Python` and install the extension published by Microsoft
+  - The extension adds Python editing and running support
+- `File > Open Folder` selects the folder shown in the Explorer panel
+- A browser-based VS Code in a prepared Codespace already has these tools
 
 ---
 
-# Python Identifiers
+# Creating a Project
 
-- Identifiers are the names of variables, functions, classes and modules :
-  - Start with a letter or an underscore, followed by letters, digits and underscores
-  - Punctuation such as `@`, `$` and `%` is not allowed in a name
-- Python is case sensitive :
-  - `total` and `Total` are two different names
-- The naming conventions of PEP 8, the Python style guide :
-  - `snake_case` for variables, functions and modules
-  - `CapWords` for classes, `UPPER_CASE` for values meant as constants
-- Underscores carry meaning :
-  - A leading underscore, as in `_cache`, marks a name as internal to its module
-  - Names such as `__init__` with two underscores on both sides are defined by Python
+- A project is a folder holding the files for a program
+- Open a folder for course work in VS Code, then open a new terminal
+- Run each command separately :
 
----
-
-# Python Reserved Words
-
-- Keywords may not be used as a variable, function or other name :
-
-```text
-False    None     True     and      as       assert   async
-await    break    class    continue def      del      elif
-else     except   finally  for      from     global   if
-import   in       is       lambda   nonlocal not      or
-pass     raise    return   try      while    with     yield
+```bash
+uv init --bare --python 3.14 course-work
+cd course-work
 ```
 
-- `match`, `case`, `type` and `_` are soft keywords :
-  - Reserved only inside the statement they belong to, and usable as names elsewhere
-- The interpreter can list them : `import keyword` and print `keyword.kwlist`
+- `uv init` creates the `course-work` folder and its project settings
+- `--bare` starts with only the project settings in `pyproject.toml`
+- `cd` changes the terminal's current folder :
+  - Commands now run inside `course-work`
+- Open the new `course-work` folder with `File > Open Folder`
+
+---
+
+# Creating a Python File
+
+- In the Explorer panel, select New File and enter `hello.py`
+- Type the Python statement in the editor area :
+
+```python
+print("Playing Imagine")
+```
+
+- Save the file with `File > Save` :
+  - `Ctrl+S` on Windows and Linux; `Cmd+S` on macOS
+  - The `.py` ending is part of the filename
+- Saving writes the editor's contents to the file on disk
+
+---
+
+# Running a Python File
+
+- Open a terminal in the folder containing `hello.py`
+- Enter this command in the terminal :
+
+```bash
+uv run python hello.py
+```
+
+- `uv run` starts a command using the project's Python
+- `python hello.py` tells Python to execute the saved file
+- The first run may display setup messages before the program's output :
+
+```text
+Playing Imagine
+```
+
+- When the program finishes, the terminal prompt returns
+
+---
+
+# Changing a Program
+
+- Change the text between the quotes in `hello.py` :
+
+```python
+print("Playing Yesterday")
+```
+
+- Save the file, then run the same command again :
+
+```bash
+uv run python hello.py
+```
+
+```text
+Playing Yesterday
+```
+
+- Python runs the saved contents on each run
+- Editing a file does not change output from a previous run
+
+> `demo02 · changed_message`
+
+---
+
+# Statements Run in Order
+
+- A statement is an instruction in a Python program
+- These statements execute from top to bottom :
+
+```python
+print("Playing Imagine")
+print("Playing Yesterday")
+```
+
+```text
+Playing Imagine
+Playing Yesterday
+```
+
+- Each `print()` ends its output with a new line by default
+- Running the file again starts the program from the beginning
+
+> `demo03 · statement_order`
+
+---
+
+# Quotes in Python
+
+- A string is a value containing text
+- Matching quotes mark the beginning and end of a string :
+  - Single quotes and double quotes both work
+  - The opening and closing quote must be the same kind
+
+```python
+print("Playing Imagine")
+print('Playing Yesterday')
+print("Tonight's playlist")
+```
+
+- An apostrophe can appear inside a double-quoted string
+- Parentheses surround the value passed to `print()`
+
+> `demo04 · quoted_text`
 
 ---
 
@@ -351,121 +236,117 @@ pass     raise    return   try      while    with     yield
   - A comment explains a reason or a constraint
 
 ```python
-# Keep the original filename so the photo can be found again.
-filename = "IMG_0421.jpg"
-print(filename)  # Show the selected file.
+# Keep the playlist order from the concert.
+print("Playing Imagine")
+print("Playing Yesterday")
 ```
 
-- Several comment lines each start with `#` :
+- Blank lines can separate parts of a program
+- Comments and blank lines do not produce output
+- A hash sign inside quotes is text :
 
 ```python
-# Titles are supplied by the playlist file.
-# The music files themselves are kept in a separate folder.
+print("Track #1")
 ```
 
-- Text inside quotes is part of the string : `"Track #1"` contains a hash sign
+> `demo05 · comments`
 
 ---
 
-# Lines and Indentation
+# Reading a Syntax Error
 
-- Indentation groups statements into a block :
-  - Use four spaces for each level
-  - Statements in the same block have the same indentation
+- Syntax is the set of rules for writing valid Python code
+- A missing closing quote breaks those rules :
 
-```python
-if True:  # The indented block runs.
-    print("Photo ready")
-else:
-    print("Photo missing")
+```text
+print("Playing Imagine)
 ```
 
-- An unindented statement runs after the block :
+- Python reports the file, line number and kind of error :
 
-```python
-photos = 5
-# This comment does not change the photo count.
-print("Photos selected:", photos)
+```text
+  File "hello.py", line 1
+    print("Playing Imagine)
+          ^
+SyntaxError: unterminated string literal (detected at line 1)
 ```
 
-- Inconsistent indentation raises an error before the script runs
-- `end=" "` makes the next output continue on the same line
-
-> `demo04 · lines_and_identation`
+- A `SyntaxError` prevents the script from running
+- The marked location is where Python detected the problem
 
 ---
 
-# Multi Line Statements
+# Correcting and Rerunning
 
-- Parentheses allow a calculation to continue across lines :
-
-```python
-thriller = 357
-imagine = 183
-yesterday = 125
-
-total = (
-    thriller + imagine + yesterday
-)
-print(total)  # 665
-```
-
-- Lists, dictionaries and calls can also span lines inside their brackets :
+- Add the missing closing quote before the closing parenthesis :
 
 ```python
-playlist = [
-    "Thriller", "Imagine", "Yesterday",
-]
-print(playlist)
+print("Playing Imagine")
 ```
 
-- A backslash also continues a line :
-  - Prefer brackets when they fit the statement
-  - A semicolon separates statements on one line; separate lines are clearer
+- Save the file and run it again :
 
-> `demo05 · multilinestatements`
+```bash
+uv run python hello.py
+```
+
+```text
+Playing Imagine
+```
+
+- An error message remains visible in the terminal after the repair
+- The most recent run shows whether the saved correction worked
 
 ---
 
-# Quotes in Python
+# Finding a File to Run
 
-- Matching quotes mark the start and end of a string :
-  - Single and double quotes produce the same string type
-  - Triple quotes allow the text to span lines
+- The terminal has a current folder :
+  - The filename in the run command is resolved from that folder
+  - The Explorer panel and an existing terminal can show different folders
+- A message containing `can't open file` means Python could not open the script :
+  - Check that the file is saved as `hello.py`
+  - Check that the terminal is in the folder containing it
+- Opening the project folder and choosing `Terminal > New Terminal` gives a new terminal there
+- An unknown `uv` command means the tool is unavailable in that terminal :
+  - After installing uv, close and reopen VS Code
 
-```python
-title = "Imagine"
-filename = 'cover.jpg'
-caption = """Friday night
-Live at the observatory"""
+---
+
+# Python in Interactive Mode
+
+- Python can also accept statements directly in a terminal
+- Start the interpreter without a filename :
+
+```bash
+uv run python
 ```
 
-- Choose double quotes when the text contains an apostrophe :
+- The `>>>` prompt accepts Python code :
 
-```python
-print("Tonight's playlist")
-print('Tonight\'s playlist')
+```text
+>>> print("Playing Imagine")
+Playing Imagine
+>>> 2 + 3
+5
+>>> exit()
 ```
 
-> `demo06 · quotesandescapes`
+- The interactive interpreter displays the result of `2 + 3` directly
+- `exit()` returns to the terminal prompt; terminal commands run there
+- Interactive statements are not saved in a `.py` file
 
 ---
 
 # Summary : Python Intro
 
-- Python is a general purpose high-level scripting language :
-  - Interpreted, interactive and object oriented, developed by Guido van Rossum
-- `uv` manages the interpreter, the environment and the packages :
-  - `uv python install`, `uv init`, `uv add`, `uv run`
-  - `pyproject.toml` states what is wanted, `uv.lock` pins what was resolved
-- `ruff` reports style and correctness problems without running the code
-- Python can be started in three different ways :
-  - Interactive interpreter, script from the command line, from inside an IDE
-- Python is case sensitive, and names follow PEP 8 :
-  - `snake_case` for variables and functions, `CapWords` for classes
-- Python uses line indentation to denote blocks of code :
-  - No braces for class and function definitions or for flow control
-- The line continuation character (\) denotes that a line should continue
-- Quotes denote string literals, single, double or triple
+- A Python program is source code saved in a `.py` file
+- The editor changes the source; the interpreter runs the saved file
+- Terminal commands run from the terminal's current folder
+- `uv run python hello.py` runs a Python file
+- Statements run from top to bottom; `print()` displays output
+- Quotes enclose strings; `#` starts a comment outside a string
+- An error message identifies a problem to correct before rerunning
+- Changing a program follows a cycle : edit, save, run and inspect the output
 
 > `exercise01 · Python Intro`

@@ -34,6 +34,7 @@ export default {
       'demos/11-python-classes',
       'demos/12-appendix-type-hinting',
       'demos/13-appendix-libraries',
+      'demos/14-appendix-python-tooling',
       'solutions',
       'exercises',
       'appendices',
@@ -43,7 +44,8 @@ export default {
     ],
     exclude: ['libraries/build', 'libraries/src'],
     // The offline exercise site (bun run site); students open site/index.html from disk.
-    generated: { site: 'build/site/dist' },
+    // Add a root-level shortcut in the student checkout and ZIP.
+    generated: { site: 'build/site/dist', '.': 'build/site/student-shortcut' },
     // Known failure: the Marp HTML embeds the preamble's trainer notes (Marp presenter view).
     // Waived until the Marp renderer stops emitting them; remove this line to make it fail again.
     waiveMarpHtmlNotes: true,

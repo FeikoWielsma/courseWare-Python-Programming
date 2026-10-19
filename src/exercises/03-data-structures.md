@@ -1,8 +1,8 @@
 # Exercise 3 : Data Structures
 
-So far the game knows one word, `crane`, and forgets every guess the moment it has printed it. A real game picks its secret from a list of words, and keeps track of what each guess has ruled out. In this exercise you load the word list and use lists, sets, tuples and dictionaries to answer questions about a guess.
+So far the game knows one word, `crane`, and forgets every guess the moment it has printed it. A real game picks its secret from a list of words, and keeps track of what each guess has ruled out. In this exercise you write a small word list and use lists, sets, tuples and dictionaries to answer questions about a guess.
 
-Continue in your own `wordle` project, or start from `exercises/starters/03-data-structures/`, which is the finished Exercise 2 with the word list. This exercise starts a new script in `wordle.py`; Exercise 2's table is not needed again. Run the program after every step with :
+Continue in your own `wordle` project, or start from `exercises/starters/03-data-structures/`, which is the finished Exercise 2. This exercise starts a new script in `wordle.py`; Exercise 2's comparisons are not needed again. Run the program after every step with :
 
 ```bash
 uv run python wordle.py
@@ -14,33 +14,33 @@ Some steps give you the code, some a skeleton to complete, and some only a descr
 
 ### Step 1 : The word list
 
+Start with four words written directly in Python. You can add your own five-letter words to this list. Exercise 9 reads a larger list from a file.
+
 Replace the contents of `wordle.py` with :
 
 ```python
-import random
-from pathlib import Path
-
-words = Path("words.txt").read_text(encoding="utf-8").split()
+words = ["hello", "crane", "react", "paper"]
 guess = input("Your guess: ").strip().lower()
-random.seed(0)
-secret = random.choice(words)
+secret = "crane"
 
-print(f"There are {len(words)} words. The first ten are {words[:10]}.")
+print(f"There are {len(words)} words. The first two are {words[:2]}.")
 print(f"Crane is in the word list: {'crane' in words}.")
 print(f"Example secret: {secret.upper()}.")
 ```
 
-The line that reads the file is an incantation for now : it reads `words.txt` into one string, and `.split()` cuts that string into a list wherever there is white space, which in this file means at every line break. Exercise 9 takes it apart.
+`words` is a list of strings. `len`, slicing and `in` work on it just as they did on a single string. Keep `secret = "crane"` while checking the output.
 
-`words` is a list of strings, so `len`, slicing and `in` work on it just as they did on a single string. `random.choice` picks one item of a list at random. `random.seed(0)` makes the random choices the same on every run, which is why everybody gets the same example secret below. Remove that line and run the program twice to see the secret change, then put it back so your output matches the rest of this exercise.
+:::hint
+The slides *Lists* and *List Operations* show lists written with square brackets, indexing and slicing. *List Functions and Methods* shows `len`.
+:::
 
-Run it and type `crane` :
+Run it and type `react` :
 
 ```text
-Your guess: crane
-There are 935 words. The first ten are ['abbey', 'abide', 'abled', 'abort', 'about', 'above', 'abuse', 'acorn', 'actor', 'acute'].
+Your guess: react
+There are 4 words. The first two are ['hello', 'crane'].
 Crane is in the word list: True.
-Example secret: TRUST.
+Example secret: CRANE.
 ```
 
 ### Step 2 : What a guess rules out
@@ -52,7 +52,7 @@ Example secret: TRUST.
 - the letters of the alphabet that the guess has not tried
 
 ```python
-import string  # at the top of the file, with the other imports
+import string  # at the top of the file
 
 common = sorted(...)
 ruled_out_letters = sorted(...)
@@ -74,9 +74,9 @@ Make a set of `string.ascii_lowercase` the same way as of a word. `sorted` accep
 
 :::output
 ```text
-Letters in common: ['r']
-Letters ruled out: ['a', 'c', 'e', 'n']
-Letters not tried: ['b', 'd', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'o', 'p', 'q', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+Letters in common: ['a', 'c', 'e', 'r']
+Letters ruled out: ['t']
+Letters not tried: ['b', 'd', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 's', 'u', 'v', 'w', 'x', 'y', 'z']
 ```
 :::
 
@@ -117,8 +117,8 @@ A tuple cannot be changed once it is made. See that for yourself : add the line 
 
 :::output
 ```text
-History: ['slate', 'crane']
-Guess and ruled-out letters: ('crane', ['a', 'c', 'e', 'n'])
+History: ['slate', 'react']
+Guess and ruled-out letters: ('react', ['t'])
 ```
 :::
 
@@ -165,15 +165,15 @@ There is no `if` yet, and you do not need one. `guess == secret` is `True` or `F
 
 :::output
 ```text
-Your guess: crane
-There are 935 words. The first ten are ['abbey', 'abide', 'abled', 'abort', 'about', 'above', 'abuse', 'acorn', 'actor', 'acute'].
+Your guess: react
+There are 4 words. The first two are ['hello', 'crane'].
 Crane is in the word list: True.
-Example secret: TRUST.
-Letters in common: ['r']
-Letters ruled out: ['a', 'c', 'e', 'n']
-Letters not tried: ['b', 'd', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'o', 'p', 'q', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
-History: ['slate', 'crane']
-Guess and ruled-out letters: ('crane', ['a', 'c', 'e', 'n'])
+Example secret: CRANE.
+Letters in common: ['a', 'c', 'e', 'r']
+Letters ruled out: ['t']
+Letters not tried: ['b', 'd', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 's', 'u', 'v', 'w', 'x', 'y', 'z']
+History: ['slate', 'react']
+Guess and ruled-out letters: ('react', ['t'])
 Stats: {'played': 1, 'won': 0}; streak: 0
 ```
 :::
@@ -190,6 +190,8 @@ The complete file is in `solutions/03-data-structures/wordle.py`.
 :::
 
 ### If time permits
+
+Try choosing a secret from the list with `random.choice(words)`. The slide *Choosing a Random Item* and `demo13 · random_choice` show the import and call. Keep the fixed secret for the earlier checks.
 
 Two more questions about the word list :
 

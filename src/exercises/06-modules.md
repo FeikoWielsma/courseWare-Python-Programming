@@ -2,22 +2,26 @@
 
 The scoring can now be called on its own, but loading words, drawing rows and running the game still share one file. Split those responsibilities into a package so the solver in the next exercise has a clear place to live.
 
-Continue in your own `wordle` project, or use `exercises/starters/06-modules/`, the finished Exercise 5. Run commands from the project root, beside `pyproject.toml` and `words.txt`, not from inside the new package directory.
+Continue in your own `wordle` project, or use `exercises/starters/06-modules/`, the finished Exercise 5. Run commands from the project root, beside `pyproject.toml`, not from inside the new package directory.
 
 ### Step 1 : Start a package
 
-Create a directory named `wordle` inside your project and an empty `wordle/__init__.py`. That file marks the directory as a package; see *Packages in Python*. Copy `load_words` into `wordle/words.py` with its import :
+Create a directory named `wordle` inside your project and an empty `wordle/__init__.py`. That file marks the directory as a package; see *Packages in Python*. Copy `load_words` into `wordle/words.py` :
 
 ```python
-from pathlib import Path
-
-
-def load_words(path: str = "words.txt") -> list[str]:
-    """Read the word list, one word per line."""
-    return Path(path).read_text(encoding="utf-8").split()
+def load_words() -> list[str]:
+    """Return the small practice word list."""
+    return [
+        "hello", "crane", "react", "paper", "slate", "error", "house", "ghost",
+        "world", "money", "speed", "geese", "trace", "grace", "raise", "trick",
+    ]
 ```
 
-Keep the original `wordle.py` intact for this step so `uv run python wordle.py` still plays a game. In the next step you will finish the package and remove that old file. Leave `words.txt` beside `pyproject.toml`; moving the loader does not change the working directory.
+Keep the original `wordle.py` intact for this step so `uv run python wordle.py` still plays a game. In the next step you will finish the package and remove that old file. The practice words stay in `load_words`; no data file is needed.
+
+:::hint
+The slide *Packages in Python* shows the package folder and its `__init__.py`. *Function Syntax* shows the function definition and its body.
+:::
 
 ### Step 2 : Give each module one job
 
@@ -42,9 +46,6 @@ from wordle.scoring import ...
 Use this skeleton in `__main__.py` :
 
 ```python
-import os
-import random
-
 from wordle.game import ...
 from wordle.words import ...
 
@@ -84,9 +85,6 @@ from wordle.scoring import is_valid, score_guess
 `__main__.py` contains :
 
 ```python
-import os
-import random
-
 from wordle.game import play
 from wordle.words import load_words
 
@@ -95,7 +93,8 @@ def main() -> None:
     """Load the words and play one game."""
     words = load_words()
     print("Guess the five-letter word. Type 'quit' to give up, 'letters' for the letters tried.")
-    play(os.environ.get("WORDLE_SECRET", random.choice(words)), words)
+    secret = "crane"
+    play(secret, words)
 
 
 if __name__ == "__main__":
@@ -114,14 +113,7 @@ uv run python -m wordle
 
 The `-m` option asks Python to locate a module or package. For a package, Python runs `wordle/__main__.py`. The guard moved with the entry point; importing `wordle.scoring` does not start a game.
 
-For a repeatable check in PowerShell, run :
-
-```powershell
-$env:WORDLE_SECRET = "crane"
-uv run python -m wordle
-```
-
-In Bash, use `WORDLE_SECRET=crane uv run python -m wordle`. Enter `slate`, then `crane`. Captured output, with typed input omitted :
+Keep the fixed secret in the entry point. Enter `slate`, then `crane`. Captured output, with typed input omitted :
 
 :::output
 
@@ -176,7 +168,6 @@ Your project now has this shape, apart from environment and lock files :
 ```text
 wordle/
     pyproject.toml
-    words.txt
     wordle/
         __init__.py
         __main__.py
@@ -188,7 +179,7 @@ wordle/
 
 :::
 
-Remove the fixed-secret override with `Remove-Item Env:WORDLE_SECRET` in PowerShell, or `unset WORDLE_SECRET` if exported in Bash. Play another game with `uv run python -m wordle`. Its behaviour should be the same as Exercise 5, with the duplicate-letter fix intact.
+Change the secret in `wordle/__main__.py` to try another word, then restore `"crane"`. Play another game with `uv run python -m wordle`. Its behaviour should be the same as Exercise 5, with the duplicate-letter fix intact.
 
 ### If time permits
 

@@ -557,6 +557,30 @@ only photos: ['beach.jpg', 'sunset.jpg']
 
 ---
 
+# Reading a Text List
+
+- `Path` from the standard library identifies a file :
+  - A relative filename is looked up in the terminal's current folder
+  - `read_text` reads the file into one string
+- `encoding="utf-8"` selects how the file's bytes are decoded into text
+- `split()` separates the text at whitespace into a list of strings
+
+```python
+from pathlib import Path
+
+text = Path("tracks.txt").read_text(encoding="utf-8")
+tracks = text.split()
+print(tracks)
+print(len(tracks))
+```
+
+- With `Imagine`, `Yesterday` and `Respect` on separate lines, the list has three items
+- Run the demo from `demos/09-python-io/`, beside `tracks.txt`
+
+> `demo16 · text_list`
+
+---
+
 # Summary : Python IO
 
 - Simplest way to produce output is to use the `print` function :

@@ -70,7 +70,7 @@ __pycache__/
 **/.pytest_cache/
 
 # Built course decks (CI builds these from src/ and publishes them as release
-# assets; the *_og.pdf originals stay tracked)
+# assets; the original decks live in archive/)
 /PRG400-Python-Programming.pdf
 /PRG400-Python-Programming.html
 /PRG400-Python-Programming-Marp.pdf

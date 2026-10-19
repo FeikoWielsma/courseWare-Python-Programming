@@ -50,7 +50,7 @@ await withBrowser(originOption ? { origin: originOption } : { dir: presentation,
   page = session.page;
   const origin = session.origin;
   const topic = manifest.topics.find((item: { id: string }) => item.id === '03-data-structures-3')
-    || manifest.topics.find((item: { id: string }) => item.id === '02-variables-and-data-types-2');
+    || manifest.topics.find((item: { id: string }) => item.id === '02-variables-and-data-types-3');
   require(topic, 'Could not find a representative source topic.');
   await page.goto(`${origin}/slidev/#/${topic.id}`, { waitUntil: 'networkidle0', timeout: browserTimeoutMs });
   await page.waitForSelector(`.course-frame[data-source-id="${topic.id}"] .course-step`, { timeout: browserTimeoutMs });

@@ -30,9 +30,9 @@ COMPONENTS = ROOT / "src" / "slidev" / "components"
 # File, demo path, component kind, route in the integrated source map.
 FILES = {
     "blocks-and-line-endings.md": (
-        "01-pythonintro/04_lines_and_identation.py",
+        "14-appendix-python-tooling/03_lines_and_identation.py",
         "stream",
-        "01-python-intro-17-enhancement",
+        "14-appendix-python-tooling-13-enhancement",
     ),
     "binding-and-rebinding.md": (
         "02-variablesanddatatypes/01_variables.py",
@@ -40,9 +40,9 @@ FILES = {
         "02-variables-and-data-types-1-enhancement",
     ),
     "several-names-one-object.md": (
-        "02-variablesanddatatypes/03_multipleassignment.py",
+        "02-variablesanddatatypes/04_multipleassignment.py",
         "names",
-        "02-variables-and-data-types-3-enhancement",
+        "02-variables-and-data-types-4-enhancement",
     ),
     "condition-before-each-pass.md": (
         "04-controlflow/05_while.py",

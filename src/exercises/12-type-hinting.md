@@ -1,7 +1,7 @@
 <!-- appendix -->
 # Exercise 12 : Type Hinting
 
-Your code has carried type hints since Exercise 2, and nobody has ever checked them. Python itself ignores them, so a wrong hint is only a comment that lies. In this exercise you hand the hints to `mypy`, a tool that reads the whole package without running it and reports where the types do not fit. It finds a bug that has been waiting in your solver all along, and it helps you describe the marks of a guess so precisely that a typo in them cannot slip through.
+Your game already carries type hints on collections and functions. Python itself does not enforce them. In this exercise you hand the hints to `mypy`, a tool that reads the whole package without running it and reports where the types do not fit. It helps you describe the marks of a guess precisely and makes callers handle a solver result that may be missing.
 
 Continue in your own `wordle` project, or start from `exercises/starters/12-type-hinting/`. The starter is the finished Exercise 11; this exercise hands out nothing. Keep running commands beside `pyproject.toml`.
 
@@ -11,7 +11,7 @@ Some steps give you the code, some a list of changes to make, and one only a sig
 
 ### Step 1 : Run mypy
 
-`mypy` is a development tool, not something the game needs when it runs, so add it to the development dependencies, the way you added `ruff` in Exercise 1, and run it on the package :
+`mypy` is a tool for checking the code while developing it. `uv add --dev` installs such a tool for this project and records it in `pyproject.toml`. Install it and run it on the package :
 
 ```bash
 uv add --dev mypy
@@ -36,6 +36,10 @@ Success: no issues found in 8 source files
 ```
 
 See *Checking with mypy* for the same run on a smaller program.
+
+:::hint
+The slide *Checking with mypy* shows installing and running the checker. *Annotating Collections*, in module 03, shows `set[str]` for a set of strings.
+:::
 
 ### Step 2 : Say exactly what a mark is
 
@@ -120,7 +124,7 @@ def render(guess: str, marks: list[Mark]) -> str:
 
 ### Step 3 : A hint that may not exist
 
-`best_guess` returns a word, and it returns it for any list you give it. Ask for a hint when no word is left and see what happens. This can only happen when the secret is a word the game accepts as a guess but never picks, so start the game with the environment variable `WORDLE_SECRET` set to `crone`, guess `crane`, and type `hint` :
+`best_guess` returns a word, and it returns it for any list you give it. Ask for a hint when no word is left and see what happens. This can only happen when the secret is a word the game accepts as a guess but never picks, so start the game after changing `secret = "crane"` to `secret = "crone"` in `wordle/__main__.py`, guess `crane`, and type `hint` :
 
 ```text
 ValueError: max() iterable argument is empty
@@ -149,7 +153,7 @@ That is the whole use of `| None` : the checker makes every caller deal with the
 No candidate words remain.
 ```
 
-The first line is the row for the guess `crane`; the second is the answer to `hint`.
+The first line is the row for the guess `crane`; the second is the answer to `hint`. Restore `secret = "crane"` after this check.
 
 :::hint
 The slide *Optional Values* writes `| None` for a value that may be absent, and tests `is None` before it uses the value.

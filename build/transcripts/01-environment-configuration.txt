@@ -1,1 +1,2 @@
-The word list contains 5610 characters.
+Wordle is ready.
+Guess a five-letter word.

@@ -450,6 +450,31 @@ print(f"Queue limit: {queue_limit}")
 
 ---
 
+# Running and Importing a File
+
+- Importing a Python file runs its top-level statements :
+  - Function definitions make functions available without calling them
+  - An unguarded call would also run during the import
+- Python sets `__name__` to `"__main__"` when the file is run directly
+- A guard starts the program only for direct execution :
+
+```python
+def main() -> None:
+    print("Playlist ready")
+
+
+if __name__ == "__main__":
+    main()
+```
+
+- Importing the file defines `main` and skips its guarded call
+- `from report import main` imports `main` from a file named `report.py`
+- A fresh interpreter reads saved changes; an existing import is cached
+
+> `demo16 · guarded_program`
+
+---
+
 # Summary : Functions
 
 - Functions are reusable blocks of code defined with `def` :

@@ -1,172 +1,167 @@
 # Exercise 1 : Python Intro
 
-Before you can write a game you need somewhere to write it. This exercise installs Python, the `uv` project manager, the `ruff` linter and an editor that understands Python, and creates the project you build a Wordle game in for the rest of the course.
+Write a short Python program, change what it displays, and run it again. The aim is to practise working with a file in the editor and seeing the result in the terminal. The `wordle` folder you create here becomes your game project from Exercise 2 onwards.
 
-There is no starter for this exercise : it is where your own `wordle` project begins. From Exercise 2 on, every exercise also has a starter folder for when you fall behind.
+Start with a folder of your own for course work. There is no starter for this exercise because you create the project here. The finished version is in `solutions/01-environment-configuration/`. From Exercise 2 onwards, a starter folder is also available if you need a fresh starting point.
 
-Every step in this exercise gives you the commands : the point is to see each tool work once.
+If you are using the prepared GitHub Codespace, Python, uv and VS Code are already available. Start at Step 2 in the browser editor.
 
 ---
 
-### Step 1 : Install uv
+### Step 1 : Prepare the tools
 
-`uv` is the project manager the course uses. It can install Python itself, so it is the only thing you install by hand. On Windows, run this in PowerShell :
+Install Visual Studio Code from <https://code.visualstudio.com/>. Open it, select the Extensions icon on the left, search for `Python`, and install the extension published by Microsoft.
+
+Python is the application that runs your code. The tool `uv` installs Python and starts it for your project. On Windows, open the Start menu, search for PowerShell and open it. Paste this command and press Enter :
 
 ```powershell
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-On macOS or Linux, run this in a terminal :
+On macOS or Linux, open the Terminal application and use this command instead :
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-Close and reopen the terminal afterwards so that `uv` is on your `PATH`, then confirm that it works :
-
-```bash
-uv --version
-```
-
-The documentation is at `https://docs.astral.sh/uv/`.
-
-### Step 2 : Install Python
-
-Let `uv` fetch the interpreter the course uses :
+Close and reopen PowerShell or Terminal after the installation. Enter the following command and press Enter to install Python :
 
 ```bash
 uv python install 3.14
 ```
 
-This needs no administrator rights and leaves any Python already on the machine alone. Confirm it with `uv python list`, which shows every interpreter `uv` can see.
+Wait for the terminal prompt to return before entering another command. If `uv` is not recognised, close and reopen the terminal application. The slides *Preparing Python* and *Editor Setup* show these installation steps.
 
-### Step 3 : Install an editor
+### Step 2 : Create the project folder
 
-Install Visual Studio Code from `https://code.visualstudio.com`, then add two extensions from the Extensions panel, the square icon on the left :
+In VS Code, choose `File > Open Folder`. Create or select a folder for your course work, then open it. In Codespaces, use the folder already open in the editor. If VS Code asks whether you trust the folder, confirm for your own course-work folder.
 
-- `Python`, published by Microsoft
-- `Ruff`, published by Astral
-
-Any editor works, but the course demonstrates VS Code and the slides assume it. The slide *Editor Setup* lists what the two extensions do for you.
-
-### Step 4 : Create the wordle project
-
-You write your own code this week in a project of your own, the same way you would at work. From the folder where you keep your work, run :
+Choose `Terminal > New Terminal`. A terminal panel opens below the editor. Commands go in this panel, after the prompt, rather than in a Python file. Enter these two commands separately, pressing Enter after each :
 
 ```bash
-uv init wordle
+uv init --bare --python 3.14 wordle
 cd wordle
 ```
 
-`uv init` writes a `pyproject.toml`, a `.python-version`, a `README.md` and a placeholder `main.py`, and makes the folder a git repository; the slide *Creating a Project* explains each of them. Run the placeholder :
+The first command creates a project folder named `wordle` and a settings file named `pyproject.toml`. The second command moves the terminal into that folder. You do not need to edit the settings file.
 
-```bash
-uv run python main.py
-```
+Choose `File > Open Folder` again and open the new `wordle` folder. Its `pyproject.toml` should be visible in the Explorer panel on the left. Choose `Terminal > New Terminal` again so the new terminal also starts inside `wordle`.
 
-The first run creates the project's own environment in `.venv`, then prints :
+:::hint
+The slide *Creating a Project* shows `uv init` and `cd`. The slide *The Editor and the Terminal* identifies the Explorer panel and the terminal.
+:::
 
-```text
-Hello from wordle!
-```
+### Step 3 : Write and run a message
 
-Open the `wordle` folder in VS Code. Then open the Command Palette, run `Python: Select Interpreter`, and choose the interpreter in `.venv`. The editor now uses the same Python as `uv run`.
-
-### Step 5 : See the linter work
-
-A linter reads code without running it and reports what looks wrong. Add `ruff` to the project as a development tool, one the project needs while you write it but not when it runs :
-
-```bash
-uv add --dev ruff
-```
-
-`uv` records it in `pyproject.toml` under `[dependency-groups]`, so anybody who works on the project gets the same tool. The test runner `pytest` arrives the same way in the libraries appendix, in Exercise 13. Run `ruff` over the project :
-
-```bash
-uv run ruff check .
-```
-
-There is nothing wrong yet, so it reports :
-
-```text
-All checks passed!
-```
-
-Now write something with a mistake in it. Create `hello.py` in the project :
+In the Explorer panel, select New File and name it `wordle.py`. Include the `.py` ending. Type this line in the editor area :
 
 ```python
-import json
-
-
-def greet(name: str) -> str:
-    return f"Hello, {name}"
-
-
-print(greet("Python"))
+print("Welcome to Wordle!")
 ```
 
-Run it with `uv run python hello.py`. It prints `Hello, Python`, so Python itself has no complaint. Run `uv run ruff check .` again. This time `ruff` reports the import nobody uses :
-
-```text
-F401 [*] `json` imported but unused
- --> hello.py:1:8
-  |
-1 | import json
-  |        ^^^^
-help: Remove unused import: `json`
-  |
-  - import json
-1 |
-  |
-
-Found 1 error.
-[*] 1 fixable with `--fix`.
-```
-
-`F401` is the rule, and the arrow points at the file, line and column. VS Code underlines the same line, because the Ruff extension runs the same checks as you type. The `[*]` means the fix is safe to make automatically, so let `ruff` make it :
-
-```bash
-uv run ruff check . --fix
-```
-
-It reports `Found 1 error (1 fixed, 0 remaining).`, and the import has gone from `hello.py`. The slide *Linting with ruff* has the other commands. You can delete `hello.py` now; the game does not need it.
-
-### Step 6 : The word list
-
-A word game needs words. Copy `words.txt` from `exercises/handouts/01-environment-configuration/` into the `wordle` folder, next to `pyproject.toml`.
-
-Rename `main.py` to `wordle.py`, which is the name the game has from here on, and replace its contents with :
-
-```python
-from pathlib import Path
-
-
-def main() -> None:
-    """Print the number of characters in the word list."""
-    words = Path("words.txt").read_text(encoding="utf-8")
-    print(f"The word list contains {len(words)} characters.")
-
-
-if __name__ == "__main__":
-    main()
-```
-
-`Path("words.txt").read_text(...)` reads the whole file into one string, and `len` counts its characters. The rest of the file is the same shape as the `main.py` that `uv init` wrote; module 05 explains `def` and module 06 explains the last two lines. Run it :
+Choose `File > Save`, or press `Ctrl+S` on Windows and Linux, or `Cmd+S` on macOS. Then click in the terminal panel and run :
 
 ```bash
 uv run python wordle.py
 ```
 
-It prints :
+The first run may show setup messages. The program then displays :
 
 ```text
-The word list contains 5610 characters.
+Welcome to Wordle!
 ```
 
-The file holds one five-letter word per line, so every word takes six characters including its line break. How many words are in the list? Exercise 3 counts them properly.
+`print()` displays the text between the quotes. The quotes and parentheses are Python code and do not appear in the output. The terminal prompt returns when the program finishes.
+
+:::hint
+The slides *Creating a Python File* and *Running a Python File* show where to type the code, how to save it and where to enter the run command.
+:::
+
+If Python reports `can't open file`, check that `wordle.py` is saved in the `wordle` folder and that the terminal is in that same folder. The slide *Finding a File to Run* explains this check.
+
+### Step 4 : Change the message
+
+Change the text inside the quotes so the program displays `Wordle is ready.`. Save the file and run the same terminal command again.
+
+:::hint
+The slide *Changing a Program* shows the edit, save and run cycle. Keep `print(`, the matching quotes and the closing `)` around the new message.
+:::
+
+:::output
+```text
+Wordle is ready.
+```
+:::
+
+:::solution
+```python
+print("Wordle is ready.")
+```
+:::
+
+### Step 5 : Add another statement
+
+Add a second line that displays `Guess a five-letter word.`. Predict which message appears first, then save and run the program. Does the order match your prediction?
+
+:::hint
+The slide *Statements Run in Order* shows two `print()` statements. Put each statement on its own line, starting at the left edge of the editor.
+:::
+
+:::output
+```text
+Wordle is ready.
+Guess a five-letter word.
+```
+:::
+
+:::solution
+```python
+print("Wordle is ready.")
+print("Guess a five-letter word.")
+```
+:::
+
+### Step 6 : Add a comment
+
+Add this comment above the two statements, then save and run the program again :
+
+```python
+# Show the instructions before the game starts.
+```
+
+Does the comment appear in the output? Compare the result with the previous run.
+
+:::hint
+The slide *Comments in Python* shows a line starting with `#`. Python ignores that line, so the two messages should stay the same.
+:::
+
+### Step 7 : Read and repair an error
+
+On the first `print()` line, remove the closing quote after the full stop. Leave the closing parenthesis in place. Save and run the file.
+
+Find the filename, line number and `SyntaxError` in the error message. Python checks the syntax before running the script, so neither message appears. The line number depends on where you put the comment and any blank lines.
+
+Put the closing quote back, save, and run the file again. The two messages should return. The earlier error remains in the terminal; read the output from the latest run.
+
+:::hint
+The slides *Reading a Syntax Error* and *Correcting and Rerunning* show the same missing-quote problem. Both ends of the string need a double quote.
+:::
+
+:::solution
+```python
+# Show the instructions before the game starts.
+print("Wordle is ready.")
+print("Guess a five-letter word.")
+```
+:::
+
+Keep the `wordle` folder and its `wordle.py` file for Exercise 2. No word list or extra package is needed yet.
 
 ### If time permits
 
-The course folder has a file that is written badly on purpose, `demos/01-pythonintro/03_ruff_findings.py`. Copy it into your `wordle` project and run `uv run ruff check 03_ruff_findings.py`. Read every finding, and decide why `ruff` objects before you read the comment in the file that explains it.
+- Swap the two `print()` lines. Predict the output, then save and run the file to check it. Restore their original order afterwards.
+- Add a blank line between the statements. Save and run again. Does a blank line in the source add a blank line to the output?
 
-Then copy `ruff.toml` from the course folder into the project as well, and run the same command again. The course's configuration switches on more rules than the default set, so `ruff` now finds more. Which rules did it add, and would you want them in your own projects? Delete both files when you are done.
+:::hint
+The slides *Statements Run in Order* and *Comments in Python* explain statement order and blank lines.
+:::

@@ -1,7 +1,5 @@
 """Start Wordle when run as a module."""
 
-import os
-import random
 import sys
 from contextlib import closing
 from datetime import date
@@ -27,7 +25,7 @@ def main() -> None:
                 day_number = (date.today() - date(2026, 1, 1)).days
                 secret = words[day_number % len(words)]
             else:
-                secret = os.environ.get("WORDLE_SECRET", random.choice(words))
+                secret = "crane"
             max_guesses = 10 if "--easy" in options else 6
             hard = "--hard" in options
         print(

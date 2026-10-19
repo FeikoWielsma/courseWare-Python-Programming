@@ -1,22 +1,23 @@
 [
   {
-    "q": "What does `uv sync` do in the course setup?",
+    "q": "What does `uv run python wordle.py` do?",
     "options": [
-      "Creates the project environment and installs its declared dependencies.",
-      "Runs every Python file in the project.",
-      "Publishes the exercise site."
+      "Runs the saved wordle.py file using the project's Python.",
+      "Saves the changes currently open in the editor.",
+      "Runs every Python file in the folder."
     ],
-    "why": "The setup exercise uses uv to create and sync the project environment.",
+    "why": "The command runs the saved file. Save editor changes before running it again.",
     "module": "01"
   },
   {
-    "q": "What does Ruff provide in the course setup?",
+    "q": "What does this program display?",
+    "code": "# Show the playlist order.\nprint(\"Imagine\")\nprint(\"Yesterday\")",
     "options": [
-      "A fast Python linter and formatter.",
-      "A Python interpreter.",
-      "A database driver."
+      "Imagine\nYesterday",
+      "Yesterday followed by Imagine, on separate lines.",
+      "The comment followed by both song titles."
     ],
-    "why": "The toolchain slide introduces Ruff for linting and formatting Python code.",
+    "why": "Python ignores the comment and runs the two print statements from top to bottom.",
     "module": "01"
   },
   {

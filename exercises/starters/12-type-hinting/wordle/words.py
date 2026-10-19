@@ -17,12 +17,9 @@ def load_allowed() -> list[str]:
 
 def clean_words(lines: list[str]) -> list[str]:
     """Return unique lowercase five-letter ASCII words in sorted order."""
-    return sorted(
-        {
-            line.strip().lower()
-            for line in lines
-            if len(line.strip()) == 5
-            and line.strip().isascii()
-            and line.strip().isalpha()
-        }
-    )
+    kept: set[str] = set()
+    for line in lines:
+        word = line.strip().lower()
+        if len(word) == 5 and word.isascii() and word.isalpha():
+            kept.add(word)
+    return sorted(kept)

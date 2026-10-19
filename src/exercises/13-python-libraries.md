@@ -5,7 +5,7 @@ Your Wordle plays well, but it is still a game for one person, one sitting and o
 
 Continue in your own `wordle` project, or start from `exercises/starters/13-python-libraries/`. The starter is the finished Exercise 12; this exercise hands out nothing. Keep running commands beside `pyproject.toml`.
 
-The steps are small and separate, one library each. Do Steps 1 to 3 in order, because they build up `main` and the options of the game. Step 4 (`json`) and Step 5 (`re`) can then be done in either order. Step 6 and Step 7 (`pytest`) come last, because they test what the earlier steps wrote; Step 3 sets `pytest` up.
+The steps extend the same game, so some depend on earlier changes. Do Steps 1 to 3 in order, because they build up `main` and the options of the game. Step 4 (`json`) and Step 5 (`re`) can then be done in either order. Step 6 and Step 7 (`pytest`) come last, because they test what the earlier steps wrote; Step 3 sets `pytest` up.
 
 Some steps give you the code, some a skeleton to complete, and some only a signature and the test it must pass. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards. This exercise is an appendix : pick the libraries you want.
 
@@ -35,7 +35,7 @@ print(day_number, words[day_number % len(words)], len(words))
 289 drill 935
 ```
 
-Subtracting two dates gives a `timedelta`, and its `.days` is a whole number. The `%` operator is the remainder after division : after 935 days the count has passed the end of the word list, and the remainder starts again at the first word. Day 289 of 2026 is the word `drill`.
+Subtracting two dates gives a `timedelta`, and its `.days` is a whole number. The `%` operator is the remainder after division : after 935 days the count has passed the end of the word list, and the remainder starts again at the first word. The offset 289 selects the word `drill`.
 
 Now give the game an option. In `wordle/__main__.py` add `import sys` and `from datetime import date` at the top, and let `main` choose the secret itself :
 
@@ -45,7 +45,7 @@ Now give the game an option. In `wordle/__main__.py` add `import sys` and `from 
             day_number = (date.today() - date(2026, 1, 1)).days
             secret = words[day_number % len(words)]
         else:
-            secret = os.environ.get("WORDLE_SECRET", random.choice(words))
+            secret = "crane"
         print(
             "Guess the five-letter word. Type 'quit', 'letters', "
             "'hint' or 'stats'."
@@ -54,6 +54,10 @@ Now give the game an option. In `wordle/__main__.py` add `import sys` and `from 
 ```
 
 The lines that record the game stay as they are. `sys.argv` is the list of words typed on the command line; Step 2 looks at it properly. Start the game twice with `uv run python -m wordle --daily`, type `quit` each time and compare the word it reveals. It is the same word both times.
+
+:::hint
+The slides *The datetime Module* and *Date Arithmetic with timedelta* show creating dates and subtracting them. *Command-Line Arguments with sys.argv* shows reading options from `sys.argv[1:]`.
+:::
 
 ### Step 2 : Options from the command line
 
@@ -78,7 +82,7 @@ Give the game two more options : `--easy` gives the player ten guesses instead o
             day_number = (date.today() - date(2026, 1, 1)).days
             secret = words[day_number % len(words)]
         else:
-            secret = os.environ.get("WORDLE_SECRET", random.choice(words))
+            secret = "crane"
         max_guesses = ...
         hard = ...
 ```
@@ -107,7 +111,7 @@ A conditional expression fits on one line : `10 if "--easy" in options else 6`. 
             day_number = (date.today() - date(2026, 1, 1)).days
             secret = words[day_number % len(words)]
         else:
-            secret = os.environ.get("WORDLE_SECRET", random.choice(words))
+            secret = "crane"
         max_guesses = 10 if "--easy" in options else 6
         hard = "--hard" in options
         print(
@@ -132,7 +136,7 @@ For every earlier guess and its marks :
 - a letter that was green must be in the same place in the new guess
 - a letter that was yellow must be somewhere in the new guess
 
-This is the first function of this exercise that gets a test. `pytest` is a development tool, like `ruff`, so add it the same way; see *Testing with pytest* :
+This is the first function of this exercise that gets a test. `pytest` runs tests while developing the project, so install it with `uv add --dev`; see *Testing with pytest* :
 
 ```bash
 uv add --dev pytest
@@ -165,7 +169,7 @@ def test_follows_hints_keeps_green_letters_and_uses_yellow_letters() -> None:
 
 The history says that after `crane`, the C was in the right place, and the A was in the word but not in the third place. `caper` obeys both. `paper` moves the C, and `clink` leaves out the A. Run `uv run pytest` and make the test pass. If you wrote a `follows_hints` in the last step of Exercise 5, compare it with this one.
 
-Then use it in `play`. When `hard` is true and there is a history, a guess that does not follow the hints is refused with `That guess does not follow the revealed hints.` and does not count. Do the check after the word is known to be valid, because the function indexes into the guess and a word of three letters would break it. Play with `uv run python -m wordle --hard`, with `WORDLE_SECRET=crane` set : guess `slate`, then `trick`.
+Then use it in `play`. When `hard` is true and there is a history, a guess that does not follow the hints is refused with `That guess does not follow the revealed hints.` and does not count. Do the check after the word is known to be valid, because the function indexes into the guess and a word of three letters would break it. Play with `uv run python -m wordle --hard`, with `secret = "crane"` in `wordle/__main__.py` set : guess `slate`, then `trick`.
 
 :::hint
 The slide *Zip Function*, in module 07, pairs two sequences, and *Iterating with enumerate*, in module 04, adds the position.
@@ -282,14 +286,14 @@ In `wordle/__main__.py`, add `from wordle.storage import load_saved_game`, and p
                 day_number = (date.today() - date(2026, 1, 1)).days
                 secret = words[day_number % len(words)]
             else:
-                secret = os.environ.get("WORDLE_SECRET", random.choice(words))
+                secret = "crane"
             max_guesses = 10 if "--easy" in options else 6
             hard = "--hard" in options
 ```
 
 The limit and the hard flag now come from the save when there is one, and from the options only for a new game. Then call `guesses, won = play(secret, words, max_guesses, hard, history)`.
 
-Play with `WORDLE_SECRET=crane`, guess `slate` and then stop the game with Ctrl+C. Open `save.json` :
+Play with `secret = "crane"` in `wordle/__main__.py`, guess `slate` and then stop the game with Ctrl+C. Open `save.json` :
 
 ```json
 {
@@ -467,6 +471,10 @@ def test_clean_words_keeps_lowercase_five_letter_words(line: str) -> None:
 ```
 
 The decorator names the parameter and lists the values; pytest calls the function with each. The test checks that cleaning a word and its capitalised copy leaves exactly one lower-case word. Run it with `-v` to see each case :
+
+:::hint
+The slide *Exceptions and Parametrized Tests* shows `pytest.mark.parametrize` passing each listed value to the named test parameter.
+:::
 
 ```bash
 uv run pytest tests/test_ex13.py -v

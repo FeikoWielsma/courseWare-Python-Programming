@@ -34,7 +34,7 @@ def connect(path: str = "wordle.db") -> sqlite3.Connection:
     return connection
 ```
 
-`sqlite3.connect` opens the file, and creates it when it does not exist. `CREATE TABLE IF NOT EXISTS` makes the function safe to call at the start of every game : the first call makes the table, later calls find it. SQLite has no `BOOLEAN`, so `won` is an `INTEGER` holding `0` or `1`, the same convention as the history file. Read *DB API Concepts* if you want the picture of connection, cursor and result. Creating the table does not need a `commit()`; only statements that change rows do, and the next step says who commits those.
+`sqlite3.connect` opens the file, and creates it when it does not exist. `CREATE TABLE IF NOT EXISTS` makes the function safe to call at the start of every game : the first call makes the table, later calls find it. SQLite stores Boolean values as integers, so `won` holds `0` or `1`, the same convention as the history file. Read *DB API Concepts* if you want the picture of connection, cursor and result. Creating the table does not need a `commit()`; only statements that change rows do, and the next step says who commits those.
 
 Check it in a Python session :
 
@@ -56,11 +56,17 @@ connection.close()
 
 A connection holds the file open until you close it. Closing it explicitly is the habit to keep, and the last step of this exercise makes it automatic.
 
-There is now a file `wordle.db` in the project folder. Like the `words.txt` of Exercise 9 used to be, it is created in the working directory, so start the game from the project folder. Finding a fixed location for it is left to the last step, If time permits.
+:::hint
+The slide *DB API Concepts* shows connecting to SQLite and creating a table with `execute`. *Check Database Version* shows fetching a result and closing the connection.
+:::
+
+There is now a file `wordle.db` in the project folder. It is created in the working directory, so start the game from the project folder. Finding a fixed location for it is left to the last step, If time permits.
 
 ### Step 2 : Record a finished game
 
 Add a function that stores one game. The time is given, in the ISO text format SQLite sorts correctly :
+
+The slide *Recording a Timestamp* shows `datetime.now().isoformat(timespec="seconds")`. Keep that supplied expression while implementing the database insert.
 
 ```python
 def record_game(connection: sqlite3.Connection, secret: str, guesses: int, won: bool) -> None:
@@ -93,7 +99,7 @@ The slide *Parameterized Queries* writes `?` in the statement and passes the val
 :::
 
 :::hint
-The statement is `INSERT INTO games (played_at, secret, guesses, won) VALUES (?, ?, ?, ?)`. The database has no `bool`, so pass `int(won)`.
+The statement is `INSERT INTO games (played_at, secret, guesses, won) VALUES (?, ?, ?, ?)`. Store the Boolean as an integer with `int(won)`.
 :::
 
 :::solution
@@ -265,6 +271,8 @@ Add `"streak": streak` to the dictionary. The finished function is in `solutions
 
 ### Step 6 : Use the database in the game
 
+#### 6a
+
 Everything is ready to replace the history file. In `wordle/game.py`:
 
 - import `closing` from `contextlib`, and `connect` and `summary` from `wordle.stats`; `print_stats` needs all three
@@ -284,10 +292,16 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> tuple[int, bool
     return guess_count, False
 ```
 
+:::hint
+The slide *return Statement* shows that a function returns values to its caller, and *Usage of Tuples*, in module 03, shows unpacking a pair. Return the count with the Boolean on both exit paths.
+:::
+
+#### 6b
+
 In `wordle/__main__.py`, keep the secret in a variable, unpack what `play` returns and record the game. Add `from wordle.stats import connect, record_game` :
 
 ```python
-        secret = os.environ.get("WORDLE_SECRET", random.choice(words))
+        secret = "crane"
         guesses, won = play(secret, words)
         with closing(connect()) as connection, connection:
             record_game(connection, secret, guesses, won)
@@ -299,6 +313,12 @@ Add `from contextlib import closing` at the top. The `with` line has two parts, 
 - The second part, `connection`, is the transaction. When the block ends without an error the changes are committed, and when it ends with an error they are rolled back. This is the single place in the program where a game is committed : `record_game` only inserts, and the caller decides. The parts leave in reverse order, so the commit comes before the close.
 
 A game you stop with Ctrl+C or Ctrl+D never reaches the `record_game` line, so it is not recorded. A game you give up with `quit` ends the loop and counts as lost.
+
+:::hint
+The slide *Using with*, in the database module, shows `closing(...)` together with the connection's transaction block. Keep `record_game` inside that block so it commits before the connection closes.
+:::
+
+#### 6c
 
 Now rewrite `print_stats` so that the `stats` command reports the new numbers. It must print three lines : the totals and win rate with one decimal, the wins per guess count as `#` bars, and the streak :
 
@@ -313,7 +333,7 @@ def print_stats() -> None:
     print(...)  # Current streak: 1
 ```
 
-Play four games with `WORDLE_SECRET=crane` : win in two (`slate`, `crane`), win in one (`crane`), give up (`quit`) and win in three (`slate`, `trace`, `crane`). Type `stats` at the first prompt of a fifth game :
+Play four games with `secret = "crane"` in `wordle/__main__.py` : win in two (`slate`, `crane`), win in one (`crane`), give up (`quit`) and win in three (`slate`, `trace`, `crane`). Type `stats` at the first prompt of a fifth game :
 
 ```text
 Games played: 4; won: 3; win rate: 75.0%.

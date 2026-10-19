@@ -4,6 +4,8 @@ The game gives the same rejection for every bad guess, and a missing word list o
 
 Continue in your own `wordle` project, or use `exercises/starters/08-exception-handling/`, the finished Exercise 7.
 
+After editing a module, restart the Python interpreter and repeat its imports before trying the new definitions. Previously imported code stays in an existing session.
+
 ### Step 1 : Name an invalid guess
 
 Add this class below `WORD_LENGTH` in `wordle/scoring.py` :
@@ -16,6 +18,10 @@ class InvalidGuess(ValueError):  # noqa: N818  # Contracted name from plan secti
 This creates a specific `ValueError` the game can catch. See *User Defined Exceptions*; Module 11 covers classes in detail. The `noqa` comment permits the course's exception name instead of Ruff's preferred `Error` suffix.
 
 Next, make the validator raise this exception with a reason.
+
+:::hint
+The slide *User Defined Exceptions* defines a new exception class using an existing exception type. Keep the supplied class definition above the functions that use it.
+:::
 
 ### Step 2 : Explain why a guess is invalid
 
@@ -141,19 +147,17 @@ except InvalidGuess as error:
 
 ### Step 4 : Stop cleanly when play cannot continue
 
-In `wordle/__main__.py`, wrap loading the words and playing the game in handlers for a missing file and interrupted input. Keep `os`, `random`, `play` and `load_words` imported, and keep the existing guard below `main`.
+In `wordle/__main__.py`, wrap loading the words and playing the game in a handler for interrupted input. Keep `play` and `load_words` imported, and keep the existing guard below `main`.
 
 ```python
 def main() -> None:
     try:
         ...  # load words, print the welcome message and play
-    except FileNotFoundError:
-        ...  # explain how to restore the word list
     except (KeyboardInterrupt, EOFError):
         ...  # print a newline followed by a friendly stopping message
 ```
 
-For a missing file, print `The word list is missing. Restore words.txt and try again.` For interrupted input, print `\nGame stopped.` Try Ctrl+C while the game waits for a guess. End-of-input is Ctrl+D on Unix terminals, or Ctrl+Z followed by Enter on Windows. To try the missing-file case, temporarily rename `words.txt`, run the game, and restore the filename immediately afterwards.
+For interrupted input, print `"\nGame stopped."`. Try Ctrl+C while the game waits for a guess. End-of-input is Ctrl+D on Unix terminals, or Ctrl+Z followed by Enter on Windows.
 
 :::hint
 
@@ -163,7 +167,7 @@ The slide *Typed Exception Handling* shows several `except` clauses after one `t
 
 :::hint
 
-The game can recover from one bad guess, so that handler belongs inside `play`. Missing data or interrupted input ends the session, so those handlers belong in `main`. A tuple lets one handler catch either interruption type.
+The game can recover from one bad guess, so that handler belongs inside `play`. Interrupted input ends the session, so those handlers belong in `main`. A tuple lets one handler catch either interruption type.
 
 :::
 
@@ -178,23 +182,15 @@ def main() -> None:
             "Guess the five-letter word. Type 'quit' to give up, "
             "'letters' for the letters tried."
         )
-        play(os.environ.get("WORDLE_SECRET", random.choice(words)), words)
-    except FileNotFoundError:
-        print("The word list is missing. Restore words.txt and try again.")
+        secret = "crane"
+        play(secret, words)
     except (KeyboardInterrupt, EOFError):
         print("\nGame stopped.")
 ```
 
 :::
 
-Finally, set `WORDLE_SECRET` to `crane` and play again :
-
-```powershell
-$env:WORDLE_SECRET = "crane"
-uv run python -m wordle
-```
-
-In Bash, use `WORDLE_SECRET=crane uv run python -m wordle`. Enter `cran`, `cr4ne`, `zzzzz`, then `crane`. Captured output, with typed input omitted :
+Keep the fixed secret `"crane"` and run `uv run python -m wordle`. Enter `cran`, `cr4ne`, `zzzzz`, then `crane`. Captured output, with typed input omitted :
 
 :::output
 
@@ -209,7 +205,7 @@ Got it in 1!
 
 :::
 
-All three invalid guesses leave the first turn available. Remove the override with `Remove-Item Env:WORDLE_SECRET` in PowerShell, or `unset WORDLE_SECRET` if exported in Bash, and play a random game. The solver's `hint` command should still work.
+All three invalid guesses leave the first turn available. Change the secret in `wordle/__main__.py` to another practice word and play again, then restore `"crane"`. The solver's `hint` command should still work.
 
 ### If time permits
 

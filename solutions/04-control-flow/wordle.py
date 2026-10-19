@@ -1,11 +1,11 @@
 """Wordle, as it stands at the end of Exercise 4."""
 
-import os
-import random
-from pathlib import Path
 
-words = Path("words.txt").read_text(encoding="utf-8").split()
-secret = os.environ.get("WORDLE_SECRET", random.choice(words))
+words = [
+    "hello", "crane", "react", "paper", "slate", "error", "house", "ghost",
+    "world", "money", "speed", "geese", "trace", "grace", "raise", "trick",
+]
+secret = "crane"
 max_guesses = 6
 used_letters: set[str] = set()
 

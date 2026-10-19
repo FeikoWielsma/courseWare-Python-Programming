@@ -408,6 +408,25 @@ match command:
 
 ---
 
+# Unpacking in for Loops
+
+- A `for` loop unpacks each item the same way, and the unpacking can nest :
+
+```python
+rows = [(1,), (2,)]
+for (number,) in rows:
+    print(number)  # 1, then 2
+
+records = [(1, ("Imagine", "John Lennon"))]
+for number, (title, artist) in records:
+    print(number, title, artist)  # 1 Imagine John Lennon
+```
+
+> `demo13 · tuple_unpacking`
+
+---
+
+
 # Summary : Control Flow
 
 - Branching statements choose which code runs :

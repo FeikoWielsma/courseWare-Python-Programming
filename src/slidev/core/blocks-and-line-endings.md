@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Blocks and Line Endings
-pills: ["demo04 · lines_and_identation"]
+pills: ["demo03 · lines_and_identation"]
 ---
 
 # Blocks and Line Endings

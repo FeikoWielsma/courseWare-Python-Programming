@@ -341,22 +341,6 @@ print(backup)  # 'Toxic'
 
 ---
 
-# Unpacking in for Loops
-
-- A `for` loop unpacks each item the same way, and the unpacking can nest :
-
-```python
-rows = [(1,), (2,)]
-for (number,) in rows:
-    print(number)  # 1, then 2
-
-records = [(1, ("Imagine", "John Lennon"))]
-for number, (title, artist) in records:
-    print(number, title, artist)  # 1 Imagine John Lennon
-```
-
----
-
 # Tuple Functions
 
 - Only functions and methods that do not modify tuple available
@@ -545,14 +529,54 @@ readings: tuple[float, ...] = (1.5, 2.5, 3.5)
 | `fromkeys()` | Create new dictionary with keys from seq, values set to value |
 | `dict.clear()` | Removes all elements of dictionary dict |
 | `dict.copy()` | Returns a shallow copy of dictionary dict |
-| `dict.get(key)` | For key key, returns value or default if key not in dictionary |
+| `dict.get(key, default)` | Returns the value for the key, or the default when the key is absent |
 | `dict.popitem()` | Removes and returns the (key, value) pair added last |
-| `dict.items()` | Returns a view of dict'backup (key, value) tuple pairs |
-| `dict.keys()` | Returns a view of dictionary dict'backup keys |
-| `dict.update(dict2)` | Adds dictionary dict2'backup key-values pairs to dict |
-| `dict.values()` | Returns a view of dictionary dict'backup values |
+| `dict.items()` | Returns a view of the dictionary's `(key, value)` pairs |
+| `dict.keys()` | Returns a view of the dictionary's keys |
+| `dict.update(dict2)` | Adds or replaces entries using the key-value pairs in `dict2` |
+| `dict.values()` | Returns a view of the dictionary's values |
 
 > `demo11 · dictionarymethods`
+
+---
+
+# Using Library Code
+
+- A module is a file of Python code whose names can be imported
+- The standard library supplies modules with Python :
+  - `import math` makes its names available through `math.name`
+  - `from math import sqrt` makes just `sqrt` available directly
+
+```python
+import math
+from math import sqrt
+
+print(math.sqrt(9))  # 3.0
+print(sqrt(16))  # 4.0
+```
+
+- Imports run before the code that uses those names
+- Standard-library modules need no `uv add` command
+
+> `demo12 · library_imports`
+
+---
+
+
+# Choosing a Random Item
+
+- `random.choice` returns one item from a nonempty sequence
+- Repeated runs can choose different items
+- A fixed value such as `track = "Imagine"` makes an example easier to check
+
+```python
+import random
+
+tracks = ["Imagine", "Yesterday", "Respect"]
+print(random.choice(tracks))
+```
+
+> `demo13 · random_choice`
 
 ---
 

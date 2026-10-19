@@ -244,7 +244,7 @@ PRG400 Python Programming, a SpiralTrain classroom course, laid out as
 **Presentation as Code** like the sibling Advanced Python, Go, C# and TNO Python
 courses. It shares its build with them through `../Presentation-Template`.
 
-Modules 01 to 11 came from a PowerPoint deck, kept for reference as
+Modules 01 to 11 came from a PowerPoint deck, kept for reference in `archive/` as
 `PRG400-Python-Programming_og.pdf` and `PRG400-Python-Programming-Exercises_og.pdf`.
 The `uv` and `ruff` material inside module 01, and the two appendices,
 `12-appendix-type-hinting` and `13-appendix-libraries`, are new.
@@ -462,10 +462,10 @@ the ignored `libraries/build/demo-baseline/`. Quoted stdout is compared as an
 ordered excerpt with whitespace ignored; annotated reference fences and recorded
 benchmark timings are classified explicitly. Scraping uses the supplied first-page
 fixture by default; `--live` opts into the real site and optional second page.
-The migration baseline and findings are in `build/notes/libraries-review.md`.
+The migration baseline and findings are in `build/notes/history/libraries-review.md`.
 
 Music metadata and photo attribution are recorded in `libraries/data/SOURCES.md`.
 Rebuild the data with `make-data.py` without `--check`; it also regenerates the
 report files. Rebuild native slide states with `native_states.py` without
 `--check` after changing their demo excerpts. Both checks gate CI. The rewrite
-and verification record is `build/notes/libraries-slidev-phase2.md`.
+and verification record is `build/notes/history/libraries-slidev-phase2.md`.

@@ -3,7 +3,7 @@
 # This lives in its own file rather than in pyproject.toml on purpose. The
 # student bundle ships this file but deliberately ships no pyproject.toml,
 # because the setup exercise has the student create one with `uv init`. That
-# exercise also has them install the Astral Ruff extension, so without a config
+# optional appendix covers the Astral Ruff extension, so without a config
 # of its own the editor would fall back to ruff's stock defaults and underline
 # several hundred things in the course's own demo files, many of them the very
 # patterns being taught.
@@ -26,7 +26,7 @@ force-exclude = true
 exclude = [
     # Written badly on purpose : it is the file the linting slide runs ruff over,
     # and every finding in it is the lesson.
-    "demos/01-pythonintro/03_ruff_findings.py",
+    "demos/14-appendix-python-tooling/02_ruff_findings.py",
     # archive/ holds what the course no longer uses : the calculator exercise
     # spine, demo folders no slide referenced (earlier versions of the course
     # and adjacent courses), and old exercise documents. Kept for trainers,
@@ -86,7 +86,7 @@ ignore = [
 # that file with the reason written down. Do not "fix" any of these.
 
 # The conversion-functions slide calls str('abc') to show what str() does.
-"demos/02-variablesanddatatypes/06_conversionfunctions.py" = ["UP018"]
+"demos/02-variablesanddatatypes/07_conversionfunctions.py" = ["UP018"]
 
 # The tuple demo calls tuple() to show the constructor beside the literal.
 "demos/03-datastructures/06_tuples.py" = ["C408"]
@@ -120,7 +120,7 @@ ignore = [
 
 # The format-specification slide ends by showing the % operator and str.format
 # once, so they can be recognised in older code.
-"demos/02-variablesanddatatypes/13_formatspecs.py" = ["UP031", "UP032"]
+"demos/02-variablesanddatatypes/14_formatspecs.py" = ["UP031", "UP032"]
 
 # The sets demo writes a duplicate on purpose, because dropping it is what a
 # set does.

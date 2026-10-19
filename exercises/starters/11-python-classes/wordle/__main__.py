@@ -1,7 +1,5 @@
 """Start Wordle when run as a module."""
 
-import os
-import random
 from contextlib import closing
 
 from wordle.game import play
@@ -17,7 +15,7 @@ def main() -> None:
             "Guess the five-letter word. Type 'quit', 'letters', "
             "'hint' or 'stats'."
         )
-        secret = os.environ.get("WORDLE_SECRET", random.choice(words))
+        secret = "crane"
         guesses, won = play(secret, words)
         with closing(connect()) as connection, connection:
             record_game(connection, secret, guesses, won)

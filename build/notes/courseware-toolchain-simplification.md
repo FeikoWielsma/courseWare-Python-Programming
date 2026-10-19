@@ -1,8 +1,14 @@
-# Courseware toolchain simplification: implementation handoff
+# Courseware toolchain simplification: design record
 
 Recorded 2026-10-18 after the Python fundamentals and Libraries Slidev work.
-This records proposed maintenance work for a future agent. The user requested
-this document; implementation of the redesign has not started.
+The redesign described below is in place. Current commands live in
+`MAINTAINING.md`. Historical handoffs live in `build/notes/history/`.
+
+One gap remains. The Slidev dev server, `dev.ts` in the pinned
+Presentation-Template, still prepares its Vite project under
+`build/slidev/authoring/` rather than `.courseware/`. Real builds already
+use `.courseware/<deck>/<variant>/`. The Marp HTML trainer-notes waiver stays
+as it is.
 
 ## Objective
 
@@ -68,7 +74,7 @@ Release work exposed concrete consequences:
 
 Relevant implementation commits: `922ab17`, `b51c313`, `df16703`. These are
 context, not a guarantee that a future checkout has no subsequent changes.
-Libraries verification is recorded in [the Phase 3 report](libraries-slidev-phase3.md).
+Libraries verification is recorded in [the Phase 3 report](history/libraries-slidev-phase3.md).
 Check the remote workflow/release for publication status; this document is not
 a release-success record.
 

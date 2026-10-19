@@ -89,10 +89,10 @@ terminal, then open **Course slides** on port **4188** in the **Ports** panel.
    This needs no administrator rights and leaves any Python already on the
    machine alone.
 
-3. Install an editor. The course demonstrates
-   [**VS Code**](https://code.visualstudio.com) with the Microsoft **Python**
-   extension and the Astral [**Ruff**](https://docs.astral.sh/ruff/) extension.
-   Any editor works, but the slides assume VS Code.
+3. Install [**VS Code**](https://code.visualstudio.com) with the Microsoft
+   **Python** extension. Exercise 1 explains how to open a folder, create a
+   Python file, save it and run it. The optional *Python Tooling and Reference*
+   appendix covers Ruff and the more detailed project settings.
 
 ## Creating your own project
 
@@ -100,12 +100,13 @@ You build your own project for the code you write this week, the same way you
 would at work. The bundle deliberately ships no `pyproject.toml`, you create one :
 
 ```bash
-uv init wordle
+uv init --bare --python 3.14 wordle
 cd wordle
 ```
 
-`uv init` writes a `pyproject.toml` and pins the project to a Python version.
-Exercise 1 walks through it. When an exercise needs a tool or a package, add it
+This creates the `wordle` folder and a `pyproject.toml` with the project's Python
+requirement. Exercise 1 walks through creating and running `wordle.py` inside it.
+When an exercise needs a tool or a package, add it
 from inside that folder, for example the type checker in the type hinting appendix :
 
 ```bash
@@ -122,10 +123,9 @@ A starter folder is a complete project of its own : `cd` into it and
 `uv run python -m wordle` (or `uv run python wordle.py` before Exercise 6) works
 straight away.
 
-The bundle does ship a `ruff.toml`. That is the linter configuration the course
-material is written against, so the Ruff extension will not flag the demo files
-over style choices the course makes on purpose, and it holds the code you write
-to the same rules.
+The bundle also ships `ruff.toml`, the configuration used to check the course
+code. Ruff is optional for the opening exercises; the tooling appendix explains
+its editor extension, checks and formatting commands.
 
 ## Running a demo
 

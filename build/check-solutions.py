@@ -36,7 +36,6 @@ def run(
     """Run a command in a stage and return its standard output."""
     environment = os.environ.copy()
     environment.pop("VIRTUAL_ENV", None)
-    environment["WORDLE_SECRET"] = "crane"
     if env_extra:
         environment.update(env_extra)
     result = subprocess.run(
@@ -69,7 +68,7 @@ def transcript_for(name: str) -> tuple[list[str], str]:
     if number == 1:
         return ["uv", "run", "python", "wordle.py"], ""
     if number in (2, 3):
-        return ["uv", "run", "python", "wordle.py"], "crane\n"
+        return ["uv", "run", "python", "wordle.py"], "react\n"
     if number <= 5:
         return ["uv", "run", "python", "wordle.py"], "slate\ncrane\n"
     return ["uv", "run", "python", "-m", "wordle"], "slate\ncrane\n"
