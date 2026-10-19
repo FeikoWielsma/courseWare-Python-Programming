@@ -91,6 +91,13 @@ jobs:
           path: .courseware/ci/ci-build.log
           retention-days: 14
 
+      - name: DEBUG post the gate log to a draft release
+        if: ${{ failure() }}
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bun build/ci-post-log.ts
+
       - name: Assemble and verify the student bundle
         shell: bash
         run: |
