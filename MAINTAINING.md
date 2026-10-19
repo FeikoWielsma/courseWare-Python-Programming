@@ -1,85 +1,40 @@
 # Maintaining PRG400
 
-Use [AGENTS.md](AGENTS.md) for course rules and
-[build/notes](build/notes/README.md) for historical evidence and content reviews.
-The [shared configured-course guide](../Presentation-Template/docs/courseware.md)
-covers pinned toolchains, shared commands, manifests, overrides, bundling and
-release. This file records the PRG400-specific command and configuration details.
+[AGENTS.md](AGENTS.md) contains the course rules and source contracts. The
+[course backlog](docs/backlog.md) records trainer-deferred exercise work and
+known rendering issues. For shared tools and Slidev behavior, use the
+[configured build guide](../Presentation-Template/docs/courseware.md),
+[source tools guide](../Presentation-Template/docs/course-tools.md) and
+[Slidev guide](../Presentation-Template/docs/slidev.md).
 
-## Course commands
+PRG400 declares the fundamentals and libraries decks, their output locations,
+bundle allowlist and student repository targets in `courseware.config.ts`.
+Build scripts are declared in `build/package.json`; CI calls
+`build/ci-build.sh`. The course pins Presentation-Template in
+`build/toolchain.json`. Set `PRESENTATION_TEMPLATE_DIR` only for local shared
+work; manifests mark those builds so they cannot be released.
 
-First use: install Bun and uv, run `bun run --cwd build toolchain`, then sync
-both uv projects using the checks below. Rendering needs Chrome; use the
-machine's `CHROME_PATH` or install Puppeteer's browser with
-`bunx puppeteer browsers install chrome`.
+The Slidev presentation uses its local launcher. The exercise site opens from
+disk and embeds the Marp fallback for portability. The standalone Marp HTML has
+an explicit trainer-note waiver; the embedded site copy removes those notes.
 
-The authoritative scripts are in `build/package.json`. Run them from the course
-root with `--cwd build`:
+## Everyday commands
 
-```powershell
-bun run --cwd build build
-bun run --cwd build lint
-bun run --cwd build build -- --exercises
-bun run --cwd build libraries
-bun run --cwd build site
-bun run --cwd build verify -- fundamentals
-bun run --cwd build verify -- libraries
+```bash
+bun run --cwd build build                         # fundamentals
+bun run --cwd build build -- libraries            # companion deck
+bun run --cwd build build -- libraries --serve    # companion authoring
+bun run --cwd build build -- --exercises          # exercise PDF
+bun run --cwd build site                          # portable exercise site
 ```
 
-`build` renders the fundamentals Slidev deck; `libraries` renders the companion
-deck. `site` builds a fresh fundamentals Marp fallback, then assembles the
-portable exercise site and embeds the Marp HTML. The site build owns this
-prerequisite, so CI does not schedule another fundamentals Marp build. Run
-`bun run --cwd build` to inspect all current scripts and flags.
+`build/ci-build.sh` runs source checks, the playable Wordle stages, libraries
+solutions and each published artifact once. Slidev checks rendered layout and
+basic navigation as part of its build. The shared template owns its own tests;
+courses do not rerun that toolchain suite on every content edit.
 
-## Checks
-
-```powershell
-uv sync
-uv sync --project libraries
-uv run ruff check .
-uv run python build/check-solutions.py
-uv run python build/site/check-quiz.py
-$template = bun run build/toolchain.ts --path
-uv run python "$template/build/tools/check-fences.py"
-uv run python "$template/build/tools/check-slide-references.py"
-uv run python "$template/build/tools/make-starters.py" --check
-```
-
-`build/ci-build.sh` runs the full CI groups, including demo and library checks,
-Slidev delivery, site assembly and artifact verification.
-
-## Course configuration
-
-`courseware.config.ts` declares the `fundamentals` and `libraries` decks, their
-renderer, slide archive and `marpOutput` path. It also owns the student bundle
-allowlist, generated site files, release pointer and student repository targets.
-Add a new demo directory to `bundle.include` when needed. The student bundle is
-an allowlist and includes Marp outputs through their artifact manifests.
-
-Both Slidev development servers use `.courseware/<deck>/authoring/`. Build
-variants and their `artifacts.json` manifests live in
-`.courseware/<deck>/<variant>/`. Marp fallback PDFs and HTML use the paths set by
-each deck's `marpOutput` configuration. Keep these locations in course config;
-shared renderer behavior belongs in Presentation-Template.
-
-## Release
-
-`.forgejo/workflows/release.yml` defines push and manual release jobs. Inspect it
-when changing triggers or required secret names. Use its dry-run input to inspect
-a release plan. `build/toolchain.json` pins Presentation-Template; use
-`PRESENTATION_TEMPLATE_DIR` only for local cross-repository development. Builds
-using that override are marked in their manifests and cannot be released. After a
-shared change is merged, update the pin with `bun run build/toolchain.ts pin -- <commit>`.
-
-## Delivery limits
-
-The Slidev presentation needs its local launcher; the exercise site opens from
-disk. Its embedded deck uses Marp for that portability. Some Slidev PDF headers
-remain cropped; the existing evidence and scope are in the
-[introduction review](build/notes/gentler-introduction.md). Keep this limitation
-visible until a rendered export demonstrates the fix.
-
-The bundle currently waives trainer-note findings in the standalone Marp HTML;
-the embedded site copy removes those notes. The waiver is explicit in
-`courseware.config.ts` and remains separate from this toolchain migration.
+`tests/` contains course-specific checks and fixtures. Optional
+`test:animations` runs the exhaustive animation diagnostics against built slides;
+`test:examples` runs library demos and checks generated data/native slides. Use
+these when changing those examples or animation components. `tools/libraries/`
+contains the two authoring generators, not release steps.

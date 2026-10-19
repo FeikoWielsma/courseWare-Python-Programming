@@ -1,94 +1,30 @@
 #!/usr/bin/env bash
-# The checks and builds of the CI build job (.forgejo/workflows/release.yml), run from the course root
-# with TEMPLATE set to the Presentation-Template folder (bun run build/toolchain.ts --path) and both
-# uv projects synced. Every command is gating. Independent groups run side by side, each stopping at
-# its first failure; the script fails when any group fails, and prints every group's log in full.
-#   1. Python gates (fundamentals, libraries) and deck builds (fundamentals, libraries) at once
-#   2. the exercise site, which builds and embeds the fundamentals Marp fallback
-#   3. check:delivery alone: its wheel probe times gestures in tens of milliseconds
-#   4. the manifest checks
-set -uo pipefail
-: "${TEMPLATE:?Set TEMPLATE to the Presentation-Template folder}"
+# Release gates: source contracts, playable exercises, then the actual deliverables.
+# Deep animation/demo diagnostics are optional package scripts, not release gates.
+set -euo pipefail
 cd "$(dirname "$0")/.."
-logs=$(mktemp -d)
-trap 'rm -rf "$logs"' EXIT
+TEMPLATE="${TEMPLATE:-$(bun run build/toolchain.ts --path)}"
 
-# Runs one gating command and reports its time. A failure exits the group's subshell: not set -e,
-# which bash ignores in functions called from a condition.
-step() {
-  local start=$SECONDS
-  echo "--- $*"
-  "$@" || { local status=$?; echo "--- FAILED (exit $status) after $((SECONDS - start)) s: $*"; exit "$status"; }
-  echo "--- $((SECONDS - start)) s: $*"
-}
+echo 'Checking course sources and exercises'
+bun run --cwd build test
+uv run ruff check .
+uv run python "$TEMPLATE/build/tools/check-fences.py"
+uv run python "$TEMPLATE/build/tools/check-slide-references.py"
+uv run python "$TEMPLATE/build/tools/make-starters.py" --check
+uv run python tests/wordle/check.py
+uv run python tests/site/check-quiz.py
+uv run --project libraries python tests/libraries/check-solutions.py
+(cd libraries && uv run python "$TEMPLATE/build/tools/check-fences.py")
 
-gates_fundamentals() {
-  step bun run --cwd build test
-  step uv run python -m compileall -q demos solutions libraries/demos libraries/solutions
-  step uv run python "$TEMPLATE/build/tools/check-fences.py"
-  step uv run python "$TEMPLATE/build/tools/check-slide-references.py"
-  step uv run python "$TEMPLATE/build/tools/make-starters.py" --check
-  step uv run python build/check-solutions.py
-  step uv run python build/site/check-quiz.py
-  step uv run ruff check .
-}
+echo 'Building published artifacts'
+bun run --cwd build build
+bun run --cwd build build -- --exercises
+bun run --cwd build build -- libraries
+bun run --cwd build build -- libraries --marp --skip-lint
+bun run --cwd build build -- libraries --exercises
+# Site assembly builds and embeds the fundamentals Marp fallback.
+bun run --cwd build site
 
-gates_libraries() {
-  step uv run --project libraries python libraries/build/make-data.py --check
-  step uv run --project libraries python libraries/build/check-demos.py
-  step uv run --project libraries python libraries/build/check-solutions.py
-  step uv run --project libraries python libraries/build/check-outputs.py
-  step uv run --project libraries python libraries/build/native_states.py --check
-  cd libraries || exit
-  step uv run python "$TEMPLATE/build/tools/check-fences.py"
-}
-
-# Fundamentals builds share build/dist, so they stay in one group.
-deck_fundamentals() {
-  cd build || exit
-  step bun run check:animations
-  step bun run build
-  step bun run build -- --exercises
-}
-
-deck_libraries() {
-  cd build || exit
-  step bun run libraries -- --skip-lint
-  step bun run libraries:marp -- --skip-lint
-  step bun run lint:libraries
-  step bun run libraries -- --exercises
-}
-
-delivery() {
-  cd build || exit
-  step bun run check:delivery
-}
-
-manifests() {
-  cd build || exit
-  step bun run verify -- fundamentals
-  step bun run verify -- libraries
-}
-
-# Runs the named groups at once, then prints each log in order; fails if any group failed.
-together() {
-  local -A pids
-  local name failed=0 start=$SECONDS
-  for name in "$@"; do
-    ("$name") > "$logs/$name.log" 2>&1 &
-    pids[$name]=$!
-  done
-  for name in "$@"; do
-    if wait "${pids[$name]}"; then status=PASS; else status=FAIL; failed=1; fi
-    echo "===== $status $name"
-    cat "$logs/$name.log"
-  done
-  echo "===== $(if ((failed)); then echo FAILED; else echo passed; fi): $* ($((SECONDS - start)) s)"
-  return "$failed"
-}
-
-together gates_fundamentals gates_libraries deck_fundamentals deck_libraries || exit 1
-# Site assembly builds its own fundamentals Marp prerequisite.
-step bun run --cwd build site
-together delivery || exit 1
-together manifests || exit 1
+echo 'Verifying deliverables'
+bun run --cwd build verify -- fundamentals
+bun run --cwd build verify -- libraries

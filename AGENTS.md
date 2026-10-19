@@ -8,15 +8,15 @@ Read first, in this order :
 2. `../Presentation-Template/docs/course-conventions.md` : frontmatter, demo pills,
    code fences, diagrams and appendices.
 3. This file : PRG400-specific decisions and contracts.
-4. `build/plan.md` (current design) and `build/tasks.md` (remaining backlog).
+4. [docs/backlog.md](docs/backlog.md) when continuing deferred exercise work or
+   investigating a known rendering limitation.
+5. [MAINTAINING.md](MAINTAINING.md) for course-specific operational notes.
 
-For configured builds, toolchain resolution and shared commands, read
-[`../Presentation-Template/docs/courseware.md`](../Presentation-Template/docs/courseware.md)
-and [MAINTAINING.md](MAINTAINING.md). Shared build changes belong in a
-Presentation-Template worktree and must keep other courses building.
-
-Historical migration records and content reviews are indexed in
-[`build/notes/README.md`](build/notes/README.md).
+For configured builds, read
+[`courseware.md`](../Presentation-Template/docs/courseware.md); source checks are in
+[`course-tools.md`](../Presentation-Template/docs/course-tools.md). For Slidev
+behavior, read [`slidev.md`](../Presentation-Template/docs/slidev.md). Make
+shared changes in a worktree that keeps other courses building.
 
 ## Course identity
 
@@ -41,9 +41,8 @@ which is retained as reference and never edited.
   teach calls and results before signatures introduce annotations.
 - **Teaching examples** use music and photos, WoW characters for classes, and a
   film watchlist for SQLite. The libraries course uses music and photos for data,
-  WoW for inheritance, and books.toscrape.com for scraping and SQLAlchemy. See
-  `build/notes/history/engaging-examples.md` before rewriting examples. Wordle
-  contracts remain separate.
+  WoW for inheritance, and books.toscrape.com for scraping and SQLAlchemy.
+  Wordle contracts remain separate.
 - **Pythonic code** applies to slides, demos, exercises and solutions. Keep an
   unpythonic form only when it is the lesson, and identify that lesson in a
   comment or scoped `ruff.toml` ignore.
@@ -60,9 +59,9 @@ which is retained as reference and never edited.
 The shared pattern is [`exercise-spine.md`](../Presentation-Template/docs/agents/exercise-spine.md).
 Here, `solutions/NN-<exercise stem>/` is a complete uv project and
 `exercises/starters/` is generated from solutions and handouts. Never edit a
-starter by hand. `build/check-solutions.py` runs each stage's tests (from
-`build/solution-tests/` for 05 to 12, from its solution folder for 13), mypy from
-Exercise 12, and scripted games against `build/transcripts/`.
+starter by hand. `tests/wordle/check.py` runs each stage's tests (from
+`tests/wordle/stages/` for 05 to 12, from its solution folder for 13), mypy from
+Exercise 12, and scripted games against `tests/wordle/transcripts/`.
 
 Names (`score_guess`, `play`, `Game`, module names) are contracts between text,
 solutions, tests and starters. Exercise text quotes solution code verbatim and
@@ -75,33 +74,12 @@ a first hint naming its teaching slide or demo. Keep timings out. Slides and dem
 stay separate from Wordle. `archive/` contains retired material, not source
 content.
 
-## Checks
+## Checks and release
 
-```powershell
-uv sync
-uv sync --project libraries
-$template = bun run build/toolchain.ts --path
-uv run python "$template/build/tools/check-fences.py"
-uv run python "$template/build/tools/check-slide-references.py"
-uv run python "$template/build/tools/make-starters.py" --check
-uv run ruff check .
-uv run python build/check-solutions.py
-uv run python build/site/check-quiz.py
-bun run --cwd build build -- --skip-lint
-bun run --cwd build build -- --exercises
-bun run --cwd build site
-bun run --cwd build verify -- fundamentals
-bun run --cwd build verify -- libraries
-```
+Use the scripts declared in `build/package.json` and the CI entry point in
+`build/ci-build.sh`; `courseware.config.ts` is the source for deck and bundle
+configuration. Add new demo folders to its `bundle.include` allowlist. When a
+lesson intentionally violates Ruff, scope the ignore and name the lesson in a
+comment. The student bundle ships `ruff.toml` and no `pyproject.toml`.
 
-`build/ci-build.sh` runs CI gates, including delivery and libraries checks. The
-site command builds a fresh fundamentals Marp prerequisite itself. `ruff` lives in
-`ruff.toml` because the student bundle ships that file and no `pyproject.toml`.
-When a lesson intentionally violates a Ruff rule, scope its ignore and name the
-lesson in a comment.
-
-## Releasing
-
-`.forgejo/workflows/release.yml` runs on pushes to `master`. Add new demo folders
-to `bundle.include` in `courseware.config.ts`. The bundle is an allowlist;
-MAINTAINING.md and the shared courseware guide describe operations.
+`.forgejo/workflows/release.yml` runs on pushes to `master`.

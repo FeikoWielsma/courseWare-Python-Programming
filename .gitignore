@@ -1,63 +1,29 @@
-﻿# Recursive patterns for all project types
-# Windows
+# System and editor files
 Thumbs.db
 Desktop.ini
-
-# Visual Studio / C++ / C#
-**/.vs/
-**/[Bb]in/
-**/[Oo]bj/
-**/[Xx]64/
-**/[Xx]86/
-**/[Dd]ebug/
-**/[Rr]elease/
-**/*.exe
-**/*.pdb
-**/*.suo
-**/*.user
-**/*.userosscache
-**/*.sln.doccache
-**/packages/
-**/*.nupkg
-
-# Java / Eclipse / IntelliJ / VS Code
-**/*.class
-**/*.jar
-**/*.war
-**/*.ear
-**/.project
-**/.classpath
-**/.settings/
+.DS_Store
 **/.idea/
 **/.vscode/
 
-# Python
+# Python and Bun environments/caches
 **/__pycache__/
 **/*.py[cod]
-**/*$py.class
 **/.venv/
 **/venv/
 **/env/
 **/.env
-
-# Rust
-**/target/
-
-# Node
 **/node_modules/
-
-# Database / System
-**/WiredTiger*
-**/journal/
+**/.mypy_cache/
+**/.ruff_cache/
+**/.pytest_cache/
 **/*.db-journal
 
-# Archives (Only if users want them ignored - let's be aggressive for now)
+# Generated archives
 **/*.zip
 **/*.rar
 **/*.7z
 **/*.gz
 **/*.tar
-
 
 # Presentation-as-Code build outputs
 build/dist/
@@ -84,14 +50,8 @@ build/site/dist/
 exercises/starters/*/uv.lock
 
 # Optional libraries deck build outputs
-# Only the maintained scripts are tracked; scratch scripts and QA output stay ignored.
+# Only renderer configuration is source; checks and generators live in tests/ and tools/.
 libraries/build/*
-!libraries/build/check-demos.py
-!libraries/build/check-outputs.py
-!libraries/build/check-solutions.py
-!libraries/build/check_support.py
-!libraries/build/make-data.py
-!libraries/build/native_states.py
 !libraries/build/slidev.config.ts
 libraries/PRG400-Python-Libraries-and-Tools*.pdf
 libraries/PRG400-Python-Libraries-and-Tools*.html

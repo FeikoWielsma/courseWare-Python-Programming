@@ -32,5 +32,5 @@ NASA imagery is generally available for educational reuse under its
 Rebuild offline from the repository root:
 
 ```bash
-uv run --project libraries python libraries/build/make-data.py
+uv run --project libraries python tools/libraries/make-data.py
 ```

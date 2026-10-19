@@ -69,9 +69,7 @@ jobs:
           uv sync --frozen
           uv sync --project libraries --frozen
 
-      # Every gate that used to be its own step, in build/ci-build.sh: the Python gates of both
-      # projects and the fundamentals and libraries deck builds run side by side, then
-      # check:delivery alone, then verify. Each group's log is printed in full.
+      # One readable release pipeline; exhaustive animation/demo checks are optional.
       - name: Check and build slides and exercises
         shell: bash
         env:
