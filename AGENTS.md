@@ -27,9 +27,10 @@ demos, and thirteen exercises that build one Wordle game. Modules 01 to 11 were 
 
 ## Course-specific rules
 
-- **Module 01 starts with running Python** : files, folders, the editor, the
-  terminal and the edit-save-run cycle. Keep only the uv setup needed to run a
-  file. Detailed tooling, Ruff and syntax reference belong in appendix 14.
+- **Module 01 opens with Python context** : What is Python, Background, Features
+  and Applications, followed by files, folders, the editor, the terminal and the
+  edit-save-run cycle. Keep only the uv setup needed to run a file. Detailed
+  tooling, Ruff and syntax reference belong in appendix 14.
 - **Exercise 1 practises running code** : plain `print()` statements, comments
   and repairing a syntax error. No imports, functions, annotations or file
   reading. Exercise 3 supplies practice words written directly in Python.

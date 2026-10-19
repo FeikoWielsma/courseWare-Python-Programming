@@ -25,6 +25,64 @@ Hello, Python!
 
 ---
 
+# Python Background
+
+- Guido van Rossum started Python at CWI in the Netherlands in 1989
+- The first public release followed in February 1991
+- The name comes from the comedy series *Monty Python's Flying Circus*
+- Python is open source :
+  - Its source code can be inspected, changed and shared under its licence
+  - It is free to use, including in commercial applications
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 140" width="100%" role="img" aria-label="Python milestones: development begins in 1989, first public release in 1991, Python 2 in 2000, Python 3 in 2008, Python 2 support ends in 2020">
+  <path d="M65 62H895" fill="none" stroke="currentColor" stroke-width="3" opacity=".4" />
+  <g fill="currentColor" font-family="sans-serif" text-anchor="middle">
+    <circle cx="65" cy="62" r="7" /><circle cx="255" cy="62" r="7" /><circle cx="465" cy="62" r="7" /><circle cx="675" cy="62" r="7" /><circle cx="895" cy="62" r="7" />
+    <g font-size="26" font-weight="600"><text x="65" y="33">1989</text><text x="255" y="33">1991</text><text x="465" y="33">2000</text><text x="675" y="33">2008</text><text x="895" y="33">2020</text></g>
+    <g font-size="18"><text x="65" y="100">Work begins</text><text x="255" y="100">Public release</text><text x="465" y="100">Python 2</text><text x="675" y="100">Python 3</text><text x="895" y="100">Python 2</text><text x="895" y="124">support ends</text></g>
+  </g>
+</svg>
+
+- Python 3 introduced changes that broke compatibility with Python 2
+- Python 2 examples in older books may need changes to run on Python 3
+
+---
+
+# Python Features
+
+- Python is a general-purpose language with an emphasis on readable code
+
+| Feature | Meaning in practice |
+| --- | --- |
+| High-level | Work with text, files and collections using built-in operations |
+| Interpreted | Run source code through the Python interpreter |
+| Interactive | Try statements directly at the `>>>` prompt |
+| Portable | Python runs on Windows, macOS and Linux |
+| Standard library | Python includes tools for files, dates, internet access and more |
+| Third-party packages | Install additional tools for specialised tasks |
+
+- Operating-system paths and external tools can still require platform-specific code
+- A library is reusable code; a package groups code that can be installed or imported
+
+---
+
+# Python Applications
+
+- Python programs range from short scripts to complete applications
+
+| Area | Example task | Common tools |
+| --- | --- | --- |
+| Automation | Rename photos and organise folders | Standard library |
+| Data analysis | Summarise listening history and plot trends | pandas, Matplotlib |
+| Web applications | Serve a music catalogue through a website | Django, Flask |
+| Scientific computing | Calculate with arrays of measurements | NumPy, SciPy |
+| Machine learning | Classify images using a trained model | scikit-learn, PyTorch |
+
+- Libraries provide specialised operations; Python code connects them
+- Large computations often run inside libraries implemented in compiled languages
+
+---
+
 # Source Code and Output
 
 - Source code is the text written in the Python language
@@ -348,64 +406,6 @@ Playing Imagine
 - The interactive interpreter displays the result of `2 + 3` directly
 - `exit()` returns to the terminal prompt; terminal commands run there
 - Interactive statements are not saved in a `.py` file
-
----
-
-# Python Background
-
-- Guido van Rossum started Python at CWI in the Netherlands in 1989
-- The first public release followed in February 1991
-- The name comes from the comedy series *Monty Python's Flying Circus*
-- Python is open source :
-  - Its source code can be inspected, changed and shared under its licence
-  - It is free to use, including in commercial applications
-
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 140" width="100%" role="img" aria-label="Python milestones: development begins in 1989, first public release in 1991, Python 2 in 2000, Python 3 in 2008, Python 2 support ends in 2020">
-  <path d="M65 62H895" fill="none" stroke="currentColor" stroke-width="3" opacity=".4" />
-  <g fill="currentColor" font-family="sans-serif" text-anchor="middle">
-    <circle cx="65" cy="62" r="7" /><circle cx="255" cy="62" r="7" /><circle cx="465" cy="62" r="7" /><circle cx="675" cy="62" r="7" /><circle cx="895" cy="62" r="7" />
-    <g font-size="26" font-weight="600"><text x="65" y="33">1989</text><text x="255" y="33">1991</text><text x="465" y="33">2000</text><text x="675" y="33">2008</text><text x="895" y="33">2020</text></g>
-    <g font-size="18"><text x="65" y="100">Work begins</text><text x="255" y="100">Public release</text><text x="465" y="100">Python 2</text><text x="675" y="100">Python 3</text><text x="895" y="100">Python 2</text><text x="895" y="124">support ends</text></g>
-  </g>
-</svg>
-
-- Python 3 introduced changes that broke compatibility with Python 2
-- Python 2 examples in older books may need changes to run on Python 3
-
----
-
-# Python Features
-
-- Python is a general-purpose language with an emphasis on readable code
-
-| Feature | Meaning in practice |
-| --- | --- |
-| High-level | Work with text, files and collections using built-in operations |
-| Interpreted | Run source code through the Python interpreter |
-| Interactive | Try statements directly at the `>>>` prompt |
-| Portable | Python runs on Windows, macOS and Linux |
-| Standard library | Python includes tools for files, dates, internet access and more |
-| Third-party packages | Install additional tools for specialised tasks |
-
-- Operating-system paths and external tools can still require platform-specific code
-- A library is reusable code; a package groups code that can be installed or imported
-
----
-
-# Python Applications
-
-- Python programs range from short scripts to complete applications
-
-| Area | Example task | Common tools |
-| --- | --- | --- |
-| Automation | Rename photos and organise folders | Standard library |
-| Data analysis | Summarise listening history and plot trends | pandas, Matplotlib |
-| Web applications | Serve a music catalogue through a website | Django, Flask |
-| Scientific computing | Calculate with arrays of measurements | NumPy, SciPy |
-| Machine learning | Classify images using a trained model | scikit-learn, PyTorch |
-
-- Libraries provide specialised operations; Python code connects them
-- Large computations often run inside libraries implemented in compiled languages
 
 ---
 
