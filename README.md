@@ -1,6 +1,6 @@
 # Python Programming (PRG400)
 
-Welcome. This bundle contains everything you need for the course : the slides,
+This bundle contains everything you need for the course : the slides,
 the lab exercises, runnable example code, reference solutions and some
 background reading. This page explains what is here and how to run it.
 
@@ -9,13 +9,12 @@ material, so a `git pull` always gives you the latest version.
 
 ## What is in this bundle
 
-- **`slides/`** : the animated course presentation. From the course folder, run
-  `python slides/serve.py`, then open <http://localhost:4188/slidev/>. Arrow keys
-  or scrolling move through the steps; going back reverses them.
+- **`PRG400-Python-Programming.html`** : the course slides. Open the file in a
+  browser; it works offline and needs no server. Use the arrow keys or scroll to
+  move through the slides.
 - **`PRG400-Python-Programming.pdf`** : the slides as a PDF, showing the completed
   examples.
 - **`archive/`** : optional static Marp PDF and HTML versions of both slide decks.
-  The HTML opens directly from disk.
 - **`PRG400-Python-Programming-Exercises.pdf`** : the lab guide, one exercise per
   module.
 - **`site/index.html`** : the same exercises as a small website that opens from
@@ -60,8 +59,8 @@ the whole course in your browser. You need a free GitHub account; it includes
    of inactivity; that is harmless, your files stay.
 
 The tkinter GUI demos need a desktop and do not open a window in a codespace.
-To view the animated slides in Codespaces, run `python slides/serve.py` in the
-terminal, then open **Course slides** on port **4188** in the **Ports** panel.
+In Codespaces, download `PRG400-Python-Programming.html` from the file explorer,
+then open the downloaded file in your browser.
 
 ## Setting up Python
 
@@ -160,8 +159,8 @@ with the group: command-line tools, third-party libraries, scraping, SQLAlchemy,
 NumPy, pandas, desktop windows and subprocesses. Inheritance is an optional
 preview of Advanced Python.
 
-The slides and exercises are separate PDFs in `libraries/`, named
-`PRG400-Python-Libraries-and-Tools.pdf` and
-`PRG400-Python-Libraries-and-Tools-Exercises.pdf`. The folder has its own
+The libraries slides are `PRG400-Python-Libraries-and-Tools.html` and `.pdf` at
+the course root. Its exercise guide is
+`libraries/PRG400-Python-Libraries-and-Tools-Exercises.pdf`. The folder has its own
 `pyproject.toml` and lockfile; run `uv sync` from inside `libraries/` before using
 its examples.

@@ -14,9 +14,11 @@ Build scripts are declared in `build/package.json`; CI calls
 `build/toolchain.json`. Set `PRESENTATION_TEMPLATE_DIR` only for local shared
 work; manifests mark those builds so they cannot be released.
 
-The Slidev presentation uses its local launcher. The exercise site opens from
-disk and embeds the Marp fallback for portability. The standalone Marp HTML has
-an explicit trainer-note waiver; the embedded site copy removes those notes.
+Student slide delivery uses standalone HTML files that open directly from disk.
+The exercise site also opens from disk and embeds its own slide fallback.
+The standalone Marp fallback HTML has an explicit trainer-note waiver; the
+embedded exercise-site copy removes those notes. Student Slidev HTML excludes
+trainer notes and is checked directly from disk during its build.
 
 ## Everyday commands
 

@@ -539,13 +539,14 @@ BROWSER_SCRIPT = r"""
 import { browserTimeoutMs, reducedMotion, withBrowser, withPage } from %(browser)s;
 import { animationRate, onPages, settle } from %(animation)s;
 const origin = process.argv[2], plan = JSON.parse(process.argv[3]);
+const app = origin.startsWith('file:') ? origin : `${origin}/slidev/`;
 const fast = 10;
 const outputFile = process.argv[4];
 const results = {};
 await withBrowser({ origin }, session => onPages(session, withPage, plan, async (page, item) => {
   const read = async (route, k, reduced=false, navigate=true) => {
     if (navigate) {
-      const url = `${origin}/slidev/?r=${Date.now()}#/${route}?clicks=${k}`;
+      const url = `${app}?r=${Date.now()}#/${route}?clicks=${k}`;
       await page.goto(url, { waitUntil: 'networkidle0', timeout: browserTimeoutMs });
     }
     await page.waitForSelector(
@@ -671,7 +672,7 @@ await withBrowser({ origin }, session => onPages(session, withPage, plan, async 
       await animationRate(page, fast);
     };
     await page.goto(
-      `${origin}/slidev/?r=${Date.now()}#/${item.route}?clicks=0`,
+      `${app}?r=${Date.now()}#/${item.route}?clicks=0`,
       { waitUntil: 'networkidle0', timeout: browserTimeoutMs },
     );
     await animationRate(page, fast);

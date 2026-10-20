@@ -324,13 +324,14 @@ BROWSER_SCRIPT = r"""
 import { browserTimeoutMs, withBrowser, withPage } from %(browser)s;
 import { animationRate, onPages, settle } from %(animation)s;
 const [origin, plan] = [process.argv[2], JSON.parse(process.argv[3])];
+const app = origin.startsWith('file:') ? origin : `${origin}/slidev/`;
 const results = {}, unsettled = {};
 const readRoute = async (page, { route, states, kind }) => {
   {
     results[route] = [];
     unsettled[route] = [];
     for (let k = 0; k < states; k++) {
-      const url = `${origin}/slidev/?r=${Date.now()}#/${route}?clicks=${k}`;
+      const url = `${app}?r=${Date.now()}#/${route}?clicks=${k}`;
       await page.goto(url, { waitUntil: 'networkidle0', timeout: browserTimeoutMs });
       await page.waitForSelector(
         `[data-source-id="${route}"] .ds-run`,

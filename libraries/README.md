@@ -1,40 +1,24 @@
 # Python Libraries and Tools
 
-Optional material for the Python Programming course (PRG400). Choose topics with
-the trainer to suit the group. The modules are a selection, not an additional
-required day or a continuation of the Wordle exercises.
-
-Start with command-line programs for scripting, web scraping and SQLAlchemy for
-working with databases, NumPy and pandas for data work, or GUI toolkits for desktop
-programs. The inheritance module previews Advanced Python and can be skipped.
-The web-scraping and SQLAlchemy modules share the book dataset; SQLAlchemy can
-rebuild the database from the supplied seed without running the scraper first.
-The data modules share a music listening history; NumPy also uses a photo and a
-generated audio tone. Play counts are fictional. Song editions and the photo
-source are recorded in [data/SOURCES.md](data/SOURCES.md).
-
-This folder has its own Python project. Run the commands below from `libraries/`.
-
 Extra material for the Python Programming course (PRG400). The fundamentals
 course covers the language itself. This material covers the libraries and tools
 built around it : class design and inheritance, command-line programs,
 third-party libraries worth knowing, web scraping into a database, SQLAlchemy,
 NumPy, pandas, GUI toolkits, and an appendix on running other programs.
 
-It is self-contained. Nothing here depends on the fundamentals bundle, and every
-demo runs offline.
+Choose topics with the trainer to suit the group. These modules are optional and
+do not continue the Wordle exercises. Every demo runs offline by default.
+The web-scraping and SQLAlchemy modules share a book dataset. The data modules
+share a music listening history; NumPy also uses a photo and a generated audio
+tone. Play counts are fictional. Song editions and the photo source are recorded
+in [data/SOURCES.md](data/SOURCES.md).
 
 ## What is in this bundle
 
-- **`PRG400-Python-Libraries-and-Tools.pdf`** : the Slidev slides, with every
-  reveal visible for reading and printing.
-- **`slides/`** : the animated presentation. From this folder, run
-  `python slides/serve.py`, then open `http://localhost:4188/slidev/`.
-  Arrow keys and the mouse wheel advance or reverse reveals.
-- **`PRG400-Python-Libraries-and-Tools-slides.zip`** : a separate release download
-  containing the presentation, Python launcher and PDF. Extract it before use.
-- **`../archive/PRG400-Python-Libraries-and-Tools-Marp.pdf`** and **`.html`** : the
-  optional static fallback, kept in the course archive. The HTML opens from disk.
+- **`../PRG400-Python-Libraries-and-Tools.html`** : the slides. Open the file in
+  a browser; it works offline and needs no server. Use the arrow keys or scroll
+  to move through the slides.
+- **`../PRG400-Python-Libraries-and-Tools.pdf`** : the slides as a PDF.
 - **`PRG400-Python-Libraries-and-Tools-Exercises.pdf`** : the exercises, one per module.
 - **`demos/`** : the runnable example programs shown on the slides, one folder
   per module. A slide that shows a demo names it at the bottom, for example

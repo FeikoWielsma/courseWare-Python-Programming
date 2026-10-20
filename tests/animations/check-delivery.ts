@@ -10,13 +10,11 @@ const checksDir = path.join(courseRoot, 'tests/animations/probes');
 const template = templateDir();
 const { readManifest, deliverable } = await import(pathToFileURL(path.join(template, 'build/artifacts.ts')).href);
 const student = path.join(courseRoot, deliverable(readManifest(output), 'presentation').path);
-if (!fs.existsSync(path.join(student, 'index.html'))) {
+if (!fs.statSync(student, { throwIfNoEntry: false })?.isFile()) {
   throw new Error(`Packaged student app not found: ${student}`);
 }
 
-const { serve } = await import(pathToFileURL(path.join(template, 'build/browser.ts')).href);
-const server = await serve(student, { port: 0 });
-const origin = server.url;
+const origin = pathToFileURL(student).href;
 const children: ReturnType<typeof Bun.spawn>[] = [];
 
 function run(label: string, command: string[]) {
@@ -30,7 +28,7 @@ function run(label: string, command: string[]) {
 }
 
 try {
-  console.log(`Serving ${student} at ${origin}`);
+  console.log(`Checking standalone student HTML at ${origin}`);
 
   const animationChecks = fs.readdirSync(checksDir)
     .filter(name => /^check_.*\.py$/.test(name))
@@ -57,5 +55,4 @@ try {
     if (child.exitCode === null) child.kill();
   }
   await Promise.all(children.map(child => child.exited));
-  await server.close();
 }

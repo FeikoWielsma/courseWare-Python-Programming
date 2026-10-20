@@ -10,12 +10,13 @@ export default {
     libraries: {
       dir: 'libraries',
       renderer: 'slidev',
+      pdfOutput: '../PRG400-Python-Libraries-and-Tools.pdf',
       marpOutput: '../archive/PRG400-Python-Libraries-and-Tools-Marp.pdf',
       archive: 'build/dist/PRG400-Python-Libraries-and-Tools-slides.zip',
     },
   },
   // The student bundle is an allowlist: tracked files below these paths, plus each deck's
-  // PDFs, HTML and presentation (slides/, libraries/slides/) from its build manifests.
+  // PDFs and standalone HTML presentations from its build manifests.
   // A new demo folder needs one edit, here.
   bundle: {
     archive: 'build/dist/Python-Programming-student.zip',

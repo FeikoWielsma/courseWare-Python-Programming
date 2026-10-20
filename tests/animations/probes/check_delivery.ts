@@ -46,14 +46,14 @@ const wheel = async (deltaY: number, modifiers = 0) => {
   await wheelSession.send('Input.dispatchMouseEvent', { type: 'mouseWheel', x: 640, y: 400, deltaX: 0, deltaY, modifiers });
 };
 
-await withBrowser(originOption ? { origin: originOption } : { dir: presentation, port: 0 }, async (session: { page: ProbePage; origin: string }) => {
+await withBrowser({ origin: originOption || pathToFileURL(presentation!).href }, async (session: { page: ProbePage; origin: string }) => {
   try {
   page = session.page;
   const origin = session.origin;
   const topic = manifest.topics.find((item: { id: string }) => item.id === '03-data-structures-3')
     || manifest.topics.find((item: { id: string }) => item.id === '02-variables-and-data-types-3');
   require(topic, 'Could not find a representative source topic.');
-  await page.goto(`${origin}/slidev/#/${topic.id}`, { waitUntil: 'networkidle0', timeout: browserTimeoutMs });
+  await page.goto(`${origin.startsWith('file:') ? origin : `${origin}/slidev/`}#/${topic.id}`, { waitUntil: 'networkidle0', timeout: browserTimeoutMs });
   await page.waitForSelector(`.course-frame[data-source-id="${topic.id}"] .course-step`, { timeout: browserTimeoutMs });
   await pause(500);
 

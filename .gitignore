@@ -50,6 +50,8 @@ build/site/dist/
 exercises/starters/*/uv.lock
 
 # Optional libraries deck build outputs
+/PRG400-Python-Libraries-and-Tools.pdf
+/PRG400-Python-Libraries-and-Tools.html
 # Only renderer configuration is source; checks and generators live in tests/ and tools/.
 libraries/build/*
 !libraries/build/slidev.config.ts
