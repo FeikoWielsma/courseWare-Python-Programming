@@ -91,9 +91,7 @@ with con:
 con.close()  # `with con:` commits or rolls back, it does not close
 ```
 
-- The connection stays open after the block :
-  - Close it yourself with `con.close()` when you are done
-- `closing()` from `contextlib` calls `close()` when its block ends :
+- `with con:` leaves the connection open; `closing()` from `contextlib` closes it :
   - The inner `with con:` commits first, then the outer block closes
 
 ```python
