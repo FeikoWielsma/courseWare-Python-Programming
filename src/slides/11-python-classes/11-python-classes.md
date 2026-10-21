@@ -144,8 +144,6 @@ jaina = Character("Jaina", 100)
 - `self` is a reference to the instance :
   - Instance attributes are read and written as `self.health`
   - `jaina.take_damage(10)` changes the health of `jaina` and of no other character
-- Python frees objects for you when nothing refers to them any more :
-  - `__del__` exists and you rarely need it
 
 ---
 
@@ -179,36 +177,6 @@ Hogger : 35 health
 - Each object keeps its own `health`; the methods are shared
 
 > `demo03 · character`
-
----
-
-# Accessing Attributes
-
-- In Python you can add, remove, or modify attributes at any time :
-
-```python
-jaina.mount = "Gryphon"  # Add a 'mount' attribute
-jaina.mount = "Swift Gryphon"  # Modify 'mount' attribute
-del jaina.mount  # Delete 'mount' attribute
-```
-
-- Four functions do the same with an attribute name held in a string :
-  - Useful when the name is only known while the program runs
-
-```python
-attr = "mount"  # an attribute name held in a variable
-print(hasattr(jaina, attr))  # True if the attribute exists
-setattr(jaina, attr, "Swift Gryphon")  # Set or create the attribute
-print(getattr(jaina, attr))  # Returns the value of the attribute
-delattr(jaina, attr)  # Delete the attribute
-print(getattr(jaina, attr, "no mount"))  # The default, because the attribute is gone
-```
-
-```text
-False
-Swift Gryphon
-no mount
-```
 
 ---
 
@@ -381,25 +349,21 @@ flowchart LR
 - Python has no keyword that makes an attribute private :
   - A leading underscore, `_gold`, means internal, by convention
   - Code outside the class can reach it, and is expected not to
-- Two leading underscores, `__auth_code`, make Python rename the attribute to `_Character__auth_code`
 
 ```python
 class Character:
     def __init__(self, name: str) -> None:
         self.name = name  # public
         self._gold = 0  # internal, by convention
-        self.__auth_code = "7f3a"  # name mangled to _Character__auth_code
 
 jaina = Character("Jaina")
 print(jaina.name)
 print(jaina._gold)  # works, but the underscore says: not for you
-print(jaina._Character__auth_code)  # the mangled name still works
 ```
 
 ```text
 Jaina
 0
-7f3a
 ```
 
 > `demo09 · internalattributes`

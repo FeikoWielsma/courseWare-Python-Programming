@@ -192,31 +192,6 @@ print(minutes)  # {'Imagine': 3.05, 'Yesterday': 2.08, 'Respect': 2.48}
 
 ---
 
-# Dictionary from Keys
-
-- `dict.fromkeys` gives each key the same value
-- A comprehension gives each playlist its own mutable track list :
-
-```python
-albums = ["Night drive", "Warm-up"]
-play_counts = dict.fromkeys(albums, 0)
-print(play_counts)
-playlists: dict[str, list[str]] = {name: [] for name in albums}
-playlists["Night drive"].append("Imagine")
-print(playlists)
-```
-
-```text
-{'Night drive': 0, 'Warm-up': 0}
-{'Night drive': ['Imagine'], 'Warm-up': []}
-```
-
-- `dict.fromkeys(albums, [])` would make every album share one list
-
-> `demo08 · dictionary_from_keys`
-
----
-
 # Set Comprehensions
 
 - A set comprehension keeps each result once :
@@ -234,7 +209,7 @@ print(sorted(unique_photos))  # ['cover.jpg', 'stage.jpg']
 
 - Sets have no display order; `sorted` makes printed output predictable
 
-> `demo09 · set_comprehensions`
+> `demo08 · set_comprehensions`
 
 ---
 
@@ -248,14 +223,13 @@ sizes_mb = [12, 8, 25]
 print(sum(size for size in sizes_mb if size >= 10))  # 37
 print(any(size > 20 for size in sizes_mb))  # True
 print(all(size <= 20 for size in sizes_mb))  # False
-print(any([]), all([]))  # False True
 ```
 
 - `any` and `all` stop as soon as the answer is known
 - As the only argument of a call, the expression needs no extra parentheses
 - Generator functions and `yield` belong to Advanced Python
 
-> `demo10 · generator_expressions`
+> `demo09 · generator_expressions`
 
 ---
 
@@ -274,7 +248,7 @@ print(min(titles, key=len), max(titles, key=len))  # Imagine Bohemian Rhapsody
 - `sorted` returns a new list; `list.sort` changes a list in place
 - `min` and `max` also accept a key function
 
-> `demo11 · sorted_by_key`
+> `demo10 · sorted_by_key`
 
 ---
 
@@ -294,7 +268,7 @@ print(max(plays, key=lambda title: plays[title]))  # Yesterday
 - Looping over a dictionary gives its keys, so `sorted` returns titles
 - Items with equal values keep their original order
 
-> `demo12 · lambda_key`
+> `demo11 · lambda_key`
 
 ---
 
@@ -319,27 +293,15 @@ print(photos)  # ['cover.jpg', 'stage.jpg']
 print([name for name in cleaned if is_photo(name)])
 ```
 
-- These forms also occur in existing code
-
-> `demo13 · map_and_filter_functions`
-
----
-
-# Comprehensions and map
-
-- A comprehension can express the same filename transformation as `map` :
+- Comprehensions express the same two operations :
 
 ```python
-files = ["COVER.JPG", "STAGE.JPG"]
-mapped = list(map(lambda name: name.lower(), files))
-print(mapped)  # ['cover.jpg', 'stage.jpg']
-comprehended = [name.lower() for name in files]
-print(comprehended)  # ['cover.jpg', 'stage.jpg']
+cleaned = [clean_filename(name) for name in files]
+photos = [name for name in cleaned if is_photo(name)]
+print(photos)  # ['cover.jpg', 'stage.jpg']
 ```
 
-- Choose the form that makes the operation clear
-
-> `demo14 · syntactic_sugar`
+> `demo12 · map_and_filter_functions`
 
 ---
 
@@ -359,7 +321,7 @@ print(sum(lengths))  # 457
 
 - Prefer `sum` when it names the operation directly
 
-> `demo15 · reduce_and_lambda`
+> `demo13 · reduce_and_lambda`
 
 ---
 

@@ -122,7 +122,7 @@ The folder `wordle/data/` is inside the package, next to the code that will read
 Also copy the handed-out `allowed.txt` and `SOURCES.md` into `wordle/data/`. You use `allowed.txt` in Step 4; `SOURCES.md` records where the word lists come from.
 
 :::hint
-The slides *Reading Text Files*, *Creating and Removing Directories* and *Writing Text Files* show reading, making a folder and writing text with `Path`.
+The slides *Reading a Text List*, *Creating and Removing Directories* and *Renaming and Deleting Files* show reading, making a folder and writing text with `Path`.
 :::
 
 ### Step 3 : Find the file from the package

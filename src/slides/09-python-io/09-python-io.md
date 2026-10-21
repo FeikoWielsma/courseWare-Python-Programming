@@ -29,6 +29,167 @@ Volume set to 65%
 
 ---
 
+
+# Paths with pathlib
+
+- The `pathlib` module represents a path as an object, not a string :
+  - `Path` knows how to join, inspect, read, write, rename and delete
+  - It is the modern replacement for stringly typed `os.path` work
+
+```python
+from pathlib import Path
+
+here = Path.cwd()  # the current working directory
+song = here / "music" / "jazz" / "so_what.mp3"  # joining, with / instead of +
+```
+
+- The `/` operator joins path segments :
+  - It produces the right separator on Windows, macOS and Linux alike
+  - No more `"music" + "\\" + name`, and no more forgetting the separator
+- A path answers questions about itself :
+
+```python
+song.name      # so_what.mp3
+song.stem      # so_what
+song.suffix    # .mp3
+song.parent    # the jazz directory, as a Path
+song.exists()  # True or False
+```
+
+---
+
+# Paths Relative to a Module
+
+- `Path(__file__)` is the path of the running module, so `parent` is its folder :
+  - `resolve()` makes the path absolute, and follows any symbolic links
+- `path.open()` works like `open()`, and takes the same arguments :
+
+```python
+from pathlib import Path
+
+here = Path(__file__).resolve().parent  # the folder of this module
+print(here.is_absolute())  # True
+
+with Path(__file__).open(encoding="utf-8") as source:
+    print(source.readline().strip())  # from pathlib import Path
+```
+
+- `here / "playlist.txt"` then finds a data file beside the module, whatever the working directory.
+
+---
+
+# Reading a Text List
+
+- `Path` from the standard library identifies a file :
+  - A relative filename is looked up in the terminal's current folder
+  - `read_text` reads the file into one string
+- `encoding="utf-8"` selects how the file's bytes are decoded into text
+- `split()` separates the text at whitespace into a list of strings
+
+```python
+from pathlib import Path
+
+text = Path("tracks.txt").read_text(encoding="utf-8")
+tracks = text.split()
+print(tracks)
+print(len(tracks))
+```
+
+- With `Imagine`, `Yesterday` and `Respect` on separate lines, the list has three items
+- Run the demo from `demos/09-python-io/`, beside `tracks.txt`
+
+> `demo02 · text_list`
+
+---
+
+# Renaming and Deleting Files
+
+- A `Path` renames and deletes itself :
+
+```python
+from pathlib import Path
+
+photo = Path("IMG_0412.jpg")
+photo.touch()
+renamed = photo.rename("2026-07-14 beach.jpg")
+renamed.unlink()
+```
+
+- `touch` creates an empty file, `unlink` removes one :
+  - `unlink(missing_ok=True)` does nothing when the file is already gone
+- Short reads and writes need no `open` at all :
+
+```python
+caption = Path("beach.txt")
+caption.write_text("Sunset at the beach\n", encoding="utf-8")
+print(caption.read_text(encoding="utf-8"), end="")
+```
+
+- The `os` module still has `os.rename` and `os.remove` :
+  - They take strings and are what older code uses
+
+> `demo03 · renaming_files`
+
+
+---
+
+# Creating and Removing Directories
+
+- `mkdir` creates a directory, `rmdir` removes an empty one :
+
+```python
+from pathlib import Path
+
+Path("albums").mkdir(exist_ok=True)
+Path("albums").rmdir()
+```
+
+- Two keyword arguments cover the awkward cases :
+  - `parents=True` creates every missing directory in the path
+  - `exist_ok=True` succeeds quietly when the directory is already there
+
+```python
+Path("albums/2026/07 beach").mkdir(parents=True, exist_ok=True)
+```
+
+- `rmdir` only removes an empty directory :
+  - Remove the contents first, from the leaf upwards
+  - `shutil.rmtree` removes a whole tree at once, and does not ask twice
+
+> `demo04 · creatingandremoving_directories`
+
+
+---
+
+# Directory Contents
+
+- `iterdir` lists direct entries; `glob` selects matching names.
+- Each entry is a `Path` that you can inspect or open.
+- `rglob` searches subdirectories too.
+
+```python
+from pathlib import Path
+
+here = Path.cwd()
+album = here / "holiday"
+album.mkdir(exist_ok=True)
+for name in ["beach.jpg", "sunset.jpg", "notes.txt"]:
+    (album / name).touch()
+
+print("contents   :", sorted(p.name for p in album.iterdir()))
+print("only photos:", sorted(p.name for p in album.glob("*.jpg")))
+```
+
+```text
+contents   : ['beach.jpg', 'notes.txt', 'sunset.jpg']
+only photos: ['beach.jpg', 'sunset.jpg']
+```
+
+> `demo05 · directorymethods`
+
+
+---
+
 # Opening Files
 
 - `open` function :
@@ -85,7 +246,7 @@ with open("last_played.txt", encoding="utf-8") as fr:
     print(fr.read(), end="")  # So What
 ```
 
-> `demo02 · usingwith`
+> `demo06 · usingwith`
 
 
 ---
@@ -112,7 +273,7 @@ with open("playlist.txt", encoding="utf-8") as playlist:
 
 - `rstrip()` removes the newline that ends each line.
 
-> `demo03 · readtextfile`
+> `demo07 · readtextfile`
 
 
 ---
@@ -143,7 +304,7 @@ Svefn-g-englar
 Glósóli
 ```
 
-> `demo04 · writetextfile`
+> `demo08 · writetextfile`
 
 
 ---
@@ -191,80 +352,7 @@ Closed or not    : False
 Closed or not    : True
 ```
 
-> `demo05 · fileioobject`
-
-
----
-
-# IO Module
-
-- Core of the I/O system is implemented in io library module
-- Consists of a collection of different I/O classes :
-  - `FileIO`
-  - `BufferedReader`
-  - `BufferedWriter`
-  - `BufferedRWPair`
-  - `BufferedRandom`
-  - `TextIOWrapper`
-  - `BytesIO`
-  - `StringIO`
-- Each class implements a different kind of I/O
-- Classes get layered to add features
-
----
-
-# Result of Calling open
-
-- The object returned varies with the file mode and the buffering :
-
-```text
->>> open("playlist.txt", "rt", encoding="utf-8")
-<_io.TextIOWrapper name='playlist.txt' mode='rt' encoding='utf-8'>
->>> open("playlist.txt", "rb")
-<_io.BufferedReader name='playlist.txt'>
->>> open("playlist.txt", "rb", buffering=0)
-<_io.FileIO name='playlist.txt' mode='rb' closefd=True>
-```
-
-- Opening a text file stacks three objects, and you are handed the outermost :
-
-<svg viewBox="0 0 960 140" width="100%" style="width:100%;height:auto;display:block;margin:10px 0 4px" role="img" aria-label="Opening a text file layers TextIOWrapper over BufferedReader over FileIO">
-<defs>
-<marker id="io-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-<path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
-</marker>
-</defs>
-<g fill="none" stroke="currentColor" stroke-width="2">
-<rect x="230" y="42" width="196" height="46" rx="4"/>
-<rect x="466" y="42" width="196" height="46" rx="4"/>
-<rect x="702" y="42" width="130" height="46" rx="4"/>
-</g>
-<g fill="none" stroke="currentColor" stroke-width="1.8" marker-end="url(#io-arrow)">
-<path d="M 196 65 L 224 65"/>
-<path d="M 426 65 L 460 65"/>
-<path d="M 662 65 L 696 65"/>
-<path d="M 832 65 L 900 65"/>
-</g>
-<g fill="currentColor" font-size="20" text-anchor="middle">
-<text x="328" y="72">TextIOWrapper</text>
-<text x="564" y="72">BufferedReader</text>
-<text x="767" y="72">FileIO</text>
-</g>
-<g fill="currentColor" font-size="17" text-anchor="middle" opacity="0.75">
-<text x="328" y="30">"rt"</text>
-<text x="564" y="30">"rb"</text>
-<text x="767" y="30">buffering=0</text>
-<text x="328" y="112">text and bytes</text>
-<text x="564" y="112">buffered bytes</text>
-<text x="767" y="112">raw bytes</text>
-</g>
-<g fill="currentColor" font-size="19">
-<text x="20" y="72">open(...)</text>
-<text x="908" y="72">disk</text>
-</g>
-</svg>
-
-> `demo06 · openfile`
+> `demo09 · fileioobject`
 
 
 ---
@@ -292,7 +380,7 @@ print(mutable.decode("utf-8"))  # Yóga
 
 - Binary files read and write bytes; text files handle encoding for you.
 
-> `demo07 · bytesandbytesarrays`
+> `demo10 · bytesandbytesarrays`
 
 ---
 
@@ -312,7 +400,7 @@ print(data[:3].hex())  # ffd8ff, the start of every JPEG photo
 
 - `hex()` shows each byte as two hexadecimal digits.
 
-> `demo08 · readbinaryfile`
+> `demo11 · readbinaryfile`
 
 
 ---
@@ -337,7 +425,7 @@ print(track, seconds, volume)  # 7 184 65
 
 - `player.bin` holds twelve bytes, which a later run reads back to resume playback.
 
-> `demo09 · writebinaryfile`
+> `demo12 · writebinaryfile`
 
 
 ---
@@ -360,7 +448,7 @@ with open("trilobyte.jpg", "rb") as photo:
 
 - A JPEG photo in the JFIF format has the bytes `JFIF` from position 6.
 
-> `demo10 · file_positions`
+> `demo13 · file_positions`
 
 
 ---
@@ -389,7 +477,7 @@ with open("history.csv", newline="", encoding="utf-8") as fr:
 ['Hello, Goodbye', 'The Beatles', '208']
 ```
 
-> `demo11 · csv_module`
+> `demo14 · csv_module`
 
 ---
 
@@ -417,167 +505,7 @@ Take Five: 324 s
 Total: 23 min 19 s
 ```
 
-> `demo12 · csv_dictionary`
-
----
-
-# Paths with pathlib
-
-- The `pathlib` module represents a path as an object, not a string :
-  - `Path` knows how to join, inspect, read, write, rename and delete
-  - It is the modern replacement for stringly typed `os.path` work
-
-```python
-from pathlib import Path
-
-here = Path.cwd()  # the current working directory
-song = here / "music" / "jazz" / "so_what.mp3"  # joining, with / instead of +
-```
-
-- The `/` operator joins path segments :
-  - It produces the right separator on Windows, macOS and Linux alike
-  - No more `"music" + "\\" + name`, and no more forgetting the separator
-- A path answers questions about itself :
-
-```python
-song.name      # so_what.mp3
-song.stem      # so_what
-song.suffix    # .mp3
-song.parent    # the jazz directory, as a Path
-song.exists()  # True or False
-```
-
----
-
-# Paths Relative to a Module
-
-- `Path(__file__)` is the path of the running module, so `parent` is its folder :
-  - `resolve()` makes the path absolute, and follows any symbolic links
-- `path.open()` works like `open()`, and takes the same arguments :
-
-```python
-from pathlib import Path
-
-here = Path(__file__).resolve().parent  # the folder of this module
-print(here.is_absolute())  # True
-
-with Path(__file__).open(encoding="utf-8") as source:
-    print(source.readline().strip())  # from pathlib import Path
-```
-
-- `here / "playlist.txt"` then finds a data file beside the module, whatever the working directory.
-
----
-
-# Renaming and Deleting Files
-
-- A `Path` renames and deletes itself :
-
-```python
-from pathlib import Path
-
-photo = Path("IMG_0412.jpg")
-photo.touch()
-renamed = photo.rename("2026-07-14 beach.jpg")
-renamed.unlink()
-```
-
-- `touch` creates an empty file, `unlink` removes one :
-  - `unlink(missing_ok=True)` does nothing when the file is already gone
-- Short reads and writes need no `open` at all :
-
-```python
-caption = Path("beach.txt")
-caption.write_text("Sunset at the beach\n", encoding="utf-8")
-print(caption.read_text(encoding="utf-8"), end="")
-```
-
-- The `os` module still has `os.rename` and `os.remove` :
-  - They take strings and are what older code uses
-
-> `demo13 · renaming_files`
-
-
----
-
-# Creating and Removing Directories
-
-- `mkdir` creates a directory, `rmdir` removes an empty one :
-
-```python
-from pathlib import Path
-
-Path("albums").mkdir(exist_ok=True)
-Path("albums").rmdir()
-```
-
-- Two keyword arguments cover the awkward cases :
-  - `parents=True` creates every missing directory in the path
-  - `exist_ok=True` succeeds quietly when the directory is already there
-
-```python
-Path("albums/2026/07 beach").mkdir(parents=True, exist_ok=True)
-```
-
-- `rmdir` only removes an empty directory :
-  - Remove the contents first, from the leaf upwards
-  - `shutil.rmtree` removes a whole tree at once, and does not ask twice
-
-> `demo14 · creatingandremoving_directories`
-
-
----
-
-# Directory Contents
-
-- `iterdir` lists direct entries; `glob` selects matching names.
-- Each entry is a `Path` that you can inspect or open.
-- `rglob` searches subdirectories too.
-
-```python
-from pathlib import Path
-
-here = Path.cwd()
-album = here / "holiday"
-album.mkdir(exist_ok=True)
-for name in ["beach.jpg", "sunset.jpg", "notes.txt"]:
-    (album / name).touch()
-
-print("contents   :", sorted(p.name for p in album.iterdir()))
-print("only photos:", sorted(p.name for p in album.glob("*.jpg")))
-```
-
-```text
-contents   : ['beach.jpg', 'notes.txt', 'sunset.jpg']
-only photos: ['beach.jpg', 'sunset.jpg']
-```
-
-> `demo15 · directorymethods`
-
-
----
-
-# Reading a Text List
-
-- `Path` from the standard library identifies a file :
-  - A relative filename is looked up in the terminal's current folder
-  - `read_text` reads the file into one string
-- `encoding="utf-8"` selects how the file's bytes are decoded into text
-- `split()` separates the text at whitespace into a list of strings
-
-```python
-from pathlib import Path
-
-text = Path("tracks.txt").read_text(encoding="utf-8")
-tracks = text.split()
-print(tracks)
-print(len(tracks))
-```
-
-- With `Imagine`, `Yesterday` and `Respect` on separate lines, the list has three items
-- Run the demo from `demos/09-python-io/`, beside `tracks.txt`
-
-> `demo16 · text_list`
+> `demo15 · csv_dictionary`
 
 ---
 

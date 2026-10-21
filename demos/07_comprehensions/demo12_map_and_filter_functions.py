@@ -11,3 +11,7 @@ cleaned = list(map(clean_filename, files))
 photos = list(filter(is_photo, cleaned))
 print(photos)  # ['cover.jpg', 'stage.jpg']
 print([name for name in cleaned if is_photo(name)])
+
+cleaned = [clean_filename(name) for name in files]
+photos = [name for name in cleaned if is_photo(name)]
+print(photos)  # ['cover.jpg', 'stage.jpg']

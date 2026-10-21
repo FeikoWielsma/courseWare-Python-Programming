@@ -27,7 +27,7 @@ footer: Python Database Access
 
 - DB API uses two main concepts for processing queries :
   - Connections and cursors
-- Every script follows the same shape :
+- A typical database operation follows this sequence :
 
 ```mermaid
 flowchart LR
@@ -73,6 +73,33 @@ SQLite version: 3.50.4
 
 > `demo01 · databaseversion`
 
+
+---
+
+
+# Executing through the Connection
+
+- SQLite connections provide a shortcut for executing SQL :
+  - `con.execute(...)` creates a cursor and returns it
+  - The returned cursor has the same `fetchone()` and `fetchall()` methods
+- These forms run the same query :
+
+```python
+cur = con.cursor()
+cur.execute("SELECT sqlite_version()")
+print(cur.fetchone()[0])
+
+cur = con.execute("SELECT sqlite_version()")
+print(cur.fetchone()[0])
+```
+
+- A single result can also be read in one expression :
+
+```python
+version = con.execute("SELECT sqlite_version()").fetchone()[0]
+```
+
+- Connection shortcuts belong to `sqlite3`; other DB API modules may require `cursor()`.
 
 ---
 
@@ -139,7 +166,7 @@ with con:
 
 ---
 
-# Prepared Statements
+# Inserting Several Rows
 
 - `executemany()` repeats one parameterized statement for each tuple
 - Each `?` placeholder receives a value from that tuple, in order :
@@ -432,8 +459,6 @@ save_ratings([(1, 4), (6, 5)])
 ```text
 Error: rating must be 1 to 5, got 9
 ```
-
-- Afterwards films 1 and 6 are watched and rated; film 2 is not
 
 > `demo12 · transactions`
 
