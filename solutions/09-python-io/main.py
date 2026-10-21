@@ -8,10 +8,7 @@ def main() -> None:
     """Load the words and play one game."""
     try:
         words = load_words()
-        print(
-            "Guess the five-letter word. Type 'quit', 'letters', "
-            "'hint' or 'stats'."
-        )
+        print("Guess the five-letter word. Type 'quit', 'letters' or 'hint'.")
         play("crane", words)
     except FileNotFoundError:
         print(

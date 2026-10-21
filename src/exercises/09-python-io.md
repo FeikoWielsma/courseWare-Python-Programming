@@ -1,6 +1,6 @@
 # Exercise 9 : Python IO
 
-Your game uses a small word list written directly in Python, and the moment a game ends the result is gone. In this exercise you clean a real word list, make the game find its data wherever it is started from, and keep a history of every game on disk.
+Your game uses a small word list written directly in Python, and the moment a game ends the result is gone. In this exercise you clean a real word list and make the game find its data wherever it is started from. Two optional steps at the end keep a history of every game on disk.
 
 Continue in your own `wordle` project, or start from `exercises/starters/09-python-io/`. The starter is the finished Exercise 8 plus this exercise's handouts : `raw-words.txt`, `allowed.txt` and `SOURCES.md`. If you continue in your own project, copy those three files in from `exercises/handouts/09-python-io/` to the project folder, beside `main.py`. The solution is in `solutions/09-python-io/`. Start a game by pressing Play on `main.py`.
 
@@ -267,7 +267,9 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
 ```
 :::
 
-### Step 5 : Keep a history file
+The game is complete for this exercise after Step 4; the solution in `solutions/09-python-io/` stops there. Steps 5 and 6 are extra practice with the `csv` module. Exercise 10 keeps the statistics in a database instead, and starts from the game without these two steps.
+
+### Step 5 : Keep a history file (optional)
 
 :::task
 Add `record_history` to `wordle/game.py` and call it when a game ends, so that `history.txt` gets one line per game.
@@ -342,7 +344,7 @@ The calls in `play`:
 ```
 :::
 
-### Step 6 : A stats command
+### Step 6 : A stats command (optional)
 
 :::task
 Add a `stats` command to `play` that reads `history.txt` and prints how many games were played and won.
@@ -403,8 +405,6 @@ The slide *Reading CSV Rows by Name* explains reading CSV data, and *Generator E
 ```text
 Games played: 2; won: 1.
 ```
-
-The complete project is in `solutions/09-python-io/`.
 
 ### If time permits
 

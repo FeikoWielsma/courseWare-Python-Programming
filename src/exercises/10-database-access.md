@@ -1,6 +1,6 @@
 # Exercise 10 : Database Access
 
-The history file of Exercise 9 can tell you how many games you played, but not much more. What is your win rate? In how many guesses do you usually win? How many games in a row have you won? Every question means another loop over the file. A database answers them in one query. In this exercise you move the statistics into SQLite and let the game report them. The SQL statements are given, because the course is about Python : your work is the Python around them, which passes the values in, fetches the rows and turns them into numbers, a bar chart and a streak.
+The moment a game ends, its result is gone. How many games have you played? What is your win rate? In how many guesses do you usually win? How many games in a row have you won? A database keeps every game and answers each question with one query. In this exercise you move the statistics into SQLite and let the game report them. The SQL statements are given, because the course is about Python : your work is the Python around them, which passes the values in, fetches the rows and turns them into numbers, a bar chart and a streak.
 
 Continue in your own `wordle` project, or start from `exercises/starters/10-database-access/`. The starter is the finished Exercise 9; this exercise hands out nothing. The solution is in `solutions/10-database-access/`. Start a game by pressing Play on `main.py`, with the project folder open in VS Code, so that the database file lands in the project folder.
 
@@ -46,7 +46,7 @@ def connect(path: str = "wordle.db") -> sqlite3.Connection:
     return connection
 ```
 
-`sqlite3.connect` opens the file, and creates it when it does not exist. `CREATE TABLE IF NOT EXISTS` makes the function safe to call at the start of every game : the first call makes the table, later calls find it. SQLite stores Boolean values as integers, so `won` holds `0` or `1`, the same convention as the history file. Read *DB API Concepts* if you want the picture of connection, cursor and result. Creating the table does not need a `commit()`; only statements that change rows do, and the next step says who commits those.
+`sqlite3.connect` opens the file, and creates it when it does not exist. `CREATE TABLE IF NOT EXISTS` makes the function safe to call at the start of every game : the first call makes the table, later calls find it. SQLite stores Boolean values as integers, so `won` holds `0` for a loss and `1` for a win. Read *DB API Concepts* if you want the picture of connection, cursor and result. Creating the table does not need a `commit()`; only statements that change rows do, and the next step says who commits those.
 
 Check it in a Python session :
 
@@ -342,7 +342,7 @@ Add `"streak": streak` to the dictionary. The finished function is in `solutions
 ### Step 6 : Use the database in the game
 
 :::task
-Let `play` return the number of guesses with the result, record every finished game from `main.py`, and let the `stats` command print the numbers of `summary`.
+Let `play` return the number of guesses with the result, record every finished game from `main.py`, and add a `stats` command that prints the numbers of `summary`.
 :::
 
 ```text
@@ -350,17 +350,13 @@ wordle/
     main.py              <- record the game
     wordle.db
     wordle/
-        game.py          <- play returns two values, new print_stats
+        game.py          <- play returns two values, add stats
         stats.py
 ```
 
 #### 6a
 
-Everything is ready to replace the history file. In `wordle/game.py`:
-
-- import `closing` from `contextlib`, and `connect` and `summary` from `wordle.stats`; `print_stats` needs all three
-- remove `history_path`, `record_history` and the `csv` and `pathlib` imports that only they used
-- in `play`, remove the two `record_history(...)` calls
+Everything is ready to use the database in the game. In `wordle/game.py`, import `closing` from `contextlib`, and `connect` and `summary` from `wordle.stats`; `print_stats` in 6c needs all three. If you did the optional history steps of Exercise 9, remove `history_path`, `record_history`, its two calls, the old `print_stats` and the `csv` and `pathlib` imports : the database takes over.
 
 `play` has returned a `bool` since Exercise 5, and nothing has used it yet. It is what the last argument of `record_game` needs, but `record_game` also needs the number of guesses, and `play` is the only place that knows it. Let `play` return both, as a tuple, and let the program that called `play` record the game :
 
@@ -404,7 +400,15 @@ The slide *Using with*, in the database module, nests the connection's transacti
 
 #### 6c
 
-Now rewrite `print_stats` so that the `stats` command reports the new numbers. It must print three lines : the totals and win rate with one decimal, the wins per guess count as `#` bars, and the streak :
+Add a `stats` command to `play`, next to `hint`. Like the other commands, it does not use a turn :
+
+```python
+            case "stats":
+                print_stats()
+                continue
+```
+
+In `main.py`, list the new command in the welcome message : `"Guess the five-letter word. Type 'quit', 'letters', 'hint' or 'stats'."`. Then write `print_stats` in `wordle/game.py`, below `play`. It must print three lines : the totals and win rate with one decimal, the wins per guess count as `#` bars, and the streak :
 
 ```python
 def print_stats() -> None:
@@ -455,12 +459,12 @@ def print_stats() -> None:
     print(f"Current streak: {totals['streak']}")
 ```
 
-Delete `history.txt` if you want : the database has taken over. The finished project is in `solutions/10-database-access/`.
+The finished project is in `solutions/10-database-access/`.
 :::
 
 ---
 
 ### If time permits
 
-- Import the `history.txt` of Exercise 9 into the database once, with a small script. Read the file with `csv.reader` and insert each row; the old file has no time, so store an empty `played_at`.
-- Keep `wordle.db` in a fixed place. Build the path with `Path(__file__)`, the way you did for the history file in Exercise 9, so the statistics are the same wherever you start the game. There is no reference solution for these steps.
+- If you kept a `history.txt` in the optional steps of Exercise 9, import it into the database once, with a small script. Read the file with `csv.reader` and insert each row; the old file has no time, so store an empty `played_at`.
+- Keep `wordle.db` in a fixed place. Build the path with `Path(__file__)`, the way `load_words` finds the word list in Exercise 9, so the statistics are the same wherever you start the game. There is no reference solution for these steps.
