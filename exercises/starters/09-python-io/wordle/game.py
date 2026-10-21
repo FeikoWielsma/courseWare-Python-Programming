@@ -3,7 +3,7 @@
 from rich.console import Console
 
 from wordle.display import colour_row
-from wordle.hints import hint, letters_left, most_common_first
+from wordle.hints import hint, letters_left
 from wordle.scoring import InvalidGuess, check_guess, score_guess
 
 console = Console()
@@ -20,8 +20,7 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
                 break
             case "letters":
                 print("Tried :", " ".join(sorted(used_letters)))
-                left = most_common_first(letters_left(used_letters), words)
-                print("Not tried, most common first :", " ".join(left))
+                print("Not tried :", " ".join(letters_left(used_letters)))
                 continue
             case "hint":
                 print(f"The word contains the letter {hint(secret, used_letters).upper()}.")

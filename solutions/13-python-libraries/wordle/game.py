@@ -5,7 +5,7 @@ from contextlib import closing
 from rich.console import Console
 
 from wordle.display import colour_row, render
-from wordle.hints import hint, letters_left, most_common_first
+from wordle.hints import hint, letters_left
 from wordle.scoring import InvalidGuess, Mark, check_guess, score_guess
 from wordle.stats import connect, summary
 from wordle.storage import clear_saved_game, save_game
@@ -96,8 +96,7 @@ def play(secret: str, words: list[str], max_guesses: int = 6, hard: bool = False
                 break
             case "letters":
                 print("Tried :", " ".join(sorted(used_letters)))
-                left = most_common_first(letters_left(used_letters), words)
-                print("Not tried, most common first :", " ".join(left))
+                print("Not tried :", " ".join(letters_left(used_letters)))
                 continue
             case "hint":
                 letter = hint(secret, used_letters)

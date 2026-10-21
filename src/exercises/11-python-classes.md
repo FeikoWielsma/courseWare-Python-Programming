@@ -424,8 +424,7 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> tuple[int, bool
                 break
             case "letters":
                 print("Tried :", " ".join(sorted(used_letters)))
-                left = most_common_first(letters_left(used_letters), words)
-                print("Not tried, most common first :", " ".join(left))
+                print("Not tried :", " ".join(letters_left(used_letters)))
                 continue
             case "hint":
                 print(f"The word contains the letter {hint(secret, used_letters).upper()}.")

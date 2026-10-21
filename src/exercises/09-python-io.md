@@ -214,7 +214,7 @@ wordle/
 
 You have been using one list for two jobs : the words the game can pick as a secret, and the words it accepts as a guess. A player should not be told that a perfectly good word is not a word, but the secret should be a word they have a fair chance of knowing. The real game uses two lists for this, and now your project does too :
 
-- `wordle/data/words.txt` : the 935 common words the game picks its secret from, and the words the `letters` command counts letters in
+- `wordle/data/words.txt` : the 935 common words the game picks its secret from
 - `wordle/data/allowed.txt` : 8 639 words the game accepts as a guess, including all of the answers
 
 Add a second loader to `wordle/words.py`, next to `load_words` :
@@ -238,7 +238,7 @@ The slide *Paths with pathlib* shows `/` joining the parts of a path. The body o
 :::
 
 :::hint
-The change in `play` is two lines : `allowed_words = load_allowed()` before the loop, and `check_guess(guess, allowed_words)` in the `try` block. `most_common_first(..., words)` in the `letters` command keeps using `words`.
+The change in `play` is two lines : `allowed_words = load_allowed()` before the loop, and `check_guess(guess, allowed_words)` in the `try` block.
 :::
 
 :::solution

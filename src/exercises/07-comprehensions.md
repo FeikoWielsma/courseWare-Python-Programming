@@ -1,6 +1,6 @@
 # Exercise 7 : Comprehensions
 
-Your game works, but the screen is plain. The rows have no colour, `letters` only lists what you have tried, and a player who is stuck gets no help. In this exercise you make the screen friendlier, one small function at a time : coloured rows, the letters you have not tried yet, ordered so that the most useful ones come first, and a `hint` command that reveals a letter of the secret. Each function is a comprehension of one or two lines.
+Your game works, but the screen is plain. The rows have no colour, `letters` only lists what you have tried, and a player who is stuck gets no help. In this exercise you make the screen friendlier, one small function at a time : coloured rows, the letters you have not tried yet, and a `hint` command that reveals a letter of the secret. Each function is a comprehension of one or two lines. An optional last step orders the untried letters so that the most useful ones come first.
 
 Continue in your own `wordle` project, or use `exercises/starters/07-comprehensions/`, the finished Exercise 6. The solution is in `solutions/07-comprehensions/`. Start a game by opening `main.py` and pressing Play.
 
@@ -299,7 +299,97 @@ Not tried : b c d f g h i j k m n o p q r u v w x y z
 
 :::
 
-### Step 4 : The most useful letters first
+### Step 4 : A hint
+
+:::task
+Add a function `hint` to `wordle/hints.py`, and a `hint` command to `play` that tells the player one letter of the secret they have not tried yet.
+:::
+
+```text
+wordle/
+    main.py              <- mention 'hint' in the welcome message
+    wordle/
+        game.py          <- add case "hint"
+        hints.py         <- add hint
+```
+
+#### 4a
+
+Write `hint` in `wordle/hints.py`. It returns the first letter of `secret` that is not in `used` :
+
+```python
+def hint(secret: str, used: set[str]) -> str:
+    """Return the first letter of the secret that has not been tried yet."""
+```
+
+```text
+>>> from wordle.hints import hint
+>>> hint("crane", {"s", "l", "a", "t", "e"})
+'c'
+>>> hint("crane", {"c", "r"})
+'a'
+```
+
+:::hint
+This is `letters_left` again, with the letters of `secret` instead of `ALPHABET`. The slide *Filtered List Comprehension* shows the form.
+:::
+
+:::hint
+Keep the untried letters in a list, `untried = [...]`, and return its first item, `untried[0]`.
+:::
+
+:::solution
+```python
+def hint(secret: str, used: set[str]) -> str:
+    """Return the first letter of the secret that has not been tried yet."""
+    untried = [letter for letter in secret if letter not in used]
+    return untried[0]
+```
+:::
+
+#### 4b
+
+In `wordle/game.py`, import `hint` too, so that the line reads `from wordle.hints import hint, letters_left`. Add a case to the `match guess` in `play`, below the `letters` case. Like `letters`, it must not use a turn :
+
+```python
+            case "hint":
+                print(f"The word contains the letter {...}.")
+                continue
+```
+
+In `main.py`, change the welcome message to `"Guess the five-letter word. Type 'quit', 'letters' or 'hint'."`. Keep `secret = "crane"`, press Play and enter `slate`, `hint`, then `crane` :
+
+:::output
+
+Captured output with typed input omitted. The hint leaves the prompt at guess 2.
+
+```text
+Guess the five-letter word. Type 'quit', 'letters' or 'hint'.
+Guess 1/6 :  S  L [A] T [E]
+Guess 2/6 : The word contains the letter C.
+Guess 2/6 : [C][R][A][N][E]
+Got it in 2!
+```
+
+:::
+
+:::hint
+The slide *match Statement*, in module 04, shows the form; the `letters` case already ends with `continue`. Inside the braces, call `hint(secret, used_letters)` and add `.upper()`.
+:::
+
+:::solution
+```python
+            case "hint":
+                print(f"The word contains the letter {hint(secret, used_letters).upper()}.")
+                continue
+```
+
+The complete game is in `solutions/07-comprehensions/wordle/game.py`.
+:::
+
+Change the secret in `main.py` to another word in the list and play a game with `letters` and `hint`, then restore `"crane"`. Ask for a hint while the word still has a letter you have not tried; Exercise 12 deals with the other case.
+
+### Step 5 : The most useful letters first (optional)
 
 :::task
 Add `letter_counts` and `most_common_first` to `wordle/hints.py`, so that `letters` lists the untried letters that occur most in the word list first.
@@ -313,9 +403,9 @@ wordle/
         hints.py         <- add two functions
 ```
 
-A letter that occurs in many words is a good letter to try next. Count each letter first, then sort by that count.
+A letter that occurs in many words is a good letter to try next. Count each letter first, then sort by that count. This step is extra practice with a dictionary comprehension and a lambda; Exercise 8 starts from the game without it.
 
-#### 4a
+#### 5a
 
 Join the words into one string and count a letter in it. Try this in the interpreter :
 
@@ -361,9 +451,9 @@ def letter_counts(words: list[str]) -> dict[str, int]:
 ```
 :::
 
-#### 4b
+#### 5b
 
-`sorted` can order the letters by their counts. A lambda tells it which value to compare : for each letter, its count. Keep `counts` from 4a and try :
+`sorted` can order the letters by their counts. A lambda tells it which value to compare : for each letter, its count. Keep `counts` from 5a and try :
 
 ```text
 >>> sorted(["c", "e", "z"], key=lambda letter: counts[letter])
@@ -402,7 +492,7 @@ def most_common_first(letters: list[str], words: list[str]) -> list[str]:
 ```
 :::
 
-#### 4c
+#### 5c
 
 In `wordle/game.py`, import `most_common_first` as well. In the `letters` case, replace the line from 3c with these two lines :
 
@@ -423,96 +513,6 @@ Not tried, most common first : r o c g h p d i n k m u w y b f j q v x z
 :::
 
 Of the letters not tried, R and O occur most often in the practice words, so they come first. Letters that do not occur at all stay in alphabetical order at the end, because `sorted` keeps the original order of equal values.
-
-### Step 5 : A hint
-
-:::task
-Add a function `hint` to `wordle/hints.py`, and a `hint` command to `play` that tells the player one letter of the secret they have not tried yet.
-:::
-
-```text
-wordle/
-    main.py              <- mention 'hint' in the welcome message
-    wordle/
-        game.py          <- add case "hint"
-        hints.py         <- add hint
-```
-
-#### 5a
-
-Write `hint` in `wordle/hints.py`. It returns the first letter of `secret` that is not in `used` :
-
-```python
-def hint(secret: str, used: set[str]) -> str:
-    """Return the first letter of the secret that has not been tried yet."""
-```
-
-```text
->>> from wordle.hints import hint
->>> hint("crane", {"s", "l", "a", "t", "e"})
-'c'
->>> hint("crane", {"c", "r"})
-'a'
-```
-
-:::hint
-This is `letters_left` again, with the letters of `secret` instead of `ALPHABET`. The slide *Filtered List Comprehension* shows the form.
-:::
-
-:::hint
-Keep the untried letters in a list, `untried = [...]`, and return its first item, `untried[0]`.
-:::
-
-:::solution
-```python
-def hint(secret: str, used: set[str]) -> str:
-    """Return the first letter of the secret that has not been tried yet."""
-    untried = [letter for letter in secret if letter not in used]
-    return untried[0]
-```
-:::
-
-#### 5b
-
-In `wordle/game.py`, import `hint` too, so that the line reads `from wordle.hints import hint, letters_left, most_common_first`. Add a case to the `match guess` in `play`, below the `letters` case. Like `letters`, it must not use a turn :
-
-```python
-            case "hint":
-                print(f"The word contains the letter {...}.")
-                continue
-```
-
-In `main.py`, change the welcome message to `"Guess the five-letter word. Type 'quit', 'letters' or 'hint'."`. Keep `secret = "crane"`, press Play and enter `slate`, `hint`, then `crane` :
-
-:::output
-
-Captured output with typed input omitted. The hint leaves the prompt at guess 2.
-
-```text
-Guess the five-letter word. Type 'quit', 'letters' or 'hint'.
-Guess 1/6 :  S  L [A] T [E]
-Guess 2/6 : The word contains the letter C.
-Guess 2/6 : [C][R][A][N][E]
-Got it in 2!
-```
-
-:::
-
-:::hint
-The slide *match Statement*, in module 04, shows the form; the `letters` case already ends with `continue`. Inside the braces, call `hint(secret, used_letters)` and add `.upper()`.
-:::
-
-:::solution
-```python
-            case "hint":
-                print(f"The word contains the letter {hint(secret, used_letters).upper()}.")
-                continue
-```
-
-The complete game is in `solutions/07-comprehensions/wordle/game.py`.
-:::
-
-Change the secret in `main.py` to another word in the list and play a game with `letters` and `hint`, then restore `"crane"`. Ask for a hint while the word still has a letter you have not tried; Exercise 12 deals with the other case.
 
 ### If time permits
 
