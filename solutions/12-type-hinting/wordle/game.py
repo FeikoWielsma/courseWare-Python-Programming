@@ -104,16 +104,10 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> tuple[int, bool
 
 
 def print_stats() -> None:
-    """Print database totals, a guess chart and the current winning streak."""
+    """Print the games played and won, and the win rate."""
     with closing(connect()) as connection:
         totals = summary(connection)
     print(
         f"Games played: {totals['played']}; won: {totals['won']}; "
         f"win rate: {totals['win_percentage']:.1f}%."
     )
-    chart = " ".join(
-        f"{guesses}: {'#' * count}"
-        for guesses, count in totals["distribution"].items()
-    )
-    print(f"Wins by guesses: {chart or 'none'}")
-    print(f"Current streak: {totals['streak']}")

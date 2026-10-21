@@ -24,14 +24,3 @@ def test_summary_of_an_empty_database() -> None:
     totals = summary(connect(":memory:"))
     assert totals["played"] == 0
     assert totals["win_percentage"] == 0.0
-
-
-def test_distribution_counts_wins_per_guess_count() -> None:
-    totals = summary(make_db([(2, True), (4, True), (4, True), (6, False)]))
-    assert totals["distribution"] == {2: 1, 4: 2}
-
-
-def test_streak_counts_wins_since_the_last_loss() -> None:
-    assert summary(make_db([(6, False), (3, True), (4, True)]))["streak"] == 2
-    assert summary(make_db([(3, True), (6, False)]))["streak"] == 0
-    assert summary(make_db([]))["streak"] == 0

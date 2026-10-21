@@ -29,24 +29,13 @@ def record_game(connection: sqlite3.Connection, secret: str, guesses: int, won: 
 
 
 def summary(connection: sqlite3.Connection) -> dict:
-    """Return totals, guess distribution and the current winning streak."""
+    """Return the games played and won, and the win percentage."""
     played, won = connection.execute(
         "SELECT COUNT(*), COALESCE(SUM(won), 0) FROM games"
     ).fetchone()
-    rows = connection.execute(
-        "SELECT guesses, COUNT(*) FROM games WHERE won = 1 GROUP BY guesses ORDER BY guesses"
-    ).fetchall()
-    distribution = dict(rows)
-    streak = 0
-    for row in connection.execute("SELECT won FROM games ORDER BY id DESC"):
-        if not row[0]:
-            break
-        streak += 1
     percentage = won / played * 100 if played else 0.0
     return {
         "played": played,
         "won": won,
         "win_percentage": percentage,
-        "distribution": distribution,
-        "streak": streak,
     }

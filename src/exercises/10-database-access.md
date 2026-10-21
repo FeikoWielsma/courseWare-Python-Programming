@@ -1,6 +1,6 @@
 # Exercise 10 : Database Access
 
-The moment a game ends, its result is gone. How many games have you played? What is your win rate? In how many guesses do you usually win? How many games in a row have you won? A database keeps every game and answers each question with one query. In this exercise you move the statistics into SQLite and let the game report them. The SQL statements are given, because the course is about Python : your work is the Python around them, which passes the values in, fetches the rows and turns them into numbers, a bar chart and a streak.
+The moment a game ends, its result is gone. How many games have you played? What is your win rate? In how many guesses do you usually win? How many games in a row have you won? A database keeps every game and answers each question with one query. In this exercise you move the statistics into SQLite and let the game report them. The SQL statements are given, because the course is about Python : your work is the Python around them, which passes the values in, fetches the rows and turns them into numbers. Two optional steps at the end add a bar chart of your wins and your winning streak.
 
 Continue in your own `wordle` project, or start from `exercises/starters/10-database-access/`. The starter is the finished Exercise 9; this exercise hands out nothing. The solution is in `solutions/10-database-access/`. Start a game by pressing Play on `main.py`, with the project folder open in VS Code, so that the database file lands in the project folder.
 
@@ -99,7 +99,7 @@ def record_game(connection: sqlite3.Connection, secret: str, guesses: int, won: 
     ...
 ```
 
-Insert a row with the time, the secret, the number of guesses and the result. Do not build the SQL text with an f-string, however convenient. Write `?` for each value in the statement and pass the values as a tuple to `execute`; the driver then handles quoting and nobody can sneak SQL in through a value. See *Inserting Data* and *Parameterized Queries*. The function does **not** commit. A transaction has exactly one owner : the code that calls `record_game` decides when the work becomes permanent, so that several inserts can succeed or fail together. Step 6 shows the caller. See *Committing Data* and *Transactions*.
+Insert a row with the time, the secret, the number of guesses and the result. Do not build the SQL text with an f-string, however convenient. Write `?` for each value in the statement and pass the values as a tuple to `execute`; the driver then handles quoting and nobody can sneak SQL in through a value. See *Inserting Data* and *Parameterized Queries*. The function does **not** commit. A transaction has exactly one owner : the code that calls `record_game` decides when the work becomes permanent, so that several inserts can succeed or fail together. Step 4 shows the caller. See *Committing Data* and *Transactions*.
 
 Try it in the Python session :
 
@@ -156,14 +156,14 @@ Now ask the database a question. Write `summary`, which returns a dictionary wit
 
 ```python
 def summary(connection: sqlite3.Connection) -> dict:
-    """Return totals, guess distribution and the current winning streak."""
+    """Return the games played and won, and the win percentage."""
     played, won = connection.execute(
         "SELECT COUNT(*), COALESCE(SUM(won), 0) FROM games"
     ).fetchone()
     ...
 ```
 
-The docstring already names all that the function will return after Step 5. For now the dictionary has three keys : `"played"`, `"won"` and `"win_percentage"`.
+The dictionary has three keys : `"played"`, `"won"` and `"win_percentage"`.
 
 The query is in the skeleton. `COUNT(*)` counts the rows of the table, and `SUM(won)` adds up the `won` column, so the `1`s are the wins. One query gives both numbers as a single result row. On an empty table `SUM` has nothing to add and returns `NULL`, which Python sees as `None`; `COALESCE(x, 0)` replaces a `NULL` by `0`. See *Filtering and Grouping Data*. What is left for you is the Python : `fetchone()` returns that row as a tuple, which the skeleton unpacks into two names, and then you build the dictionary and work out the percentage.
 
@@ -205,7 +205,7 @@ The slide *Retrieving Data* shows `fetchone()`, and *Dictionaries*, in module 03
 :::solution
 ```python
 def summary(connection: sqlite3.Connection) -> dict:
-    """Return totals, guess distribution and the current winning streak."""
+    """Return the games played and won, and the win percentage."""
     played, won = connection.execute(
         "SELECT COUNT(*), COALESCE(SUM(won), 0) FROM games"
     ).fetchone()
@@ -218,10 +218,116 @@ def summary(connection: sqlite3.Connection) -> dict:
 ```
 :::
 
-### Step 4 : The guess distribution
+### Step 4 : Use the database in the game
 
 :::task
-Add the key `"distribution"` to the dictionary of `summary` : the number of games won in each number of guesses.
+Let `play` return the number of guesses with the result, record every finished game from `main.py`, and add a `stats` command that prints the numbers of `summary`.
+:::
+
+```text
+wordle/
+    main.py              <- record the game
+    wordle.db
+    wordle/
+        game.py          <- play returns two values, add stats
+        stats.py
+```
+
+#### 4a
+
+Everything is ready to use the database in the game. In `wordle/game.py`, import `closing` from `contextlib`, and `connect` and `summary` from `wordle.stats`; `print_stats` in 4c needs all three. If you did the optional history steps of Exercise 9, remove `history_path`, `record_history`, its two calls, the old `print_stats` and the `csv` and `pathlib` imports : the database takes over.
+
+`play` has returned a `bool` since Exercise 5, and nothing has used it yet. It is what the last argument of `record_game` needs, but `record_game` also needs the number of guesses, and `play` is the only place that knows it. Let `play` return both, as a tuple, and let the program that called `play` record the game :
+
+```python
+def play(secret: str, words: list[str], max_guesses: int = 6) -> tuple[int, bool]:
+    """Play one game and return the guesses used and whether the secret was found."""
+    ...
+        if guess == secret:
+            print(f"Got it in {guess_count}!")
+            return guess_count, True
+    print(f"The word was {secret.upper()}.")
+    return guess_count, False
+```
+
+:::hint
+The slide *return Statement* shows that a function returns values to its caller, and *Usage of Tuples*, in module 03, shows unpacking a pair. Return the count with the Boolean on both exit paths.
+:::
+
+#### 4b
+
+In `main.py`, keep the secret in a variable, unpack what `play` returns and record the game. Add `from wordle.stats import connect, record_game` :
+
+```python
+        secret = "crane"
+        guesses, won = play(secret, words)
+        with closing(connect()) as connection:
+            with connection:
+                record_game(connection, secret, guesses, won)
+```
+
+Add `from contextlib import closing` at the top. Each `with` has one job :
+
+- The outer `with closing(connect()) as connection:` closes the connection when its block ends. The `with` of a connection does not close it; it only manages the transaction, and a connection that is never closed is reported by Python 3.14 as an unclosed database. `closing` from the standard library calls `close()` for any object that has one.
+- The inner `with connection:` is the transaction. When its block ends without an error the changes are committed, and when it ends with an error they are rolled back. This is the single place in the program where a game is committed : `record_game` only inserts, and the caller decides. The inner block ends first, so the commit comes before the close.
+
+A game you stop with Ctrl+C or Ctrl+D never reaches the `record_game` line, so it is not recorded. A game you give up with `quit` ends the loop and counts as lost.
+
+:::hint
+The slide *Using with*, in the database module, nests the connection's transaction block inside `closing(...)`. Keep `record_game` inside the inner block so it commits before the connection closes.
+:::
+
+#### 4c
+
+Add a `stats` command to `play`, next to `hint`. Like the other commands, it does not use a turn :
+
+```python
+            case "stats":
+                print_stats()
+                continue
+```
+
+In `main.py`, list the new command in the welcome message : `"Guess the five-letter word. Type 'quit', 'letters', 'hint' or 'stats'."`. Then write `print_stats` in `wordle/game.py`, below `play`. It prints the totals and the win rate, with one decimal :
+
+```python
+def print_stats() -> None:
+    """Print the games played and won, and the win rate."""
+    with closing(connect()) as connection:
+        totals = summary(connection)
+    print(...)  # Games played: 4; won: 3; win rate: 75.0%.
+```
+
+Play four games with `secret = "crane"` in `main.py` : win in two (`slate`, `crane`), win in one (`crane`), give up (`quit`) and win in three (`slate`, `trace`, `crane`). Type `stats` at the first prompt of a fifth game :
+
+```text
+Games played: 4; won: 3; win rate: 75.0%.
+```
+
+:::hint
+The slide *Format Specifications*, in module 02, shows a number with a fixed count of decimals. The values are `totals['played']`, `totals['won']` and `totals['win_percentage']`.
+:::
+
+:::solution
+```python
+def print_stats() -> None:
+    """Print the games played and won, and the win rate."""
+    with closing(connect()) as connection:
+        totals = summary(connection)
+    print(
+        f"Games played: {totals['played']}; won: {totals['won']}; "
+        f"win rate: {totals['win_percentage']:.1f}%."
+    )
+```
+
+:::
+
+The game is complete for this exercise; the solution in `solutions/10-database-access/` stops here. Steps 5 and 6 are extra practice, and Exercise 11 starts from the game without them.
+
+
+### Step 5 : The guess distribution (optional)
+
+:::task
+Add the key `"distribution"` to the dictionary of `summary` : the number of games won in each number of guesses. Then let `stats` print it as a bar chart.
 :::
 
 ```text
@@ -229,12 +335,11 @@ wordle/
     main.py
     wordle.db            created by connect
     wordle/
+        game.py          <- print the chart
         stats.py         <- extend summary
 ```
 
 How quickly do you win? Add a key `"distribution"` to the dictionary `summary` returns : a dictionary from the number of guesses to the number of games **won** in that many, in order of guesses. Losses are left out. Four games won in 2, 4, 4 and lost, for example, give `{2: 1, 4: 2}`.
-
-The chart comes in Step 6, where `print_stats` turns each count into a row of `#` characters.
 
 The query is given :
 
@@ -272,10 +377,43 @@ The slide *Dictionary Construction with zip*, in module 07, passes pairs of keys
 Add `"distribution": distribution` to the dictionary that `summary` returns.
 :::
 
-### Step 5 : The current streak
+Now print the distribution as a chart, one group of `#` characters per guess count. Add two lines at the end of `print_stats` :
+
+```python
+    chart = ...
+    print(f"Wins by guesses: {chart or 'none'}")
+```
+
+With no wins the chart is an empty string, and `chart or 'none'` prints `none` instead of nothing. After the four games of Step 4, `stats` prints :
+
+```text
+Games played: 4; won: 3; win rate: 75.0%.
+Wins by guesses: 1: # 2: # 3: #
+```
+
+:::hint
+The slide *String Operators*, in module 02, lists `*` for repetition, and *Generator Expressions*, in module 07, writes an expression inside `join`.
+:::
+
+:::hint
+A chart for one guess count is `f"{guesses}: {'#' * count}"`. Join the pieces with `" ".join(...)` over `totals["distribution"].items()`.
+:::
+
+:::solution
+```python
+    chart = " ".join(
+        f"{guesses}: {'#' * count}"
+        for guesses, count in totals["distribution"].items()
+    )
+    print(f"Wins by guesses: {chart or 'none'}")
+```
+:::
+
+
+### Step 6 : The current streak (optional)
 
 :::task
-Add the key `"streak"` to the dictionary of `summary` : the number of games won in a row, up to the latest game.
+Add the key `"streak"` to the dictionary of `summary` : the number of games won in a row, up to the latest game. Then let `stats` print it.
 :::
 
 ```text
@@ -283,6 +421,7 @@ wordle/
     main.py
     wordle.db            created by connect
     wordle/
+        game.py          <- print the streak
         stats.py         <- extend summary
 ```
 
@@ -336,131 +475,10 @@ Start the streak at `0`. In the loop, `break` when `row[0]` is `0`, and add one 
         streak += 1
 ```
 
-Add `"streak": streak` to the dictionary. The finished function is in `solutions/10-database-access/wordle/stats.py`.
+Add `"streak": streak` to the dictionary.
 :::
 
-### Step 6 : Use the database in the game
-
-:::task
-Let `play` return the number of guesses with the result, record every finished game from `main.py`, and add a `stats` command that prints the numbers of `summary`.
-:::
-
-```text
-wordle/
-    main.py              <- record the game
-    wordle.db
-    wordle/
-        game.py          <- play returns two values, add stats
-        stats.py
-```
-
-#### 6a
-
-Everything is ready to use the database in the game. In `wordle/game.py`, import `closing` from `contextlib`, and `connect` and `summary` from `wordle.stats`; `print_stats` in 6c needs all three. If you did the optional history steps of Exercise 9, remove `history_path`, `record_history`, its two calls, the old `print_stats` and the `csv` and `pathlib` imports : the database takes over.
-
-`play` has returned a `bool` since Exercise 5, and nothing has used it yet. It is what the last argument of `record_game` needs, but `record_game` also needs the number of guesses, and `play` is the only place that knows it. Let `play` return both, as a tuple, and let the program that called `play` record the game :
-
-```python
-def play(secret: str, words: list[str], max_guesses: int = 6) -> tuple[int, bool]:
-    """Play one game and return the guesses used and whether the secret was found."""
-    ...
-        if guess == secret:
-            print(f"Got it in {guess_count}!")
-            return guess_count, True
-    print(f"The word was {secret.upper()}.")
-    return guess_count, False
-```
-
-:::hint
-The slide *return Statement* shows that a function returns values to its caller, and *Usage of Tuples*, in module 03, shows unpacking a pair. Return the count with the Boolean on both exit paths.
-:::
-
-#### 6b
-
-In `main.py`, keep the secret in a variable, unpack what `play` returns and record the game. Add `from wordle.stats import connect, record_game` :
-
-```python
-        secret = "crane"
-        guesses, won = play(secret, words)
-        with closing(connect()) as connection:
-            with connection:
-                record_game(connection, secret, guesses, won)
-```
-
-Add `from contextlib import closing` at the top. Each `with` has one job :
-
-- The outer `with closing(connect()) as connection:` closes the connection when its block ends. The `with` of a connection does not close it; it only manages the transaction, and a connection that is never closed is reported by Python 3.14 as an unclosed database. `closing` from the standard library calls `close()` for any object that has one.
-- The inner `with connection:` is the transaction. When its block ends without an error the changes are committed, and when it ends with an error they are rolled back. This is the single place in the program where a game is committed : `record_game` only inserts, and the caller decides. The inner block ends first, so the commit comes before the close.
-
-A game you stop with Ctrl+C or Ctrl+D never reaches the `record_game` line, so it is not recorded. A game you give up with `quit` ends the loop and counts as lost.
-
-:::hint
-The slide *Using with*, in the database module, nests the connection's transaction block inside `closing(...)`. Keep `record_game` inside the inner block so it commits before the connection closes.
-:::
-
-#### 6c
-
-Add a `stats` command to `play`, next to `hint`. Like the other commands, it does not use a turn :
-
-```python
-            case "stats":
-                print_stats()
-                continue
-```
-
-In `main.py`, list the new command in the welcome message : `"Guess the five-letter word. Type 'quit', 'letters', 'hint' or 'stats'."`. Then write `print_stats` in `wordle/game.py`, below `play`. It must print three lines : the totals and win rate with one decimal, the wins per guess count as `#` bars, and the streak :
-
-```python
-def print_stats() -> None:
-    """Print database totals, a guess chart and the current winning streak."""
-    with closing(connect()) as connection:
-        totals = summary(connection)
-    print(...)  # Games played: 4; won: 3; win rate: 75.0%.
-    chart = ...
-    print(...)  # Wins by guesses: 1: # 2: # 3: #
-    print(...)  # Current streak: 1
-```
-
-Play four games with `secret = "crane"` in `main.py` : win in two (`slate`, `crane`), win in one (`crane`), give up (`quit`) and win in three (`slate`, `trace`, `crane`). Type `stats` at the first prompt of a fifth game :
-
-```text
-Games played: 4; won: 3; win rate: 75.0%.
-Wins by guesses: 1: # 2: # 3: #
-Current streak: 1
-```
-
-:::hint
-The slide *String Operators*, in module 02, lists `*` for repetition, *Format Specifications* shows a number with a fixed count of decimals, and *Generator Expressions*, in module 07, writes an expression inside `join`.
-:::
-
-:::hint
-A chart for one guess count is `f"{guesses}: {'#' * count}"`, and a string can be multiplied by a number. Join the pieces with `" ".join(...)` over `totals["distribution"].items()`.
-:::
-
-:::hint
-With no wins the chart is an empty string, which prints a confusing nothing. `chart or 'none'` prints `none` instead.
-:::
-
-:::solution
-```python
-def print_stats() -> None:
-    """Print database totals, a guess chart and the current winning streak."""
-    with closing(connect()) as connection:
-        totals = summary(connection)
-    print(
-        f"Games played: {totals['played']}; won: {totals['won']}; "
-        f"win rate: {totals['win_percentage']:.1f}%."
-    )
-    chart = " ".join(
-        f"{guesses}: {'#' * count}"
-        for guesses, count in totals["distribution"].items()
-    )
-    print(f"Wins by guesses: {chart or 'none'}")
-    print(f"Current streak: {totals['streak']}")
-```
-
-The finished project is in `solutions/10-database-access/`.
-:::
+Finally, add `print(f"Current streak: {totals['streak']}")` at the end of `print_stats`. After the four games of Step 4, `stats` prints a streak of `1`, because the last game was won and the one before it was given up.
 
 ---
 
