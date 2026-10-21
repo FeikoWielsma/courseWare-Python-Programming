@@ -2,11 +2,15 @@
 
 from contextlib import closing
 
-from wordle.display import render
+from rich.console import Console
+
+from wordle.display import colour_row, render
+from wordle.hints import hint, letters_left, most_common_first
 from wordle.scoring import InvalidGuess, check_guess, score_guess
-from wordle.solver import best_guess, candidates
 from wordle.stats import connect, summary
 from wordle.words import load_allowed
+
+console = Console()
 
 
 class Game:
@@ -72,10 +76,11 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> tuple[int, bool
                 break
             case "letters":
                 print("Tried :", " ".join(sorted(used_letters)))
+                left = most_common_first(letters_left(used_letters), words)
+                print("Not tried, most common first :", " ".join(left))
                 continue
             case "hint":
-                possible = candidates(words, game.history)
-                print(f"{len(possible)} words left, try {best_guess(possible).upper()}")
+                print(f"The word contains the letter {hint(secret, used_letters).upper()}.")
                 continue
             case "stats":
                 print_stats()
@@ -87,7 +92,7 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> tuple[int, bool
             print(error)
             continue
         used_letters.update(guess)
-        print(render(guess, marks))
+        console.print(colour_row(guess, marks))
     if game.is_won:
         print(f"Got it in {len(game.history)}!")
     else:

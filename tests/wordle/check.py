@@ -71,7 +71,7 @@ def transcript_for(name: str) -> tuple[list[str], str]:
         return ["uv", "run", "python", "wordle.py"], "react\n"
     if number <= 5:
         return ["uv", "run", "python", "wordle.py"], "slate\ncrane\n"
-    return ["uv", "run", "python", "-m", "wordle"], "slate\ncrane\n"
+    return ["uv", "run", "python", "main.py"], "slate\ncrane\n"
 
 
 def main() -> int:
@@ -129,7 +129,7 @@ def main() -> int:
                     failures += 1
         if number >= 12:
             try:
-                run(["uv", "run", "mypy", "wordle"], stage)
+                run(["uv", "run", "mypy", "wordle", "main.py"], stage)
                 print(f"{name}: mypy passed")
             except RuntimeError as error:
                 print(error)

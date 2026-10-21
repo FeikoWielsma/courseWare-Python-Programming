@@ -3,7 +3,7 @@ name = "wordle"
 version = "0.1.0"
 description = "The PRG400 course project after Exercise 10"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = ["rich>=14"]
 
 [dependency-groups]
 dev = ["ruff>=0.14"]

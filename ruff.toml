@@ -71,6 +71,16 @@ ignore = [
 # itself the lesson in the modules chapter.
 "**/__init__.py" = ["F401"]
 
+# The Wordle game names its exception InvalidGuess, a name the exercise text,
+# tests and solutions share; pep8-naming would want InvalidGuessError.
+"**/wordle/scoring.py" = ["N818"]
+
+# Exercise 10 and the database slide nest `with connection:` inside
+# `with closing(...)`, so that each `with` has one job : close, then commit.
+"demos/10-python-database-access/02_usingwith.py" = ["SIM117"]
+"solutions/*/main.py" = ["SIM117"]
+"exercises/starters/*/main.py" = ["SIM117"]
+
 # The modules chapter is *about* the import system: it manipulates sys.path
 # before importing and demonstrates `from x import *`.
 "demos/06-modules/**" = ["E402", "F403", "F405"]
@@ -106,7 +116,7 @@ ignore = [
 
 # The syntactic-sugar slide sets map with a lambda beside the comprehension it
 # becomes; the map half is the form being recognised.
-"demos/07_comprehensions/demo13_syntactic_sugar.py" = ["C417"]
+"demos/07_comprehensions/demo14_syntactic_sugar.py" = ["C417"]
 
 # The IO chapter teaches with first, then manual close so older code can be
 # recognised. Modes remain explicit because file modes are part of the lesson.

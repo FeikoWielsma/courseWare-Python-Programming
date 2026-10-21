@@ -2,20 +2,31 @@
 
 The game gives the same rejection for every bad guess, and a missing word list or an interrupted input ends in a traceback. Give each failure a useful response.
 
-Continue in your own `wordle` project, or use `exercises/starters/08-exception-handling/`, the finished Exercise 7.
+Continue in your own `wordle` project, or use `exercises/starters/08-exception-handling/`, the finished Exercise 7. The solution is in `solutions/08-exception-handling/`. Start a game by pressing Play on `main.py`.
 
-After editing a module, restart the Python interpreter and repeat its imports before trying the new definitions. Previously imported code stays in an existing session.
+Steps 1 and 2 try the new code in the interpreter, `uv run python` in the terminal of the project folder. After editing a module, leave it with `exit()`, start it again and repeat the imports. An open session keeps the code it imported first.
 
 ### Step 1 : Name an invalid guess
+
+:::task
+Add an exception class `InvalidGuess` to `wordle/scoring.py`.
+:::
+
+```text
+wordle/
+    main.py
+    wordle/
+        scoring.py       <- add InvalidGuess
+```
 
 Add this class below `WORD_LENGTH` in `wordle/scoring.py` :
 
 ```python
-class InvalidGuess(ValueError):  # noqa: N818  # Contracted name from plan section 4.
+class InvalidGuess(ValueError):
     """Raised when a guess is not an allowed five-letter word."""
 ```
 
-This creates a specific `ValueError` the game can catch. See *User Defined Exceptions*; Module 11 covers classes in detail. The `noqa` comment permits the course's exception name instead of Ruff's preferred `Error` suffix.
+This creates a specific `ValueError` the game can catch. See *User Defined Exceptions*; Module 11 covers classes in detail.
 
 Next, make the validator raise this exception with a reason.
 
@@ -24,6 +35,17 @@ The slide *User Defined Exceptions* defines a new exception class using an exist
 :::
 
 ### Step 2 : Explain why a guess is invalid
+
+:::task
+Add `check_guess` to `wordle/scoring.py`. It raises `InvalidGuess` with the reason a guess cannot be played. Then let `is_valid` call it.
+:::
+
+```text
+wordle/
+    main.py
+    wordle/
+        scoring.py       <- add check_guess, change is_valid
+```
 
 Add `check_guess` to `scoring.py`. Check length, letters, then membership. Valid guesses return normally; invalid ones raise `InvalidGuess`.
 
@@ -105,13 +127,24 @@ def is_valid(guess: str, words: list[str]) -> bool:
 
 ### Step 3 : Recover without spending a turn
 
+:::task
+In `play`, in `wordle/game.py`, check each guess with `check_guess` and print the reason when it is rejected. The player keeps the turn.
+:::
+
+```text
+wordle/
+    main.py
+    wordle/
+        game.py          <- use check_guess in play
+```
+
 In `wordle/game.py`, replace the scoring import with :
 
 ```python
 from wordle.scoring import InvalidGuess, check_guess, score_guess
 ```
 
-Replace `if not is_valid(...)` after command handling, before updating the guess count or history :
+Replace `if not is_valid(...)` after command handling, before updating the guess count :
 
 ```python
 try:
@@ -147,7 +180,17 @@ except InvalidGuess as error:
 
 ### Step 4 : Stop cleanly when play cannot continue
 
-In `wordle/__main__.py`, wrap loading the words and playing the game in a handler for interrupted input. Keep `play` and `load_words` imported, and keep the existing guard below `main`.
+:::task
+In `main.py`, end the game with a short message instead of a traceback when the player presses Ctrl+C.
+:::
+
+```text
+wordle/
+    main.py              <- add try and except to main
+    wordle/
+```
+
+In `main.py`, wrap loading the words and playing the game in a handler for interrupted input. Keep `play` and `load_words` imported, and keep the existing guard below `main`.
 
 ```python
 def main() -> None:
@@ -178,10 +221,7 @@ def main() -> None:
     """Load the words and play one game."""
     try:
         words = load_words()
-        print(
-            "Guess the five-letter word. Type 'quit' to give up, "
-            "'letters' for the letters tried."
-        )
+        print("Guess the five-letter word. Type 'quit', 'letters' or 'hint'.")
         secret = "crane"
         play(secret, words)
     except (KeyboardInterrupt, EOFError):
@@ -190,12 +230,12 @@ def main() -> None:
 
 :::
 
-Keep the fixed secret `"crane"` and run `uv run python -m wordle`. Enter `cran`, `cr4ne`, `zzzzz`, then `crane`. Captured output, with typed input omitted :
+Keep the fixed secret `"crane"` and press Play on `main.py`. Enter `cran`, `cr4ne`, `zzzzz`, then `crane`. Captured output, with typed input omitted :
 
 :::output
 
 ```text
-Guess the five-letter word. Type 'quit' to give up, 'letters' for the letters tried.
+Guess the five-letter word. Type 'quit', 'letters' or 'hint'.
 Guess 1/6 : A guess must have five letters.
 Guess 1/6 : A guess must contain letters only.
 Guess 1/6 : That word is not in the word list.
@@ -205,7 +245,7 @@ Got it in 1!
 
 :::
 
-All three invalid guesses leave the first turn available. Change the secret in `wordle/__main__.py` to another practice word and play again, then restore `"crane"`. The solver's `hint` command should still work.
+All three invalid guesses leave the first turn available. Change the secret in `main.py` to another practice word and play again, then restore `"crane"`. The `letters` and `hint` commands still work.
 
 ### If time permits
 

@@ -2,13 +2,25 @@
 
 Your game uses a small word list written directly in Python, and the moment a game ends the result is gone. In this exercise you clean a real word list, make the game find its data wherever it is started from, and keep a history of every game on disk.
 
-Continue in your own `wordle` project, or start from `exercises/starters/09-python-io/`. The starter is the finished Exercise 8 plus this exercise's handouts : `raw-words.txt`, `allowed.txt` and `SOURCES.md`. If you continue in your own project, copy those three files in from `exercises/handouts/09-python-io/`.
+Continue in your own `wordle` project, or start from `exercises/starters/09-python-io/`. The starter is the finished Exercise 8 plus this exercise's handouts : `raw-words.txt`, `allowed.txt` and `SOURCES.md`. If you continue in your own project, copy those three files in from `exercises/handouts/09-python-io/` to the project folder, beside `main.py`. The solution is in `solutions/09-python-io/`. Start a game by pressing Play on `main.py`.
 
 Some steps give you the code, some a skeleton to complete, and some only a description of what to write. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
 
 ### Step 1 : Clean a messy word list
+
+:::task
+Write `clean_words` in `wordle/words.py`. It turns the lines of a messy file into a clean, sorted list of five-letter words.
+:::
+
+```text
+wordle/
+    main.py
+    raw-words.txt        the messy list, from the handouts
+    wordle/
+        words.py         <- add clean_words
+```
 
 `raw-words.txt` is what a word list looks like when it comes from the outside world : almost a thousand lines with some words in capitals, some duplicates, a few lines of the wrong length, a number, a word with an accent, and an empty line. Open it in the editor and scroll to the bottom to see for yourself.
 
@@ -63,6 +75,23 @@ The loop cleans each line once, checks that cleaned word, and adds it to the set
 
 ### Step 2 : Write the clean list
 
+:::task
+In the interpreter, clean `raw-words.txt` once and write the result to `wordle/data/words.txt`. Copy `allowed.txt` and `SOURCES.md` into the same folder.
+:::
+
+```text
+wordle/
+    main.py
+    raw-words.txt
+    allowed.txt          from the handouts, copy into wordle/data/
+    SOURCES.md           from the handouts, copy into wordle/data/
+    wordle/
+        data/            <- new folder
+            words.txt    <- written by the interpreter
+            allowed.txt
+            SOURCES.md
+```
+
 Cleaning is done once, not every time the game starts, so use a throwaway session instead of a script. Start Python in the project folder and type this, line by line :
 
 ```bash
@@ -97,6 +126,19 @@ The slides *Reading Text Files*, *Creating and Removing Directories* and *Writin
 :::
 
 ### Step 3 : Find the file from the package
+
+:::task
+Let `load_words` read `wordle/data/words.txt`, wherever the game is started from. In `main.py`, print a message instead of a traceback when the file is missing.
+:::
+
+```text
+wordle/
+    main.py              <- catch FileNotFoundError
+    wordle/
+        words.py         <- load_words reads the file
+        data/
+            words.txt
+```
 
 Replace the practice-list function in `wordle/words.py` with a file reader. Add `from pathlib import Path` at the top of the module.
 
@@ -134,13 +176,13 @@ def load_words() -> list[str]:
     return data_path.read_text(encoding="utf-8").split()
 ```
 
-`Path(__file__).parent` is the folder containing `words.py`; `/` joins path parts. Start a fresh interpreter and repeat both checks. `len(load_words())` now returns `935` from either folder. Leave Python and run `uv run python -m wordle` from the project folder.
+`Path(__file__).parent` is the folder containing `words.py`; `/` joins path parts. Start a fresh interpreter and repeat both checks. `len(load_words())` now returns `935` from either folder. Leave Python and press Play on `main.py`.
 
 :::hint
 The slide *Paths Relative to a Module* builds a path from `__file__`, and *Paths with pathlib* shows joining path parts with `/`. Save the changed loader before starting a new interpreter session.
 :::
 
-File loading adds a possible failure. Add this handler before the existing interruption handler in `main` of `wordle/__main__.py`. Step 4 adds the second file named in the message :
+File loading adds a possible failure. Add this handler before the existing interruption handler in `main` of `main.py`. Step 4 adds the second file named in the message :
 
 ```python
     except FileNotFoundError:
@@ -156,9 +198,23 @@ The slide *Typed Exception Handling* shows an `except FileNotFoundError` clause.
 
 ### Step 4 : Two lists, answers and allowed guesses
 
+:::task
+Add `load_allowed` to `wordle/words.py`, and let `play` accept every word of `allowed.txt` as a guess.
+:::
+
+```text
+wordle/
+    main.py
+    wordle/
+        game.py          <- check guesses against the allowed words
+        words.py         <- add load_allowed
+        data/
+            allowed.txt
+```
+
 You have been using one list for two jobs : the words the game can pick as a secret, and the words it accepts as a guess. A player should not be told that a perfectly good word is not a word, but the secret should be a word they have a fair chance of knowing. The real game uses two lists for this, and now your project does too :
 
-- `wordle/data/words.txt` : the 935 common words the game picks its secret from, and the words the `hint` command searches
+- `wordle/data/words.txt` : the 935 common words the game picks its secret from, and the words the `letters` command counts letters in
 - `wordle/data/allowed.txt` : 8 639 words the game accepts as a guess, including all of the answers
 
 Add a second loader to `wordle/words.py`, next to `load_words` :
@@ -171,7 +227,7 @@ def load_allowed() -> list[str]:
 
 Then change `play` in `wordle/game.py`. Load the allowed list once, at the top of the function, and check guesses against it, instead of against `words`. Everything else keeps using `words`.
 
-Keep `secret = "crane"` in `wordle/__main__.py` and run `uv run python -m wordle`. `crone` is a word the game used to reject, and it is accepted now :
+Keep `secret = "crane"` in `main.py` and press Play. `crone` is a word the game used to reject, and it is accepted now :
 
 ```text
 [C][R] O [N][E]
@@ -182,7 +238,7 @@ The slide *Paths with pathlib* shows `/` joining the parts of a path. The body o
 :::
 
 :::hint
-The change in `play` is two lines : `allowed_words = load_allowed()` before the loop, and `check_guess(guess, allowed_words)` in the `try` block. `candidates(words, history)` for the `hint` command stays as it is.
+The change in `play` is two lines : `allowed_words = load_allowed()` before the loop, and `check_guess(guess, allowed_words)` in the `try` block. `most_common_first(..., words)` in the `letters` command keeps using `words`.
 :::
 
 :::solution
@@ -199,7 +255,6 @@ In `wordle/game.py` add `from wordle.words import load_allowed` and change the s
 def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
     """Play one game and return whether the player found the secret."""
     used_letters = set()
-    history = []
     guess_count = 0
     allowed_words = load_allowed()
     while guess_count < max_guesses:
@@ -213,6 +268,18 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
 :::
 
 ### Step 5 : Keep a history file
+
+:::task
+Add `record_history` to `wordle/game.py` and call it when a game ends, so that `history.txt` gets one line per game.
+:::
+
+```text
+wordle/
+    main.py
+    history.txt          <- written by record_history
+    wordle/
+        game.py          <- add history_path and record_history
+```
 
 A finished game should leave a line behind. One line per game, such as `crane,2,1`, holds the secret, the number of guesses used and `1` for a win or `0` for a loss. That is a CSV file, and the `csv` module knows how to write one. Read *The csv Module* first.
 
@@ -235,7 +302,7 @@ def record_history(secret: str, guesses: int, won: bool) -> None:
 
 Open the file for **appending** with `"a"`, so earlier games stay. See *File Open Modes* and *Using with*. Inside the `with`, give `csv.writer` the row `[secret, guesses, int(won)]`. Then call `record_history` in `play` : once with `True` just before the `return True` of a win, and once with `False` after the loop, before the final `return False`. A game you give up with `quit` counts as lost.
 
-Play two games with `secret = "crane"` in `wordle/__main__.py` : guess `slate` and then `crane` in the first, and `slate` followed by `quit` in the second. Open `history.txt`:
+Play two games with `secret = "crane"` in `main.py` : guess `slate` and then `crane` in the first, and `slate` followed by `quit` in the second. Open `history.txt`:
 
 ```text
 crane,2,1
@@ -277,6 +344,18 @@ The calls in `play`:
 
 ### Step 6 : A stats command
 
+:::task
+Add a `stats` command to `play` that reads `history.txt` and prints how many games were played and won.
+:::
+
+```text
+wordle/
+    main.py              <- list 'stats' in the welcome message
+    history.txt
+    wordle/
+        game.py          <- add case "stats" and print_stats
+```
+
 Reading the file back is the other half. Add a new command to `play`, next to `quit`, `letters` and `hint`, so that typing `stats` prints how many games were played and how many were won :
 
 ```python
@@ -306,7 +385,7 @@ Read it line by line :
 - Every field read from a CSV file is a string, so the wins are the rows whose third column equals `"1"`, not the number `1`.
 - `sum(...)` over conditions counts how many are true, because `True` is `1`.
 
-Also change the welcome line in `wordle/__main__.py` so it lists the commands the game now knows :
+Also change the welcome line in `main.py` so it lists the commands the game now knows :
 
 ```python
         print(

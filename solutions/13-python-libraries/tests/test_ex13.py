@@ -2,8 +2,8 @@
 
 import pytest
 from wordle.game import follows_hints
+from wordle.hints import hint
 from wordle.scoring import InvalidGuess, Mark, check_guess
-from wordle.solver import best_guess
 from wordle.words import clean_words
 
 
@@ -16,8 +16,8 @@ def test_follows_hints_keeps_green_letters_and_uses_yellow_letters() -> None:
     assert not follows_hints("clink", history)
 
 
-def test_best_guess_returns_none_for_no_candidates() -> None:
-    assert best_guess([]) is None
+def test_hint_returns_none_when_every_letter_was_tried() -> None:
+    assert hint("crane", set("crane")) is None
 
 
 def test_check_guess_rejects_capital_letters() -> None:

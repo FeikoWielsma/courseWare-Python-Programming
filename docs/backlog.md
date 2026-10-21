@@ -9,14 +9,18 @@ feature set or change the four-day schedule as part of this follow-up.
 
 - **Exercise 10:** add runnable checkpoints between returning the game result,
   recording it and displaying statistics. Each intermediate result should run.
-- **Exercise 11:** separate the mechanical `play` refactor from the board renderer
-  and class methods. Demonstrate state changes on a small object before
-  integration.
+- **Exercise 11:** Step 5 now gives `__str__` its own sub-step and `play` a
+  skeleton with five gaps. Still open : demonstrate state changes on a small
+  object before integration.
 - **Exercise 12:** review the cross-module `Mark` alias migration and mypy check
   order alongside neighboring integrations. This is a review item, not a known
   defect.
-- **Exercise 13:** separate saving, loading and resuming into runnable stages.
-  Check persisted settings and interruption behavior at each stage.
+
+- **Exercise 5:** the two-pass duplicate-letter scoring in `score_guess` lost
+  both students of the October 2026 delivery, as did the move to the interpreter
+  that follows it. Supply more of the second pass as a guided fill-in, and check
+  each pass on its own before the two are combined. Keep the `score_guess`
+  contract and its tests.
 
 ## Rendering follow-up
 

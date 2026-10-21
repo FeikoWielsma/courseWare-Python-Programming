@@ -38,8 +38,8 @@ def summary(connection: sqlite3.Connection) -> dict:
     ).fetchall()
     distribution = dict(rows)
     streak = 0
-    for (game_won,) in connection.execute("SELECT won FROM games ORDER BY id DESC"):
-        if not game_won:
+    for row in connection.execute("SELECT won FROM games ORDER BY id DESC"):
+        if not row[0]:
             break
         streak += 1
     percentage = won / played * 100 if played else 0.0

@@ -2,12 +2,16 @@
 
 from contextlib import closing
 
-from wordle.display import render
+from rich.console import Console
+
+from wordle.display import colour_row, render
+from wordle.hints import hint, letters_left, most_common_first
 from wordle.scoring import InvalidGuess, Mark, check_guess, score_guess
-from wordle.solver import best_guess, candidates
 from wordle.stats import connect, summary
 from wordle.storage import clear_saved_game, save_game
 from wordle.words import load_allowed
+
+console = Console()
 
 
 class Game:
@@ -64,7 +68,10 @@ class Game:
 def follows_hints(guess: str, history: list[tuple[str, list[Mark]]]) -> bool:
     """Return whether guess keeps green letters and includes yellow ones."""
     for previous, marks in history:
-        for position, (letter, mark) in enumerate(zip(previous, marks, strict=True)):
+        # Walk the positions by index, so that the letter and its mark are two plain names.
+        for position in range(len(previous)):
+            letter = previous[position]
+            mark = marks[position]
             if mark == "green" and guess[position] != letter:
                 return False
             if mark == "yellow" and letter not in guess:
@@ -89,14 +96,15 @@ def play(secret: str, words: list[str], max_guesses: int = 6, hard: bool = False
                 break
             case "letters":
                 print("Tried :", " ".join(sorted(used_letters)))
+                left = most_common_first(letters_left(used_letters), words)
+                print("Not tried, most common first :", " ".join(left))
                 continue
             case "hint":
-                possible = candidates(words, game.history)
-                suggestion = best_guess(possible)
-                if suggestion is None:
-                    print("No candidate words remain.")
+                letter = hint(secret, used_letters)
+                if letter is None:
+                    print("No hint left: you have tried every letter of the word.")
                 else:
-                    print(f"{len(possible)} words left, try {suggestion.upper()}")
+                    print(f"The word contains the letter {letter.upper()}.")
                 continue
             case "stats":
                 print_stats()
@@ -111,7 +119,7 @@ def play(secret: str, words: list[str], max_guesses: int = 6, hard: bool = False
             print(error)
             continue
         used_letters.update(guess)
-        print(render(guess, marks))
+        console.print(colour_row(guess, marks))
         save_game(game.secret, game.history, game.max_guesses, hard)
     if game.is_won:
         print(f"Got it in {len(game.history)}!")

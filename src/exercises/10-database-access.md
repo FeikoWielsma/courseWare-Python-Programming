@@ -2,13 +2,25 @@
 
 The history file of Exercise 9 can tell you how many games you played, but not much more. What is your win rate? In how many guesses do you usually win? How many games in a row have you won? Every question means another loop over the file. A database answers them in one query. In this exercise you move the statistics into SQLite and let the game report them. The SQL statements are given, because the course is about Python : your work is the Python around them, which passes the values in, fetches the rows and turns them into numbers, a bar chart and a streak.
 
-Continue in your own `wordle` project, or start from `exercises/starters/10-database-access/`. The starter is the finished Exercise 9; this exercise hands out nothing.
+Continue in your own `wordle` project, or start from `exercises/starters/10-database-access/`. The starter is the finished Exercise 9; this exercise hands out nothing. The solution is in `solutions/10-database-access/`. Start a game by pressing Play on `main.py`, with the project folder open in VS Code, so that the database file lands in the project folder.
 
 Some steps give you the code, some a skeleton to complete, and some only a description and a few examples of what it should return. Where you write the code yourself, the solution is hidden until you open it. Try the step first; the solution is there for when you are stuck, or to compare afterwards.
 
 ---
 
 ### Step 1 : Open the database
+
+:::task
+Create `wordle/stats.py` with a function `connect` that opens `wordle.db` and creates the `games` table.
+:::
+
+```text
+wordle/
+    main.py
+    wordle.db            <- created by connect
+    wordle/
+        stats.py         <- new
+```
 
 Create `wordle/stats.py`, the module that owns everything to do with the database :
 
@@ -64,6 +76,18 @@ There is now a file `wordle.db` in the project folder. It is created in the work
 
 ### Step 2 : Record a finished game
 
+:::task
+Add `record_game` to `wordle/stats.py`. It inserts one finished game with a parameterized statement and leaves the commit to its caller.
+:::
+
+```text
+wordle/
+    main.py
+    wordle.db            created by connect
+    wordle/
+        stats.py         <- add record_game
+```
+
 Add a function that stores one game. The time is given, in the ISO text format SQLite sorts correctly :
 
 The slide *Recording a Timestamp* shows `datetime.now().isoformat(timespec="seconds")`. Keep that supplied expression while implementing the database insert.
@@ -115,6 +139,18 @@ def record_game(connection: sqlite3.Connection, secret: str, guesses: int, won: 
 :::
 
 ### Step 3 : Totals
+
+:::task
+Add `summary` to `wordle/stats.py`. It returns a dictionary with the games played, the games won and the win percentage.
+:::
+
+```text
+wordle/
+    main.py
+    wordle.db            created by connect
+    wordle/
+        stats.py         <- add summary
+```
 
 Now ask the database a question. Write `summary`, which returns a dictionary with how many games were played, how many were won and the win percentage :
 
@@ -184,6 +220,18 @@ def summary(connection: sqlite3.Connection) -> dict:
 
 ### Step 4 : The guess distribution
 
+:::task
+Add the key `"distribution"` to the dictionary of `summary` : the number of games won in each number of guesses.
+:::
+
+```text
+wordle/
+    main.py
+    wordle.db            created by connect
+    wordle/
+        stats.py         <- extend summary
+```
+
 How quickly do you win? Add a key `"distribution"` to the dictionary `summary` returns : a dictionary from the number of guesses to the number of games **won** in that many, in order of guesses. Losses are left out. Four games won in 2, 4, 4 and lost, for example, give `{2: 1, 4: 2}`.
 
 The chart comes in Step 6, where `print_stats` turns each count into a row of `#` characters.
@@ -226,6 +274,18 @@ Add `"distribution": distribution` to the dictionary that `summary` returns.
 
 ### Step 5 : The current streak
 
+:::task
+Add the key `"streak"` to the dictionary of `summary` : the number of games won in a row, up to the latest game.
+:::
+
+```text
+wordle/
+    main.py
+    wordle.db            created by connect
+    wordle/
+        stats.py         <- extend summary
+```
+
 The last statistic is the one players care about : how many games in a row have you won, up to now? Add the key `"streak"` to the dictionary : the number of wins since the most recent loss, `0` if the last game was lost or there are no games.
 
 SQL can do this too, but the clearest solution reads the games newest first and counts in Python until it meets a loss. The query is given :
@@ -234,10 +294,20 @@ SQL can do this too, but the clearest solution reads the games newest first and 
 "SELECT won FROM games ORDER BY id DESC"
 ```
 
-`id` grows with every game, so `ORDER BY id DESC` puts the newest game first. A cursor can be looped over directly, without `fetchall`, and every result row is a tuple, even with one column. This loop gives one `won` value per game; the parentheses unpack the one-item tuple :
+`id` grows with every game, so `ORDER BY id DESC` puts the newest game first. A cursor can be looped over directly, without `fetchall`. Every result row is a tuple, even with one column, so `row[0]` is the `won` value of that game : `1` for a win, `0` for a loss. Look at the rows first, with the four games of Step 3 recorded :
 
 ```python
-for (game_won,) in connection.execute("SELECT won FROM games ORDER BY id DESC"):
+connection.execute("SELECT won FROM games ORDER BY id DESC").fetchall()
+```
+
+```text
+[(1,), (1,), (0,), (1,)]
+```
+
+The loop goes over the same rows, newest first :
+
+```python
+for row in connection.execute("SELECT won FROM games ORDER BY id DESC"):
 ```
 
 In a new Python session, record the four games of Step 3 : the last two were won, so the streak is `2`. Record one more lost game and it drops to `0`. An empty database has a streak of `0` too :
@@ -254,14 +324,14 @@ The slide *break and continue Statements*, in module 04, leaves a loop early wit
 :::
 
 :::hint
-Start the streak at `0`, add one for every won game, and `break` at the first `0`.
+Start the streak at `0`. In the loop, `break` when `row[0]` is `0`, and add one to the streak otherwise.
 :::
 
 :::solution
 ```python
     streak = 0
-    for (game_won,) in connection.execute("SELECT won FROM games ORDER BY id DESC"):
-        if not game_won:
+    for row in connection.execute("SELECT won FROM games ORDER BY id DESC"):
+        if not row[0]:
             break
         streak += 1
 ```
@@ -270,6 +340,19 @@ Add `"streak": streak` to the dictionary. The finished function is in `solutions
 :::
 
 ### Step 6 : Use the database in the game
+
+:::task
+Let `play` return the number of guesses with the result, record every finished game from `main.py`, and let the `stats` command print the numbers of `summary`.
+:::
+
+```text
+wordle/
+    main.py              <- record the game
+    wordle.db
+    wordle/
+        game.py          <- play returns two values, new print_stats
+        stats.py
+```
 
 #### 6a
 
@@ -298,24 +381,25 @@ The slide *return Statement* shows that a function returns values to its caller,
 
 #### 6b
 
-In `wordle/__main__.py`, keep the secret in a variable, unpack what `play` returns and record the game. Add `from wordle.stats import connect, record_game` :
+In `main.py`, keep the secret in a variable, unpack what `play` returns and record the game. Add `from wordle.stats import connect, record_game` :
 
 ```python
         secret = "crane"
         guesses, won = play(secret, words)
-        with closing(connect()) as connection, connection:
-            record_game(connection, secret, guesses, won)
+        with closing(connect()) as connection:
+            with connection:
+                record_game(connection, secret, guesses, won)
 ```
 
-Add `from contextlib import closing` at the top. The `with` line has two parts, and each one has a job :
+Add `from contextlib import closing` at the top. Each `with` has one job :
 
-- `closing(connect())` closes the connection when the block ends. The `with` of a connection does **not** close it; it only manages the transaction, and a connection that is never closed is reported by Python 3.14 as an unclosed database. `closing` from the standard library calls `close()` for any object that has one.
-- The second part, `connection`, is the transaction. When the block ends without an error the changes are committed, and when it ends with an error they are rolled back. This is the single place in the program where a game is committed : `record_game` only inserts, and the caller decides. The parts leave in reverse order, so the commit comes before the close.
+- The outer `with closing(connect()) as connection:` closes the connection when its block ends. The `with` of a connection does not close it; it only manages the transaction, and a connection that is never closed is reported by Python 3.14 as an unclosed database. `closing` from the standard library calls `close()` for any object that has one.
+- The inner `with connection:` is the transaction. When its block ends without an error the changes are committed, and when it ends with an error they are rolled back. This is the single place in the program where a game is committed : `record_game` only inserts, and the caller decides. The inner block ends first, so the commit comes before the close.
 
 A game you stop with Ctrl+C or Ctrl+D never reaches the `record_game` line, so it is not recorded. A game you give up with `quit` ends the loop and counts as lost.
 
 :::hint
-The slide *Using with*, in the database module, shows `closing(...)` together with the connection's transaction block. Keep `record_game` inside that block so it commits before the connection closes.
+The slide *Using with*, in the database module, nests the connection's transaction block inside `closing(...)`. Keep `record_game` inside the inner block so it commits before the connection closes.
 :::
 
 #### 6c
@@ -333,7 +417,7 @@ def print_stats() -> None:
     print(...)  # Current streak: 1
 ```
 
-Play four games with `secret = "crane"` in `wordle/__main__.py` : win in two (`slate`, `crane`), win in one (`crane`), give up (`quit`) and win in three (`slate`, `trace`, `crane`). Type `stats` at the first prompt of a fifth game :
+Play four games with `secret = "crane"` in `main.py` : win in two (`slate`, `crane`), win in one (`crane`), give up (`quit`) and win in three (`slate`, `trace`, `crane`). Type `stats` at the first prompt of a fifth game :
 
 ```text
 Games played: 4; won: 3; win rate: 75.0%.

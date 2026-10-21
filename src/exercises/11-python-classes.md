@@ -1,8 +1,8 @@
 # Exercise 11 : Python Classes
 
-Look at `play` in `wordle/game.py`. The state of one game is spread over a handful of loose variables : `secret`, `words`, `history`, `guess_count`, `max_guesses`. Every new feature, the hint, the statistics and the next one you add, has to pass them around or reach into them, and nothing stops a function from putting a nonsense value in one of them. In this exercise you gather them in a class, `Game`, which owns its state and the rules about it. On the way you meet properties and the one question that decides when to use them.
+Look at `play` in `wordle/game.py`. The state of one game is spread over a handful of loose variables : `secret`, `words`, `guess_count`, `max_guesses`, `used_letters`. The guesses themselves are forgotten as soon as their row is printed. Every new feature, the hint, the statistics and the next one you add, has to pass these variables around or reach into them, and nothing stops a function from putting a nonsense value in one of them. In this exercise you gather them in a class, `Game`, which owns its state and the rules about it. On the way you meet properties and the one question that decides when to use them.
 
-Continue in your own `wordle` project, or start from `exercises/starters/11-python-classes/`. The starter is the finished Exercise 10.
+Continue in your own `wordle` project, or start from `exercises/starters/11-python-classes/`. The starter is the finished Exercise 10. The solution is in `solutions/11-python-classes/`. Start a game by pressing Play on `main.py`.
 
 After editing the class, leave the Python interpreter with `exit()` and start it again. Repeat the import and create a new `Game` before trying the changed methods or properties; an existing object keeps its old class definition.
 
@@ -11,6 +11,17 @@ Some steps give you the code, some a skeleton to complete, and one only the sign
 ---
 
 ### Step 1 : A Game with plain attributes
+
+:::task
+Add a class `Game` to `wordle/game.py` that stores the secret, the allowed words, the guesses made so far and the guess limit.
+:::
+
+```text
+wordle/
+    main.py
+    wordle/
+        game.py          <- add class Game above play
+```
 
 Add the class to `wordle/game.py`, above `play`. For now it only stores what a game needs :
 
@@ -25,7 +36,7 @@ class Game:
         self.max_guesses = max_guesses
 ```
 
-`__init__` runs when you write `Game(...)`, and `self` is the new object. Every `self.name = ...` makes an attribute on that object. `secret` is the word to find, `words` is the list of words the game accepts as a guess, and `history` collects each guess with its marks, which is the list that `candidates` in `wordle/solver.py` already expects. See *Creating Classes* and *Class Members*.
+`__init__` runs when you write `Game(...)`, and `self` is the new object. Every `self.name = ...` makes an attribute on that object. `secret` is the word to find, `words` is the list of words the game accepts as a guess, and `history` collects each guess with its marks, which `play` has not kept so far. See *Creating Classes* and *Class Members*.
 
 Start a Python session in the project folder and look at an object :
 
@@ -54,6 +65,17 @@ The slides *Creating Classes* and *Class Members* show the constructor and attri
 :::
 
 ### Step 2 : A method that plays a guess
+
+:::task
+Add a method `guess` to `Game` that checks, scores and records one guess.
+:::
+
+```text
+wordle/
+    main.py
+    wordle/
+        game.py          <- add Game.guess
+```
 
 A class is the data together with the functions that work on it. The first of those is the heart of the game : take a guess, check it, score it, remember it. Add a method to `Game` :
 
@@ -104,6 +126,17 @@ The method has three lines of real work : `check_guess(word, self.words)`, then 
 :::
 
 ### Step 3 : Values that work themselves out
+
+:::task
+Add three properties to `Game` : `is_won`, `is_over` and `guesses_left`.
+:::
+
+```text
+wordle/
+    main.py
+    wordle/
+        game.py          <- add three properties
+```
 
 Callers will keep asking three things : has the player won, is the game over, how many guesses are left. All three can be worked out from `history` and `max_guesses`, so none of them needs to be stored. As methods they would be called `game.is_won()`. With `@property` above the `def` they are read as `game.is_won`, like an attribute that is always correct. See *A Computed Attribute*.
 
@@ -189,6 +222,17 @@ The slide *A Computed Attribute* shows `@property` on a method that returns a va
 
 ### Step 4 : When a plain attribute is not enough
 
+:::task
+Turn `max_guesses` into a property whose setter accepts only 1 to 10, without changing any other line.
+:::
+
+```text
+wordle/
+    main.py
+    wordle/
+        game.py          <- max_guesses becomes a property
+```
+
 `max_guesses` is a plain attribute, so anybody can assign anything to it. Find out what that allows :
 
 ```python
@@ -270,9 +314,20 @@ Assign to `self._max_guesses` in the setter, with the underscore. `self.max_gues
 
 ### Step 5 : Draw the board and shrink play
 
+:::task
+Give `Game` a `__str__` that draws the board, and let `play` keep its state in a `Game` instead of loose variables.
+:::
+
+```text
+wordle/
+    main.py
+    wordle/
+        game.py          <- add __str__, rewrite play
+```
+
 #### 5a
 
-A `Game` that can draw itself helps you debug it. Python asks an object for its text with `__str__`; `print(game)` and f-strings call it. Add one to `Game` that draws every scored guess on its own row with `render`.
+A `Game` that can draw itself helps you debug it. Python asks an object for its text with `__str__`; `print(game)` and f-strings call it. Add one to `Game` that draws every scored guess on its own row with `render`. `play` prints rows with `colour_row`, so add `render` to the import from `wordle.display` : `from wordle.display import colour_row, render`.
 
 ```python
     def __str__(self) -> str:
@@ -298,28 +353,6 @@ print(game)
 The slide *`__str__` and `__repr__`* shows returning text from `__str__`, and *Generator Expressions* shows combining generated strings with `join`.
 :::
 
-#### 5b
-
-Now let `play` do less. Change it so that it creates a `Game` and loops until the game is over :
-
-- create the game after loading the allowed list : `game = Game(secret, allowed_words, max_guesses)`
-- loop with `while not game.is_over`, and remove the variables `history` and `guess_count`
-- show the prompt number with `len(game.history) + 1` and the limit with `game.max_guesses`
-- give `candidates(words, game.history)` the history for the hint
-- in the `try` block, keep the `check_guess(guess, allowed_words)` line, and let `marks = game.guess(guess)` replace the scoring and recording below it
-- after the loop, `game.is_won` decides the message : `Got it in N!` after a win, and `The word was ...` after a loss
-- return `len(game.history), game.is_won`, the same two values as in Exercise 10, so that `__main__` still has what it needs for `record_game`
-
-Play a game with `secret = "crane"` in `wordle/__main__.py`; it must behave as before.
-
-:::hint
-The slide *`__str__` and `__repr__`* shows `__str__` returning the text that `print` shows, and *Generator Expressions*, in module 07, writes an expression inside `join`.
-:::
-
-:::hint
-The loop body shrinks to : read the guess, handle the commands, `check_guess` and `marks = game.guess(guess)` inside `try`, update `used_letters`, print `render(guess, marks)`. The win test and the counter are gone, because the loop condition and `game.is_won` now know.
-:::
-
 :::hint
 A single `"\n".join(...)` over a generator expression is the whole of `__str__`. The expression is `render(word, marks)` for each `word, marks` pair in `self.history`, and `\n` is the newline that puts each row on its own line.
 :::
@@ -330,7 +363,54 @@ A single `"\n".join(...)` over a generator expression is the whole of `__str__`.
         """Draw every scored guess on its own row."""
         return "\n".join(render(word, marks) for word, marks in self.history)
 ```
+:::
 
+#### 5b
+
+Now let `play` do less : the `Game` keeps the count, the history and the result. Here is the new `play`. Copy it over the old one, keep your four `case` blocks where the comment is, and fill in the five `...` :
+
+```python
+def play(secret: str, words: list[str], max_guesses: int = 6) -> tuple[int, bool]:
+    """Play one game and return the guesses used and whether the secret was found."""
+    allowed_words = load_allowed()
+    game = ...
+    used_letters = set()
+    while ...:
+        guess = input(f"Guess {len(game.history) + 1}/{game.max_guesses} : ").strip().lower()
+        match guess:
+            ...  # the cases for quit, letters, hint and stats stay as they are
+        try:
+            check_guess(guess, allowed_words)
+            marks = ...
+        except InvalidGuess as error:
+            print(error)
+            continue
+        used_letters.update(guess)
+        console.print(colour_row(guess, marks))
+    if ...:
+        print(f"Got it in {len(game.history)}!")
+    else:
+        print(f"The word was {secret.upper()}.")
+    return ...
+```
+
+- `game` is a new `Game` for this secret, the allowed words and the guess limit
+- the loop runs while the game is not over; `guess_count` is gone, because `len(game.history)` counts the guesses
+- `marks` comes from the method of Step 2, which scores and records the guess
+- after the loop, the game knows whether it was won
+- `play` returns the same two values as in Exercise 10, the number of guesses and the result, so that `main.py` still has what it needs for `record_game`
+
+Play a game with `secret = "crane"` in `main.py`; it must behave as before.
+
+:::hint
+The slide *Class Members* creates an object and calls its methods, and *A Computed Attribute* reads a property without parentheses.
+:::
+
+:::hint
+`Game(secret, allowed_words, max_guesses)`, `not game.is_over`, `game.guess(guess)`, `game.is_won`, and `len(game.history), game.is_won`.
+:::
+
+:::solution
 ```python
 def play(secret: str, words: list[str], max_guesses: int = 6) -> tuple[int, bool]:
     """Play one game and return the guesses used and whether the secret was found."""
@@ -344,10 +424,11 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> tuple[int, bool
                 break
             case "letters":
                 print("Tried :", " ".join(sorted(used_letters)))
+                left = most_common_first(letters_left(used_letters), words)
+                print("Not tried, most common first :", " ".join(left))
                 continue
             case "hint":
-                possible = candidates(words, game.history)
-                print(f"{len(possible)} words left, try {best_guess(possible).upper()}")
+                print(f"The word contains the letter {hint(secret, used_letters).upper()}.")
                 continue
             case "stats":
                 print_stats()
@@ -359,7 +440,7 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> tuple[int, bool
             print(error)
             continue
         used_letters.update(guess)
-        print(render(guess, marks))
+        console.print(colour_row(guess, marks))
     if game.is_won:
         print(f"Got it in {len(game.history)}!")
     else:
@@ -373,4 +454,4 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> tuple[int, bool
 ### If time permits
 
 - Add a `board` command to `play` that prints the game with `print(game)`.
-- Write a `class Stats` that wraps the database connection of Exercise 10, with methods `record(secret, guesses, won)` and `summary()`, and let `__main__` use a `Stats` object instead of calling `connect()` and `record_game` itself. There is no reference solution for these steps.
+- Write a `class Stats` that wraps the database connection of Exercise 10, with methods `record(secret, guesses, won)` and `summary()`, and let `main.py` use a `Stats` object instead of calling `connect()` and `record_game` itself. There is no reference solution for these steps.

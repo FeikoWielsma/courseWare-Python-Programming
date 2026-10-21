@@ -278,6 +278,26 @@ print(min(titles, key=len), max(titles, key=len))  # Imagine Bohemian Rhapsody
 
 ---
 
+# A lambda as the Key
+
+- A lambda computes the value to sort on when no built-in function fits :
+  - Each title is looked up in the play counts
+- `reverse=True` puts the largest values first :
+
+```python
+plays = {"Bohemian Rhapsody": 41, "Yesterday": 97, "Imagine": 63}
+most_played = sorted(plays, key=lambda title: plays[title], reverse=True)
+print(most_played)  # ['Yesterday', 'Imagine', 'Bohemian Rhapsody']
+print(max(plays, key=lambda title: plays[title]))  # Yesterday
+```
+
+- Looping over a dictionary gives its keys, so `sorted` returns titles
+- Items with equal values keep their original order
+
+> `demo12 · lambda_key`
+
+---
+
 # Recognising map and filter
 
 - `map` transforms each item; `filter` keeps matching items
@@ -301,7 +321,7 @@ print([name for name in cleaned if is_photo(name)])
 
 - These forms also occur in existing code
 
-> `demo12 · map_and_filter_functions`
+> `demo13 · map_and_filter_functions`
 
 ---
 
@@ -319,7 +339,7 @@ print(comprehended)  # ['cover.jpg', 'stage.jpg']
 
 - Choose the form that makes the operation clear
 
-> `demo13 · syntactic_sugar`
+> `demo14 · syntactic_sugar`
 
 ---
 
@@ -339,7 +359,7 @@ print(sum(lengths))  # 457
 
 - Prefer `sum` when it names the operation directly
 
-> `demo14 · reduce_and_lambda`
+> `demo15 · reduce_and_lambda`
 
 ---
 

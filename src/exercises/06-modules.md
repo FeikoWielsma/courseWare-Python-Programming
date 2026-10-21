@@ -1,6 +1,6 @@
 # Exercise 6 : Modules
 
-The scoring can now be called on its own, but loading words, drawing rows and running the game still share one file. Split those responsibilities into a package so the solver in the next exercise has a clear place to live.
+The scoring can now be called on its own, but loading words, drawing rows and running the game still share one file. Split those responsibilities into a package, with a small `main.py` beside it that starts the game. The hints of the next exercise then get a module of their own.
 
 Continue in your own `wordle` project, or use `exercises/starters/06-modules/`, the finished Exercise 5. Run commands from the project root, beside `pyproject.toml`, not from inside the new package directory.
 
@@ -17,7 +17,7 @@ def load_words() -> list[str]:
     ]
 ```
 
-Keep the original `wordle.py` intact for this step so `uv run python wordle.py` still plays a game. In the next step you will finish the package and remove that old file. The practice words stay in `load_words`; no data file is needed.
+Keep the original `wordle.py` intact for this step so that it still plays a game. In the next step you will finish the package and remove that old file. The practice words stay in `load_words`; no data file is needed.
 
 :::hint
 The slide *Packages in Python* shows the package folder and its `__init__.py`. *Function Syntax* shows the function definition and its body.
@@ -32,7 +32,7 @@ Move the existing functions into the following files. Keep their signatures and 
 | `wordle/scoring.py` | `WORD_LENGTH`, `is_valid`, `score_guess` |
 | `wordle/display.py` | `render` |
 | `wordle/game.py` | `play` |
-| `wordle/__main__.py` | `main` and the `if __name__ == "__main__":` guard |
+| `main.py`, in the project root beside `pyproject.toml` | `main` and the `if __name__ == "__main__":` guard |
 
 Fill the import slots at the top of `game.py` :
 
@@ -43,7 +43,7 @@ from wordle.scoring import ...
 # Move play here, keeping its body and annotations.
 ```
 
-Use this skeleton in `__main__.py` :
+`main.py` sits outside the package, next to the `wordle` folder, so it imports from the package like any other program. Use this skeleton in `main.py` :
 
 ```python
 from wordle.game import ...
@@ -59,11 +59,11 @@ if __name__ == "__main__":
     main()
 ```
 
-Delete the old `wordle.py` once the package is complete. Check it with `uv run python -m wordle`.
+Delete the old `wordle.py` once the package is complete. Check it by opening `main.py` and pressing Play.
 
 :::hint
 
-The slide *from...import Statement* shows the import form, and *Running Packages with python -m* shows a package with a `__main__.py` like this one.
+The slide *from...import Statement* shows the import form, and *Running a Module Directly* shows the `if __name__ == "__main__":` guard that `main` keeps.
 
 :::
 
@@ -82,7 +82,7 @@ from wordle.display import render
 from wordle.scoring import is_valid, score_guess
 ```
 
-`__main__.py` contains :
+`main.py` contains :
 
 ```python
 from wordle.game import play
@@ -103,15 +103,15 @@ if __name__ == "__main__":
 
 :::
 
-### Step 3 : Run the package
+### Step 3 : Run the game
 
-Run from the project root :
+Open `main.py` and press Play in VS Code. The terminal command does the same, from the project root :
 
 ```bash
-uv run python -m wordle
+uv run python main.py
 ```
 
-The `-m` option asks Python to locate a module or package. For a package, Python runs `wordle/__main__.py`. The guard moved with the entry point; importing `wordle.scoring` does not start a game.
+Python puts the folder of `main.py` on its search path, so `from wordle.game import play` finds the package beside it. The guard moved with the entry point; importing `wordle.scoring` does not start a game.
 
 Keep the fixed secret in the entry point. Enter `slate`, then `crane`. Captured output, with typed input omitted :
 
@@ -168,9 +168,9 @@ Your project now has this shape, apart from environment and lock files :
 ```text
 wordle/
     pyproject.toml
+    main.py
     wordle/
         __init__.py
-        __main__.py
         words.py
         scoring.py
         display.py
@@ -179,10 +179,8 @@ wordle/
 
 :::
 
-Change the secret in `wordle/__main__.py` to try another word, then restore `"crane"`. Play another game with `uv run python -m wordle`. Its behaviour should be the same as Exercise 5, with the duplicate-letter fix intact.
+Change the secret in `main.py` to try another word, then restore `"crane"`. Play another game from `main.py`. Its behaviour should be the same as Exercise 5, with the duplicate-letter fix intact.
 
 ### If time permits
 
-Try colour as an optional display experiment. Install `rich` with `uv add rich`, then use its printing support to colour a row when displaying it. Keep the text returned by `render` unchanged, so that the rest of the game does not notice. See *Installing Packages* for dependencies.
-
-The following exercises and reference solutions continue with the text markers; colour is not required to proceed.
+Add a `__main__.py` to the package that calls the same `main`, so that `uv run python -m wordle` starts a game as well. The slide *Running Packages with python -m* shows the file. The following exercises keep `main.py` as the way to start the game.

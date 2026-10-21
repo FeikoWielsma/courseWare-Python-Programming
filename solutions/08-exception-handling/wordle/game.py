@@ -1,14 +1,17 @@
 """Run one Wordle game."""
 
-from wordle.display import render
+from rich.console import Console
+
+from wordle.display import colour_row
+from wordle.hints import hint, letters_left, most_common_first
 from wordle.scoring import InvalidGuess, check_guess, score_guess
-from wordle.solver import best_guess, candidates
+
+console = Console()
 
 
 def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
     """Play one game and return whether the player found the secret."""
     used_letters = set()
-    history = []
     guess_count = 0
     while guess_count < max_guesses:
         guess = input(f"Guess {guess_count + 1}/{max_guesses} : ").strip().lower()
@@ -17,10 +20,11 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
                 break
             case "letters":
                 print("Tried :", " ".join(sorted(used_letters)))
+                left = most_common_first(letters_left(used_letters), words)
+                print("Not tried, most common first :", " ".join(left))
                 continue
             case "hint":
-                possible = candidates(words, history)
-                print(f"{len(possible)} words left, try {best_guess(possible).upper()}")
+                print(f"The word contains the letter {hint(secret, used_letters).upper()}.")
                 continue
         try:
             check_guess(guess, words)
@@ -29,9 +33,7 @@ def play(secret: str, words: list[str], max_guesses: int = 6) -> bool:
             continue
         guess_count += 1
         used_letters.update(guess)
-        marks = score_guess(secret, guess)
-        history.append((guess, marks))
-        print(render(guess, marks))
+        console.print(colour_row(guess, score_guess(secret, guess)))
         if guess == secret:
             print(f"Got it in {guess_count}!")
             return True

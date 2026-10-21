@@ -6,7 +6,7 @@ WORD_LENGTH = 5
 type Mark = Literal["green", "yellow", "grey"]
 
 
-class InvalidGuess(ValueError):  # noqa: N818  # Contracted name from plan section 4.
+class InvalidGuess(ValueError):
     """Raised when a guess is not an allowed five-letter word."""
 
 

@@ -12,7 +12,8 @@ with con:
 
 con.close()  # `with con:` commits or rolls back, it does not close
 
-with closing(sqlite3.connect("watchlist.db")) as con, con:
-    cur = con.cursor()
-    cur.execute("SELECT COUNT(*) FROM films")
-    print(f"Films on the watchlist: {cur.fetchone()[0]}")
+with closing(sqlite3.connect("watchlist.db")) as con:
+    with con:
+        cur = con.cursor()
+        cur.execute("SELECT COUNT(*) FROM films")
+        print(f"Films on the watchlist: {cur.fetchone()[0]}")

@@ -67,6 +67,12 @@ Names (`score_guess`, `play`, `Game`, module names) are contracts between text,
 solutions, tests and starters. Exercise text quotes solution code verbatim and
 shows output produced by running it. Use `secret = "crane"` for repeatable checks.
 
+From Exercise 6 the game starts from `main.py` beside the package; students
+press Play in VS Code. From Exercise 7, `colour_row` prints rows in colour with
+`rich`, while `render` keeps the plain text that tests and transcripts compare.
+From Exercise 7 each step opens with a `:::task` box and a file tree marking
+the files to create or change.
+
 Vary support without star or difficulty labels: short code, a hinted skeleton, or
 only a signature and expected output. Word lists stay in Python until Exercise 9.
 Every required step uses concepts already taught, and each code-writing step has

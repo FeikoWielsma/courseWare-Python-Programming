@@ -259,6 +259,28 @@ uv remove requests
 
 ---
 
+# Colour Output with rich
+
+- `rich` is a third-party package for coloured terminal output :
+  - `uv add rich` installs it in the project
+- A `Text` holds characters and a style; `Console.print` draws it :
+
+```python
+from rich.console import Console
+from rich.text import Text
+
+console = Console()
+console.print(Text(" Imagine ", style="bold white on green"))
+parts = [Text(" Yesterday ", style="black on yellow"), Text(" Respect ", style="white on blue")]
+console.print(Text(" ").join(parts))
+```
+
+- A style names the text colour, then `on` and the background colour
+- `Text(" ").join` joins styled pieces, like `" ".join` joins strings
+- Output sent to a file or a test holds the plain text, without colour
+
+---
+
 # Virtual Environments
 
 - Virtual environments isolate dependencies per project :
