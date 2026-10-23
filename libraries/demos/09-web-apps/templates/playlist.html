@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Playlist</title>
+</head>
+<body>
+  <h1>My playlist</h1>
+  <ol>
+    {% for track in playlist %}
+    <li>{{ track.title }} by {{ track.artist }}</li>
+    {% endfor %}
+  </ol>
+  <form method="post">
+    <input name="title" placeholder="Title">
+    <input name="artist" placeholder="Artist">
+    <button>Add</button>
+  </form>
+</body>
+</html>

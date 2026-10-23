@@ -156,7 +156,7 @@ Enjoy the course.
 [libraries/README.md](libraries/README.md) describes the optional topics, their
 setup and runnable demos. This is a separate selection for the trainer to choose
 with the group: command-line tools, third-party libraries, scraping, SQLAlchemy,
-NumPy, pandas, desktop windows and subprocesses. Inheritance is an optional
+NumPy, pandas, desktop windows, web applications and subprocesses. Inheritance is an optional
 preview of Advanced Python.
 
 The libraries slides are `PRG400-Python-Libraries-and-Tools.html` and `.pdf` at

@@ -1,10 +1,10 @@
 <!-- appendix -->
 
-# Exercise 9 : Running Other Programs
+# Exercise 10 : Running Other Programs
 
 A small appendix exercise, and the one most worth doing on your own Linux machine rather than in the classroom, because there the commands are real and the shell is a POSIX one. You will build a short report about a directory of files by asking other programs for the answers, and then replace half of it with Python that needs no other program at all.
 
-Start from `exercises/starters/09-appendix-subprocess/`. Run from `libraries/`.
+Start from `exercises/starters/10-appendix-subprocess/`. Run from `libraries/`.
 
 ---
 

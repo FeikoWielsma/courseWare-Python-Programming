@@ -16,7 +16,12 @@ NETWORK_GUARD = '''import os
 import sys
 from pathlib import Path
 
+LOOPBACK = {"127.0.0.1", "::1"}
+
 def deny_network(event, args):
+    # On Windows the event loop under TestClient connects a socket pair over loopback.
+    if event == "socket.connect" and isinstance(args[1], tuple) and args[1][0] in LOOPBACK:
+        return
     if event in {"socket.connect", "socket.getaddrinfo", "socket.sendto"}:
         with Path(os.environ["COURSE_NETWORK_LOG"]).open("a", encoding="utf-8") as log:
             log.write(f"{event}: {args!r}\\n")

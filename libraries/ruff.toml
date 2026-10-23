@@ -47,8 +47,13 @@ ignore = [
 # Every entry here names the lesson it protects. Before silencing a new
 # finding, check whether the code is teaching the pattern deliberately.
 
+# The web exercise reuses the Wordle package from PRG400, whose exception name
+# InvalidGuess is shared with the exercise text and tests of that course.
+"**/wordle/scoring.py" = ["N818"]
+
 [lint.isort]
-known-first-party = ["scrapers"]
+# The web exercise imports its own app module and the Wordle package.
+known-first-party = ["scrapers", "wordle", "app"]
 
 [format]
 quote-style = "double"

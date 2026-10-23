@@ -4,10 +4,12 @@ Extra material for the Python Programming course (PRG400). The fundamentals
 course covers the language itself. This material covers the libraries and tools
 built around it : class design and inheritance, command-line programs,
 third-party libraries worth knowing, web scraping into a database, SQLAlchemy,
-NumPy, pandas, GUI toolkits, and an appendix on running other programs.
+NumPy, pandas, GUI toolkits, web applications, and an appendix on running
+other programs.
 
 Choose topics with the trainer to suit the group. These modules are optional and
-do not continue the Wordle exercises. Every demo runs offline by default.
+do not continue the Wordle exercises, except the web applications exercise, which
+puts the finished Wordle game in the browser. Every demo runs offline by default.
 The web-scraping and SQLAlchemy modules share a book dataset. The data modules
 share a music listening history; NumPy also uses a photo and a generated audio
 tone. Play counts are fictional. Song editions and the photo source are recorded
@@ -41,7 +43,8 @@ The modules :
 | `demos/06-numpy/` | Arrays of numbers |
 | `demos/07-pandas/` | Tables of anything |
 | `demos/08-gui/` | Desktop windows with tkinter; interactive demos, no exercise handout or solution |
-| `demos/09-appendix-subprocess/` | Running other programs |
+| `demos/09-web-apps/` | A Python backend that serves HTML pages, with FastAPI |
+| `demos/10-appendix-subprocess/` | Running other programs |
 
 ## Setting up
 
@@ -117,6 +120,9 @@ uv run demos/04-web-scraping/01_fetching_pages.py --live
 The demos in `demos/08-gui/` open a window and block until it is closed. Run
 those from a desktop session rather than over a plain SSH connection. Each one
 says so in a comment at the top of the file.
+
+Most demos in `demos/09-web-apps/` start a web server. Open the address named
+at the top of the file in a browser, and stop the server with `Ctrl+C`.
 
 ## The exercises
 

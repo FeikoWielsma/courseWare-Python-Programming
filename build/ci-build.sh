@@ -14,6 +14,7 @@ uv run python "$TEMPLATE/build/tools/make-starters.py" --check
 uv run python tests/wordle/check.py
 uv run python tests/site/check-quiz.py
 uv run --project libraries python tests/libraries/check-solutions.py
+uv run --project libraries python tests/libraries/check-web.py
 (cd libraries && uv run python "$TEMPLATE/build/tools/check-fences.py")
 
 echo 'Building published artifacts'

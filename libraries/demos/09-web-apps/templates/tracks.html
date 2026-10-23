@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Playlist</title>
+</head>
+<body>
+  <h1>Playlist</h1>
+  <p>{{ tracks | length }} tracks</p>
+  <ul>
+    {% for track in tracks %}
+    <li>{{ track.title }} by {{ track.artist }}</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
