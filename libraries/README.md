@@ -4,15 +4,16 @@ Extra material for the Python Programming course (PRG400). The fundamentals
 course covers the language itself. This material covers the libraries and tools
 built around it : class design and inheritance, command-line programs,
 third-party libraries worth knowing, web scraping into a database, SQLAlchemy,
-NumPy, pandas, GUI toolkits, web applications, and an appendix on running
-other programs.
+NumPy, pandas, GUI toolkits, web applications, dashboards over sensor data,
+and an appendix on running other programs.
 
 Choose topics with the trainer to suit the group. These modules are optional and
 do not continue the Wordle exercises, except the web applications exercise, which
 puts the finished Wordle game in the browser. Every demo runs offline by default.
 The web-scraping and SQLAlchemy modules share a book dataset. The data modules
 share a music listening history; NumPy also uses a photo and a generated audio
-tone. Play counts are fictional. Song editions and the photo source are recorded
+tone. The dashboards module uses invented Home Assistant sensor readings.
+Play counts are fictional. Song editions and the photo source are recorded
 in [data/SOURCES.md](data/SOURCES.md).
 
 ## What is in this bundle
@@ -44,7 +45,8 @@ The modules :
 | `demos/07-pandas/` | Tables of anything |
 | `demos/08-gui/` | Desktop windows with tkinter; interactive demos, no exercise handout or solution |
 | `demos/09-web-apps/` | A Python backend that serves HTML pages, with FastAPI |
-| `demos/10-appendix-subprocess/` | Running other programs |
+| `demos/10-dashboards/` | Storing sensor readings and showing them with Plotly and Streamlit |
+| `demos/11-appendix-subprocess/` | Running other programs |
 
 ## Setting up
 
@@ -69,7 +71,7 @@ From the folder you unzipped this into, install the dependencies :
 uv sync
 ```
 
-That reads `pyproject.toml`, installs NumPy, pandas, SQLAlchemy, requests,
+That reads `pyproject.toml`, installs NumPy, pandas, SQLAlchemy, Streamlit, Plotly, requests,
 BeautifulSoup, rich, tqdm and the rest into a local `.venv/`, and pins the
 interpreter. There is no environment to activate afterwards.
 
@@ -123,6 +125,18 @@ says so in a comment at the top of the file.
 
 Most demos in `demos/09-web-apps/` start a web server. Open the address named
 at the top of the file in a browser, and stop the server with `Ctrl+C`.
+
+In `demos/10-dashboards/`, run `03_store_in_sqlite.py` before the demos that
+read `data/sensors.db`. The dashboard is started by Streamlit, which opens a
+browser tab :
+
+```bash
+uv run streamlit run demos/10-dashboards/07_dashboard.py
+```
+
+`08_home_assistant_api.py` reads a saved answer by default. With `--live` it
+asks a real Home Assistant, using the environment variables `HA_URL` and
+`HA_TOKEN` (a long-lived access token from the user profile).
 
 ## The exercises
 

@@ -12,6 +12,9 @@ def main() -> int:
             # The web application starts a server; check-web.py tests it instead.
             if "solution09-web-apps" in original.parts:
                 continue
+            # The dashboard needs a Streamlit session; check-dashboards.py tests it instead.
+            if original.name == "dashboard.py":
+                continue
             relative = original.relative_to(ROOT).as_posix()
             # The CLI deliberately exits 1 when it finds invalid imported records.
             arguments = ["--strict"] if (

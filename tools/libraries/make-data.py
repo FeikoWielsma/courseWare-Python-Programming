@@ -4,6 +4,7 @@ Song editions and lengths: ../data/track-catalogue.json (Apple catalogue URLs).
 Seconds are rounded up from the catalogue's millisecond lengths.
 Years describe original track releases.
 Listening counts, events and hourly patterns are fictional personal data.
+Sensor readings are generated from daily cycles; they are not measurements.
 """
 
 import csv
@@ -17,7 +18,7 @@ import sys
 import tempfile
 import zlib
 from contextlib import closing
-from datetime import datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from zipfile import ZIP_STORED, ZipFile, ZipInfo
 
@@ -83,6 +84,63 @@ def write_photo() -> None:
         b"\x89PNG\r\n\x1a\n"
         + chunk(b"IHDR", struct.pack(">IIBBBBB", 64, 48, 8, 2, 0, 0, 0))
         + chunk(b"IDAT", zlib.compress(rows)) + chunk(b"IEND", b"")
+    )
+
+
+def sensor_series() -> dict[str, list[str]]:
+    """Four weeks of 15-minute readings, with the gaps a real sensor leaves."""
+    outdoor, indoor, humidity = [], [], []
+    room = 19.0
+    for slot in range(28 * 96):
+        day, hour = divmod(slot / 4, 24)
+        noise = ((slot * 37) % 11 - 5) / 50
+        outside = 13 + 5 * np.sin(2 * np.pi * (hour - 9) / 24) - 4 * day / 27 + noise
+        target = 21.0 if 7 <= hour < 23 else 18.5
+        room += (target - room) * 0.15 + (outside - 15) * 0.005
+        outdoor.append(f"{outside:.1f}")
+        indoor.append(f"{room + noise / 2:.1f}")
+        humidity.append(f"{55 + 8 * np.sin(2 * np.pi * (hour - 4) / 24) + 3 * noise:.0f}")
+    # A flat battery: the outdoor sensor drops out for four hours.
+    gap = 13 * 96 + 8
+    outdoor[gap:gap + 16] = ["unavailable"] * 16
+    for slot in (500, 1501, 2222):
+        indoor[slot] = "unknown"
+    return {
+        "sensor.living_room_humidity": humidity,
+        "sensor.living_room_temperature": indoor,
+        "sensor.outdoor_temperature": outdoor,
+    }
+
+
+def write_sensors() -> None:
+    """A Home Assistant history download, and one REST API answer, both fictional."""
+    start = datetime(2026, 9, 1, tzinfo=UTC)
+    times = [
+        (start + timedelta(minutes=15 * slot)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+        for slot in range(28 * 96)
+    ]
+    series = sensor_series()
+    write_csv("sensor-history.csv", [
+        {"entity_id": entity, "state": state, "last_changed": time}
+        for entity, states in series.items()
+        for state, time in zip(states, times, strict=True)
+    ])
+    morning = range(27 * 96 + 24, 27 * 96 + 48, 4)
+    answer = [[
+        {
+            "entity_id": "sensor.outdoor_temperature",
+            "state": series["sensor.outdoor_temperature"][slot],
+            "attributes": {
+                "state_class": "measurement", "unit_of_measurement": "°C",
+                "device_class": "temperature", "friendly_name": "Outdoor temperature",
+            },
+            "last_changed": times[slot].replace(".000Z", "+00:00"),
+            "last_updated": times[slot].replace(".000Z", "+00:00"),
+        }
+        for slot in morning
+    ]]
+    (DATA / "ha-history.json").write_text(
+        json.dumps(answer, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n",
     )
 
 
@@ -161,6 +219,7 @@ def main() -> None:
     figure.tight_layout()
     figure.savefig(DATA / "tracks-plot.png", dpi=120)
     write_photo()
+    write_sensors()
     print(f"Generated {len(rows)} tracks, {len(artists)} artist rows, a {hours.shape} plays grid.")
 
 
@@ -176,7 +235,7 @@ if __name__ == "__main__":
                 "tracks.csv", "tracks-import.csv", "tracks.xlsx", "artists.csv",
                 "plays-hourly.csv", "listening.log", "photo.png", "tracks-report.csv",
                 "tracks-report.tsv", "tracks-report.xlsx", "tracks-plot.png",
-                "plays-hourly-mean.csv",
+                "plays-hourly-mean.csv", "sensor-history.csv", "ha-history.json",
             ):
                 if name.endswith(".png"):
                     # Different zlib builds encode identical pixels differently.
@@ -186,6 +245,6 @@ if __name__ == "__main__":
                     )
                 else:
                     assert (source / name).read_bytes() == (DATA / name).read_bytes(), name
-        print("Twelve data artifacts reproduce: exact bytes, or exact decoded PNG pixels.")
+        print("Fourteen data artifacts reproduce: exact bytes, or exact decoded PNG pixels.")
     else:
         main()

@@ -28,5 +28,6 @@ language: python
 - NumPy and pandas cover arrays, tables and reports.
 - GUI toolkits introduce desktop windows.
 - Web applications serve a Python program to the browser.
+- Dashboards store sensor readings and chart them with Plotly and Streamlit.
 - Inheritance previews Advanced Python and can be skipped.
 - The supplied data and database seed let later modules run independently.

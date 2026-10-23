@@ -62,3 +62,4 @@ build/slidev/
 # Generated work per deck and variant: Slidev apps, PDFs, logs, artifacts.json
 .courseware/
 build/prototypes/presentation-framework/
+libraries/data/temperature-chart.html

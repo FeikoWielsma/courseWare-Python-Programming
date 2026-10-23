@@ -1,0 +1,76 @@
+[
+  [
+    {
+      "entity_id": "sensor.outdoor_temperature",
+      "state": "5.4",
+      "attributes": {
+        "state_class": "measurement",
+        "unit_of_measurement": "°C",
+        "device_class": "temperature",
+        "friendly_name": "Outdoor temperature"
+      },
+      "last_changed": "2026-09-28T06:00:00+00:00",
+      "last_updated": "2026-09-28T06:00:00+00:00"
+    },
+    {
+      "entity_id": "sensor.outdoor_temperature",
+      "state": "6.6",
+      "attributes": {
+        "state_class": "measurement",
+        "unit_of_measurement": "°C",
+        "device_class": "temperature",
+        "friendly_name": "Outdoor temperature"
+      },
+      "last_changed": "2026-09-28T07:00:00+00:00",
+      "last_updated": "2026-09-28T07:00:00+00:00"
+    },
+    {
+      "entity_id": "sensor.outdoor_temperature",
+      "state": "7.6",
+      "attributes": {
+        "state_class": "measurement",
+        "unit_of_measurement": "°C",
+        "device_class": "temperature",
+        "friendly_name": "Outdoor temperature"
+      },
+      "last_changed": "2026-09-28T08:00:00+00:00",
+      "last_updated": "2026-09-28T08:00:00+00:00"
+    },
+    {
+      "entity_id": "sensor.outdoor_temperature",
+      "state": "9.0",
+      "attributes": {
+        "state_class": "measurement",
+        "unit_of_measurement": "°C",
+        "device_class": "temperature",
+        "friendly_name": "Outdoor temperature"
+      },
+      "last_changed": "2026-09-28T09:00:00+00:00",
+      "last_updated": "2026-09-28T09:00:00+00:00"
+    },
+    {
+      "entity_id": "sensor.outdoor_temperature",
+      "state": "10.2",
+      "attributes": {
+        "state_class": "measurement",
+        "unit_of_measurement": "°C",
+        "device_class": "temperature",
+        "friendly_name": "Outdoor temperature"
+      },
+      "last_changed": "2026-09-28T10:00:00+00:00",
+      "last_updated": "2026-09-28T10:00:00+00:00"
+    },
+    {
+      "entity_id": "sensor.outdoor_temperature",
+      "state": "11.5",
+      "attributes": {
+        "state_class": "measurement",
+        "unit_of_measurement": "°C",
+        "device_class": "temperature",
+        "friendly_name": "Outdoor temperature"
+      },
+      "last_changed": "2026-09-28T11:00:00+00:00",
+      "last_updated": "2026-09-28T11:00:00+00:00"
+    }
+  ]
+]

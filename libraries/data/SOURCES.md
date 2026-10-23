@@ -29,6 +29,13 @@ NASA imagery is generally available for educational reuse under its
 [media guidelines](https://www.nasa.gov/nasa-brand-center/images-and-media/).
 `photo.png` is a 64 by 48 crop for array examples, rebuilt from the original.
 
+`sensor-history.csv` has the columns of a Home Assistant history download, with
+four weeks of invented 15-minute readings from three sensors. The values follow
+daily cycles and a heating schedule; they are not measurements. The outdoor
+sensor is `unavailable` for four hours on 14 September and the living room
+temperature is `unknown` three times. `ha-history.json` has the shape of a
+Home Assistant REST API history answer, taken from the same series.
+
 Rebuild offline from the repository root:
 
 ```bash
